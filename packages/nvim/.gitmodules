@@ -67,3 +67,12 @@
 [submodule "bundle/molokai"]
 	path = bundle/molokai
 	url = git://github.com/vim-scripts/molokai.git
+[submodule "bundle/color-sampler-pack"]
+	path = bundle/color-sampler-pack
+	url = git://github.com/vim-scripts/Color-Sampler-Pack.git
+[submodule "bundle/solarized"]
+	path = bundle/solarized
+	url = git://github.com/altercation/vim-colors-solarized.git
+[submodule "bundle/vividchalk"]
+	path = bundle/vividchalk
+	url = git://github.com/tpope/vim-vividchalk.git
