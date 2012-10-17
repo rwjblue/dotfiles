@@ -58,3 +58,6 @@
 [submodule "bundle/coffeescript"]
 	path = bundle/coffeescript
 	url = git://github.com/kchmck/vim-coffee-script.git
+[submodule "bundle/ir_black"]
+	path = bundle/ir_black
+	url = git://github.com/wgibbs/vim-irblack.git
