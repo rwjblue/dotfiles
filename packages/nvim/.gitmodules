@@ -61,3 +61,6 @@
 [submodule "bundle/ir_black"]
 	path = bundle/ir_black
 	url = git://github.com/wgibbs/vim-irblack.git
+[submodule "bundle/janus-colors"]
+	path = bundle/janus-colors
+	url = git://github.com/TechnoGate/janus-colors.git
