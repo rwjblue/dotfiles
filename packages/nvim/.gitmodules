@@ -64,3 +64,6 @@
 [submodule "bundle/janus-colors"]
 	path = bundle/janus-colors
 	url = git://github.com/TechnoGate/janus-colors.git
+[submodule "bundle/molokai"]
+	path = bundle/molokai
+	url = git://github.com/vim-scripts/molokai.git
