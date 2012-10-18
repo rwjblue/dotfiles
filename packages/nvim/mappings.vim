@@ -40,3 +40,6 @@ set pastetoggle=<F12>
 " visual shifting (does not exit Visual mode)
 vnoremap < <gv
 vnoremap > >gv
+
+" CTags
+map <Leader>rt :!ctags --extra=+f -R *<CR><CR>
