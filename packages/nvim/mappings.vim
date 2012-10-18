@@ -10,6 +10,13 @@ nmap <Leader>gd :Gdiff<CR>
 " ack 
 map <C-F> :Ack<space>
 
+" tabular
+nmap <Leader>a= :Tabularize /=<CR>
+vmap <Leader>a= :Tabularize /=<CR>
+nmap <Leader>a: :Tabularize /:\zs<CR>
+vmap <Leader>a: :Tabularize /:\zs<CR>
+
+
 " edit files from within current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>ew :e %%
