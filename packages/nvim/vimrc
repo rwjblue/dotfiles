@@ -1,10 +1,12 @@
 runtime bundle/pathogen/autoload/pathogen.vim
 call pathogen#infect()
-syntax on
-filetype plugin indent on
 
-" gist-vim setup
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 1
+source ~/.vim/basic_setup.vim
+source ~/.vim/plugin_config.vim
+source ~/.vim/file_type_config.vim
+source ~/.vim/statusline.vim
+source ~/.vim/mappings.vim
 
-color desert256
+set t_Co=256 " 256 colors
+set background=dark
+color molokai
