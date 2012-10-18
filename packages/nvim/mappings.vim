@@ -27,4 +27,9 @@ cmap w!! %!sudo tee > /dev/null %
 " Toggle hlsearch with <leader>hs
 nmap <leader>hs :set hlsearch! hlsearch?<CR>
 
-set pastetoggle=<F12>           " pastetoggle (sane indentation on pastes)
+" pastetoggle (sane indentation on pastes)
+set pastetoggle=<F12>
+
+" visual shifting (does not exit Visual mode)
+vnoremap < <gv
+vnoremap > >gv
