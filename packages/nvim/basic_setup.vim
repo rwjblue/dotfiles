@@ -22,6 +22,8 @@ set expandtab                     " use spaces, not tabs
 set list                          " Show invisible characters
 set backspace=indent,eol,start    " backspace through everything in insert mode
 
+set autoindent                    " automatically indent to the current level
+
 " Scrolling
 set scrolljump=5                  " lines to scroll when cursor leaves screen
 set scrolloff=3                   " minimum lines to keep above and below cursor
