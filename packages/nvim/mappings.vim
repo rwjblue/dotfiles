@@ -44,4 +44,5 @@ vnoremap < <gv
 vnoremap > >gv
 
 " CTags
+map <Leader>t :TagbarToggle<CR><CR>
 map <Leader>rt :!ctags --extra=+f -R *<CR><CR>

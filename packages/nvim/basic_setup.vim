@@ -11,6 +11,7 @@ set hidden            " allow buffer switching without saving
 set history=1000      " Store a ton of history (default is 20)
 set cursorline        " highlight current line
 
+set autoread          " automatically update file unless buffer has unsaved changes
 ""
 "" Whitespace
 ""
