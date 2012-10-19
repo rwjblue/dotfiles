@@ -1,6 +1,12 @@
 " *******************************
 " * file type setup 		*
 " *******************************
+"
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+compiler ruby         " Enable compiler support for ruby
+
 " Treat JSON files like JavaScript
 au BufNewFile,BufRead *.json set ft=javascript
 
