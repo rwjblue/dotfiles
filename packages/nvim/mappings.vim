@@ -18,6 +18,8 @@ vmap <Leader>a=> :Tabularize /=><CR>
 nmap <Leader>a: :Tabularize /:\zs<CR>
 vmap <Leader>a: :Tabularize /:\zs<CR>
 
+"CtrlP
+map <Leader>b :CtrlPBuffer<CR>
 
 " edit files from within current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
