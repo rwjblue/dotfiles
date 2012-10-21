@@ -110,9 +110,6 @@
 	path = bundle/webapi
 	url = git://github.com/mattn/webapi-vim.git
 	ignore = dirty
-[submodule "bundle/buffergator"]
-	path = bundle/buffergator
-	url = git://github.com/jeetsukumaran/vim-buffergator.git
 [submodule "bundle/tabular"]
 	path = bundle/tabular
 	url = git://github.com/godlygeek/tabular.git
