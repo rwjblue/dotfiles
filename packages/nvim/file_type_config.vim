@@ -11,12 +11,12 @@ compiler ruby         " Enable compiler support for ruby
 autocmd FileType c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " Treat JSON files like JavaScript
-au BufNewFile,BufRead *.json set ft=javascript
+autocmd BufNewFile,BufRead *.json set filetype=javascript
 
 " make Python follow PEP8 for whitespace ( http://www.python.org/dev/peps/pep-0008/ )
-au FileType python setlocal softtabstop=4 tabstop=4 shiftwidth=4
+autocmd FileType python setlocal softtabstop=4 tabstop=4 shiftwidth=4
 
 " Remember last location in file, but not for commit messages.
 " see :help last-position-jump
-au BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
+autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
 \| exe "normal! g`\"" | endif
