@@ -69,3 +69,8 @@ set wildignore+=*.swp,*~,._*
 set backupdir=~/.vim/_backup//    " where to put backup files.
 set directory=~/.vim/_temp//      " where to put swap files.
 
+" allow undo history to persist after closing buffer
+if has('persistent_undo')
+  set undodir=~/.vim/_undo
+  set undofile
+end
