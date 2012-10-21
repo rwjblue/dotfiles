@@ -7,6 +7,9 @@ filetype indent on    " Enable filetype-specific indenting
 filetype plugin on    " Enable filetype-specific plugins
 compiler ruby         " Enable compiler support for ruby
 
+" automatically trim whitespace for specific file types
+autocmd FileType c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
+
 " Treat JSON files like JavaScript
 au BufNewFile,BufRead *.json set ft=javascript
 
