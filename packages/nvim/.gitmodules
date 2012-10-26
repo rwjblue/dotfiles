@@ -113,15 +113,20 @@
 [submodule "bundle/tabular"]
 	path = bundle/tabular
 	url = git://github.com/godlygeek/tabular.git
+	ignore = dirty
 [submodule "bundle/bundler"]
 	path = bundle/bundler
 	url = git://github.com/tpope/vim-bundler.git
+	ignore = dirty
 [submodule "bundle/tagbar"]
 	path = bundle/tagbar
 	url = git://github.com/majutsushi/tagbar.git
+	ignore = dirty
 [submodule "bundle/textobj-user"]
 	path = bundle/textobj-user
 	url = git://github.com/kana/vim-textobj-user.git
+	ignore = dirty
 [submodule "bundle/textobj-rubyblock"]
 	path = bundle/textobj-rubyblock
 	url = git://github.com/nelstrom/vim-textobj-rubyblock.git
+	ignore = dirty
