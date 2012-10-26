@@ -23,6 +23,6 @@ Upgrading
 
 Upgrading is very similar to installation, and is mostly handled by git itself:
 
-  git pull origin master
-  git submodule update --init
-  git submodule foreach 'git clean -xfd -- . && git pull origin master'
+    git pull origin master
+    git submodule update --init
+    git submodule foreach 'git clean -xfd -- . && git pull origin master'
