@@ -18,3 +18,11 @@ and the following commands:
     ln -s ~/.vim/vimrc ~/.vimrc
     ln -s ~/.vim/gvimrc ~/.gvimrc
 
+Upgrading
+=========
+
+Upgrading is very similar to installation, and is mostly handled by git itself:
+
+  git pull origin master
+  git submodule update --init
+  git submodule foreach 'git clean -xfd -- . && git pull origin master'
