@@ -48,3 +48,9 @@ vnoremap > >gv
 " CTags
 map <Leader>t :TagbarToggle<CR><CR>
 map <Leader>rt :!ctags --extra=+f -R *<CR><CR>
+
+" neocomplcache
+imap <C-k>     <Plug>(neocomplcache_snippets_expand)
+smap <C-k>     <Plug>(neocomplcache_snippets_expand)
+
+
