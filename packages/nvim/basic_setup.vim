@@ -1,3 +1,6 @@
+"" Use comma as leader
+let mapleader = ","
+
 ""
 "" Basic Setup
 ""
