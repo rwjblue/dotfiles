@@ -15,6 +15,12 @@ set hidden            " allow buffer switching without saving
 set history=1000      " Store a ton of history (default is 20)
 set cursorline        " highlight current line
 
+" Gary Bernhardt's split style
+set winwidth=79
+set winheight=5
+set winminheight=5
+set winheight=999
+
 set autoread          " automatically update file unless buffer has unsaved changes
 ""
 "" Whitespace
