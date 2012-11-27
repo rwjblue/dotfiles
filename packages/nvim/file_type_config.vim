@@ -36,3 +36,8 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
+
+" Leave the return key alone when in command line windows, since it's used
+" to run commands there.
+autocmd! CmdwinEnter * :unmap <cr>
+autocmd! CmdwinLeave * :call MapCR()

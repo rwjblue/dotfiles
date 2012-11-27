@@ -35,8 +35,12 @@ map <Leader>= <C-w>=
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
 
-" Toggle hlsearch with <leader>hs
-nmap <leader>hs :set hlsearch! hlsearch?<CR>
+" Clear the search buffer when hitting return
+function! MapCR()
+  nnoremap <cr> :nohlsearch<cr>
+endfunction
+call MapCR()
+nnoremap <leader><leader> <c-^>
 
 " pastetoggle (sane indentation on pastes)
 set pastetoggle=<F12>
