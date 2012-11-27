@@ -6,6 +6,7 @@ let mapleader = ","
 ""
 set nocompatible      " Use vim, no vi defaults
 set number            " Show line numbers
+set numberwidth=5     " Always use 5 characters for line number gutter
 set ruler             " Show line and column number
 
 syntax enable         " Turn on syntax highlighting allowing local overrides
