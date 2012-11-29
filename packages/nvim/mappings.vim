@@ -17,6 +17,8 @@ nmap <Leader>a> :Tabularize /=><CR>
 vmap <Leader>a> :Tabularize /=><CR>
 nmap <Leader>a: :Tabularize /:\zs<CR>
 vmap <Leader>a: :Tabularize /:\zs<CR>
+nmap <Leader>a<Space> :Tabularize whitespace<CR>
+vmap <Leader>a<Space> :Tabularize whitespace<CR>
 
 "CtrlP
 map <Leader>b :CtrlPBuffer<CR>
