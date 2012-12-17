@@ -7,6 +7,6 @@ source ~/.vim/plugin_config.vim
 source ~/.vim/statusline.vim
 source ~/.vim/mappings.vim
 
-set t_Co=256 " 256 colors
+set t_Co=16 " 256 colors
 set background=dark
-color molokai
+color solarized
