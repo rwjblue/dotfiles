@@ -82,3 +82,8 @@ if has('persistent_undo')
   set undodir=~/.vim/_undo
   set undofile
 end
+
+" Prevent Vim from clobbering the scrollback buffer. See
+" http://www.shallowsky.com/linux/noaltscreen.html
+set t_ti= t_te=
+
