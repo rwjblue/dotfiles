@@ -7,6 +7,5 @@ source ~/.vim/plugin_config.vim
 source ~/.vim/statusline.vim
 source ~/.vim/mappings.vim
 
-set t_Co=16 " 256 colors
-set background=dark
+set t_Co=16
 color solarized
