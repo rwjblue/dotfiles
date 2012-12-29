@@ -87,3 +87,5 @@ end
 " http://www.shallowsky.com/linux/noaltscreen.html
 set t_ti= t_te=
 
+
+set lazyredraw            " don't redraw while in macros
