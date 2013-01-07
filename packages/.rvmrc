@@ -1,0 +1,1 @@
+rvm_configure_env=(CFLAGS="-march=nocona -O3 -pipe")
