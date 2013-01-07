@@ -1,0 +1,15 @@
+[user]
+  name = Robert Jackson
+  email = robert.w.jackson@me.com
+[credential]
+  helper = osxkeychain
+[core]
+  autocrlf = input
+  excludesfile = /Users/rjackson/.gitignore_global
+  editor = vim
+[color]
+  ui = true
+[github]
+  user = rjackson
+[push]
+  default = simple
