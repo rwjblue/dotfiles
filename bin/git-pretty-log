@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# From: http://rakeroutes.com/blog/getting-up-to-speed-on-a-new-git-repo/
+#   (which is from: https://github.com/garybernhardt/dotfiles/blob/master/.githelpers)
+
+git log --graph --pretty="tformat:%C(yellow)%h%Creset %Cgreen(%ar)%Creset %C(bold blue)<%an>%Creset %C(red)%d%Creset %s"
+
