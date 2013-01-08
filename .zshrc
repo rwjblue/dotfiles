@@ -36,7 +36,7 @@ source $ZSH/oh-my-zsh.sh
 alias 'ps?'='ps aux | grep'
 
 # Customize to your needs...
-export PATH=$HOME/bin:/usr/local/bin:/usr/texbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin
+export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/texbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
