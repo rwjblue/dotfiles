@@ -28,6 +28,7 @@
 /.zsh_history
 /.zsh-update
 /.oh-my-zsh
+/.irssi/nickserv.users
 
 /Applications
 /Desktop
