@@ -215,7 +215,6 @@ statusbar = {
         window = { };
         window_empty = { };
         lag = { priority = "-1"; };
-        act = { priority = "10"; };
         more = { priority = "-1"; alignment = "right"; };
         barend = { priority = "100"; alignment = "right"; };
       };
@@ -265,6 +264,13 @@ statusbar = {
         topicbarend = { priority = "100"; alignment = "right"; };
       };
     };
+    awl_0 = {
+      items = {
+        barstart = { priority = "100"; };
+        awl_0 = { };
+        barend = { priority = "100"; alignment = "right"; };
+      };
+    };
   };
 };
 settings = {
@@ -290,6 +296,12 @@ settings = {
     reuse_unused_windows = "yes";
     windows_auto_renumber = "no";
     print_active_channel = "yes";
+  };
+  "perl/core/scripts" = {
+    awl_block = "-18";
+    awl_display_key = "$Q%K|$N%n $H$C$S";
+    awl_display_key_active = "$Q%K|$N%n $H%U$C%n$S";
+    awl_display_nokey = "[$N]$H$C$S";
   };
 };
 hilights = (
