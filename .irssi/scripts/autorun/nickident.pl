@@ -93,7 +93,8 @@ sub got_nickserv_msg {
 			Irssi::signal_stop();
 		} elsif ($text =~ /Password accepted - you are now recognized./ ||
 		         $text =~ /Wow, you managed to remember your password.  That's a miracle by your usual standard./ ||
-		 	 $text =~ /You are sucessfully identified as/ ) {
+             $text =~ /You are sucessfully identified as/ ||
+             $text =~ /You are now identified for/ ) {
 			Irssi::print("$name: Got a positive response from $nick/" . $server->{'tag'});
 			join_channels($server);
 			Irssi::signal_stop();
