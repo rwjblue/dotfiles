@@ -300,8 +300,6 @@ settings = {
     reuse_unused_windows = "yes";
     windows_auto_renumber = "no";
     print_active_channel = "yes";
-    window_default_level = "ALL -JOINS -PARTS -QUITS";
-    window_check_level_first = "yes";
   };
   "perl/core/scripts" = {
     awl_block = "-18";
@@ -312,4 +310,7 @@ settings = {
 };
 hilights = (
   { text = "rwjblue"; color = "%M"; nick = "yes"; word = "yes"; }
+);
+ignores = (
+  { level = "JOINS PARTS QUITS"; }
 );
