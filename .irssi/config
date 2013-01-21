@@ -311,3 +311,6 @@ settings = {
 hilights = (
   { text = "rwjblue"; color = "%M"; nick = "yes"; word = "yes"; }
 );
+ignores = (
+  { level = "JOINS PARTS QUITS"; }
+);
