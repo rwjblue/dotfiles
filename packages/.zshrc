@@ -40,7 +40,7 @@ export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/texbin:/usr/b
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
-eval "$(fasd --init zsh-hook zsh-ccomp zsh-ccomp-install zsh-wcomp zsh-wcomp-install posix-alias)"
+eval "$(fasd --init auto)"
 
 alias a='fasd -a'        # any
 alias s='fasd -si'       # show / search / select
@@ -51,6 +51,8 @@ alias sd='fasd -sid'     # interactive directory selection
 alias sf='fasd -sif'     # interactive file selection
 alias z='fasd_cd -d'     # cd, same functionality as j in autojump
 alias zz='fasd_cd -d -i' # cd with interactive selection
+
+_FASD_BACKENDS="native viminfo"
 
 alias gap='git add -p'        # the best way to run git add
 alias gd='git diff'           # show unstaged changes
