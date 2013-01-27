@@ -40,13 +40,23 @@ export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/texbin:/usr/b
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
+############################################
+# FASD - Command-line productivity booster #
+############################################
+#
+# EXAMPLE BEHAVIORS
+# ```
+#   v def conf       =>     vim /some/awkward/path/to/type/default.conf
+#   z abc            =>     cd /hell/of/a/awkward/path/to/get/to/abcdef
+# ```
+
 eval "$(fasd --init auto)"
 
 alias a='fasd -a'        # any
 alias s='fasd -si'       # show / search / select
 alias d='fasd -d'        # directory
 alias f='fasd -f'        # file
-alias v='f -e vim'       # open the file with vim
+alias v='fasd -e vim'    # open the file with vim
 alias sd='fasd -sid'     # interactive directory selection
 alias sf='fasd -sif'     # interactive file selection
 alias z='fasd_cd -d'     # cd, same functionality as j in autojump
