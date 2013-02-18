@@ -75,3 +75,6 @@ export CC=/usr/local/bin/gcc-4.2
 
 export RUBY_GC_MALLOC_LIMIT=60000000
 export RUBY_FREE_MIN=200000
+
+# deploy remotely
+alias cap_deploy_remote="cap deploy RAILS_ENV=development_remote && ps ax | grep orb-runner-gateway | cut -d' ' -f1 | xargs kill"
