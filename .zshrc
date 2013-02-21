@@ -29,7 +29,7 @@ ZSH_THEME="robbyrussell"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=()
 
 source $ZSH/oh-my-zsh.sh
 
@@ -64,10 +64,12 @@ alias zz='fasd_cd -d -i' # cd with interactive selection
 
 _FASD_BACKENDS="native viminfo"
 
+alias gst='git status -sb'    # use short version of git status
+alias gup='git pull --rebase' # rebase by default
 alias gap='git add -p'        # the best way to run git add
 alias gd='git diff'           # show unstaged changes
 alias gds='git diff --staged' # show staged changes
-alias gdh='git diff HEAD' # show staged changes
+alias gdh='git diff HEAD'     # show staged changes
 
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
