@@ -129,3 +129,6 @@
 [submodule "bundle/gitv"]
 	path = bundle/gitv
 	url = git://github.com/gregsexton/gitv.git
+[submodule "bundle/ag"]
+	path = bundle/ag
+	url = git://github.com/rking/ag.vim.git
