@@ -132,3 +132,6 @@
 [submodule "bundle/ag"]
 	path = bundle/ag
 	url = git://github.com/rking/ag.vim.git
+[submodule "bundle/handlebars"]
+	path = bundle/handlebars
+	url = git://github.com/nono/vim-handlebars.git
