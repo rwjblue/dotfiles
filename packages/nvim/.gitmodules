@@ -134,3 +134,6 @@
 [submodule "bundle/dispatch"]
 	path = bundle/dispatch
 	url = git://github.com/tpope/vim-dispatch.git
+[submodule "bundle/colour-sampler-pack"]
+	path = bundle/colour-sampler-pack
+	url = git://github.com/vim-scripts/Colour-Sampler-Pack.git
