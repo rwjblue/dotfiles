@@ -90,10 +90,6 @@
 	path = bundle/molokai
 	url = git://github.com/vim-scripts/molokai.git
 	ignore = dirty
-[submodule "bundle/color-sampler-pack"]
-	path = bundle/color-sampler-pack
-	url = git://github.com/vim-scripts/Color-Sampler-Pack.git
-	ignore = dirty
 [submodule "bundle/solarized"]
 	path = bundle/solarized
 	url = git://github.com/altercation/vim-colors-solarized.git
