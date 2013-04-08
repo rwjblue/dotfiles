@@ -20,6 +20,9 @@ vmap <Leader>a: :Tabularize /:\zs<CR>
 nmap <Leader>a<Space> :Tabularize whitespace<CR>
 vmap <Leader>a<Space> :Tabularize whitespace<CR>
 
+" dispatch
+nnoremap <F9> :Dispatch<CR>
+
 " edit files from within current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
 map <leader>ew :e %%
