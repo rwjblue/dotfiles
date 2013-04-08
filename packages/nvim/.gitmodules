@@ -135,3 +135,6 @@
 [submodule "bundle/handlebars"]
 	path = bundle/handlebars
 	url = git://github.com/nono/vim-handlebars.git
+[submodule "bundle/dispatch"]
+	path = bundle/dispatch
+	url = git://github.com/tpope/vim-dispatch.git

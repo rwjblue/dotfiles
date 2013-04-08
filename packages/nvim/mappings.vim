@@ -7,8 +7,8 @@ map <Leader>n :NERDTreeToggle<CR>
 nmap <Leader>gs :Gstatus<CR>
 nmap <Leader>gd :Gdiff<CR>
 
-" ack 
-map <C-F> :Ack<space>
+" CtrlP
+map <C-F> :CtrlPBuffer<CR>
 
 " tabular
 nmap <Leader>a= :Tabularize /=<CR>
@@ -19,9 +19,6 @@ nmap <Leader>a: :Tabularize /:\zs<CR>
 vmap <Leader>a: :Tabularize /:\zs<CR>
 nmap <Leader>a<Space> :Tabularize whitespace<CR>
 vmap <Leader>a<Space> :Tabularize whitespace<CR>
-
-"CtrlP
-map <Leader>b :CtrlPBuffer<CR>
 
 " edit files from within current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
