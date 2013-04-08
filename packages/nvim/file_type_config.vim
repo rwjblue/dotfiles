@@ -37,6 +37,17 @@ autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 autocmd FileType xml setlocal omnifunc=xmlcomplete#CompleteTags
 autocmd FileType ruby setlocal omnifunc=rubycomplete#Complete
 
+autocmd FileType ruby
+      \ if expand('%') =~# '_test\.rb$' |
+      \   compiler rubyunit | setl makeprg=testrb\ \"%:p\" |
+      \ elseif expand('%') =~# '_spec\.rb$' |
+      \   compiler rspec | setl makeprg=rspec\ \"%:p\" |
+      \ else |
+      \   compiler ruby | setl makeprg=ruby\ -wc\ \"%:p\" |
+      \ endif
+autocmd User Bundler
+      \ if &makeprg !~# 'bundle' | setl makeprg^=bundle\ exec\  | endif
+
 " Leave the return key alone when in command line windows, since it's used
 " to run commands there.
 autocmd! CmdwinEnter * :unmap <cr>
