@@ -3,9 +3,6 @@ ZSH=$HOME/.oh-my-zsh
 
 source $ZSH/oh-my-zsh.sh
 
-alias 'ps?'='ps aux | grep'
-
-# Customize to your needs...
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/texbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin
 
 PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
@@ -45,6 +42,11 @@ alias gd='g diff'           # show unstaged changes
 alias gds='g diff --staged' # show staged changes
 alias gdh='g diff HEAD'     # show staged changes
 
+# deploy remotely
+alias cap_deploy_remote="cap deploy RAILS_ENV=development_remote && ps ax | grep orb-runner-gateway | cut -d' ' -f1 | xargs kill"
+
+alias 'ps?'='ps aux | grep'
+
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
 export CC=/usr/local/bin/gcc-4.2
@@ -52,5 +54,3 @@ export CC=/usr/local/bin/gcc-4.2
 export RUBY_GC_MALLOC_LIMIT=60000000
 export RUBY_FREE_MIN=200000
 
-# deploy remotely
-alias cap_deploy_remote="cap deploy RAILS_ENV=development_remote && ps ax | grep orb-runner-gateway | cut -d' ' -f1 | xargs kill"
