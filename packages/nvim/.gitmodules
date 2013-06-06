@@ -137,3 +137,6 @@
 [submodule "bundle/colour-sampler-pack"]
 	path = bundle/colour-sampler-pack
 	url = git://github.com/vim-scripts/Colour-Sampler-Pack.git
+[submodule "bundle/elixir"]
+	path = bundle/elixir
+	url = git://github.com/elixir-lang/vim-elixir.git
