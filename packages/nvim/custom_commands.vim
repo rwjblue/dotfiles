@@ -4,3 +4,8 @@
 command! -bar -range=% NotRocket execute '<line1>,<line2>s/:\(\w\+[?!]\?\)\s*=>/\1:/e' . (&gdefault ? '' : 'g')
 
 command! CtrlPSetWorkingPathMode let g:ctrlp_working_path_mode = 'w'
+
+" Enable soft wrapping
+" From: http://vimcasts.org/episodes/soft-wrapping-text/
+"
+command! -nargs=* SoftWrap set wrap linebreak nolist
