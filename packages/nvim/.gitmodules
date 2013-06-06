@@ -140,3 +140,6 @@
 [submodule "bundle/elixir"]
 	path = bundle/elixir
 	url = git://github.com/elixir-lang/vim-elixir.git
+[submodule "bundle/erlang"]
+	path = bundle/erlang
+	url = git://github.com/jimenezrick/vimerl.git
