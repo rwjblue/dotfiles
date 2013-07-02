@@ -34,6 +34,9 @@
 /.heroku
 /.rnd
 /.subversion
+/.npm
+/.node-gyp
+/.rbx
 
 /DOS Games
 /Applications
