@@ -13,3 +13,5 @@
   user = rjackson
 [push]
   default = simple
+[alias]
+  list-branch-tests = "! git diff --diff-filter=ACMRTUXB --name-only master -- spec test | egrep '_(spec|test).rb' "
