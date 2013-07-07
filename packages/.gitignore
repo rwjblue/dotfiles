@@ -38,6 +38,7 @@
 /.node-gyp
 /.rbx
 
+/llvm-3.2
 /DOS Games
 /Applications
 /Desktop
