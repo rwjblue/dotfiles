@@ -37,6 +37,8 @@
 /.npm
 /.node-gyp
 /.rbx
+/.bower
+/.config
 
 /llvm-3.2
 /DOS Games
@@ -66,3 +68,6 @@
 /Source
 
 *.pyc
+/.exercism
+/.grunt-init
+/.ievms
