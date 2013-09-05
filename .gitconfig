@@ -15,3 +15,4 @@
   default = simple
 [alias]
   list-branch-tests = "! git diff --diff-filter=ACMRTUXB --name-only master -- spec test | egrep '_(spec|test).rb' "
+	diff-upstream = "! git for-each-ref --shell --format='b=%(refname:short); u=%(upstream:short); git diff  ' refs/heads/master | sh"
