@@ -51,7 +51,6 @@ alias 'ps?'='ps aux | grep'
 
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
-export CC=/usr/local/bin/gcc-4.2
 
 export RUBY_GC_MALLOC_LIMIT=60000000
 export RUBY_FREE_MIN=200000
