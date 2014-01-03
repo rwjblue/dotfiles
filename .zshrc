@@ -1,6 +1,8 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
 
+HIST_STAMPS=yyyy-mm-dd
+
 source $ZSH/oh-my-zsh.sh
 
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:/usr/texbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin
