@@ -52,9 +52,5 @@ alias 'ps?'='ps aux | grep'
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
 
-export RUBY_GC_MALLOC_LIMIT=60000000
-export RUBY_FREE_MIN=200000
-
-
 # added by travis gem
 source /Users/rjackson/.travis/travis.sh
