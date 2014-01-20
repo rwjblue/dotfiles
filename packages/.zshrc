@@ -3,6 +3,8 @@ ZSH=$HOME/.oh-my-zsh
 
 HIST_STAMPS=yyyy-mm-dd
 
+fpath=($(brew --prefix)/share/zsh/site-functions $fpath)
+
 source $ZSH/oh-my-zsh.sh
 
 export PATH=$HOME/bin:/usr/local/bin:/usr/local/share/npm/bin:$PATH
