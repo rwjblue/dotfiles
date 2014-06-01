@@ -1,6 +1,7 @@
 [user]
   name = Robert Jackson
   email = robert.w.jackson@me.com
+	signingkey = 171F7219
 [credential]
   helper = osxkeychain
 [core]
