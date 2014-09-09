@@ -11,7 +11,7 @@
 [color]
   ui = true
 [github]
-  user = rjackson
+  user = rwjblue
 [push]
   default = simple
 [alias]
