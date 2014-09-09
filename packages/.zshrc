@@ -49,6 +49,8 @@ alias gc='g commit -S --verbose' # use verbose mode with $EDITOR
 
 alias 'ps?'='ps aux | grep'
 
+alias nom='npm cache clear && rm -rf node_modules && npm install'
+
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
 
