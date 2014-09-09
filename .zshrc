@@ -45,7 +45,7 @@ alias gap='g add -p'          # the best way to run git add
 alias gd='g diff'             # show unstaged changes
 alias gds='g diff --staged'   # show staged changes
 alias gdh='g diff HEAD'       # show staged changes
-alias gc='g commit --signoff --verbose' # use verbose mode with $EDITOR
+alias gc='g commit -S --verbose' # use verbose mode with $EDITOR
 
 alias 'ps?'='ps aux | grep'
 
