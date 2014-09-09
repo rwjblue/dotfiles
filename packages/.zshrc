@@ -47,9 +47,6 @@ alias gds='g diff --staged'   # show staged changes
 alias gdh='g diff HEAD'       # show staged changes
 alias gc='g commit --signoff --verbose' # use verbose mode with $EDITOR
 
-# deploy remotely
-alias cap_deploy_remote="cap deploy RAILS_ENV=development_remote && ps ax | grep orb-runner-gateway | cut -d' ' -f1 | xargs kill"
-
 alias 'ps?'='ps aux | grep'
 
 export EDITOR="/usr/local/bin/vim"
