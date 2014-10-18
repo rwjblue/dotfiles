@@ -1,7 +1,7 @@
 [user]
   name = Robert Jackson
   email = robert.w.jackson@me.com
-	signingkey = 171F7219
+  signingkey = 171F7219
 [credential]
   helper = osxkeychain
 [core]
@@ -16,6 +16,6 @@
   default = simple
 [alias]
   list-branch-tests = "! git diff --diff-filter=ACMRTUXB --name-only master -- spec test | egrep '_(spec|test).rb' "
-	diff-upstream = "! git for-each-ref --shell --format='b=%(refname:short); u=%(upstream:short); git diff  ' refs/heads/master | sh"
+  diff-upstream = "! git for-each-ref --shell --format='b=%(refname:short); u=%(upstream:short); git diff  ' refs/heads/master | sh"
   delete-merged-branches = "!git branch --merged | grep -v master | xargs git branch -d"
   setup-fetching-prs = "config --add remote.origin.fetch '+refs/pull/*/head:refs/remotes/origin/pr/*'"
