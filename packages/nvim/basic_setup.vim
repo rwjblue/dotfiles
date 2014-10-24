@@ -15,6 +15,8 @@ set hidden            " allow buffer switching without saving
 set history=1000      " Store a ton of history (default is 20)
 set cursorline        " highlight current line
 
+set timeout timeoutlen=1000 ttimeoutlen=100 " ensure that `O` does not cause a crazy delay
+
 " Gary Bernhardt's split style
 set winwidth=79
 set winheight=5
