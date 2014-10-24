@@ -73,6 +73,9 @@ set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
 " Disable temp and backup files
 set wildignore+=*.swp,*~,._*
 
+" Disable Ex mode from Q
+nnoremap Q <nop>
+
 ""
 "" Backup and swap files
 ""
