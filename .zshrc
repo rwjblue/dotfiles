@@ -58,3 +58,7 @@ export BUNDLER_EDITOR="/usr/local/bin/vim"
 
 # added by travis gem
 source /Users/rjackson/.travis/travis.sh
+
+export NVM_DIR="/Users/rjackson/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+[[ -r $NVM_DIR/bash_completion ]] && . $NVM_DIR/bash_completion
