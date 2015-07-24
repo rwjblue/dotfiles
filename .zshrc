@@ -56,6 +56,9 @@ alias nombom='npm cache clear && bower cache clean && rm -rf node_modules bower_
 export EDITOR="/usr/local/bin/vim"
 export BUNDLER_EDITOR="/usr/local/bin/vim"
 
+alias e='emacsclient -t'
+alias ec='emacsclient -c --no-wait'
+
 # added by travis gem
 source /Users/rjackson/.travis/travis.sh
 
