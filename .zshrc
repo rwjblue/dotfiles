@@ -61,6 +61,10 @@ alias ec='emacsclient -c --no-wait'
 
 eval "$(boot2docker shellinit 2>/dev/null)"
 
+alias staging="APTIBLE_AUTH_ROOT_URL=https://auth.aptible-staging.com \
+               APTIBLE_API_ROOT_URL=https://api.aptible-staging.com \
+               APTIBLE_REMOTE=staging"
+
 # added by travis gem
 source /Users/rjackson/.travis/travis.sh
 
