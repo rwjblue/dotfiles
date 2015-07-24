@@ -59,6 +59,8 @@ export BUNDLER_EDITOR="/usr/local/bin/vim"
 alias e='emacsclient -t'
 alias ec='emacsclient -c --no-wait'
 
+eval "$(boot2docker shellinit 2>/dev/null)"
+
 # added by travis gem
 source /Users/rjackson/.travis/travis.sh
 
