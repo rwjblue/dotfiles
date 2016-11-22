@@ -26,10 +26,6 @@
 	path = bundle/supertab
 	url = git://github.com/ervandew/supertab.git
 	ignore = dirty
-[submodule "bundle/matchit"]
-	path = bundle/matchit
-	url = git://github.com/edsono/vim-matchit.git
-	ignore = dirty
 [submodule "bundle/surround"]
 	path = bundle/surround
 	url = git://github.com/tpope/vim-surround.git
