@@ -145,3 +145,6 @@
 [submodule "bundle/rust"]
 	path = bundle/rust
 	url = https://github.com/wting/rust.vim.git
+[submodule "bundle/zenburn"]
+	path = bundle/zenburn
+	url = https://github.com/jnurmine/Zenburn

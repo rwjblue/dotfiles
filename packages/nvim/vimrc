@@ -8,5 +8,6 @@ source ~/.vim/statusline.vim
 source ~/.vim/mappings.vim
 source ~/.vim/custom_commands.vim
 
-set t_Co=16
-color solarized
+set t_Co=256
+color zenburn
+
