@@ -12,11 +12,10 @@ Installation
 This is pretty easy to install.  All you should need is a recent Vim and git
 and the following commands:
 
-    # rm -rf ~/.vim ~/.vimrc ~/.gvimrc # (only if you want to override current setup)
-    git clone git://github.com/rjackson/dotvim.git ~/.vim
+    # rm -rf ~/.config/nvim # (only if you want to override current setup)
+    mkdir -p ~/.config/
+    git clone git://github.com/rjackson/dotvim.git ~/.config/nvim
     git submodule update --init
-    ln -s ~/.vim/vimrc ~/.vimrc
-    ln -s ~/.vim/gvimrc ~/.gvimrc
 
 Upgrading
 =========
