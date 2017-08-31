@@ -1,13 +1,14 @@
 runtime bundle/pathogen/autoload/pathogen.vim
 call pathogen#infect()
 
-source ./basic_setup.vim
-source ./file_type_config.vim
-source ./plugin_config.vim
-source ./statusline.vim
-source ./mappings.vim
-source ./custom_commands.vim
+source ~/.config/nvim/basic_setup.vim
+source ~/.config/nvim/file_type_config.vim
+source ~/.config/nvim/plugin_config.vim
+source ~/.config/nvim/statusline.vim
+source ~/.config/nvim/mappings.vim
+source ~/.config/nvim/custom_commands.vim
 
 set t_Co=256
+set termguicolors
 color zenburn
 
