@@ -148,3 +148,6 @@
 [submodule "bundle/zenburn"]
 	path = bundle/zenburn
 	url = https://github.com/jnurmine/Zenburn
+[submodule "bundle/fzf"]
+	path = bundle/fzf
+	url = git@github.com:junegunn/fzf.vim.git
