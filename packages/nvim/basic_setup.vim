@@ -71,7 +71,7 @@ set wildignore+=*.zip,*.tar.gz,*.tar.bz2,*.rar,*.tar.xz
 set wildignore+=*/vendor/gems/*,*/vendor/cache/*,*/.bundle/*,*/.sass-cache/*
 
 " Disable temp and backup files
-set wildignore+=*.swp,*~,._*
+set wildignore+=*.swp,*~,._*,/tmp/
 
 " Disable Ex mode from Q
 nnoremap Q <nop>
