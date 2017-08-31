@@ -79,12 +79,12 @@ nnoremap Q <nop>
 ""
 "" Backup and swap files
 ""
-set backupdir=~/.vim/_backup//    " where to put backup files.
-set directory=~/.vim/_temp//      " where to put swap files.
+set backupdir=~/.config/nvim/_backup//    " where to put backup files.
+set directory=~/.config/nvim/_temp//      " where to put swap files.
 
 " allow undo history to persist after closing buffer
 if has('persistent_undo')
-  set undodir=~/.vim/_undo
+  set undodir=~/.config/nvim/_undo
   set undofile
 end
 
