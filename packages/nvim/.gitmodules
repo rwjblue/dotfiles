@@ -8,7 +8,7 @@
 	ignore = dirty
 [submodule "bundle/ctrlp"]
 	path = bundle/ctrlp
-	url = git://github.com/kien/ctrlp.vim.git
+	url = git://github.com/ctrlpvim/ctrlp.vim
 	ignore = dirty
 [submodule "bundle/endwise"]
 	path = bundle/endwise
