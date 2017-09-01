@@ -13,7 +13,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'jnurmine/Zenburn'
+Plug 'flazz/vim-colorschemes'
 
 " Initialize plugin system
 call plug#end()
@@ -211,5 +211,5 @@ command! -nargs=* SoftWrap set wrap linebreak nolist
 
 set t_Co=256
 set termguicolors
-color zenburn
+color Tomorrow-Night
 
