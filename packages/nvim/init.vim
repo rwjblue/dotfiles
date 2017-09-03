@@ -54,9 +54,11 @@ set scrolloff=3                   " minimum lines to keep above and below cursor
 
 " List chars
 set list                          " Show invisible characters
+
 set listchars=""                  " Reset the listchars
-set listchars+=tab:__              " a tab should display as "__", trailing whitespace as "."
+set listchars+=tab:▸\             " a tab should display as "▸ ", trailing whitespace as "."
 set listchars+=trail:.            " show trailing spaces as dots
+set listchars+=eol:¬              " show eol as "¬"
 set listchars+=extends:>          " The character to show in the last column when wrap is
                                   " off and the line continues beyond the right of the screen
 set listchars+=precedes:<         " The character to show in the last column when wrap is
