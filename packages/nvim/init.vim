@@ -162,8 +162,9 @@ map <Leader>n :NERDTreeToggle<CR>
 nmap <Leader>gs :Gstatus<CR>
 nmap <Leader>gd :Gdiff<CR>
 
-" CtrlP
 map <C-P> :GFiles<CR>
+map <C-B> :Buffers <cr>
+
 
 " tabular
 nmap <Leader>a= :Tabularize /=<CR>
