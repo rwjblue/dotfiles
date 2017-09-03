@@ -127,9 +127,6 @@ let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \}
 
-" Treat JSON files like JavaScript
-autocmd BufNewFile,BufRead *.json set filetype=javascript
-
 " Remember last location in file, but not for commit messages.
 " see :help last-position-jump
 autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
