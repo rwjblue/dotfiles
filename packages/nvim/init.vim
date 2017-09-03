@@ -188,6 +188,9 @@ map <leader>et :tabe %%
 " Adjust viewports to the same size
 map <Leader>= <C-w>=
 
+" Enable exiting terminal mode with Esc
+tnoremap <Esc> <C-\><C-n>
+
 " use :w!! to write to a file using sudo if you forgot to 'sudo vim file'
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
