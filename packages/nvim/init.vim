@@ -144,7 +144,7 @@ if executable("rg")
 endif
 
 " tell nerdtree to ignore compiled files
-let NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.rbc$', '\.rbo$', '\.class$', '\.o$', '\~$'] 
+let NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.rbc$', '\.rbo$', '\.class$', '\.o$', '\~$']
 let NERDTreeHijackNetrw = 1
 
 " *******************************
