@@ -109,6 +109,19 @@ set lazyredraw            " don't redraw while in macros
 " automatically trim whitespace for specific file types
 autocmd FileType js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
 
+set conceallevel=2
+
+let g:javascript_conceal=1
+let g:javascript_conceal_function   = "ƒ"
+let g:javascript_conceal_null       = "ø"
+let g:javascript_conceal_this       = "@"
+let g:javascript_conceal_return     = "⇚"
+let g:javascript_conceal_undefined  = "¿"
+let g:javascript_conceal_NaN        = "ℕ"
+let g:javascript_conceal_prototype  = "¶"
+let g:javascript_conceal_static     = "•"
+let g:javascript_conceal_super      = "Ω"
+
 " Treat JSON files like JavaScript
 autocmd BufNewFile,BufRead *.json set filetype=javascript
 
