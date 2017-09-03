@@ -16,6 +16,7 @@ Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'flazz/vim-colorschemes'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'w0rp/ale'
 
 " Initialize plugin system
 call plug#end()
@@ -121,6 +122,10 @@ let g:javascript_conceal_NaN        = "ℕ"
 let g:javascript_conceal_prototype  = "¶"
 let g:javascript_conceal_static     = "•"
 let g:javascript_conceal_super      = "Ω"
+
+let g:ale_fixers = {
+\   'javascript': ['eslint'],
+\}
 
 " Treat JSON files like JavaScript
 autocmd BufNewFile,BufRead *.json set filetype=javascript
