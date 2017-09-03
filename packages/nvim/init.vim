@@ -126,6 +126,7 @@ let g:javascript_conceal_super      = "Ω"
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
 \}
+let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 
 " Remember last location in file, but not for commit messages.
 " see :help last-position-jump
@@ -139,6 +140,7 @@ autocmd! CmdwinLeave * :call MapCR()
 
 
 " *** Plugin Config ***
+let g:airline#extensions#ale#enabled = 1
 
 " If rg is available use it as filename list generator instead of 'find'
 if executable("rg")
@@ -187,6 +189,9 @@ map <leader>et :tabe %%
 
 " Adjust viewports to the same size
 map <Leader>= <C-w>=
+
+" Allow auto-fixing linting errors
+nmap <leader>d <Plug>(ale_fix)
 
 " Enable exiting terminal mode with Esc
 tnoremap <Esc> <C-\><C-n>
