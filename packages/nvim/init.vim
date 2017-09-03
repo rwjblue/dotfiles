@@ -103,6 +103,8 @@ set t_ti= t_te=
 
 set lazyredraw            " don't redraw while in macros
 
+set conceallevel=2
+
 " *******************************
 " * file type setup 		*
 " *******************************
@@ -110,7 +112,18 @@ set lazyredraw            " don't redraw while in macros
 " automatically trim whitespace for specific file types
 autocmd FileType js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
 
-set conceallevel=2
+" Remember last location in file, but not for commit messages.
+" see :help last-position-jump
+autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
+\| exe "normal! g`\"" | endif
+
+" Leave the return key alone when in command line windows, since it's used
+" to run commands there.
+autocmd! CmdwinEnter * :unmap <cr>
+autocmd! CmdwinLeave * :call MapCR()
+
+
+" *** Plugin Config ***
 
 let g:javascript_conceal=1
 let g:javascript_conceal_function   = "ƒ"
@@ -128,18 +141,6 @@ let g:ale_fixers = {
 \}
 let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 
-" Remember last location in file, but not for commit messages.
-" see :help last-position-jump
-autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
-\| exe "normal! g`\"" | endif
-
-" Leave the return key alone when in command line windows, since it's used
-" to run commands there.
-autocmd! CmdwinEnter * :unmap <cr>
-autocmd! CmdwinLeave * :call MapCR()
-
-
-" *** Plugin Config ***
 let g:airline#extensions#ale#enabled = 1
 
 " If rg is available use it as filename list generator instead of 'find'
