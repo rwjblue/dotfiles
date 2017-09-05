@@ -237,4 +237,4 @@ command! -nargs=* SoftWrap set wrap linebreak nolist
 set t_Co=256
 set termguicolors
 color Tomorrow-Night
-
+highlight! default link Conceal Title
