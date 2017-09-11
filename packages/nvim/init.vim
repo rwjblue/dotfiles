@@ -14,8 +14,6 @@ Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'flazz/vim-colorschemes'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'w0rp/ale'
 
 " Initialize plugin system
@@ -141,7 +139,6 @@ let g:ale_fixers = {
 \}
 let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 
-let g:airline#extensions#ale#enabled = 1
 let g:ale_sign_column_always = 1
 
 " If rg is available use it as filename list generator instead of 'find'
@@ -157,7 +154,11 @@ let NERDTreeHijackNetrw = 1
 " * status line                 *
 " *******************************
 set laststatus=2                               " always show status line
-let g:airline_powerline_fonts = 1
+set statusline=%<%f\                           " Filename
+set statusline+=%w%h%m%r                       " Options
+set statusline+=\ [%{&ff}/%Y]                  " filetype
+set statusline+=\ [%{split(getcwd(),'/')[-1]}] " current dir
+set statusline+=%=%-14.(%l,%c%V%)\ %p%%        " Right aligned file nav info
 
 " *******************************
 " * key bindings 		            *
