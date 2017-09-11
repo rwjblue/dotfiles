@@ -142,6 +142,7 @@ let g:ale_fixers = {
 let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 
 let g:airline#extensions#ale#enabled = 1
+let g:ale_sign_column_always = 1
 
 " If rg is available use it as filename list generator instead of 'find'
 if executable("rg")
