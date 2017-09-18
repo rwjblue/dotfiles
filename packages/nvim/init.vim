@@ -115,12 +115,6 @@ autocmd FileType js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s
 autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
 \| exe "normal! g`\"" | endif
 
-" Leave the return key alone when in command line windows, since it's used
-" to run commands there.
-autocmd! CmdwinEnter * :unmap <cr>
-autocmd! CmdwinLeave * :call MapCR()
-
-
 " *** Plugin Config ***
 
 let g:javascript_conceal=1
@@ -237,11 +231,6 @@ tnoremap <Esc> <C-\><C-n>
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
 
-" Clear the search buffer when hitting return
-function! MapCR()
-  nnoremap <cr> :nohlsearch<cr>
-endfunction
-call MapCR()
 nnoremap <leader><leader> <c-^>
 
 " pastetoggle (sane indentation on pastes)
