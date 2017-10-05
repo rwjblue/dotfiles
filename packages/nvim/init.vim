@@ -5,6 +5,7 @@ Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-git'
+Plug 'tpope/vim-surround'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
@@ -15,6 +16,7 @@ Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
+Plug 'sbdchd/neoformat'
 
 " Initialize plugin system
 call plug#end()
