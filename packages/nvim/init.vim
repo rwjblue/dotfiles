@@ -16,7 +16,7 @@ Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
@@ -196,7 +196,8 @@ set statusline+=%=%-14.(%l,%c%V%)\ %p%%        " Right aligned file nav info
 " *******************************
 " * key bindings 		            *
 " *******************************
-map <Leader>n :NERDTreeToggle<CR>
+nmap <Leader>nt :NERDTreeToggle<CR>
+nmap <Leader>nf :NerdTreeFind<CR>
 
 " fugitive bindings
 nmap <Leader>gs :Gstatus<CR>
