@@ -266,6 +266,10 @@ noremap <Up> <NOP>
 noremap <Down> <NOP>
 noremap <Left> <NOP>
 noremap <Right> <NOP>
+noremap <C-w><Up> <NOP>
+noremap <C-w><Down> <NOP>
+noremap <C-w><Left> <NOP>
+noremap <C-w><Right> <NOP>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
