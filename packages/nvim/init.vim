@@ -377,7 +377,7 @@ augroup TermExtra
   autocmd!
   " When switching to a term window, go to insert mode by default (this is
   " only pleasant when you also have window motions in terminal mode)
-  autocmd BufEnter term://* start!
+  autocmd BufEnter term://* start " start! is better (append) but causes problems with my shell
   autocmd TermOpen * call <SID>setup_terminal()
   autocmd TermClose * setlocal nowinfixwidth
 augroup end
