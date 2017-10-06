@@ -247,6 +247,9 @@ vnoremap > >gv
 nnoremap j gj
 nnoremap k gk
 
+" make opening a terminal very easy
+nmap <leader>tt :terminal<CR>
+
 " Window-motion out of terminals
 tnoremap <C-w>h <C-\><C-n><C-w>h
 tnoremap <C-w><C-h> <C-\><C-n><C-w>h
