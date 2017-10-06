@@ -285,6 +285,20 @@ map <leader>r :call RenameFile()<cr>
 "
 command! -nargs=* SoftWrap set wrap linebreak nolist
 
+" Use <CR> to clear text search, but unmap it when in the command window as
+" <CR> there is used to run command
+function s:install_enter_hook()
+  nnoremap <CR> :nohl<CR>
+endfunction
+
+augroup EnterKeyManager
+  autocmd!
+
+  autocmd CmdwinEnter * nunmap <CR>
+  autocmd CmdwinLeave * call s:install_enter_hook()
+augroup end
+call s:install_enter_hook()
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Re-Running Terminal Commands
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
