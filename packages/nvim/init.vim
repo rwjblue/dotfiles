@@ -362,7 +362,7 @@ endfunction
 
 function s:setup_terminal()
   setlocal winfixwidth
-  vertical resize 100
+  vertical resize 50
 
   vmap <buffer> <leader>rr :call <SID>SetupTerminalRun('rr')<CR>
   vmap <buffer> <leader>rd :call <SID>SetupTerminalRun('rd')<CR>
