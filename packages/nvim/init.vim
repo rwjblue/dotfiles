@@ -245,6 +245,10 @@ set pastetoggle=<F12>
 vnoremap < <gv
 vnoremap > >gv
 
+" Move row-wise instead of line-wise
+nnoremap j gj
+nnoremap k gk
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
