@@ -260,6 +260,12 @@ tnoremap <C-w>l <C-\><C-n><C-w>l
 tnoremap <C-w><C-l> <C-\><C-n><C-w>l
 tnoremap <C-\><C-\> <C-\><C-n>
 
+" No arrow keys
+noremap <Up> <NOP>
+noremap <Down> <NOP>
+noremap <Left> <NOP>
+noremap <Right> <NOP>
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
