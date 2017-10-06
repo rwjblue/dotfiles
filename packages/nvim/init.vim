@@ -230,9 +230,6 @@ map <Leader>= <C-w>=
 " Allow auto-fixing linting errors
 nmap <leader>d <Plug>(ale_fix)
 
-" Enable exiting terminal mode with Esc
-tnoremap <Esc> <C-\><C-n>
-
 " use :w!! to write to a file using sudo if you forgot to 'sudo vim file'
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
@@ -259,6 +256,8 @@ tnoremap <C-w>k <C-\><C-n><C-w>k
 tnoremap <C-w><C-k> <C-\><C-n><C-w>k
 tnoremap <C-w>l <C-\><C-n><C-w>l
 tnoremap <C-w><C-l> <C-\><C-n><C-w>l
+
+" Enable exiting terminal mode with Esc
 tnoremap <C-\><C-\> <C-\><C-n>
 
 " No arrow keys
