@@ -259,7 +259,7 @@ function! RenameFile()
 endfunction
 map <leader>r :call RenameFile()<cr>
 
-" Enable soft wrapping
+" Enable soft wrapping with `:Wrap`
 " From: http://vimcasts.org/episodes/soft-wrapping-text/
 "
 command! -nargs=* SoftWrap set wrap linebreak nolist
