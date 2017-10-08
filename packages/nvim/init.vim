@@ -204,6 +204,7 @@ nmap <Leader>gs :Gstatus<CR>
 nmap <Leader>gd :Gdiff<CR>
 
 map <C-P> :GFiles<CR>
+map <C-F> :Files<CR>
 map <C-B> :Buffers <cr>
 
 
