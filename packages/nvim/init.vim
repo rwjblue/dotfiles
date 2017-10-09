@@ -248,6 +248,10 @@ vnoremap > >gv
 nnoremap j gj
 nnoremap k gk
 
+" 'x is much easier to hit than `x and has more useful semantics: ie switching
+" to the column of the mark as well as the row
+nnoremap ' `
+
 " make opening a terminal very easy
 nmap <leader>tt :terminal<CR>
 
