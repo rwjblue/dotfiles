@@ -21,6 +21,7 @@ Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
+Plug 'christoomey/vim-tmux-navigator'
 
 " Initialize plugin system
 call plug#end()
