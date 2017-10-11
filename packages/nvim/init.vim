@@ -198,7 +198,7 @@ set statusline+=%=%-14.(%l,%c%V%)\ %p%%        " Right aligned file nav info
 " * key bindings 		            *
 " *******************************
 nmap <Leader>nt :NERDTreeToggle<CR>
-nmap <Leader>nf :NerdTreeFind<CR>
+nmap <Leader>nf :NERDTreeFind<CR>
 
 " fugitive bindings
 nmap <Leader>gs :Gstatus<CR>
