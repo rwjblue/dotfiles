@@ -23,6 +23,7 @@ Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'kassio/neoterm'
+Plug 'janko-m/vim-test'
 
 " Initialize plugin system
 call plug#end()
@@ -184,6 +185,8 @@ command! -bang -nargs=* GGrep
   \           : fzf#vim#with_preview('right:50%:hidden', '?'),
   \   <bang>0)
 
+" setup strategy to be used by vim-test
+let test#strategy = "neoterm"
 
 
 " *******************************
@@ -400,7 +403,6 @@ augroup TermExtra
   autocmd TermOpen * call <SID>setup_terminal()
   autocmd TermClose * setlocal nowinfixwidth
 augroup end
-
 
 set t_Co=256
 set termguicolors
