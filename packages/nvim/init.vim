@@ -256,22 +256,6 @@ nnoremap k gk
 " to the column of the mark as well as the row
 nnoremap ' `
 
-" make opening a terminal very easy
-nmap <leader>tt :terminal<CR>
-
-" Window-motion out of terminals
-tnoremap <C-w>h <C-\><C-n><C-w>h
-tnoremap <C-w><C-h> <C-\><C-n><C-w>h
-tnoremap <C-w>j <C-\><C-n><C-w>j
-tnoremap <C-w><C-j> <C-\><C-n><C-w>j
-tnoremap <C-w>k <C-\><C-n><C-w>k
-tnoremap <C-w><C-k> <C-\><C-n><C-w>k
-tnoremap <C-w>l <C-\><C-n><C-w>l
-tnoremap <C-w><C-l> <C-\><C-n><C-w>l
-
-" Enable exiting terminal mode with Esc
-tnoremap <C-\><C-\> <C-\><C-n>
-
 " No arrow keys
 noremap <Up> <NOP>
 noremap <Down> <NOP>
@@ -314,6 +298,32 @@ augroup EnterKeyManager
   autocmd CmdwinLeave * call s:install_enter_hook()
 augroup end
 call s:install_enter_hook()
+
+" Useful neoterm mappings
+"
+let g:neoterm_autoinsert = 1
+
+" show/open terminal
+nnoremap <silent> <leader>ts :Topen<cr>
+" hide/close terminal
+nnoremap <silent> <leader>th :Tclose<cr>
+" clear terminal
+nnoremap <silent> <leader>tl :call neoterm#clear()<cr>
+" kills the current job (send a <c-c>)
+nnoremap <silent> <leader>tc :call neoterm#kill()<cr>
+
+" Window-motion out of terminals
+tnoremap <C-w>h <C-\><C-n><C-w>h
+tnoremap <C-w><C-h> <C-\><C-n><C-w>h
+tnoremap <C-w>j <C-\><C-n><C-w>j
+tnoremap <C-w><C-j> <C-\><C-n><C-w>j
+tnoremap <C-w>k <C-\><C-n><C-w>k
+tnoremap <C-w><C-k> <C-\><C-n><C-w>k
+tnoremap <C-w>l <C-\><C-n><C-w>l
+tnoremap <C-w><C-l> <C-\><C-n><C-w>l
+
+" Enable exiting terminal mode with Esc
+tnoremap <C-\><C-\> <C-\><C-n>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Re-Running Terminal Commands
@@ -386,7 +396,7 @@ augroup TermExtra
   autocmd!
   " When switching to a term window, go to insert mode by default (this is
   " only pleasant when you also have window motions in terminal mode)
-  autocmd BufEnter term://* start " start! is better (append) but causes problems with my shell
+  autocmd BufEnter * if &buftype == 'terminal' | :startinsert | endif " start! is better (append) but causes problems with my shell
   autocmd TermOpen * call <SID>setup_terminal()
   autocmd TermClose * setlocal nowinfixwidth
 augroup end
