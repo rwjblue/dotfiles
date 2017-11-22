@@ -22,6 +22,7 @@ Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'kassio/neoterm'
 
 " Initialize plugin system
 call plug#end()
