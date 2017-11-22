@@ -206,6 +206,7 @@ nmap <Leader>nf :NERDTreeFind<CR>
 nmap <Leader>gs :Gstatus<CR>
 nmap <Leader>gd :Gdiff<CR>
 
+" fzf.vim mappings
 map <C-P> :GFiles<CR>
 map <C-F> :Files<CR>
 map <C-B> :Buffers <cr>
