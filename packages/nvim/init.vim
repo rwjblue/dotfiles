@@ -309,7 +309,7 @@ let g:neoterm_autoinsert = 1
 " show/open terminal
 nnoremap <silent> <leader>ts :Topen<cr>
 " hide/close terminal
-nnoremap <silent> <leader>th :Tclose<cr>
+nnoremap <silent> <leader>th :TcloseAll<cr>
 " clear terminal
 nnoremap <silent> <leader>tl :call neoterm#clear()<cr>
 " kills the current job (send a <c-c>)
