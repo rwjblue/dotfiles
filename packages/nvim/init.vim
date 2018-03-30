@@ -305,6 +305,7 @@ call s:install_enter_hook()
 " Useful neoterm mappings
 "
 let g:neoterm_autoinsert = 1
+let g:neoterm_default_mod = ':botright'
 
 " show/open terminal
 nnoremap <silent> <leader>ts :Topen<cr>
