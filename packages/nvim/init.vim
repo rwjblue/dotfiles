@@ -139,6 +139,7 @@ let g:javascript_conceal_super      = "Ω"
 
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
+\   'typescript': ['tslint'],
 \}
 let g:ale_javascript_prettier_options = '--single-quote --trailing-comma es5'
 
