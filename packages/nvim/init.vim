@@ -24,6 +24,7 @@ Plug 'sbdchd/neoformat'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'kassio/neoterm'
 Plug 'janko-m/vim-test'
+Plug 'cespare/vim-toml'
 
 " Initialize plugin system
 call plug#end()
