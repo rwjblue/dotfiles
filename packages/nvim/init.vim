@@ -111,8 +111,6 @@ set t_ti= t_te=
 
 set lazyredraw            " don't redraw while in macros
 
-set conceallevel=2
-
 " *******************************
 " * file type setup 		*
 " *******************************
@@ -126,17 +124,6 @@ autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"")
 \| exe "normal! g`\"" | endif
 
 " *** Plugin Config ***
-
-let g:javascript_conceal=1
-let g:javascript_conceal_function   = "ƒ"
-let g:javascript_conceal_null       = "ø"
-let g:javascript_conceal_this       = "@"
-let g:javascript_conceal_return     = "⇚"
-let g:javascript_conceal_undefined  = "¿"
-let g:javascript_conceal_NaN        = "ℕ"
-let g:javascript_conceal_prototype  = "¶"
-let g:javascript_conceal_static     = "•"
-let g:javascript_conceal_super      = "Ω"
 
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
@@ -410,4 +397,3 @@ augroup end
 set t_Co=256
 set termguicolors
 color Tomorrow-Night
-highlight! default link Conceal Title
