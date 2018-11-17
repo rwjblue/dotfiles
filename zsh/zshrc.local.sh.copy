@@ -1,0 +1,3 @@
+# this is to be used for local zsh configuration
+# that does not belong in the main rwjblue/dotfiles
+# repo, it is sourced after the default setup...
