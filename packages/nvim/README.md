@@ -16,7 +16,7 @@ and the following commands:
 
     # rm -rf ~/.config/nvim # (only if you want to override current setup)
     mkdir -p ~/.config/
-    git clone git://github.com/rjackson/dotvim.git ~/.config/nvim
+    git clone git://github.com/rwjblue/dotvim.git ~/.config/nvim
     vim -S snapshot.vim
 
 Upgrading
