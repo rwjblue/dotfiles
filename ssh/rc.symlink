@@ -1,0 +1,5 @@
+if [[ -n "$SSH_TTY" && -S "$SSH_AUTH_SOCK" ]]; then
+  # ssh with tty
+  ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
+  export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock
+fi
