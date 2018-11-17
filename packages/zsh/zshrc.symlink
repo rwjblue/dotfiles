@@ -17,6 +17,11 @@ zplug load # --verbose (if curious what is going on)
 # Key bindings
 source "/usr/local/opt/fzf/shell/key-bindings.zsh"
 
+# Setup vi Mode
+# -------------
+bindkey -v
+export KEYTIMEOUT=1
+
 # Setup fasd
 #
 eval "$(fasd --init auto)"
