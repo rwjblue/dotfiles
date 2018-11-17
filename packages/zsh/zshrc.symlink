@@ -35,8 +35,6 @@ alias gd='g diff'             # show unstaged changes
 alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
-# use nvim as default editor
-export EDITOR="/usr/local/bin/nvim"
 
 # Setup nvm
 export NVM_DIR="$HOME/.nvm"
