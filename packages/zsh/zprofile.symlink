@@ -1,0 +1,6 @@
+# use nvim as default editor
+export EDITOR="/usr/local/bin/nvim"
+
+export PATH="$PATH:/usr/local/opt/fzf/bin"
+
+export PATH="$HOME/.cargo/bin:$PATH"
