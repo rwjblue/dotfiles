@@ -40,10 +40,11 @@ alias gd='g diff'             # show unstaged changes
 alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
-
-# Setup nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# Setup nvm -- This is really slow!
+load-nvm() {
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+}
 
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local.sh ] && source ~/.zshrc.local.sh
