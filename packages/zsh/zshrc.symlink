@@ -1,0 +1,51 @@
+# Setup zplug/zplug (ZSH plugin manager)
+# --------------------------------------
+#export ZPLUG_HOME=/usr/local/opt/zplug
+#source $ZPLUG_HOME/init.zsh
+
+#zplug "martinrotter/powerless", use:"powerless.zsh true"
+
+#zplug load --verbose
+
+
+# Setup fzf
+# ---------
+if [[ ! "$PATH" == */usr/local/opt/fzf/bin* ]]; then
+  export PATH="$PATH:/usr/local/opt/fzf/bin"
+fi
+
+# Auto-completion
+# ---------------
+[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
+
+# Key bindings
+# ------------
+source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+
+# Setup fasd
+#
+eval "$(fasd --init auto)"
+
+# Common Aliases
+# --------------
+alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+alias zz='fasd_cd -d -i' # cd with interactive selection
+
+# use https://github.com/github/hub as `git`
+eval "$(hub alias -s)"
+alias g='git'
+alias gst='g status -sb'      # use short version of git status
+alias gap='g add -p'          # the best way to run git add
+alias gd='g diff'             # show unstaged changes
+alias gds='g diff --staged'   # show staged changes
+alias gc='g commit --verbose' # use verbose mode with $EDITOR
+
+# use nvim as default editor
+export EDITOR="/usr/local/bin/nvim"
+
+# Setup nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
+# load local (non-suitable for pushing to GH) tweaks
+[ -f ~/.zshrc.local.sh ] && source ~/.zshrc.local.sh
