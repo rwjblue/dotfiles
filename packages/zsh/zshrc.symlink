@@ -5,6 +5,8 @@ source $ZPLUG_HOME/init.zsh
 
 zplug mafredri/zsh-async, use:async.zsh, from:github
 zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
+zplug modules/history, from:prezto
+zplug modules/completion, from:prezto
 
 zplug load # --verbose (if curious what is going on)
 
