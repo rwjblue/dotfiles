@@ -1,10 +1,5 @@
 # rwjblue/dotfiles
 
-## prerequisites
-
-* [zplug](https://github.com/zplug/zplug)
-* zsh
-
 ## install
 
 ```

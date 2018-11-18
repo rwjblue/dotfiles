@@ -63,6 +63,17 @@ copy-dotfile() {
   fi
 }
 
+if [[ "$OSTYPE" == darwin* ]]; then
+  if ! command -v brew >/dev/null; then
+    echo "Installing Homebrew ..."
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  brew install zplug reattach-to-user-namespace
+else
+  git clone https://github.com/zplug/zplug.git $HOME/.zplug
+fi
+
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
