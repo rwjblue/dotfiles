@@ -29,14 +29,12 @@ link-dotfile() {
 
   local ABSOLUTE_SOURCE=$(abspath $DOTFILES/$SOURCE)
 
-  if [ -h $TARGET ]; then
-    if [ "$FORCE" = "true" ]; then
-      echo "$TARGET already exists, removing it";
-      rm -rf $TARGET
-      link-dotfile $@
-    else
-      echo "$TARGET symlink already exists";
-    fi
+  if [ "$FORCE" = "true" ]; then
+    rm -rf $TARGET
+  fi
+
+  if [ -e $TARGET ]; then
+    echo "$TARGET symlink already exists";
   else
     echo "creating link for $TARGET"
     ln -s $ABSOLUTE_SOURCE $TARGET
@@ -49,14 +47,12 @@ copy-dotfile() {
 
   local ABSOLUTE_SOURCE=$(abspath $DOTFILES/$SOURCE)
 
+  if [ "$FORCE" = "true" ]; then
+    rm -rf $TARGET
+  fi
+
   if [ -e $TARGET ]; then
-    if [ "$FORCE" = "true" ]; then
-      echo "$TARGET already exists, removing it";
-      rm -rf $TARGET
-      copy-dotfile $@
-    else
-      echo "$TARGET already exists";
-    fi
+    echo "$TARGET already exists";
   else
     echo "creating $TARGET"
     cp $ABSOLUTE_SOURCE $TARGET
