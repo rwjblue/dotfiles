@@ -69,9 +69,34 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install zplug reattach-to-user-namespace
+  brew install zsh zplug reattach-to-user-namespace
 else
   git clone https://github.com/zplug/zplug.git $HOME/.zplug
+fi
+
+ZSH_PATH=$(which zsh)
+if grep -Fxq "$ZSH_PATH" /etc/shells
+then
+    echo "zsh found in /etc/shells"
+else
+    echo "$ZSH_PATH" | sudo tee -a /etc/shells
+fi
+
+# change default shell
+if [[ "$OSTYPE" == darwin* ]]; then
+  if finger $USER | grep -q "$ZSH_PATH"
+  then
+      echo "using zsh as default already"
+  else
+      chsh -s $ZSH_PATH
+  fi
+else
+  if getent passwd $USER | grep -q "$ZSH_PATH"
+  then
+      echo "using zsh as default already"
+  else
+      chsh -s $ZSH_PATH
+  fi
 fi
 
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
