@@ -53,7 +53,7 @@ copy-dotfile() {
     if [ "$FORCE" = "true" ]; then
       echo "$TARGET already exists, removing it";
       rm -rf $TARGET
-      link-dotfile $@
+      copy-dotfile $@
     else
       echo "$TARGET already exists";
     fi
