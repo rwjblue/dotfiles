@@ -1,6 +1,10 @@
-# Setup zplug/zplug (ZSH plugin manager)
+# Setup zplug
 # --------------------------------------
-export ZPLUG_HOME=/usr/local/opt/zplug
+if [[ "$OSTYPE" == darwin* ]]; then
+  export ZPLUG_HOME=/usr/local/opt/zplug
+else
+  export ZPLUG_HOME=$HOME/.zplug
+fi
 source $ZPLUG_HOME/init.zsh
 
 zplug mafredri/zsh-async, use:async.zsh, from:github
