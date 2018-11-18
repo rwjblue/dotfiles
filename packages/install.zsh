@@ -71,7 +71,9 @@ if [[ "$OSTYPE" == darwin* ]]; then
 
   brew install zsh zplug reattach-to-user-namespace
 else
-  git clone https://github.com/zplug/zplug.git $HOME/.zplug
+  if [[ ! -d $HOME/.zplug ]]; then
+    git clone https://github.com/zplug/zplug.git $HOME/.zplug
+  fi
 fi
 
 ZSH_PATH=$(which zsh)
