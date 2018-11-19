@@ -72,6 +72,15 @@ else
   fi
 fi
 
+if [[ ! -d $HOME/.notion ]]; then
+  echo "installing notion"
+  curl -sSLf https://get.notionjs.com | bash
+
+  echo "installing current node & yarn"
+  bash $HOME/.notion/notion install node
+  bash $HOME/.notion/notion install yarn
+fi
+
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
