@@ -37,6 +37,7 @@ link-dotfile() {
     echo "$TARGET symlink already exists";
   else
     echo "creating link for $TARGET"
+    mkdir -p $(dirname $TARGET)
     ln -s $ABSOLUTE_SOURCE $TARGET
   fi
 }
@@ -55,6 +56,7 @@ copy-dotfile() {
     echo "$TARGET already exists";
   else
     echo "creating $TARGET"
+    mkdir -p $(dirname $TARGET)
     cp $ABSOLUTE_SOURCE $TARGET
   fi
 }
