@@ -96,6 +96,10 @@ link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
 
 link-dotfile "karabiner" "$HOME/.config/karabiner"
 
+link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
+link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
+
 if [ ! -d ~/.ssh ]; then
   echo "Creating .ssh dir"
   mkdir $HOME/.ssh
