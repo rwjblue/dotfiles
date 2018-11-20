@@ -94,6 +94,7 @@ link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
 
 link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
 
+link-dotfile "karabiner" "$HOME/.config/karabiner"
 
 if [ ! -d ~/.ssh ]; then
   echo "Creating .ssh dir"
