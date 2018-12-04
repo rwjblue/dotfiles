@@ -1,4 +1,8 @@
 {
     "gitlens.defaultDateStyle": "absolute",
-    "gitlens.defaultDateFormat": "YYYY-MM-DD HH:mm"
+    "gitlens.defaultDateFormat": "YYYY-MM-DD HH:mm",
+    "gitlens.advanced.messages": {
+        "suppressCommitNotFoundWarning": true
+    },
+    "window.zoomLevel": 0
 }
