@@ -52,6 +52,15 @@ alias gd='g diff'             # show unstaged changes
 alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
+# ensure ls uses colors
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias ls="ls -G"
+else
+  alias ls="ls --colors=auto"
+fi
+
+alias ll="ls -lah"
+
 # Setup nvm -- This is really slow!
 load-nvm() {
   export NVM_DIR="$HOME/.nvm"
