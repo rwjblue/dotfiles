@@ -59,7 +59,7 @@ load-nvm() {
 }
 
 # load local (non-suitable for pushing to GH) tweaks
-[ -f ~/.zshrc.local.sh ] && source ~/.zshrc.local.sh
+[ -f ~/.zshrc.local ] && source ~/.zshrc.local
 
 export NOTION_HOME="$HOME/.notion"
 [ -s "$NOTION_HOME/load.sh" ] && \. "$NOTION_HOME/load.sh"
