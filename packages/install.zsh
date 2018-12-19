@@ -95,11 +95,13 @@ link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
 link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
 copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
-link-dotfile "karabiner" "$HOME/.config/karabiner"
+if [[ "$OSTYPE" == darwin* ]]; then
+  link-dotfile "karabiner" "$HOME/.config/karabiner"
 
-link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
-link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
-link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
+  link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+  link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
+  link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
+fi
 
 if [ ! -d ~/.ssh ]; then
   echo "Creating .ssh dir"
