@@ -56,7 +56,7 @@ alias gc='g commit --verbose' # use verbose mode with $EDITOR
 if [[ "$OSTYPE" == darwin* ]]; then
   alias ls="ls -G"
 else
-  alias ls="ls --colors=auto"
+  alias ls="ls --color=auto"
 fi
 
 alias ll="ls -lah"
