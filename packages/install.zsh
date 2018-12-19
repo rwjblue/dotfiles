@@ -93,6 +93,7 @@ link-dotfile "git/gitconfig" "$HOME/.gitconfig"
 link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
 
 link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
+copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
 link-dotfile "karabiner" "$HOME/.config/karabiner"
 
