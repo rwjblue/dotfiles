@@ -23,11 +23,25 @@ fi
 # Setup fzf
 # ---------
 
-# Auto-completion
-[[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
+if [[ "$OSTYPE" == darwin* ]]; then
+  # Auto-completion
+  [[ $- == *i* ]] && source "/usr/local/opt/fzf/shell/completion.zsh" 2> /dev/null
 
-# Key bindings
-source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+  # Key bindings
+  source "/usr/local/opt/fzf/shell/key-bindings.zsh"
+else
+  if [[ ! "$PATH" == */home/rjackson/.fzf/bin* ]]; then
+    export PATH="$PATH:/home/rjackson/.fzf/bin"
+  fi
+
+  # Auto-completion
+  # ---------------
+  [[ $- == *i* ]] && source "/home/rjackson/.fzf/shell/completion.zsh" 2> /dev/null
+
+  # Key bindings
+  # ------------
+  source "/home/rjackson/.fzf/shell/key-bindings.zsh"
+fi
 
 # Setup vi Mode
 # -------------
