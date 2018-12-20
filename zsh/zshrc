@@ -12,6 +12,11 @@ zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 zplug modules/history, from:prezto
 zplug modules/completion, from:prezto
 
+# Install plugins if there are plugins that have not been installed
+if ! zplug check; then
+  zplug install
+fi
+
 zplug load # --verbose (if curious what is going on)
 
 # ensure we use a stable SSH_AUTH_SOCK (so reconnecting to prior tmux sessions
