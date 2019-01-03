@@ -4,5 +4,6 @@
     "gitlens.advanced.messages": {
         "suppressCommitNotFoundWarning": true
     },
-    "window.zoomLevel": 0
+    "window.zoomLevel": 0,
+    "git.path": "/usr/bin/git"
 }
