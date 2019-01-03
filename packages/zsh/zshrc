@@ -89,6 +89,7 @@ load-nvm() {
 # temporary aliases to common global npm things _without_ swapping to nvm
 alias np="/Users/rjackson/.nvm/versions/node/v10.13.0/bin/np"
 alias yarn-deduplicate="/Users/rjackson/.nvm/versions/node/v10.13.0/bin/yarn-deduplicate"
+alias ndb="/Users/rjackson/.nvm/versions/node/v10.13.0/bin/ndb"
 
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
