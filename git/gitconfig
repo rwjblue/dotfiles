@@ -8,6 +8,5 @@
   ui = true
 [github]
   user = rwjblue
-
 [hub]
-	protocol = ssh
+  protocol = ssh
