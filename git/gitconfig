@@ -10,3 +10,5 @@
   user = rwjblue
 [hub]
   protocol = ssh
+[alias]
+  list-branches = branch --sort=committerdate
