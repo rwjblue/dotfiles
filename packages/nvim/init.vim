@@ -32,6 +32,7 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'kassio/neoterm'
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
+Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
 
 " Initialize plugin system
 call plug#end()

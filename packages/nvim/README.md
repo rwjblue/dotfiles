@@ -36,3 +36,4 @@ To update the version of the underlying plugins run the following commands:
     :PlugUpgrade
     :PlugUpdate
     :PlugSnapshot snapshot.vim
+    :CocUpdate
