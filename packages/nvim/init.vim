@@ -266,6 +266,16 @@ noremap <C-w><Down> <NOP>
 noremap <C-w><Left> <NOP>
 noremap <C-w><Right> <NOP>
 
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " RENAME CURRENT FILE
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
