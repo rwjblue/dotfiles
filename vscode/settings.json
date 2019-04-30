@@ -5,5 +5,11 @@
         "suppressCommitNotFoundWarning": true
     },
     "window.zoomLevel": 0,
-    "git.path": "/usr/bin/git"
+    "git.path": "/usr/bin/git",
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
 }
