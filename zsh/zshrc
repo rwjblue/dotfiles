@@ -91,5 +91,22 @@ export VOLTA_HOME="$HOME/.volta"
 
 export PATH="${VOLTA_HOME}/bin:$PATH"
 
+update-volta() {
+  echo "removing old volta"
+  rm -rf $VOLTA_HOME
+
+  echo "installing volta"
+  curl -sSLf https://get.volta.sh | bash
+
+  echo "installing current node & yarn"
+  $HOME/.volta/volta fetch node@8
+  $HOME/.volta/volta fetch node@10
+  $HOME/.volta/volta install node@latest
+  $HOME/.volta/volta install yarn
+
+  echo "installing common user packages"
+  $HOME/.volta/volta install ember-cli mocha
+}
+
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
