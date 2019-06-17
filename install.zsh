@@ -74,15 +74,6 @@ else
   fi
 fi
 
-if [[ ! -d $HOME/.volta ]]; then
-  echo "installing volta"
-  curl -sSLf https://get.volta.sh | bash
-
-  echo "installing current node & yarn"
-  bash $HOME/.volta/volta install node
-  bash $HOME/.volta/volta install yarn
-fi
-
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
@@ -109,3 +100,11 @@ if [ ! -d ~/.ssh ]; then
 fi
 link-dotfile "ssh/rc" "$HOME/.ssh/rc"
 
+if [[ ! -d $HOME/.volta ]]; then
+  echo "installing volta"
+  curl -sSLf https://get.volta.sh | bash
+
+  echo "installing current node & yarn"
+  bash $HOME/.volta/volta install node
+  bash $HOME/.volta/volta install yarn
+fi
