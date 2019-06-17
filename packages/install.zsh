@@ -70,10 +70,12 @@ if [[ "$OSTYPE" == darwin* ]]; then
   brew install zplug fzf reattach-to-user-namespace
 else
   if [[ ! -d $HOME/.zplug ]]; then
+    echo "Installing zplug"
     git clone https://github.com/zplug/zplug.git $HOME/.zplug
   fi
   
   if [[ ! -d $HOME/.fzf ]]; then
+    echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
     $HOME/.fzf/install
   fi
