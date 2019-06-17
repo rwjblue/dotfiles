@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [[ -n "$SSH_TTY" && -S "$SSH_AUTH_SOCK" ]]; then
   # ssh with tty
   ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
