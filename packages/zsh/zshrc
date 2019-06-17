@@ -35,17 +35,17 @@ if [[ "$OSTYPE" == darwin* ]]; then
   # Key bindings
   source "/usr/local/opt/fzf/shell/key-bindings.zsh"
 else
-  if [[ ! "$PATH" == */home/rjackson/.fzf/bin* ]]; then
-    export PATH="$PATH:/home/rjackson/.fzf/bin"
+  if [[ ! "$PATH" == */$HOME/.fzf/bin* ]]; then
+    export PATH="$PATH:$HOME/.fzf/bin"
   fi
 
   # Auto-completion
   # ---------------
-  [[ $- == *i* ]] && source "/home/rjackson/.fzf/shell/completion.zsh" 2> /dev/null
+  [[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.zsh" 2> /dev/null
 
   # Key bindings
   # ------------
-  source "/home/rjackson/.fzf/shell/key-bindings.zsh"
+  source "$HOME/.fzf/shell/key-bindings.zsh"
 fi
 
 # Setup vi Mode
