@@ -105,6 +105,6 @@ if [[ ! -d $HOME/.volta ]]; then
   curl -sSLf https://get.volta.sh | bash
 
   echo "installing current node & yarn"
-  bash $HOME/.volta/volta install node
-  bash $HOME/.volta/volta install yarn
+  $HOME/.volta/volta install node
+  $HOME/.volta/volta install yarn
 fi
