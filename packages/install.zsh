@@ -67,10 +67,15 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install zplug reattach-to-user-namespace
+  brew install zplug fzf reattach-to-user-namespace
 else
   if [[ ! -d $HOME/.zplug ]]; then
     git clone https://github.com/zplug/zplug.git $HOME/.zplug
+  fi
+  
+  if [[ ! -d $HOME/.fzf ]]; then
+    git clone https://github.com/junegunn/fzf.git $HOME/.fzf
+    $HOME/.fzf/install
   fi
 fi
 
