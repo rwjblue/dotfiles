@@ -34,7 +34,14 @@ link-dotfile() {
   fi
 
   if [ -e $TARGET ]; then
-    echo "$TARGET symlink already exists";
+    if [ -L $TARGET ]; then
+      current=$(readlink $TARGET)
+      if [ $current != $ABSOLUTE_SOURCE ]; then
+        echo "$TARGET already exists and is symlinked to $current"
+      fi
+    else
+      echo "$TARGET already exists"
+    fi
   else
     echo "creating link for $TARGET"
     mkdir -p $(dirname $TARGET)
