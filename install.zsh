@@ -84,7 +84,6 @@ fi
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
-link-dotfile "zsh/zshrc" "$HOME/.zshrc"
 copy-dotfile "zsh/zshrc.local" "$HOME/.zshrc.local"
 
 link-dotfile "git/gitconfig" "$HOME/.gitconfig"
