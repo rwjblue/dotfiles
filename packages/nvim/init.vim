@@ -33,6 +33,7 @@ Plug 'kassio/neoterm'
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'airblade/vim-gitgutter'
 
 " Initialize plugin system
 call plug#end()
@@ -54,6 +55,7 @@ set hidden            " allow buffer switching without saving
 set history=1000      " Store a ton of history (default is 20)
 set cursorline        " highlight current line
 
+set updatetime=100    " ensure GitGutter and other plugins can get updates quickly (when typing pauses)
 set timeout timeoutlen=1000 ttimeoutlen=100 " ensure that `O` does not cause a crazy delay
 
 ""
@@ -185,6 +187,18 @@ command! -bang -nargs=* GGrep
 " setup strategy to be used by vim-test
 let test#strategy = "neoterm"
 
+" It's way more useful to see the diff against master than against the index
+let g:gitgutter_diff_base = 'origin/master'
+" Manually set the mappings we want
+let g:gitgutter_map_keys = 0
+
+" always show the sign column (prevents text from jumping leftward on the
+" first change in a file
+if exists('&signcolumn')  " Vim 7.4.2201
+  set signcolumn=yes
+else
+  let g:gitgutter_sign_column_always = 1
+endif
 
 " *******************************
 " * status line                 *
@@ -221,6 +235,11 @@ nmap <Leader>a: :Tabularize /:\zs<CR>
 vmap <Leader>a: :Tabularize /:\zs<CR>
 nmap <Leader>a<Space> :Tabularize whitespace<CR>
 vmap <Leader>a<Space> :Tabularize whitespace<CR>
+
+" GitGutter bindings
+nmap <leader>hn :GitGutterNextHunk<CR>
+nmap <Leader>hp :GitGutterPrevHunk<CR>
+nmap <Leader>hu :GitGutterUndoHunk<CR>
 
 " edit files from within current directory
 cnoremap %% <C-R>=expand('%:h').'/'<cr>
