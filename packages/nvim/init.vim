@@ -180,6 +180,11 @@ tnoremap <silent> <c-k> <c-\><c-n>:TmuxNavigateUp<cr>
 tnoremap <silent> <c-l> <c-\><c-n>:TmuxNavigateRight<cr>
 tnoremap <silent> <c-\> <c-\><c-n>:TmuxNavigatePrevious<cr>
 
+" Put the fzf window to the right to not interfere with terminals on the right
+let g:fzf_layout = {
+\   'right': '~40%'
+\}
+
 " *******************************
 " * status line                 *
 " *******************************
