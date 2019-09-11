@@ -432,6 +432,14 @@ augroup TermExtra
   autocmd TermClose * setlocal nowinfixwidth
 augroup end
 
+" Allow for project-specific .vimrc and .vim
+if !(getcwd() == $HOME)
+  if filereadable(".vimrc")
+    source .vimrc
+  endif
+  set runtimepath+=./.vim
+endif
+
 set t_Co=256
 set termguicolors
 color Tomorrow-Night
