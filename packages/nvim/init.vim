@@ -201,6 +201,14 @@ else
   let g:gitgutter_sign_column_always = 1
 endif
 
+" Added configuration for christoomey/vim-tmux-navigator to allow
+" Ctrl-H,J,K,L to work for moving in and out of terminals
+tnoremap <silent> <c-h> <c-\><c-n>:TmuxNavigateLeft<cr>
+tnoremap <silent> <c-j> <c-\><c-n>:TmuxNavigateDown<cr>
+tnoremap <silent> <c-k> <c-\><c-n>:TmuxNavigateUp<cr>
+tnoremap <silent> <c-l> <c-\><c-n>:TmuxNavigateRight<cr>
+tnoremap <silent> <c-\> <c-\><c-n>:TmuxNavigatePrevious<cr>
+
 " *******************************
 " * status line                 *
 " *******************************
