@@ -59,6 +59,9 @@ set cursorline        " highlight current line
 set updatetime=100    " ensure GitGutter and other plugins can get updates quickly (when typing pauses)
 set timeout timeoutlen=1000 ttimeoutlen=100 " ensure that `O` does not cause a crazy delay
 
+" Allow resizing windows with the mouse
+set mouse=a
+
 ""
 "" Whitespace
 ""
