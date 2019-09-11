@@ -398,8 +398,8 @@ function! s:SetupTerminalRun(mapping) range
 endfunction
 
 function s:setup_terminal()
-  setlocal winfixwidth
-  vertical resize 50
+  setlocal winfixwidth nonumber norelativenumber
+  vertical resize 100
 
   vmap <buffer> <leader>rr :call <SID>SetupTerminalRun('rr')<CR>
   vmap <buffer> <leader>rd :call <SID>SetupTerminalRun('rd')<CR>
