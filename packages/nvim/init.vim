@@ -420,6 +420,13 @@ augroup TermExtra
   autocmd WinLeave term://* :checktime
 augroup end
 
+augroup WindowManagement
+  autocmd!
+
+  " re-arrange windows on resize
+  autocmd VimResized * wincmd =
+augroup end
+
 " Allow for project-specific .vimrc and .vim
 if !(getcwd() == $HOME)
   if filereadable(".vimrc")
