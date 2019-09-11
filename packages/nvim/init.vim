@@ -414,9 +414,10 @@ augroup TermExtra
   autocmd!
   " When switching to a term window, go to insert mode by default (this is
   " only pleasant when you also have window motions in terminal mode)
-  autocmd BufEnter * if &buftype == 'terminal' | :startinsert | endif " start! is better (append) but causes problems with my shell
-  autocmd TermOpen * call <SID>setup_terminal()
+  autocmd BufEnter term://* start!
+  autocmd TermOpen * call <SID>setup_terminal() | start!
   autocmd TermClose * setlocal nowinfixwidth
+  autocmd WinLeave term://* :checktime
 augroup end
 
 " Allow for project-specific .vimrc and .vim
