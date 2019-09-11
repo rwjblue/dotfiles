@@ -153,6 +153,9 @@ endif
 let NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.rbc$', '\.rbo$', '\.class$', '\.o$', '\~$']
 let NERDTreeHijackNetrw = 1
 
+" Don't confirm  buffer deletes
+let NERDTreeAutoDeleteBuffer=1
+
 " setup strategy to be used by vim-test
 let test#strategy = "neoterm"
 
