@@ -30,7 +30,7 @@ Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
 Plug 'christoomey/vim-tmux-navigator'
-Plug 'kassio/neoterm'
+
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
@@ -319,15 +319,6 @@ call s:install_enter_hook()
 "
 let g:neoterm_autoinsert = 1
 let g:neoterm_default_mod = ':botright'
-
-" show/open terminal
-nnoremap <silent> <leader>ts :Topen<cr>
-" hide/close terminal
-nnoremap <silent> <leader>th :TcloseAll<cr>
-" clear terminal
-nnoremap <silent> <leader>tl :call neoterm#clear()<cr>
-" kills the current job (send a <c-c>)
-nnoremap <silent> <leader>tc :call neoterm#kill()<cr>
 
 " Window-motion out of terminals
 tnoremap <C-w>h <C-\><C-n><C-w>h
