@@ -3,7 +3,7 @@
 " :source this file in vim to restore the snapshot
 " or execute: vim -S snapshot.vim
 
-silent! let g:plugs['ale'].commit = '2e323b52'
+silent! let g:plugs['ale'].commit = 'cda46636'
 silent! let g:plugs['coc.nvim'].commit = 'f1ef469'
 silent! let g:plugs['editorconfig-vim'].commit = 'c718cef'
 silent! let g:plugs['fzf.vim'].commit = '359a80e'
@@ -14,7 +14,7 @@ silent! let g:plugs['tabular'].commit = '339091a'
 silent! let g:plugs['terminus'].commit = '0c826f1'
 silent! let g:plugs['typescript-vim'].commit = '5a319ea'
 silent! let g:plugs['vim-colorschemes'].commit = '9e7ab1c'
-silent! let g:plugs['vim-fugitive'].commit = '35f1095'
+silent! let g:plugs['vim-fugitive'].commit = '26f6037'
 silent! let g:plugs['vim-git'].commit = 'ca2645a'
 silent! let g:plugs['vim-gitgutter'].commit = 'b71ab64'
 silent! let g:plugs['vim-javascript'].commit = 'b6c8c84'
