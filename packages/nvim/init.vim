@@ -88,6 +88,12 @@ set listchars+=extends:>          " The character to show in the last column whe
 set listchars+=precedes:<         " The character to show in the last column when wrap is
                                   " off and the line continues beyond the right of the screen
 
+"" Folding
+set foldlevelstart=0
+set foldnestmax=5
+set foldmethod=syntax
+set foldenable
+
 ""
 "" Searching
 ""
