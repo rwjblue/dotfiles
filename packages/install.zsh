@@ -44,8 +44,8 @@ link-dotfile() {
     fi
   else
     echo "creating link for $TARGET"
-    mkdir -p $(dirname $TARGET)
-    ln -s $ABSOLUTE_SOURCE $TARGET
+    mkdir -p "$(dirname $TARGET)"
+    ln -s $ABSOLUTE_SOURCE "$TARGET"
   fi
 }
 
