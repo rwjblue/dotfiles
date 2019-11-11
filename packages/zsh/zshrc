@@ -141,5 +141,7 @@ update-volta() {
   $HOME/.volta/volta install ember-cli mocha
 }
 
+eval "$(rbenv init -)"
+
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
