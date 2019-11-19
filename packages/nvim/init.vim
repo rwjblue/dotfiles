@@ -414,6 +414,13 @@ augroup TermExtra
   autocmd TermOpen * call <SID>setup_terminal() | start!
   autocmd TermClose * setlocal nowinfixwidth
   autocmd WinLeave term://* :checktime
+
+  " working around the bug reported in https://github.com/neovim/neovim/issues/11072
+  " specifically, scrolloff being set _within_ terminal mode causes "weird"
+  " ghosting to occur in certain terminal UIs (e.g. nested nvim, htop,
+  " anything with ncurses)
+  autocmd TermEnter * setlocal scrolloff=0
+  autocmd TermLeave * setlocal scrolloff=3
 augroup end
 
 augroup WindowManagement
