@@ -88,6 +88,7 @@ else
   fi
 fi
 
+link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
