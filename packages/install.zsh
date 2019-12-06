@@ -74,7 +74,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install zplug fzf reattach-to-user-namespace tmux nvim rbenv
+  brew install zplug fzf reattach-to-user-namespace tmux nvim rbenv starship
 else
   if [[ ! -d $HOME/.zplug ]]; then
     echo "Installing zplug"
