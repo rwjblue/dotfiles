@@ -8,7 +8,6 @@ fi
 source $ZPLUG_HOME/init.zsh
 
 zplug mafredri/zsh-async, use:async.zsh, from:github
-zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
 zplug modules/history, from:prezto
 zplug modules/completion, from:prezto
 
@@ -142,6 +141,8 @@ update-volta() {
 }
 
 eval "$(rbenv init -)"
+
+eval "$(starship init zsh)"
 
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
