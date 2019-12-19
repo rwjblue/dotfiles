@@ -8,6 +8,8 @@
   defaultRemote=origin
 [color]
   ui = true
+[rebase]
+  autosquash = true
 [github]
   user = rwjblue
 [hub]
