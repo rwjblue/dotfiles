@@ -118,10 +118,7 @@ load-nvm() {
   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 }
 
-export VOLTA_HOME="$HOME/.volta"
-[ -s "$VOLTA_HOME/load.sh" ] && \. "$VOLTA_HOME/load.sh"
 
-export PATH="${VOLTA_HOME}/bin:$PATH"
 
 update-volta() {
   echo "removing old volta"
@@ -143,6 +140,9 @@ update-volta() {
 eval "$(rbenv init -)"
 
 eval "$(starship init zsh)"
+
+export VOLTA_HOME="/Users/rjackson/.volta"
+grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
 
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
