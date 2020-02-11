@@ -116,7 +116,7 @@ link-dotfile "ssh/rc" "$HOME/.ssh/rc"
 
 if [[ ! -d $HOME/.volta ]]; then
   echo "installing volta"
-  curl -sSLf https://get.volta.sh | bash
+  curl https://get.volta.sh | bash
 
   echo "installing current node & yarn"
   $HOME/.volta/volta install node
