@@ -438,6 +438,5 @@ if !(getcwd() == $HOME)
   set runtimepath+=./.vim
 endif
 
-set t_Co=256
 set termguicolors
 color Tomorrow-Night
