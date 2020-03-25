@@ -440,4 +440,4 @@ if !(getcwd() == $HOME)
 endif
 
 set termguicolors
-color Tomorrow-Night
+colorscheme gruvbox
