@@ -36,6 +36,7 @@ Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
 Plug 'airblade/vim-gitgutter'
 Plug 'wincent/terminus'
+Plug 'morhetz/gruvbox'
 
 " Initialize plugin system
 call plug#end()
