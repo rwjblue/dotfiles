@@ -141,7 +141,7 @@ eval "$(rbenv init -)"
 
 eval "$(starship init zsh)"
 
-export VOLTA_HOME="/Users/rjackson/.volta"
+export VOLTA_HOME="$HOME/.volta"
 grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
 
 # load local (non-suitable for pushing to GH) tweaks
