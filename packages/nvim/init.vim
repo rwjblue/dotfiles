@@ -421,6 +421,9 @@ augroup WindowManagement
   autocmd VimResized * wincmd =
 augroup end
 
+set termguicolors
+colorscheme gruvbox
+
 " Allow for project-specific .vimrc and .vim
 if !(getcwd() == $HOME)
   if filereadable(".vimrc")
@@ -428,6 +431,3 @@ if !(getcwd() == $HOME)
   endif
   set runtimepath+=./.vim
 endif
-
-set termguicolors
-colorscheme gruvbox
