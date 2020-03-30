@@ -145,6 +145,18 @@ autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s
 autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
 \| exe "normal! g`\"" | endif
 
+augroup coctls
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType javascript,typescript,json setl formatexpr=CocAction('formatSelected')
+
+  " Update signature help on jump placeholder
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
 " *** Plugin Config ***
 
 let g:ale_fixers = {
@@ -268,6 +280,13 @@ noremap <C-w><Up> <NOP>
 noremap <C-w><Down> <NOP>
 noremap <C-w><Left> <NOP>
 noremap <C-w><Right> <NOP>
+
+" coc.nvim
+nmap <leader>gd <Plug>(coc-definition)
+nmap <leader>gD <Plug>(coc-type-definition)
+nmap <leader>gi <Plug>(coc-implementation)
+nmap <leader>gr <Plug>(coc-references)
+nmap <leader>rn <Plug>(coc-rename)
 
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
