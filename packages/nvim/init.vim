@@ -134,7 +134,7 @@ set t_ti= t_te=
 set lazyredraw            " don't redraw while in macros
 
 " *******************************
-" * file type setup 		*
+" * file type setup             *
 " *******************************
 "
 " automatically trim whitespace for specific file types
