@@ -26,7 +26,6 @@ Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
 Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'flazz/vim-colorschemes'
-Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
 Plug 'jparise/vim-graphql'
 Plug 'christoomey/vim-tmux-navigator'
@@ -163,12 +162,6 @@ autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " *** Plugin Config ***
 
-let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
-\}
-let g:ale_sign_column_always = 1
-
 " If rg is available use it as filename list generator instead of 'find'
 if executable("rg")
     set grepprg=rg\ --color=never\ --glob
@@ -251,9 +244,6 @@ map <leader>et :tabe %%
 " Adjust viewports to the same size
 map <Leader>= <C-w>=
 
-" Allow auto-fixing linting errors
-nmap <leader>d <Plug>(ale_fix)
-
 " use :w!! to write to a file using sudo if you forgot to 'sudo vim file'
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
@@ -291,6 +281,11 @@ nmap <leader>gD <Plug>(coc-type-definition)
 nmap <leader>gi <Plug>(coc-implementation)
 nmap <leader>gr <Plug>(coc-references)
 nmap <leader>rn <Plug>(coc-rename)
+
+" Allow easier fixing linting errors
+nmap <leader>f <Plug>(coc-codeaction)
+nmap <leader>d :CocCommand eslint.executeAutofix<CR>
+
 
 " Use K for show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
