@@ -21,7 +21,6 @@ Plug 'moll/vim-node'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
-Plug 'godlygeek/tabular'
 Plug 'plasticboy/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
@@ -220,16 +219,6 @@ map <C-P> :GFiles<CR>
 map <C-F> :Files<CR>
 map <C-B> :Buffers <cr>
 
-
-" tabular
-nmap <Leader>a= :Tabularize /=<CR>
-vmap <Leader>a= :Tabularize /=<CR>
-nmap <Leader>a> :Tabularize /=><CR>
-vmap <Leader>a> :Tabularize /=><CR>
-nmap <Leader>a: :Tabularize /:\zs<CR>
-vmap <Leader>a: :Tabularize /:\zs<CR>
-nmap <Leader>a<Space> :Tabularize whitespace<CR>
-vmap <Leader>a<Space> :Tabularize whitespace<CR>
 
 " GitGutter bindings
 nmap <leader>hn :GitGutterNextHunk<CR>
