@@ -34,6 +34,10 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+let g:coc_global_extensions = [
+  \ 'coc-tsserver',
+  \ 'coc-eslint'
+  \ ]
 Plug 'airblade/vim-gitgutter'
 Plug 'wincent/terminus'
 Plug 'morhetz/gruvbox'
