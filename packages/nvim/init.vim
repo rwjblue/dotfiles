@@ -138,7 +138,7 @@ set lazyredraw            " don't redraw while in macros
 " *******************************
 "
 " automatically trim whitespace for specific file types
-autocmd FileType js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
+autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " Remember last location in file, but not for commit messages.
 " see :help last-position-jump
