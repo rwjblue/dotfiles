@@ -34,7 +34,7 @@ Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'airblade/vim-gitgutter'
 Plug 'wincent/terminus'
 Plug 'morhetz/gruvbox'
