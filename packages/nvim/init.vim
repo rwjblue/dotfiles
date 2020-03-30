@@ -29,6 +29,7 @@ Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
 Plug 'flazz/vim-colorschemes'
 Plug 'w0rp/ale'
 Plug 'sbdchd/neoformat'
+Plug 'jparise/vim-graphql'
 Plug 'christoomey/vim-tmux-navigator'
 
 Plug 'janko-m/vim-test'
