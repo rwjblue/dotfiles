@@ -67,5 +67,6 @@
             "name": "Vue Green",
             "value": "#42b883"
         }
-    ]
+    ],
+    "files.autoSave": "afterDelay"
 }
