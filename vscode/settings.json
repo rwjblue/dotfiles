@@ -68,5 +68,8 @@
             "value": "#42b883"
         }
     ],
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
