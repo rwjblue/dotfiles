@@ -122,7 +122,6 @@ load-nvm() {
 
 update-volta() {
   echo "removing old volta"
-  rm -rf $VOLTA_HOME
 
   echo "installing volta"
   curl -sSLf https://get.volta.sh | bash
@@ -141,8 +140,8 @@ eval "$(rbenv init -)"
 
 eval "$(starship init zsh)"
 
-export VOLTA_HOME="$HOME/.volta"
-grep --silent "$VOLTA_HOME/bin" <<< $PATH || export PATH="$VOLTA_HOME/bin:$PATH"
 
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
