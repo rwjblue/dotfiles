@@ -68,26 +68,6 @@ copy-dotfile() {
   fi
 }
 
-if [[ "$OSTYPE" == darwin* ]]; then
-  if ! command -v brew >/dev/null; then
-    echo "Installing Homebrew ..."
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  fi
-
-  brew install zplug fzf reattach-to-user-namespace tmux nvim rbenv starship
-else
-  if [[ ! -d $HOME/.zplug ]]; then
-    echo "Installing zplug"
-    git clone https://github.com/zplug/zplug.git $HOME/.zplug
-  fi
-
-  if [[ ! -d $HOME/.fzf ]]; then
-    echo "Installing fzf"
-    git clone https://github.com/junegunn/fzf.git $HOME/.fzf
-    $HOME/.fzf/install
-  fi
-fi
-
 link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
@@ -121,4 +101,24 @@ if [[ ! -d $HOME/.volta ]]; then
   echo "installing current node & yarn"
   $HOME/.volta/volta install node
   $HOME/.volta/volta install yarn
+fi
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  if ! command -v brew >/dev/null; then
+    echo "Installing Homebrew ..."
+    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  fi
+
+  brew install zplug fzf reattach-to-user-namespace tmux nvim rbenv starship
+else
+  if [[ ! -d $HOME/.zplug ]]; then
+    echo "Installing zplug"
+    git clone https://github.com/zplug/zplug.git $HOME/.zplug
+  fi
+
+  if [[ ! -d $HOME/.fzf ]]; then
+    echo "Installing fzf"
+    git clone https://github.com/junegunn/fzf.git $HOME/.fzf
+    $HOME/.fzf/install
+  fi
 fi
