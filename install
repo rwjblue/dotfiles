@@ -80,7 +80,7 @@ else
     echo "Installing zplug"
     git clone https://github.com/zplug/zplug.git $HOME/.zplug
   fi
-  
+
   if [[ ! -d $HOME/.fzf ]]; then
     echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
