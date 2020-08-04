@@ -3,11 +3,11 @@
 ## install
 
 ```
-./install.sh
+./install
 ```
 
 To force a re-install (clobbering existing files):
 
 ```
-FORCE=true ./install.sh
+FORCE=true ./install
 ```
