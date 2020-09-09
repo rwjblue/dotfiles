@@ -67,6 +67,8 @@ set timeout timeoutlen=1000 ttimeoutlen=100 " ensure that `O` does not cause a c
 " Allow resizing windows with the mouse
 set mouse=a
 
+set clipboard=unnamed
+
 ""
 "" Whitespace
 ""
