@@ -220,6 +220,7 @@ set statusline+=%=%-14.(%l,%c%V%)\ %p%%        " Right aligned file nav info
 " *******************************
 nmap <Leader>nt :NERDTreeToggle<CR>
 nmap <Leader>nf :NERDTreeFind<CR>
+nmap <leader>ne :call <SID>OpenNERDTree()<CR>
 
 " fugitive bindings
 nmap <Leader>gs :Gstatus<CR>
@@ -331,6 +332,24 @@ augroup EnterKeyManager
   autocmd CmdwinLeave * call s:install_enter_hook()
 augroup end
 call s:install_enter_hook()
+
+function s:OpenNERDTree()
+  let isFile = (&buftype == "") && (bufname() != "")
+
+  if isFile
+    let findCmd = "NERDTreeFind " . expand('%')
+  endif
+
+  " open a NERDTree in this window
+  edit .
+
+  " make this the implicit NERDTree buffer
+  let t:NERDTreeBufName=bufname()
+
+  if isFile
+    exe findCmd
+  endif
+endfunction
 
 " Useful neoterm mappings
 "
