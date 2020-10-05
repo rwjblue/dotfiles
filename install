@@ -69,6 +69,10 @@ copy-dotfile() {
 }
 
 link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
+
+mkdir -p ~/bin
+link-dotfile "bin/git_status_prompt.zsh" "$HOME/bin/git_status_prompt.zsh"
+
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"

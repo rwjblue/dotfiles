@@ -8,6 +8,7 @@ $git_branch\
 $git_commit\
 $git_state\
 $git_status\
+${custom.git_status}\
 $hg_branch\
 $docker_context\
 $package\
@@ -52,6 +53,15 @@ $character"""
 [git_status]
 # way too slow
 disabled = true
+
+[custom.git_status]
+description = "git status which calls git directly"
+command = "~/bin/git_status_prompt.zsh || true"
+directories = []
+when = "true"
+style = "bold red"
+format = "[\\[$output\\]]($style) "
+disabled = false
 
 [[battery.display]]  # "bold red" style when capacity is between 0% and 10%
 threshold = 10
