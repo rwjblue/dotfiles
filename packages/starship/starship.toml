@@ -1,4 +1,3 @@
-# Removed $git_state and $git_status due to horrible performance on large repos
 format = """
 $username\
 $hostname\
@@ -7,6 +6,8 @@ $kubernetes\
 $directory\
 $git_branch\
 $git_commit\
+$git_state\
+$git_status\
 $hg_branch\
 $docker_context\
 $package\
@@ -47,6 +48,10 @@ $battery\
 $time\
 $status\
 $character"""
+
+[git_status]
+# way too slow
+disabled = true
 
 [[battery.display]]  # "bold red" style when capacity is between 0% and 10%
 threshold = 10
