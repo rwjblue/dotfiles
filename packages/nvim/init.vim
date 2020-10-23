@@ -24,7 +24,7 @@ Plug 'elzr/vim-json'
 Plug 'plasticboy/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
-Plug 'scrooloose/nerdtree', { 'on': ['NERDTreeToggle', 'NERDTreeFind'] }
+Plug 'preservim/nerdtree'
 Plug 'flazz/vim-colorschemes'
 Plug 'sbdchd/neoformat'
 Plug 'jparise/vim-graphql'
