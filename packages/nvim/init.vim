@@ -96,7 +96,7 @@ set listchars+=precedes:<         " The character to show in the last column whe
                                   " off and the line continues beyond the right of the screen
 
 "" Folding
-set foldlevelstart=0
+set foldlevelstart=99             " don't fold by default
 set foldnestmax=5
 set foldmethod=syntax
 set foldenable
