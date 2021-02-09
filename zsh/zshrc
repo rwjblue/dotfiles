@@ -110,14 +110,6 @@ alias gz='__tz'
 # use fzf to select a specific window in the tmux session
 alias tw='tmux list-windows | fzf  | cut -d':" -f 1 | xargs tmux select-window -t"
 
-# Setup nvm -- This is really slow!
-load-nvm() {
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-}
-
-
-
 update-volta() {
   echo "removing old volta"
 
