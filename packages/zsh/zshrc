@@ -110,22 +110,6 @@ alias gz='__tz'
 # use fzf to select a specific window in the tmux session
 alias tw='tmux list-windows | fzf  | cut -d':" -f 1 | xargs tmux select-window -t"
 
-update-volta() {
-  echo "removing old volta"
-
-  echo "installing volta"
-  curl -sSLf https://get.volta.sh | bash
-
-  echo "installing current node & yarn"
-  $HOME/.volta/volta fetch node@8
-  $HOME/.volta/volta fetch node@10
-  $HOME/.volta/volta install node@latest
-  $HOME/.volta/volta install yarn
-
-  echo "installing common user packages"
-  $HOME/.volta/volta install ember-cli mocha
-}
-
 eval "$(rbenv init -)"
 
 eval "$(starship init zsh)"
