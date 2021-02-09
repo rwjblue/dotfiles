@@ -117,7 +117,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
   # temporarily removing
   #
   # TODO: bring back nvim here
-  brew install zplug fzf reattach-to-user-namespace tmux rbenv starship
+  brew install zplug fzf reattach-to-user-namespace tmux rbenv starship fasd hub
 else
   if [[ ! -d $HOME/.zplug ]]; then
     echo "Installing zplug"
