@@ -61,8 +61,6 @@ eval "$(fasd --init auto)"
 alias z='fasd_cd -d'     # cd, same functionality as j in autojump
 alias zz='fasd_cd -d -i' # cd with interactive selection
 
-# use https://github.com/github/hub as `git`
-eval "$(hub alias -s)"
 alias g='git'
 alias gst='g status -sb'      # use short version of git status
 alias gap='g add -p'          # the best way to run git add
