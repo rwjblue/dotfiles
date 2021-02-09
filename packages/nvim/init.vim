@@ -8,7 +8,11 @@ endif
 call plug#begin('~/.local/share/nvim/site/plugged')
 
 Plug 'tpope/vim-sensible'
-Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+if isdirectory('/opt/homebrew')
+  Plug '/opt/homebrew/opt/fzf' | Plug 'junegunn/fzf.vim'
+else
+  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+endif
 Plug 'editorconfig/editorconfig-vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-git'
