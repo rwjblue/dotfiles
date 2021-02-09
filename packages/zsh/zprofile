@@ -3,15 +3,15 @@ export EDITOR="/usr/local/bin/nvim"
 
 export LANG='en_US.UTF-8'
 
-local HOMEBREW_PREFIX;
+local _HOMEBREW_PREFIX;
 if [[ "$OSTYPE" == darwin* ]]; then
   if [[ -r /opt/homebrew ]]; then
-    HOMEBREW_PREFIX=/opt/homebrew
+    _HOMEBREW_PREFIX=/opt/homebrew
   else
-    HOMEBREW_PREFIX=/usr/local
+    _HOMEBREW_PREFIX=/usr/local
   fi
 fi
-export PATH="$PATH:$HOMEBREW_PREFIX/opt/fzf/bin"
+export PATH="$PATH:$_HOMEBREW_PREFIX/opt/fzf/bin"
 
 export PATH="$HOME/.cargo/bin:$PATH"
-eval $($HOMEBREW_PREFIX/bin/brew shellenv)
+eval $($_HOMEBREW_PREFIX/bin/brew shellenv)
