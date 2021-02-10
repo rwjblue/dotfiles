@@ -1,0 +1,9 @@
+# vim: set filetype=unix/GITCONFIG
+
+# this is to be used for local git configuration
+# that does not belong in the main rwjblue/dotfiles
+# repo, it is referenced from the main `.gitconfig`
+
+[user]
+  email = rjackson@linkedin.com
+  name = Robert Jackson

@@ -80,6 +80,7 @@ copy-dotfile "zsh/zshrc.local" "$HOME/.zshrc.local"
 
 link-dotfile "git/gitconfig" "$HOME/.gitconfig"
 link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
+copy-dotfile "git/gitconfig.local" "$HOME/.gitconfig.local"
 
 link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
 copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
