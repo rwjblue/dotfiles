@@ -1,6 +1,3 @@
-[user]
-  email = rjackson@linkedin.com
-  name = Robert Jackson
 [core]
   autocrlf = input
   excludesfile = .gitignore_global
@@ -25,3 +22,5 @@
 	ff = only
 [init]
 	defaultBranch = main
+[include]
+	path = ./gitconfig.local
