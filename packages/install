@@ -55,7 +55,7 @@ copy-dotfile() {
 
   local ABSOLUTE_SOURCE=$(abspath $DOTFILES/$SOURCE)
 
-  if [ "$FORCE" = "true" ]; then
+  if [ "$FORCE_LOCAL" = "true" ]; then
     rm -rf $TARGET
   fi
 
