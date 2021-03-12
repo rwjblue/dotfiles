@@ -99,7 +99,7 @@ if [ ! -d ~/.ssh ]; then
 fi
 link-dotfile "ssh/rc" "$HOME/.ssh/rc"
 
-if [[ ! -d $HOME/.volta ]]; then
+if [[ ! -x "$(command -v volta)" ]]; then
   echo "installing volta"
   curl https://get.volta.sh | bash
 
