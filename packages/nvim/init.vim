@@ -29,10 +29,10 @@ Plug 'plasticboy/vim-markdown'
 Plug 'leafgarland/typescript-vim'
 Plug 'cakebaker/scss-syntax.vim'
 Plug 'preservim/nerdtree'
-Plug 'flazz/vim-colorschemes'
 Plug 'sbdchd/neoformat'
 Plug 'jparise/vim-graphql'
 Plug 'christoomey/vim-tmux-navigator'
+Plug 'joshdick/onedark.vim'
 
 Plug 'janko-m/vim-test'
 Plug 'cespare/vim-toml'
@@ -466,7 +466,7 @@ augroup WindowManagement
 augroup end
 
 set termguicolors
-colorscheme gruvbox
+colorscheme onedark
 
 " Allow for project-specific .vimrc and .vim
 if !(getcwd() == $HOME)
