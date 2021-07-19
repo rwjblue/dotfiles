@@ -113,11 +113,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  # should include nvim also, but ATM nvim does not support Apple Silicon
-  # temporarily removing
-  #
-  # TODO: bring back nvim here
-  brew install zplug fzf reattach-to-user-namespace tmux rbenv starship fasd gh ripgrep
+  brew install zplug fzf reattach-to-user-namespace tmux rbenv starship fasd gh ripgrep nvim
 else
   if [[ ! -d $HOME/.zplug ]]; then
     echo "Installing zplug"
