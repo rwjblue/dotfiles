@@ -73,7 +73,7 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true,
     "editor.formatOnSaveMode": "modifications",
-    "liveshare.authenticationProvider": "GitHub"
+    "liveshare.authenticationProvider": "GitHub",
+    "linkedin-extensions.directory": "/Users/rjackson/.vscode-linkedin-extensions"
 }
