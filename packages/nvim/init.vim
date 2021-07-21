@@ -4,55 +4,11 @@
 " and rename `future_init.lua` into `init.lua`.
 source ./future_init.lua
 
-" ensure https://github.com/junegunn/vim-plug is installed
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source ./snapshot.vim
-endif
-
-call plug#begin('~/.local/share/nvim/site/plugged')
-
-Plug 'tpope/vim-sensible'
-if isdirectory('/opt/homebrew')
-  Plug '/opt/homebrew/opt/fzf' | Plug 'junegunn/fzf.vim'
-else
-  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
-endif
-Plug 'editorconfig/editorconfig-vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-git'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-rhubarb'
-Plug 'tpope/vim-obsession'
-Plug 'moll/vim-node'
-Plug 'mustache/vim-mustache-handlebars'
-Plug 'pangloss/vim-javascript'
-Plug 'elzr/vim-json'
-Plug 'plasticboy/vim-markdown'
-Plug 'leafgarland/typescript-vim'
-Plug 'cakebaker/scss-syntax.vim'
-Plug 'preservim/nerdtree'
-Plug 'sbdchd/neoformat'
-Plug 'jparise/vim-graphql'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'joshdick/onedark.vim'
-
-Plug 'janko-m/vim-test'
-Plug 'cespare/vim-toml'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = [
-  \ 'coc-tsserver',
-  \ 'coc-eslint'
-  \ ]
-Plug 'airblade/vim-gitgutter'
-Plug 'wincent/terminus'
-Plug 'morhetz/gruvbox'
-
-" Initialize plugin system
-call plug#end()
+"if isdirectory('/opt/homebrew')
+"  Plug '/opt/homebrew/opt/fzf' | Plug 'junegunn/fzf.vim'
+"else
+"  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
+"endif
 
 "" Use comma as leader
 let mapleader = ","
