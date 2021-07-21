@@ -1,3 +1,9 @@
+" since init.vim is the first file looked for, as we migrate to using all lua
+" configuration we will need to slowly move things from this file (init.vim)
+" into future_init.lua. The eventual goal is to remove init.vim all together,
+" and rename `future_init.lua` into `init.lua`.
+source ./future_init.lua
+
 " ensure https://github.com/junegunn/vim-plug is installed
 if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
   silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
