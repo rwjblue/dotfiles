@@ -10,70 +10,8 @@ source ./future_init.lua
 "  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 "endif
 
-"" Use comma as leader
 let mapleader = ","
 
-""
-"" Basic Setup
-""
-set nocompatible      " Use vim, no vi defaults
-set number            " Show line numbers
-set numberwidth=3     " Always use 3 characters for line number gutter
-set ruler             " Show line and column number
-
-syntax enable         " Turn on syntax highlighting allowing local overrides
-set encoding=utf-8    " Set default encoding to UTF-8
-set hidden            " allow buffer switching without saving
-set history=1000      " Store a ton of history (default is 20)
-set cursorline        " highlight current line
-
-set updatetime=100    " ensure GitGutter and other plugins can get updates quickly (when typing pauses)
-set timeout timeoutlen=1000 ttimeoutlen=100 " ensure that `O` does not cause a crazy delay
-set noswapfile        " disable generating swap files
-
-" Allow resizing windows with the mouse
-set mouse=a
-
-set clipboard=unnamed
-
-""
-"" Whitespace
-""
-set nowrap                        " don't wrap lines
-set tabstop=2                     " a tab is two spaces
-set shiftwidth=2                  " an autoindent (with <<) is two spaces
-set expandtab                     " use spaces, not tabs
-set backspace=indent,eol,start    " backspace through everything in insert mode
-set autoindent                    " automatically indent to the current level
-
-" Scrolling
-set scrolloff=3                   " minimum lines to keep above and below cursor
-
-" List chars
-set list                          " Show invisible characters
-
-set listchars=""                  " Reset the listchars
-set listchars+=tab:▸\             " a tab should display as "▸ ", trailing whitespace as "."
-set listchars+=trail:.            " show trailing spaces as dots
-set listchars+=eol:¬              " show eol as "¬"
-set listchars+=extends:>          " The character to show in the last column when wrap is
-                                  " off and the line continues beyond the right of the screen
-set listchars+=precedes:<         " The character to show in the last column when wrap is
-                                  " off and the line continues beyond the right of the screen
-
-"" Folding
-set foldlevelstart=99             " don't fold by default
-set foldnestmax=5
-set foldmethod=syntax
-set foldenable
-
-""
-"" Searching
-""
-set hlsearch    " highlight matches
-set incsearch   " incremental searching
-set ignorecase  " searches are case insensitive...
-set smartcase   " ... unless they contain at least one capital letter
 
 ""
 "" Wild settings
