@@ -126,3 +126,41 @@ vim.o.hlsearch = true               -- highlight matches
 vim.o.incsearch = true              -- incremental searching
 vim.o.ignorecase = true             -- searches are case insensitive...
 vim.o.smartcase = true              -- ... unless they contain at least one capital letter
+
+--
+-- Wild settings
+--
+-- TODO: Investigate the precise meaning of these settings
+-- set wildmode=list:longest,list:full
+
+vim.opt.wildignore = {
+  -- Disable output and VCS files
+  '*.o',
+  '*.out',
+  '*.obj',
+  '.git',
+  '*.rbc',
+  '*.rbo',
+  '*.class',
+  '.svn',
+  '*.gem',
+
+  -- Disable archive files
+  '*.zip',
+  '*.tar.gz',
+  '*.tar.bz2',
+  '*.rar',
+  '*.tar.xz',
+
+  -- Ignore bundler and sass cache
+  '*/vendor/gems/*',
+  '*/vendor/cache/*',
+  '*/.bundle/*',
+  '*/.sass-cache/*',
+
+  -- Disable temp and backup files
+  '*.swp',
+  '*~',
+  '._*',
+  '/tmp/'
+}
