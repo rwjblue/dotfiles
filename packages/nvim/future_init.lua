@@ -66,44 +66,49 @@ vim.g.mapleader = ","
 --
 -- Basic Setup
 --
-vim.o.nocompatible      -- Use vim, no vi defaults
-vim.o.number            -- Show line numbers
-vim.o.numberwidth = 3     -- Always use 3 characters for line number gutter
-vim.o.ruler             -- Show line and column number
+vim.o.compatible = false            -- Use vim, no vi defaults
+vim.o.number = true                 -- Show line numbers
+vim.o.numberwidth = 3               -- Always use 3 characters for line number gutter
+vim.o.ruler = true                  -- Show line and column number
 
-vim.o.hidden = true     -- allow buffer switching without saving
-vim.o.history = 1000      -- Store a ton of history (default is 20)
-vim.o.cursorline = true -- highlight current line
+vim.o.hidden = true                 -- allow buffer switching without saving
+vim.o.history = 1000                -- Store a ton of history (default is 20)
+vim.o.cursorline = true             -- highlight current line
 
-vim.o.updatetime = 100    -- ensure GitGutter and other plugins can get updates quickly (when typing pauses)
+vim.o.updatetime = 100              -- ensure GitGutter and other plugins can get updates quickly (when typing pauses)
 
 -- ensure that `O` does not cause a crazy delay
-vim.opt.timeout = {
-  timeoutlen=1000,
-  ttimeoutlen=100
-}
-vim.o.swapfile = false    -- disable generating swap files
+vim.o.timeout = true
+vim.o.timeoutlen = 1000
+vim.o.ttimeoutlen = 100
 
--- Allow resizing windows with the mouse
-vim.o.mouse=a
+vim.o.swapfile = false              -- disable generating swap files
 
-vim.o.clipboard=unnamed
+vim.o.mouse = 'a'                   -- Allow resizing windows with the mouse
+
+vim.o.clipboard = 'unnamed'
 
 --
 -- Whitespace
 --
-vim.o.nowrap                        -- don't wrap lines
+vim.o.wrap = false                  -- don't wrap lines
 vim.o.tabstop = 2                   -- a tab is two spaces
 vim.o.shiftwidth = 2                -- an autoindent (with <<) is two spaces
 vim.o.expandtab = true              -- use spaces, not tabs
-vim.o.backspace=indent,eol,start    -- backspace through everything in insert mode
-vim.o.autoindent                    -- automatically indent to the current level
+
+-- backspace through everything in insert mode
+vim.opt.backspace = {
+  'indent',
+  'eol',
+  'start'
+}
+vim.o.autoindent = true             -- automatically indent to the current level
 
 -- Scrolling
 vim.o.scrolloff=3                   -- minimum lines to keep above and below cursor
 
 -- List chars
-vim.o.list                          -- Show invisible characters
+vim.o.list = true                   -- Show invisible characters
 
 vim.opt.listchars = {
   tab = '▸ ',                       -- a tab should display as "▸ ", trailing whitespace as "."
@@ -117,7 +122,7 @@ vim.opt.listchars = {
 --
 -- Searching
 --
-vim.o.hlsearch = true    -- highlight matches
-vim.o.incsearch = true   -- incremental searching
-vim.o.ignorecase = true  -- searches are case insensitive...
-vim.o.smartcase = true   -- ... unless they contain at least one capital letter
+vim.o.hlsearch = true               -- highlight matches
+vim.o.incsearch = true              -- incremental searching
+vim.o.ignorecase = true             -- searches are case insensitive...
+vim.o.smartcase = true              -- ... unless they contain at least one capital letter

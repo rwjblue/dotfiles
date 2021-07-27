@@ -10,8 +10,6 @@ source ./future_init.lua
 "  Plug '/usr/local/opt/fzf' | Plug 'junegunn/fzf.vim'
 "endif
 
-let mapleader = ","
-
 
 ""
 "" Wild settings
