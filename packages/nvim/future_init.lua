@@ -131,6 +131,36 @@ vim.o.incsearch = true              -- incremental searching
 vim.o.ignorecase = true             -- searches are case insensitive...
 vim.o.smartcase = true              -- ... unless they contain at least one capital letter
 
+-- *******************************
+-- * status line                 *
+-- *******************************
+vim.o.laststatus=2                  -- always show status line
+
+local function split(str, sep)
+  local result = {}
+  for s in  string.gmatch(str, "([^"..sep.."]+)") do
+    table.insert(result, s)
+  end
+
+  return result
+end
+
+local function statusline()
+  local directories = split(vim.fn.getcwd(), '/')
+  local projectName = directories[#directories]
+
+  local t = {
+    '%<%f',                           -- Filename
+    '%w%h%m%r',                       -- Options
+    ' [%{&ff}/%Y]',                   -- filetype
+    ' [' .. projectName .. ']',    -- current dir
+    '%=%-14.(%l,%c%V%) %p%%',         -- Right aligned file nav info
+  }
+
+  return table.concat(t)
+end
+
+vim.opt.statusline = statusline()
 --
 -- Wild settings
 --
