@@ -179,6 +179,11 @@ augroup EnterKeyManager
 augroup end
 call s:install_enter_hook()
 
+" Remember last location in file, but not for commit messages.
+" see :help last-position-jump
+autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
+\| exe "normal! g`\"" | endif
+
 function s:OpenNERDTree()
   let isFile = (&buftype == "") && (bufname() != "")
 

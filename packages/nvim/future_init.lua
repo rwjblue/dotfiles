@@ -209,12 +209,6 @@ vim.api.nvim_exec([[
   " automatically trim whitespace for specific file types
   autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
 
-  " Remember last location in file, but not for commit messages.
-  " see :help last-position-jump
-  autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
-  \| exe "normal! g`\"" | endif
-
-
   augroup coctls
     autocmd!
     " Setup formatexpr specified filetype(s).
