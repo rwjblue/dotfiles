@@ -14,10 +14,6 @@ source ./future_init.lua
 " Disable Ex mode from Q
 nnoremap Q <nop>
 
-" Prevent Vim from clobbering the scrollback buffer. See
-" http://www.shallowsky.com/linux/noaltscreen.html
-set t_ti= t_te=
-
 " *** Plugin Config ***
 
 " If rg is available use it as filename list generator instead of 'find'
