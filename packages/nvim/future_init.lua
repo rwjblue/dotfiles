@@ -88,6 +88,10 @@ vim.o.mouse = 'a'                   -- Allow resizing windows with the mouse
 
 vim.o.clipboard = 'unnamed'
 
+vim.o.undofile = true               -- enable undo tracking per-file
+
+vim.o.lazyredraw = true             -- don't redraw while in macros
+
 --
 -- Whitespace
 --

@@ -14,14 +14,10 @@ source ./future_init.lua
 " Disable Ex mode from Q
 nnoremap Q <nop>
 
-" enable undo tracking per-file
-set undofile
-
 " Prevent Vim from clobbering the scrollback buffer. See
 " http://www.shallowsky.com/linux/noaltscreen.html
 set t_ti= t_te=
 
-set lazyredraw            " don't redraw while in macros
 
 " *******************************
 " * file type setup             *
