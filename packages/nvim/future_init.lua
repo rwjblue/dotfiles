@@ -247,4 +247,4 @@ vim.api.nvim_exec([[
     " re-arrange windows on resize
     autocmd VimResized * wincmd =
   augroup end
-]])
+]], false)
