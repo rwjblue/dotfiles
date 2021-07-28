@@ -168,3 +168,59 @@ vim.opt.wildignore = {
   '._*',
   '/tmp/'
 }
+
+
+-- track https://github.com/neovim/neovim/pull/12378 for moving this to native lua
+vim.api.nvim_exec([[
+  " *******************************
+  " * file type setup             *
+  " *******************************
+
+  " automatically trim whitespace for specific file types
+  autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+  " Remember last location in file, but not for commit messages.
+  " see :help last-position-jump
+  autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
+  \| exe "normal! g`\"" | endif
+
+
+  augroup coctls
+    autocmd!
+    " Setup formatexpr specified filetype(s).
+    autocmd FileType javascript,typescript,json setl formatexpr=CocAction('formatSelected')
+
+    " Update signature help on jump placeholder
+    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  augroup end
+
+  " Highlight the symbol and its references when holding the cursor.
+  autocmd CursorHold * silent call CocActionAsync('highlight')
+
+  " *******************************
+  " * Terminal Setup              *
+  " *******************************
+  augroup TermExtra
+    autocmd!
+    " When switching to a term window, go to insert mode by default (this is
+    " only pleasant when you also have window motions in terminal mode)
+    autocmd BufEnter term://* start!
+    autocmd TermOpen * call <SID>setup_terminal() | start!
+    autocmd TermClose * setlocal nowinfixwidth
+    autocmd WinLeave term://* :checktime
+
+    " working around the bug reported in https://github.com/neovim/neovim/issues/11072
+    " specifically, scrolloff being set _within_ terminal mode causes "weird"
+    " ghosting to occur in certain terminal UIs (e.g. nested nvim, htop,
+    " anything with ncurses)
+    autocmd TermEnter * setlocal scrolloff=0
+    autocmd TermLeave * setlocal scrolloff=3
+  augroup end
+
+  augroup WindowManagement
+    autocmd!
+
+    " re-arrange windows on resize
+    autocmd VimResized * wincmd =
+  augroup end
+]])
