@@ -61,7 +61,7 @@ paq {
 -- paq.install()
 
 -- Use comma as leader
-vim.g.mapleader = ","
+vim.g.mapleader = ','
 
 --
 -- Basic Setup
@@ -115,9 +115,9 @@ vim.o.scrolloff=3                   -- minimum lines to keep above and below cur
 vim.o.list = true                   -- Show invisible characters
 
 vim.opt.listchars = {
-  tab = '▸ ',                       -- a tab should display as "▸ ", trailing whitespace as "."
+  tab = '▸ ',                       -- a tab should display as '▸ ', trailing whitespace as '.'
   trail = '.',                      -- show trailing spaces as dots
-  eol = '¬',                        -- show eol as "¬"
+  eol = '¬',                        -- show eol as '¬'
   extends = '>',                    -- The character to show in the last column when wrap is
                                     -- off and the line continues beyond the right of the screen
   precedes = '<'                    -- The character to show in the last column when wrap is
