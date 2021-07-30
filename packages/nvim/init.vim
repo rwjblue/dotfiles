@@ -16,11 +16,6 @@ nnoremap Q <nop>
 
 " *** Plugin Config ***
 
-" If rg is available use it as filename list generator instead of 'find'
-if executable("rg")
-    set grepprg=rg\ --color=never\ --glob
-endif
-
 " tell nerdtree to ignore compiled files
 let NERDTreeIgnore=['\.pyc$', '\.pyo$', '\.rbc$', '\.rbo$', '\.class$', '\.o$', '\~$']
 let NERDTreeHijackNetrw = 1

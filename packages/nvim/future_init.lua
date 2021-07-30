@@ -131,6 +131,8 @@ vim.o.incsearch = true              -- incremental searching
 vim.o.ignorecase = true             -- searches are case insensitive...
 vim.o.smartcase = true              -- ... unless they contain at least one capital letter
 
+vim.o.grepprg = 'rg --vimgrep'      -- use rg as filename list generator instead of 'find'
+
 -- *******************************
 -- * status line                 *
 -- *******************************
