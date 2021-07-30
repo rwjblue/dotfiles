@@ -199,6 +199,13 @@ vim.opt.wildignore = {
   '/tmp/'
 }
 
+function setup_terminal()
+  vim.opt_local.winfixwidth = true
+  vim.opt_local.number = false
+  vim.opt_local.relativenumber = false
+
+  vim.apia.nvim_command("vertical resize 100")
+end
 
 -- track https://github.com/neovim/neovim/pull/12378 for moving this to native lua
 vim.api.nvim_exec([[
@@ -229,7 +236,7 @@ vim.api.nvim_exec([[
     " When switching to a term window, go to insert mode by default (this is
     " only pleasant when you also have window motions in terminal mode)
     autocmd BufEnter term://* start!
-    autocmd TermOpen * call <SID>setup_terminal() | start!
+    autocmd TermOpen * call <SID>v:lua.setup_terminal() | start!
     autocmd TermClose * setlocal nowinfixwidth
     autocmd WinLeave term://* :checktime
 
