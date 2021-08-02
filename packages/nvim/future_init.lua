@@ -163,6 +163,7 @@ local function statusline()
 end
 
 vim.opt.statusline = statusline()
+
 --
 -- Wild settings
 --
@@ -200,6 +201,104 @@ vim.opt.wildignore = {
   '._*',
   '/tmp/'
 }
+
+--
+-- Mappings
+--
+
+local function map(mode, lhs, rhs, opts)
+  local options = { noremap = true }
+
+  if opts then
+    options = vim.tbl_extend('force', options, opts)
+  end
+
+  vim.api.nvim_set_keymap(mode, lhs, rhs, options)
+end
+
+map('n', 'Q', '')          -- Disable Ex mode from Q
+
+-- Added configuration for christoomey/vim-tmux-navigator to allow
+-- Ctrl-H,J,K,L to work for moving in and out of terminals
+map('t', '<c-h>', '<c-\><c-n>:TmuxNavigateLeft<cr>', { silent = true })
+map('t', '<c-j>', '<c-\><c-n>:TmuxNavigateDown<cr>', { silent = true })
+map('t', '<c-k>', '<c-\><c-n>:TmuxNavigateUp<cr>', { silent = true })
+map('t', '<c-l>', '<c-\><c-n>:TmuxNavigateRight<cr>', { silent = true })
+map('t', '<c-\>', '<c-\><c-n>:TmuxNavigatePrevious<cr>', { silent = true })
+
+map('n', '<Leader>nt', ':NERDTreeToggle<CR>')
+map('n', '<Leader>nf', ':NERDTreeFind<CR>')
+
+-- TODO: migrate OpenNERDTree function to lua
+map('n', '<leader>ne', ':call <SID>OpenNERDTree()<CR>')
+
+-- fugitive bindings
+map('n', '<Leader>gs', ':Gstatus<CR>')
+map('n', '<Leader>gd', ':Gdiff<CR>')
+
+-- fzf.vim mappings
+map('', '<C-P>', ':GFiles<CR>')
+map('', '<C-F>', ':Files<CR>')
+map('', '<C-B>', ':Buffers <cr>')
+
+
+-- GitGutter bindings
+map('n', '<leader>hn', ':GitGutterNextHunk<CR>')
+map('n', '<Leader>hp', ':GitGutterPrevHunk<CR>')
+map('n', '<Leader>hu', ':GitGutterUndoHunk<CR>')
+
+-- Adjust viewports to the same size
+map('n', '<Leader>=', '<C-w>=')
+
+-- visual shifting (does not exit Visual mode)
+map('v', '<', '<gv')
+map('v', '>', '>gv')
+
+-- Move row-wise instead of line-wise
+map('n', 'j', 'gj')
+map('n', 'k', 'gk')
+
+-- 'x is much easier to hit than `x and has more useful semantics: ie switching
+-- to the column of the mark as well as the row
+map('n', '\'', '`')
+
+-- No arrow keys
+map('n', '<Up>', '')
+map('n', '<Down>', '')
+map('n', '<Left>', '')
+map('n', '<Right>', '')
+map('n', '<C-w><Up>', '')
+map('n', '<C-w><Down>', '')
+map('n', '<C-w><Left>', '')
+map('n', '<C-w><Right>', '')
+
+-- coc.nvim
+map('n', '<leader>gd' '<Plug>(coc-definition)')
+map('n', '<leader>gD' '<Plug>(coc-type-definition)')
+map('n', '<leader>gi' '<Plug>(coc-implementation)')
+map('n', '<leader>gr' '<Plug>(coc-references)')
+map('n', '<leader>rn' '<Plug>(coc-rename)')
+
+-- Allow easier fixing linting errors
+map('n', '<leader>f', '<Plug>(coc-codeaction)')
+map('n', '<leader>d', ':CocCommand eslint.executeAutofix<CR>')
+
+
+-- Window-motion out of terminals
+map('t', '<C-w>h', '<C-\><C-n><C-w>h')
+map('t', '<C-w><C-h>', '<C-\><C-n><C-w>h')
+map('t', '<C-w>', '<C-\><C-n><C-w>j')
+map('t', '<C-w><C-j>', '<C-\><C-n><C-w>j')
+map('t', '<C-w>k', '<C-\><C-n><C-w>k')
+map('t', '<C-w><C-k>', '<C-\><C-n><C-w>k')
+map('t', '<C-w>l', '<C-\><C-n><C-w>l')
+map('t', '<C-w><C-l>', '<C-\><C-n><C-w>l')
+
+-- Enable exiting terminal mode with Esc
+map('t', '<C-\><C-\>', '<C-\><C-n>')
+
+-- use ,, to jump to last file
+map('n', '<leader><leader>', '<c-^>')
 
 -- has to be _G so that it can be invoked from the nvim_exec below
 function _G.setup_terminal()

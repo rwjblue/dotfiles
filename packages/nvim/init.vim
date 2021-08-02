@@ -11,9 +11,6 @@ source ./future_init.lua
 "endif
 
 
-" Disable Ex mode from Q
-nnoremap Q <nop>
-
 " *** Plugin Config ***
 
 " tell nerdtree to ignore compiled files
@@ -39,13 +36,6 @@ else
   let g:gitgutter_sign_column_always = 1
 endif
 
-" Added configuration for christoomey/vim-tmux-navigator to allow
-" Ctrl-H,J,K,L to work for moving in and out of terminals
-tnoremap <silent> <c-h> <c-\><c-n>:TmuxNavigateLeft<cr>
-tnoremap <silent> <c-j> <c-\><c-n>:TmuxNavigateDown<cr>
-tnoremap <silent> <c-k> <c-\><c-n>:TmuxNavigateUp<cr>
-tnoremap <silent> <c-l> <c-\><c-n>:TmuxNavigateRight<cr>
-tnoremap <silent> <c-\> <c-\><c-n>:TmuxNavigatePrevious<cr>
 
 " Put the fzf window to the right to not interfere with terminals on the right
 let g:fzf_layout = {
@@ -55,76 +45,14 @@ let g:fzf_layout = {
 " *******************************
 " * key bindings 		            *
 " *******************************
-nmap <Leader>nt :NERDTreeToggle<CR>
-nmap <Leader>nf :NERDTreeFind<CR>
-nmap <leader>ne :call <SID>OpenNERDTree()<CR>
-
-" fugitive bindings
-nmap <Leader>gs :Gstatus<CR>
-nmap <Leader>gd :Gdiff<CR>
-
-" fzf.vim mappings
-map <C-P> :GFiles<CR>
-map <C-F> :Files<CR>
-map <C-B> :Buffers <cr>
-
-
-" GitGutter bindings
-nmap <leader>hn :GitGutterNextHunk<CR>
-nmap <Leader>hp :GitGutterPrevHunk<CR>
-nmap <Leader>hu :GitGutterUndoHunk<CR>
-
-" edit files from within current directory
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
-map <leader>ew :e %%
-map <leader>es :sp %%
-map <leader>ev :vsp %%
-map <leader>et :tabe %%
-
-" Adjust viewports to the same size
-map <Leader>= <C-w>=
 
 " use :w!! to write to a file using sudo if you forgot to 'sudo vim file'
 " (it will prompt for sudo password when writing)
 cmap w!! %!sudo tee > /dev/null %
 
-nnoremap <leader><leader> <c-^>
 
 " pastetoggle (sane indentation on pastes)
 set pastetoggle=<F12>
-
-" visual shifting (does not exit Visual mode)
-vnoremap < <gv
-vnoremap > >gv
-
-" Move row-wise instead of line-wise
-nnoremap j gj
-nnoremap k gk
-
-" 'x is much easier to hit than `x and has more useful semantics: ie switching
-" to the column of the mark as well as the row
-nnoremap ' `
-
-" No arrow keys
-noremap <Up> <NOP>
-noremap <Down> <NOP>
-noremap <Left> <NOP>
-noremap <Right> <NOP>
-noremap <C-w><Up> <NOP>
-noremap <C-w><Down> <NOP>
-noremap <C-w><Left> <NOP>
-noremap <C-w><Right> <NOP>
-
-" coc.nvim
-nmap <leader>gd <Plug>(coc-definition)
-nmap <leader>gD <Plug>(coc-type-definition)
-nmap <leader>gi <Plug>(coc-implementation)
-nmap <leader>gr <Plug>(coc-references)
-nmap <leader>rn <Plug>(coc-rename)
-
-" Allow easier fixing linting errors
-nmap <leader>f <Plug>(coc-codeaction)
-nmap <leader>d :CocCommand eslint.executeAutofix<CR>
 
 
 " Use K for show documentation in preview window
@@ -183,19 +111,6 @@ endfunction
 "
 let g:neoterm_autoinsert = 1
 let g:neoterm_default_mod = ':botright'
-
-" Window-motion out of terminals
-tnoremap <C-w>h <C-\><C-n><C-w>h
-tnoremap <C-w><C-h> <C-\><C-n><C-w>h
-tnoremap <C-w>j <C-\><C-n><C-w>j
-tnoremap <C-w><C-j> <C-\><C-n><C-w>j
-tnoremap <C-w>k <C-\><C-n><C-w>k
-tnoremap <C-w><C-k> <C-\><C-n><C-w>k
-tnoremap <C-w>l <C-\><C-n><C-w>l
-tnoremap <C-w><C-l> <C-\><C-n><C-w>l
-
-" Enable exiting terminal mode with Esc
-tnoremap <C-\><C-\> <C-\><C-n>
 
 set termguicolors
 colorscheme onedark
