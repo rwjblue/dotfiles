@@ -203,6 +203,31 @@ vim.opt.wildignore = {
 }
 
 --
+-- *** Plugin Config ***
+--
+
+vim.g.NERDTreeHijackNetrw = 1
+
+-- It's way more useful to see the diff against master than against the index
+vim.g.gitgutter_diff_base = 'origin/master'
+
+-- Manually set the mappings we want
+vim.g.gitgutter_map_keys = 0
+
+-- always show the sign column (prevents text from jumping leftward on the
+-- first change in a file
+vim.o.signcolumn = 'yes'
+
+-- Put the fzf window to the right to not interfere with terminals on the right
+vim.g.fzf_layout = {
+  right = '~40%',
+}
+
+-- Useful neoterm mappings
+vim.g.neoterm_autoinsert = 1
+vim.g.neoterm_default_mod = ':botright'
+
+--
 -- Mappings
 --
 
@@ -308,6 +333,9 @@ function _G.setup_terminal()
 
   vim.api.nvim_command("vertical resize 100")
 end
+
+vim.o.termguicolors = true
+vim.cmd 'colorscheme onedark'
 
 -- track https://github.com/neovim/neovim/pull/12378 for moving this to native lua
 vim.api.nvim_exec([[
