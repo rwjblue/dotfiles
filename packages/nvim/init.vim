@@ -46,44 +46,6 @@ let g:fzf_layout = {
 " * key bindings 		            *
 " *******************************
 
-" use :w!! to write to a file using sudo if you forgot to 'sudo vim file'
-" (it will prompt for sudo password when writing)
-cmap w!! %!sudo tee > /dev/null %
-
-
-" pastetoggle (sane indentation on pastes)
-set pastetoggle=<F12>
-
-
-" Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-function! s:show_documentation()
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-" Enable soft wrapping with `:Wrap`
-" From: http://vimcasts.org/episodes/soft-wrapping-text/
-"
-command! -nargs=* SoftWrap set wrap linebreak nolist
-
-" Use <CR> to clear text search, but unmap it when in the command window as
-" <CR> there is used to run command
-function s:install_enter_hook()
-  nnoremap <CR> :nohl<CR>
-endfunction
-
-augroup EnterKeyManager
-  autocmd!
-
-  autocmd CmdwinEnter * nunmap <CR>
-  autocmd CmdwinLeave * call s:install_enter_hook()
-augroup end
-call s:install_enter_hook()
-
 " Remember last location in file, but not for commit messages.
 " see :help last-position-jump
 autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
