@@ -32,10 +32,6 @@ paq {
   'tpope/vim-fugitive';
   'tpope/vim-git';
   'tpope/vim-surround';
-  'tpope/vim-repeat';
-  'tpope/vim-unimpaired';
-  'tpope/vim-rhubarb';
-  'tpope/vim-obsession';
   'moll/vim-node';
   'mustache/vim-mustache-handlebars';
   'pangloss/vim-javascript';
@@ -43,18 +39,12 @@ paq {
   'plasticboy/vim-markdown';
   'leafgarland/typescript-vim';
   'cakebaker/scss-syntax.vim';
-  'preservim/nerdtree';
-  'sbdchd/neoformat';
   'jparise/vim-graphql';
   'christoomey/vim-tmux-navigator';
-  'janko-m/vim-test';
   'cespare/vim-toml';
   'airblade/vim-gitgutter';
   'wincent/terminus';
   'joshdick/onedark.vim';
-
-  -- want to get rid of this eventually, migrating to using internal lsp
-  {'neoclide/coc.nvim', branch='release'};
 }
 
 -- should we always install, or just have that be part of the instructions for installation?
