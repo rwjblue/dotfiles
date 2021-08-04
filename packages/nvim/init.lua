@@ -206,11 +206,6 @@ vim.g.gitgutter_map_keys = 0
 -- first change in a file
 vim.o.signcolumn = 'yes'
 
--- Put the fzf window to the right to not interfere with terminals on the right
-vim.g.fzf_layout = {
-  right = '~40%',
-}
-
 -- Useful neoterm mappings
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
@@ -256,11 +251,10 @@ map('n', '<leader>ne', ':call OpenNERDTree()<CR>')
 map('n', '<Leader>gs', ':Gstatus<CR>')
 map('n', '<Leader>gd', ':Gdiff<CR>')
 
--- fzf.vim mappings
-map('', '<C-P>', ':GFiles<CR>')
-map('', '<C-F>', ':Files<CR>')
-map('', '<C-B>', ':Buffers <cr>')
-
+-- Telescope finder mappings
+map('', '<C-P>', [[<Cmd>lua require('telescope.builtin').git_files()<CR>]], { silent = true })
+map('', '<C-F>', [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { silent = true })
+map('', '<C-B>', [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { silent = true })
 
 -- GitGutter bindings
 map('n', '<leader>hn', ':GitGutterNextHunk<CR>')
