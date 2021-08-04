@@ -22,20 +22,3 @@ source ./future_init.lua
 autocmd BufReadPost * if &filetype !~ '^git\c' && line("'\"") > 0 && line("'\"") <= line("$")
 \| exe "normal! g`\"" | endif
 
-function s:OpenNERDTree()
-  let isFile = (&buftype == "") && (bufname() != "")
-
-  if isFile
-    let findCmd = "NERDTreeFind " . expand('%')
-  endif
-
-  " open a NERDTree in this window
-  edit .
-
-  " make this the implicit NERDTree buffer
-  let t:NERDTreeBufName=bufname()
-
-  if isFile
-    exe findCmd
-  endif
-endfunction

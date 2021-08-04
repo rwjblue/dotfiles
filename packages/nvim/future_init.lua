@@ -255,7 +255,7 @@ map('n', '<Leader>nt', ':NERDTreeToggle<CR>')
 map('n', '<Leader>nf', ':NERDTreeFind<CR>')
 
 -- TODO: migrate OpenNERDTree function to lua
-map('n', '<leader>ne', ':call <SID>OpenNERDTree()<CR>')
+map('n', '<leader>ne', ':call OpenNERDTree()<CR>')
 
 -- fugitive bindings
 map('n', '<Leader>gs', ':Gstatus<CR>')
@@ -342,6 +342,24 @@ vim.api.nvim_exec([[
   " *******************************
   " * file type setup             *
   " *******************************
+
+  function OpenNERDTree()
+    let isFile = (&buftype == "") && (bufname() != "")
+
+    if isFile
+      let findCmd = "NERDTreeFind " . expand('%')
+    endif
+
+    " open a NERDTree in this window
+    edit .
+
+    " make this the implicit NERDTree buffer
+    let t:NERDTreeBufName=bufname()
+
+    if isFile
+      exe findCmd
+    endif
+  endfunction
 
   " automatically trim whitespace for specific file types
   autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
