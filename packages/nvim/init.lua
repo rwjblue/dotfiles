@@ -42,7 +42,7 @@ paq {
   'nvim-lua/plenary.nvim';
   'nvim-telescope/telescope.nvim';
 
-  { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = function() vim.cmd(':TSUpdate') end }
+  { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = function() vim.cmd('TSUpdate') end }
 }
 
 -- should we always install, or just have that be part of the instructions for installation?
