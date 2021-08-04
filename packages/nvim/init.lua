@@ -36,6 +36,13 @@ paq {
   'airblade/vim-gitgutter';
   'wincent/terminus';
   'joshdick/onedark.vim';
+
+  -- telescope deps
+  'nvim-lua/popup.nvim';
+  'nvim-lua/plenary.nvim';
+  'nvim-telescope/telescope.nvim';
+
+  { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat', run = function() vim.cmd(':TSUpdate') end }
 }
 
 -- should we always install, or just have that be part of the instructions for installation?
@@ -207,6 +214,10 @@ vim.g.fzf_layout = {
 -- Useful neoterm mappings
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
+
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",
+}
 
 --
 -- Mappings
