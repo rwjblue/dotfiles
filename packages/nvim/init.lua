@@ -288,15 +288,15 @@ map('n', '<C-w><Left>', '')
 map('n', '<C-w><Right>', '')
 
 -- coc.nvim
-map('n', '<leader>gd', '<Plug>(coc-definition)')
-map('n', '<leader>gD', '<Plug>(coc-type-definition)')
-map('n', '<leader>gi', '<Plug>(coc-implementation)')
-map('n', '<leader>gr', '<Plug>(coc-references)')
-map('n', '<leader>rn', '<Plug>(coc-rename)')
+--map('n', '<leader>gd', '<Plug>(coc-definition)')
+--map('n', '<leader>gD', '<Plug>(coc-type-definition)')
+--map('n', '<leader>gi', '<Plug>(coc-implementation)')
+--map('n', '<leader>gr', '<Plug>(coc-references)')
+--map('n', '<leader>rn', '<Plug>(coc-rename)')
 
 -- Allow easier fixing linting errors
-map('n', '<leader>f', '<Plug>(coc-codeaction)')
-map('n', '<leader>d', ':CocCommand eslint.executeAutofix<CR>')
+--map('n', '<leader>f', '<Plug>(coc-codeaction)')
+--map('n', '<leader>d', ':CocCommand eslint.executeAutofix<CR>')
 
 
 -- Window-motion out of terminals
@@ -353,18 +353,6 @@ vim.api.nvim_exec([[
 
   " automatically trim whitespace for specific file types
   autocmd FileType ts,js,c,cpp,java,php,ruby,perl autocmd BufWritePre <buffer> :%s/\s\+$//e
-
-  augroup coctls
-    autocmd!
-    " Setup formatexpr specified filetype(s).
-    autocmd FileType javascript,typescript,json setl formatexpr=CocAction('formatSelected')
-
-    " Update signature help on jump placeholder
-    autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-  augroup end
-
-  " Highlight the symbol and its references when holding the cursor.
-  autocmd CursorHold * silent call CocActionAsync('highlight')
 
   " *******************************
   " * Terminal Setup              *
