@@ -385,3 +385,11 @@ vim.api.nvim_exec([[
     autocmd VimResized * wincmd =
   augroup end
 ]], false)
+
+-- allow for project-specific .vimrc files
+if vim.fn.getcwd() == vim.env.HOME then
+  if file_exists('.vimrc') then
+    vim.cmd('source .vimrc')
+  end
+  table.insert(vim.opt.runtimepath, './.vim')
+end

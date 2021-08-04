@@ -39,11 +39,3 @@ function s:OpenNERDTree()
     exe findCmd
   endif
 endfunction
-
-" Allow for project-specific .vimrc and .vim
-if !(getcwd() == $HOME)
-  if filereadable(".vimrc")
-    source .vimrc
-  endif
-  set runtimepath+=./.vim
-endif
