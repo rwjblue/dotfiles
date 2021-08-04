@@ -217,6 +217,9 @@ vim.g.neoterm_default_mod = ':botright'
 
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "maintained",
+  highlight = {
+    enable = true
+  }
 }
 
 --
