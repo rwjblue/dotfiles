@@ -32,16 +32,7 @@ paq {
   'tpope/vim-fugitive';
   'tpope/vim-git';
   'tpope/vim-surround';
-  'moll/vim-node';
-  'mustache/vim-mustache-handlebars';
-  'pangloss/vim-javascript';
-  'elzr/vim-json';
-  'plasticboy/vim-markdown';
-  'leafgarland/typescript-vim';
-  'cakebaker/scss-syntax.vim';
-  'jparise/vim-graphql';
   'christoomey/vim-tmux-navigator';
-  'cespare/vim-toml';
   'airblade/vim-gitgutter';
   'wincent/terminus';
   'joshdick/onedark.vim';
