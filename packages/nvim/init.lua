@@ -164,8 +164,18 @@ vim.o.signcolumn = 'yes'
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
 
--- setup treesitter with local config
-require('treesitter')
+local function treesitter_setup()
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = "maintained",
+    highlight = {
+      enable = true
+    }
+  }
+end
+
+-- using pcall here to prevent an error when nvim-treesitter isn't loaded
+-- (e.g. when installation of packages is required)
+pcall(treesitter_setup)
 
 --
 -- Mappings
