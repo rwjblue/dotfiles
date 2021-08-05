@@ -282,7 +282,9 @@ function rwjblue.setup_terminal()
 end
 
 vim.o.termguicolors = true
-vim.cmd 'colorscheme onedark'
+
+-- silent! here in case onedark isn't loaded just yet
+vim.cmd 'silent! colorscheme onedark'
 
 -- track https://github.com/neovim/neovim/pull/12378 for moving this to native lua
 vim.api.nvim_exec([[
