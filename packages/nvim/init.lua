@@ -1,6 +1,4 @@
--- checkout ./lua/packages.lua for info on the packages in use
--- no setup is required here in the case that the packages are present
--- see README.md for details on initial setup/install
+rwjblue = {} -- Namespace for functions in mappings, autocmds, etc
 
 -- Use comma as leader
 vim.g.mapleader = ','
@@ -274,8 +272,8 @@ map('t', [[<C-\><C-\>]], [[<C-\><C-n>]])
 -- use ,, to jump to last file
 map('n', '<leader><leader>', '<c-^>')
 
--- has to be _G so that it can be invoked from the nvim_exec below
-function _G.setup_terminal()
+-- has to be so that it can be invoked from the nvim_exec below
+function rwjblue.setup_terminal()
   vim.opt_local.winfixwidth = true
   vim.opt_local.number = false
   vim.opt_local.relativenumber = false
@@ -321,7 +319,7 @@ vim.api.nvim_exec([[
     " When switching to a term window, go to insert mode by default (this is
     " only pleasant when you also have window motions in terminal mode)
     autocmd BufEnter term://* start!
-    autocmd TermOpen * call v:lua.setup_terminal() | start!
+    autocmd TermOpen * call v:lua.rwjblue.setup_terminal() | start!
     autocmd TermClose * setlocal nowinfixwidth
     autocmd WinLeave term://* :checktime
 
