@@ -376,8 +376,8 @@ function rwjblue.plugins()
 end
 
 -- allow for project-specific .vimrc files
-if vim.fn.getcwd() == vim.env.HOME then
-  if vim.fn.empty(vim.fn.glob('.vimrc')) > 0 then
+if vim.fn.getcwd() ~= vim.env.HOME then
+  if vim.fn.empty(vim.fn.glob('.vimrc')) == 0 then
     vim.cmd('source .vimrc')
   end
   table.insert(vim.opt.runtimepath, './.vim')
