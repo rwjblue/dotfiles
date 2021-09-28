@@ -162,7 +162,13 @@ vim.o.signcolumn = 'yes'
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
 
-local function treesitter_setup()
+local function plugin_setup()
+  local telescope = require('telescope');
+
+  telescope.setup { }
+
+  telescope.load_extension('fzf')
+
   require'nvim-treesitter.configs'.setup {
     ensure_installed = "maintained",
     highlight = {
@@ -171,9 +177,9 @@ local function treesitter_setup()
   }
 end
 
--- using pcall here to prevent an error when nvim-treesitter isn't loaded
--- (e.g. when installation of packages is required)
-pcall(treesitter_setup)
+-- using pcall here to prevent an error when nvim-telescope / nvim-treesitter
+-- isn't loaded (e.g. when installation of packages is required)
+pcall(plugin_setup)
 
 --
 -- Mappings
@@ -368,8 +374,9 @@ function rwjblue.plugins()
     'nvim-lua/popup.nvim';
     'nvim-lua/plenary.nvim';
     'nvim-telescope/telescope.nvim';
+    { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' };
 
-    { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat' }
+    { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat' };
   }
 
   paq.install()
