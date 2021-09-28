@@ -220,6 +220,12 @@ map('', '<C-P>', [[<Cmd>lua require('telescope.builtin').git_files()<CR>]], { si
 map('', '<C-F>', [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { silent = true })
 map('', '<C-B>', [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { silent = true })
 
+-- leader versions of the same finders
+map('n', '<Leader>fg', [[<Cmd>lua require('telescope.builtin').git_files()<CR>]], { silent = true })
+map('n', '<Leader>ff', [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { silent = true })
+map('n', '<Leader>fb', [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { silent = true })
+map('n', '<Leader>fr', [[<Cmd>lua require('telescope.builtin').live_grep()<CR>]], { silent = true })
+
 -- GitGutter bindings
 map('n', '<leader>hn', ':GitGutterNextHunk<CR>')
 map('n', '<Leader>hp', ':GitGutterPrevHunk<CR>')
