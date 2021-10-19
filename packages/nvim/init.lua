@@ -163,10 +163,21 @@ vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
 
 local function plugin_setup()
+
+  -- kick off https://github.com/folke/trouble.nvim
+  require("trouble").setup { }
+
+  local trouble_provider_telescope = require("trouble.providers.telescope")
+
   local telescope = require('telescope');
-
-  telescope.setup { }
-
+  telescope.setup {
+    defaults = {
+      mappings = {
+        i = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+        n = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+      },
+    },
+  }
   telescope.load_extension('fzf')
 
   require'nvim-treesitter.configs'.setup {
@@ -225,6 +236,14 @@ map('n', '<Leader>fg', [[<Cmd>lua require('telescope.builtin').git_files()<CR>]]
 map('n', '<Leader>ff', [[<Cmd>lua require('telescope.builtin').find_files()<CR>]], { silent = true })
 map('n', '<Leader>fb', [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { silent = true })
 map('n', '<Leader>fr', [[<Cmd>lua require('telescope.builtin').live_grep()<CR>]], { silent = true })
+
+-- Trouble mappings
+map('n', '<Leader>xx', '<cmd>Trouble<cr>', { silent = true });
+map('n', '<Leader>xw', '<cmd>Trouble lsp_workspace_diagnostics<cr>', { silent = true });
+map('n', '<Leader>xd', '<cmd>Trouble lsp_document_diagnostics<cr>', { silent = true });
+
+-- LSP Mappings
+map('n', 'gR', '<cmd>Trouble lsp_references<cr>', { silent = true });
 
 -- GitGutter bindings
 map('n', '<leader>hn', ':GitGutterNextHunk<CR>')
@@ -375,6 +394,8 @@ function rwjblue.plugins()
     'airblade/vim-gitgutter';
     'wincent/terminus';
     'joshdick/onedark.vim';
+    'kyazdani42/nvim-web-devicons';
+    'folke/trouble.nvim';
 
     -- telescope deps
     'nvim-lua/popup.nvim';
