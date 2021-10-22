@@ -1,6 +1,3 @@
-# use nvim as default editor
-export EDITOR="/usr/local/bin/nvim"
-
 export LANG='en_US.UTF-8'
 
 local _HOMEBREW_PREFIX;
@@ -11,6 +8,10 @@ if [[ "$OSTYPE" == darwin* ]]; then
     _HOMEBREW_PREFIX=/usr/local
   fi
 fi
+
+# use nvim as default editor
+export EDITOR="$_HOMEBREW_PREFIX/bin/nvim"
+
 export PATH="$PATH:$_HOMEBREW_PREFIX/opt/fzf/bin"
 
 export PATH="$HOME/.cargo/bin:$PATH"
