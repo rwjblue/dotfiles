@@ -162,7 +162,64 @@ vim.o.signcolumn = 'yes'
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
 
+local function setup_language_servers()
+  -- initial setup from https://jose-elias-alvarez.medium.com/configuring-neovims-lsp-client-for-typescript-development-5789d58ea9c
+  local nvim_lsp = require('lspconfig');
+
+  nvim_lsp.tsserver.setup {
+    on_attach = function(client)
+      client.resolved_capabilities.document_formatting = false
+      on_attach(client)
+    end
+  }
+
+  local filetypes = {
+    typescript = 'eslint',
+    javascript = 'eslint',
+  }
+
+  local linters = {
+    eslint = {
+      sourceName = "eslint",
+      command = "eslint", -- consider using https://github.com/mantoni/eslint_d.js/ to make this a bit faster...
+      rootPatterns = { ".eslintrc.js", "package.json" },
+      debounce = 100,
+      args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
+      parseJson = {
+        errorsRoot = "[0].messages",
+        line = "line",
+        column = "column",
+        endLine = "endLine",
+        endColumn = "endColumn",
+        message = "${message} [${ruleId}]",
+        security = "severity"
+      },
+      securities = {[2] = "error", [1] = "warning"}
+    }
+  }
+
+  local formatters = {
+    prettier = { command = "prettier", args = {"--stdin-filepath", "%filepath"}}
+  }
+
+  local formatFiletypes = {
+    typescript = "prettier",
+  }
+
+  nvim_lsp.diagnosticls.setup {
+    on_attach = on_attach,
+    filetypes = vim.tbl_keys(filetypes),
+    init_options = {
+      filetypes = filetypes,
+      linters = linters,
+      formatters = formatters,
+      formatFiletypes = formatFiletypes
+    }
+  }
+end
+
 local function plugin_setup()
+  setup_language_servers();
 
   -- kick off https://github.com/folke/trouble.nvim
   require("trouble").setup { }
