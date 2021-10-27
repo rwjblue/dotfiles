@@ -14,5 +14,4 @@ export EDITOR="$_HOMEBREW_PREFIX/bin/nvim"
 
 export PATH="$PATH:$_HOMEBREW_PREFIX/opt/fzf/bin"
 
-export PATH="$HOME/.cargo/bin:$PATH"
 eval $($_HOMEBREW_PREFIX/bin/brew shellenv)
