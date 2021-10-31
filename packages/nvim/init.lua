@@ -166,8 +166,16 @@ local function setup_language_servers()
   -- initial setup from https://jose-elias-alvarez.medium.com/configuring-neovims-lsp-client-for-typescript-development-5789d58ea9c
   local nvim_lsp = require('lspconfig');
 
-  nvim_lsp.tsserver.setup { }
-  nvim_lsp.rust_analyzer.setup{}
+  local on_attach = function(client, bufnr)
+    -- define keybindings here!
+  end
+
+  nvim_lsp.tsserver.setup {
+    on_attach = on_attach,
+  }
+  nvim_lsp.rust_analyzer.setup {
+    on_attach = on_attach,
+  }
 
   local filetypes = {
     typescript = 'eslint',
