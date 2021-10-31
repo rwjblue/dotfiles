@@ -166,12 +166,8 @@ local function setup_language_servers()
   -- initial setup from https://jose-elias-alvarez.medium.com/configuring-neovims-lsp-client-for-typescript-development-5789d58ea9c
   local nvim_lsp = require('lspconfig');
 
-  nvim_lsp.tsserver.setup {
-    on_attach = function(client)
-      client.resolved_capabilities.document_formatting = false
-      on_attach(client)
-    end
-  }
+  nvim_lsp.tsserver.setup { }
+  nvim_lsp.rust_analyzer.setup{}
 
   local filetypes = {
     typescript = 'eslint',
@@ -207,7 +203,6 @@ local function setup_language_servers()
   }
 
   nvim_lsp.diagnosticls.setup {
-    on_attach = on_attach,
     filetypes = vim.tbl_keys(filetypes),
     init_options = {
       filetypes = filetypes,
