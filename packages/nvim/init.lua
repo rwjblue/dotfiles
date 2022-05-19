@@ -162,12 +162,39 @@ vim.o.signcolumn = 'yes'
 vim.g.neoterm_autoinsert = 1
 vim.g.neoterm_default_mod = ':botright'
 
+vim.lsp.set_log_level("debug")
+
 local function setup_language_servers()
   -- initial setup from https://jose-elias-alvarez.medium.com/configuring-neovims-lsp-client-for-typescript-development-5789d58ea9c
   local nvim_lsp = require('lspconfig');
 
   local on_attach = function(client, bufnr)
-    -- define keybindings here!
+    local function map(mode, lhs, rhs, opts)
+      local options = { noremap = true }
+
+      if opts then
+        options = vim.tbl_extend('force', options, opts)
+      end
+
+      vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, options)
+    end
+    local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+    --Enable completion triggered by <c-x><c-o>
+    option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+    map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+    map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+    map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+    map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+    map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+    map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+    map('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>')
+    map('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+    map('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+    map("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
   end
 
   nvim_lsp.tsserver.setup {
@@ -175,6 +202,16 @@ local function setup_language_servers()
   }
   nvim_lsp.rust_analyzer.setup {
     on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    },
+    settings = {
+      ["rust-analyzer"] = {
+        cargo = {
+          allFeatures = true,
+        },
+      },
+    },
   }
 
   local filetypes = {
@@ -211,6 +248,7 @@ local function setup_language_servers()
   }
 
   nvim_lsp.diagnosticls.setup {
+    on_attach = on_attach,
     filetypes = vim.tbl_keys(filetypes),
     init_options = {
       filetypes = filetypes,
@@ -219,6 +257,14 @@ local function setup_language_servers()
       formatFiletypes = formatFiletypes
     }
   }
+
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+      virtual_text = true,
+      signs = true,
+      update_in_insert = true,
+    }
+  )
 end
 
 local function plugin_setup()
