@@ -468,6 +468,7 @@ function rwjblue.plugins()
     'tpope/vim-sensible';
     'editorconfig/editorconfig-vim';
     'tpope/vim-fugitive';
+    'tpope/vim-rhubarb'; -- make fugitive understand github.com &co
     'tpope/vim-git';
     'tpope/vim-surround';
     'christoomey/vim-tmux-navigator';
