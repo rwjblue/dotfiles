@@ -290,6 +290,9 @@ local function plugin_setup()
       enable = true
     }
   }
+
+  -- kick off setup for https://github.com/kyazdani42/nvim-tree.lua
+  require'nvim-tree'.setup { }
 end
 
 -- using pcall here to prevent an error when nvim-telescope / nvim-treesitter
@@ -476,6 +479,7 @@ function rwjblue.plugins()
     'wincent/terminus';
     'joshdick/onedark.vim';
     'kyazdani42/nvim-web-devicons';
+    'kyazdani42/nvim-tree.lua',
     'folke/trouble.nvim';
 
     -- telescope deps
