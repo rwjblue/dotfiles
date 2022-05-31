@@ -17,9 +17,7 @@ and the following commands:
     # rm -rf ~/.config/nvim # (only if you want to override current setup)
     mkdir -p ~/.config/
     git clone git://github.com/rwjblue/dotvim.git ~/.config/nvim
-    nvim
-    :lua rwjblue.plugins()
-    :TSInstall maintained
+    nvim --headless -u NONE -c 'lua require("plugins").bootstrap()'
 
 Upgrading
 =========
@@ -34,7 +32,4 @@ To update the configuration itself you just need to pull the latest commits:
 To update the version of the underlying plugins run the following commands:
 
     cd ~/.config/nvim
-    nvim
-    :lua rwjblue.plugins()
-    :PaqUpdate
-    :TSUpdate maintained
+    nvim --headless -u NONE -c 'lua require("plugins").bootstrap()'

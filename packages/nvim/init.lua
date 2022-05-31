@@ -455,45 +455,6 @@ vim.api.nvim_exec([[
   augroup end
 ]], false)
 
-function rwjblue.plugins()
-  -- ensure https://github.com/savq/paq-nvim is installed
-  local paq_install_path = vim.fn.stdpath('data')..'/site/pack/paqs/start/paq-nvim'
-  if vim.fn.empty(vim.fn.glob(paq_install_path)) > 0 then
-    print('cloning paq-nvim')
-    vim.fn.system({ 'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', paq_install_path })
-  end
-
-  local paq = require('paq')
-
-  paq {
-    'savq/paq-nvim';
-    'neovim/nvim-lspconfig';
-    'tpope/vim-sensible';
-    'editorconfig/editorconfig-vim';
-    'tpope/vim-fugitive';
-    'tpope/vim-rhubarb'; -- make fugitive understand github.com &co
-    'tpope/vim-git';
-    'tpope/vim-surround';
-    'christoomey/vim-tmux-navigator';
-    'airblade/vim-gitgutter';
-    'wincent/terminus';
-    'joshdick/onedark.vim';
-    'kyazdani42/nvim-web-devicons';
-    'kyazdani42/nvim-tree.lua',
-    'folke/trouble.nvim';
-
-    -- telescope deps
-    'nvim-lua/popup.nvim';
-    'nvim-lua/plenary.nvim';
-    'nvim-telescope/telescope.nvim';
-    { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' };
-
-    { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat' };
-  }
-
-  paq.install()
-end
-
 -- allow for project-specific .vimrc files
 if vim.fn.getcwd() ~= vim.env.HOME then
   if vim.fn.empty(vim.fn.glob('.vimrc')) == 0 then
