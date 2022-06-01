@@ -315,6 +315,8 @@ end
 
 map('n', 'Q', '')          -- Disable Ex mode from Q
 
+vim.keymap.set('n', '<leader><leader>', '<cmd>nohl | checktime<cr>', { desc = 'use ,, to clear highlights', })
+
 -- Added configuration for christoomey/vim-tmux-navigator to allow
 -- Ctrl-H,J,K,L to work for moving in and out of terminals
 map('t', '<c-h>', [[<c-\><c-n>:TmuxNavigateLeft<cr>]], { silent = true })
