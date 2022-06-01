@@ -37,7 +37,7 @@ local paq_config = {
   'nvim-telescope/telescope.nvim';
   { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' };
 
-  { 'nvim-treesitter/nvim-treesitter', branch = '0.5-compat' };
+  { 'nvim-treesitter/nvim-treesitter' };
 }
 
 local function update(opts)
