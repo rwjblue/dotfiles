@@ -410,9 +410,6 @@ map('t', '<C-w><C-l>', [[<C-\><C-n><C-w>l]])
 -- Enable exiting terminal mode with Esc
 map('t', [[<C-\><C-\>]], [[<C-\><C-n>]])
 
--- use ,, to jump to last file
-map('n', '<leader><leader>', '<c-^>')
-
 -- has to be so that it can be invoked from the nvim_exec below
 function rwjblue.setup_terminal()
   vim.opt_local.winfixwidth = true
