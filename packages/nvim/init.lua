@@ -288,7 +288,12 @@ local function plugin_setup()
     ensure_installed = 'all',
 
     highlight = {
-      enable = true
+      enable = true,
+
+      -- currently `treesitter-markdown` doesn't support all syntax
+      -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
+      -- text); this allows the older regexp based highlighting to work still
+      additional_vim_regex_highlighting = { 'markdown' },
     }
   }
 
