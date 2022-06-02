@@ -294,7 +294,11 @@ local function plugin_setup()
       -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
       -- text); this allows the older regexp based highlighting to work still
       additional_vim_regex_highlighting = { 'markdown' },
-    }
+    },
+
+    indent = {
+      enable = true,
+    },
   }
 
   -- kick off setup for https://github.com/kyazdani42/nvim-tree.lua
