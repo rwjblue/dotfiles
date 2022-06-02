@@ -50,7 +50,7 @@ local function update(opts)
     pattern = 'PaqDoneSync',
     callback = function()
       -- ensure all treesitter grammars and whatnot are installed
-      vim.cmd('TSUpdateSync maintained')
+      vim.cmd('TSUpdateSync all')
 
       if opts.quit_on_install then
         vim.cmd('quit')
