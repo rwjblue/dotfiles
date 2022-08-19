@@ -20,6 +20,9 @@ local function update(opts)
 
   check_or_install_packer()
 
+  local packer = require 'packer'
+  local util = require 'packer.util'
+
   -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
@@ -29,15 +32,15 @@ local function update(opts)
       vim.cmd [[packadd nvim-treesitter]]
       vim.cmd('TSUpdateSync all')
 
+      packer.snapshot(snapshot_path)
+
       if opts.quit_on_install then
         vim.cmd('quitall')
       end
     end
   })
 
-  local util = require 'packer.util'
-  local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugin_snapshot.json')
-  local packer = require('packer')
+  local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugins-dev.json')
   packer.startup({
     function(use)
       use 'wbthomason/packer.nvim'
@@ -78,7 +81,6 @@ local function update(opts)
   })
 
   packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
-  packer.snapshot(snapshot_path)
 end
 
 local function bootstrap()
