@@ -28,10 +28,6 @@ local function update(opts)
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      -- ensure all treesitter grammars and whatnot are installed
-      vim.cmd [[packadd nvim-treesitter]]
-      vim.cmd('TSUpdateSync all')
-
       packer.snapshot(snapshot_path)
 
       if opts.quit_on_install then
@@ -73,7 +69,7 @@ local function update(opts)
       }
       use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', requires = 'telescope.nvim' }
 
-      use { 'nvim-treesitter/nvim-treesitter' }
+      use { 'nvim-treesitter/nvim-treesitter', run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,}
     end,
     config = {
       snapshot = snapshot_path,
