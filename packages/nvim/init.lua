@@ -268,9 +268,6 @@ end
 local function plugin_setup()
   setup_language_servers();
 
-  -- kick off https://github.com/folke/trouble.nvim
-  require("trouble").setup { }
-
   local trouble_provider_telescope = require("trouble.providers.telescope")
 
   local telescope = require('telescope');

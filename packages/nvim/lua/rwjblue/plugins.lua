@@ -1,68 +1,84 @@
-local function check_or_install_paq()
-  local paq_install_path = vim.fn.stdpath('data') .. '/site/pack/paqs/start/paq-nvim'
-  if vim.fn.empty(vim.fn.glob(paq_install_path)) > 0 then
-    print('cloning paq-nvim')
-    print(vim.fn.system({
-      'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', paq_install_path
-    }))
+local function check_or_install_packer()
+  local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    print('cloning packer.nvim')
+    bootstrap = vim.fn.system({
+      'git', 'clone', '--depth=1', 'https://github.com/wbthomason/packer.nvim', install_path
+    })
+    print(bootstrap)
 
-    if vim.fn.empty(vim.fn.glob(paq_install_path)) > 0 then
-      error('Failed to install paq to "' .. paq_install_path .. '"')
+    if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+      error('Failed to install packer to "' .. install_path .. '"')
     end
 
-    vim.cmd('packadd paq-nvim')
+    vim.cmd [[packadd packer.nvim]]
   end
 end
-
-local paq_config = {
-  'savq/paq-nvim';
-  'neovim/nvim-lspconfig';
-  'tpope/vim-sensible';
-  'editorconfig/editorconfig-vim';
-  'tpope/vim-fugitive';
-  'tpope/vim-rhubarb'; -- make fugitive understand github.com &co
-  'tpope/vim-git';
-  'tpope/vim-surround';
-  'christoomey/vim-tmux-navigator';
-  'airblade/vim-gitgutter';
-  'wincent/terminus';
-  'joshdick/onedark.vim';
-  'kyazdani42/nvim-web-devicons';
-  'kyazdani42/nvim-tree.lua',
-  'folke/trouble.nvim';
-
-  -- telescope deps
-  'nvim-lua/popup.nvim';
-  'nvim-lua/plenary.nvim';
-  'nvim-telescope/telescope.nvim';
-  { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' };
-
-  { 'nvim-treesitter/nvim-treesitter' };
-}
 
 local function update(opts)
   opts = opts or { quit_on_install = false }
 
-  check_or_install_paq()
+  check_or_install_packer()
 
+  -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
-    pattern = 'PaqDoneSync',
+    pattern = 'PackerComplete',
     callback = function()
       -- ensure all treesitter grammars and whatnot are installed
+      vim.cmd [[packadd nvim-treesitter]]
       vim.cmd('TSUpdateSync all')
 
       if opts.quit_on_install then
-        vim.cmd('quit')
+        vim.cmd('quitall')
       end
     end
   })
 
-  local paq = require('paq')
+  local util = require 'packer.util'
+  local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugin_snapshot.json')
+  local packer = require('packer')
+  packer.startup({
+    function(use)
+      use 'wbthomason/packer.nvim'
+      use 'neovim/nvim-lspconfig'
+      use 'tpope/vim-sensible'
+      use 'editorconfig/editorconfig-vim'
+      use 'tpope/vim-fugitive'
+      use 'tpope/vim-rhubarb' -- make fugitive understand github.com &co
+      use 'tpope/vim-git'
+      use 'tpope/vim-surround'
+      use 'christoomey/vim-tmux-navigator'
+      use 'airblade/vim-gitgutter'
+      use 'wincent/terminus'
+      use 'joshdick/onedark.vim'
+      use 'kyazdani42/nvim-web-devicons'
+      use 'kyazdani42/nvim-tree.lua'
+      use {
+        "folke/trouble.nvim",
+        requires = "kyazdani42/nvim-web-devicons",
+        config = function()
+          require("trouble").setup {}
+        end
+      }
 
-  paq(paq_config)
+      use 'nvim-lua/popup.nvim'
+      use 'nvim-lua/plenary.nvim'
+      use {
+        'nvim-telescope/telescope.nvim',
+        requires = { 'popup.nvim', 'plenary.nvim' },
+      }
+      use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', requires = 'telescope.nvim' }
 
-  paq:sync() -- runs paq.clean(), paq.update(), paq.install()
+      use { 'nvim-treesitter/nvim-treesitter' }
+    end,
+    config = {
+      snapshot = snapshot_path,
+    }
+  })
+
+  packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
+  packer.snapshot(snapshot_path)
 end
 
 local function bootstrap()
@@ -72,5 +88,4 @@ end
 return {
   update = update,
   bootstrap = bootstrap,
-  paq_config = paq_config,
 }

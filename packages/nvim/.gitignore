@@ -2,3 +2,4 @@ _backup/
 _temp/
 _undo/
 .netrwhist
+/plugin/packer_compiled.lua
