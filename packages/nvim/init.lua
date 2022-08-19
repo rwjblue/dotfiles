@@ -281,23 +281,6 @@ local function plugin_setup()
   }
   telescope.load_extension('fzf')
 
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = 'all',
-
-    highlight = {
-      enable = true,
-
-      -- currently `treesitter-markdown` doesn't support all syntax
-      -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
-      -- text); this allows the older regexp based highlighting to work still
-      additional_vim_regex_highlighting = { 'markdown' },
-    },
-
-    indent = {
-      enable = true,
-    },
-  }
-
   -- kick off setup for https://github.com/kyazdani42/nvim-tree.lua
   require'nvim-tree'.setup { }
 end

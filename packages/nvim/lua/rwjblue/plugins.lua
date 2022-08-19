@@ -69,7 +69,30 @@ local function update(opts)
       }
       use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', requires = 'telescope.nvim' }
 
-      use { 'nvim-treesitter/nvim-treesitter', run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,}
+      use {
+        'nvim-treesitter/nvim-treesitter',
+
+        config = function()
+          require'nvim-treesitter.configs'.setup {
+            ensure_installed = 'all',
+
+            highlight = {
+              enable = true,
+
+              -- currently `treesitter-markdown` doesn't support all syntax
+              -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
+              -- text); this allows the older regexp based highlighting to work still
+              additional_vim_regex_highlighting = { 'markdown' },
+            },
+
+            indent = {
+              enable = true,
+            },
+          }
+        end,
+
+        run = function() require('nvim-treesitter.install').update({ with_sync = true }) end,
+      }
     end,
     config = {
       snapshot = snapshot_path,
