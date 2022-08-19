@@ -129,9 +129,11 @@ function M.update(opts)
       vim.fn.system('rm ' .. snapshot_path)
       packer.snapshot(snapshot_path)
 
-      if opts.quit_on_install then
-        vim.cmd('quitall')
-      end
+      vim.defer_fn(function()
+        if opts.quit_on_install then
+          vim.cmd('quitall')
+        end
+      end, 2000)
     end
   })
 
@@ -141,19 +143,24 @@ end
 function M.bootstrap(opts)
   opts = opts or { quit_on_install = is_headless }
 
-  -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
     pattern = 'PackerComplete',
     callback = function()
       -- once installed, compile the plugins/packer_compiled.lua file
       packer.compile();
-
-      if opts.quit_on_install then
-        vim.cmd('quitall')
-      end
     end
   })
+
+  if (opts.quit_on_install) then
+    vim.api.nvim_create_autocmd('User', {
+      once = true,
+      pattern = 'PackerCompileDone',
+      callback = function()
+        vim.cmd('quitall')
+      end
+    })
+  end
 
   -- install from plugins-dev.json lockfile
   packer.install()
