@@ -23,6 +23,8 @@ local function update(opts)
   local packer = require 'packer'
   local util = require 'packer.util'
 
+  local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugins-dev.json')
+
   -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
@@ -36,7 +38,6 @@ local function update(opts)
     end
   })
 
-  local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugins-dev.json')
   packer.startup({
     function(use)
       use 'wbthomason/packer.nvim'
