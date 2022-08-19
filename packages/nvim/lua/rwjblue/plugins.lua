@@ -1,3 +1,5 @@
+local M = {};
+
 local function check_or_install_packer()
   local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
@@ -15,7 +17,7 @@ local function check_or_install_packer()
   end
 end
 
-local function update(opts)
+local function M.update(opts)
   opts = opts or { quit_on_install = false }
 
   check_or_install_packer()
@@ -125,11 +127,8 @@ local function update(opts)
   packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
 end
 
-local function bootstrap()
-  update { quit_on_install = true }
+local function M.bootstrap()
+  M.update { quit_on_install = true, update_plugins = false }
 end
 
-return {
-  update = update,
-  bootstrap = bootstrap,
-}
+return M
