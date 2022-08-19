@@ -56,11 +56,14 @@ packer.startup({
       end
     }
 
-    use 'nvim-lua/popup.nvim'
-    use 'nvim-lua/plenary.nvim'
     use {
       'nvim-telescope/telescope.nvim',
-      requires = { 'popup.nvim', 'plenary.nvim', 'trouble.nvim', 'telescope-fzf-native.nvim' },
+      requires = {
+        'nvim-lua/popup.nvim',
+        'nvim-lua/plenary.nvim',
+        'folke/trouble.nvim',
+        'nvim-telescope/telescope-fzf-native.nvim'
+      },
       config = function()
         local trouble_provider_telescope = require("trouble.providers.telescope")
 
