@@ -32,4 +32,4 @@ To update the configuration itself you just need to pull the latest commits:
 To update the version of the underlying plugins run the following commands:
 
     cd ~/.config/nvim
-    nvim --headless -u NONE -c 'lua require("rwjblue.plugins").bootstrap()'
+    nvim -c 'lua require("rwjblue.plugins").update()'
