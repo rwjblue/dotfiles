@@ -73,7 +73,7 @@ local function update(opts)
       use 'nvim-lua/plenary.nvim'
       use {
         'nvim-telescope/telescope.nvim',
-        requires = { 'popup.nvim', 'plenary.nvim', 'trouble.nvim' },
+        requires = { 'popup.nvim', 'plenary.nvim', 'trouble.nvim', 'telescope-fzf-native.nvim' },
         config = function()
           local trouble_provider_telescope = require("trouble.providers.telescope")
 
