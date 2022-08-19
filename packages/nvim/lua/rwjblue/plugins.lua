@@ -1,5 +1,7 @@
 local M = {};
 
+local is_headless = #vim.api.nvim_list_uis() == 0
+
 local function check_or_install_packer()
   local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
@@ -97,7 +99,14 @@ packer.startup({
         }
       end,
 
-      run = function() require('nvim-treesitter.install').update({ with_sync = true })() end,
+      run = function()
+        -- do minor setup here to force sync installation of all plugins (this
+        -- will happen in bootstrap + update)
+        require'nvim-treesitter.configs'.setup {
+          ensure_installed = 'all',
+          sync_install = is_headless,
+        }
+      end,
     }
   end,
   config = {
@@ -106,7 +115,7 @@ packer.startup({
 })
 
 function M.update(opts)
-  opts = opts or { quit_on_install = false }
+  opts = opts or { quit_on_install = is_headless }
 
   -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
@@ -127,7 +136,7 @@ function M.update(opts)
 end
 
 function M.bootstrap(opts)
-  opts = opts or { quit_on_install = true }
+  opts = opts or { quit_on_install = is_headless }
 
   -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
