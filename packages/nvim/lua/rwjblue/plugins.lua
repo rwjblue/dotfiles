@@ -52,7 +52,14 @@ local function update(opts)
       use 'wincent/terminus'
       use 'joshdick/onedark.vim'
       use 'kyazdani42/nvim-web-devicons'
-      use 'kyazdani42/nvim-tree.lua'
+
+      use {
+        'kyazdani42/nvim-tree.lua',
+        config = function()
+          require'nvim-tree'.setup { }
+        end
+      }
+
       use {
         "folke/trouble.nvim",
         requires = "kyazdani42/nvim-web-devicons",
@@ -65,7 +72,22 @@ local function update(opts)
       use 'nvim-lua/plenary.nvim'
       use {
         'nvim-telescope/telescope.nvim',
-        requires = { 'popup.nvim', 'plenary.nvim' },
+        requires = { 'popup.nvim', 'plenary.nvim', 'trouble.nvim' },
+        config = function()
+          local trouble_provider_telescope = require("trouble.providers.telescope")
+
+          local telescope = require('telescope');
+          telescope.setup {
+            defaults = {
+              mappings = {
+                i = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+                n = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+              },
+            },
+          }
+          telescope.load_extension('fzf')
+
+        end
       }
       use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', requires = 'telescope.nvim' }
 

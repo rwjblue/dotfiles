@@ -265,29 +265,9 @@ local function setup_language_servers()
   )
 end
 
-local function plugin_setup()
-  setup_language_servers();
-
-  local trouble_provider_telescope = require("trouble.providers.telescope")
-
-  local telescope = require('telescope');
-  telescope.setup {
-    defaults = {
-      mappings = {
-        i = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
-        n = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
-      },
-    },
-  }
-  telescope.load_extension('fzf')
-
-  -- kick off setup for https://github.com/kyazdani42/nvim-tree.lua
-  require'nvim-tree'.setup { }
-end
-
 -- using pcall here to prevent an error when nvim-telescope / nvim-treesitter
 -- isn't loaded (e.g. when installation of packages is required)
-pcall(plugin_setup)
+pcall(setup_language_servers)
 
 --
 -- Mappings
