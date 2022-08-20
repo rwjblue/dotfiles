@@ -265,49 +265,9 @@ local function setup_language_servers()
   )
 end
 
-local function plugin_setup()
-  setup_language_servers();
-
-  -- kick off https://github.com/folke/trouble.nvim
-  require("trouble").setup { }
-
-  local trouble_provider_telescope = require("trouble.providers.telescope")
-
-  local telescope = require('telescope');
-  telescope.setup {
-    defaults = {
-      mappings = {
-        i = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
-        n = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
-      },
-    },
-  }
-  telescope.load_extension('fzf')
-
-  require'nvim-treesitter.configs'.setup {
-    ensure_installed = 'all',
-
-    highlight = {
-      enable = true,
-
-      -- currently `treesitter-markdown` doesn't support all syntax
-      -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
-      -- text); this allows the older regexp based highlighting to work still
-      additional_vim_regex_highlighting = { 'markdown' },
-    },
-
-    indent = {
-      enable = true,
-    },
-  }
-
-  -- kick off setup for https://github.com/kyazdani42/nvim-tree.lua
-  require'nvim-tree'.setup { }
-end
-
 -- using pcall here to prevent an error when nvim-telescope / nvim-treesitter
 -- isn't loaded (e.g. when installation of packages is required)
-pcall(plugin_setup)
+pcall(setup_language_servers)
 
 --
 -- Mappings

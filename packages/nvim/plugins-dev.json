@@ -1,0 +1,62 @@
+{
+  "editorconfig-vim": {
+    "commit": "d354117"
+  },
+  "nvim-lspconfig": {
+    "commit": "da7461b"
+  },
+  "nvim-tree.lua": {
+    "commit": "09a5126"
+  },
+  "nvim-treesitter": {
+    "commit": "2bb9bb7"
+  },
+  "nvim-web-devicons": {
+    "commit": "2d02a56"
+  },
+  "onedark.vim": {
+    "commit": "1fe54f2"
+  },
+  "packer.nvim": {
+    "commit": "90b323b"
+  },
+  "plenary.nvim": {
+    "commit": "31807ee"
+  },
+  "popup.nvim": {
+    "commit": "b7404d3"
+  },
+  "telescope-fzf-native.nvim": {
+    "commit": "6791f74"
+  },
+  "telescope.nvim": {
+    "commit": "28dc08f"
+  },
+  "terminus": {
+    "commit": "12b07e3"
+  },
+  "trouble.nvim": {
+    "commit": "da61737"
+  },
+  "vim-fugitive": {
+    "commit": "b411b75"
+  },
+  "vim-git": {
+    "commit": "5143bea"
+  },
+  "vim-gitgutter": {
+    "commit": "ded1194"
+  },
+  "vim-rhubarb": {
+    "commit": "cad60fe"
+  },
+  "vim-sensible": {
+    "commit": "226203b"
+  },
+  "vim-surround": {
+    "commit": "bf3480d"
+  },
+  "vim-tmux-navigator": {
+    "commit": "9ca5bfe"
+  }
+}

@@ -1,76 +1,175 @@
-local function check_or_install_paq()
-  local paq_install_path = vim.fn.stdpath('data') .. '/site/pack/paqs/start/paq-nvim'
-  if vim.fn.empty(vim.fn.glob(paq_install_path)) > 0 then
-    print('cloning paq-nvim')
-    print(vim.fn.system({
-      'git', 'clone', '--depth=1', 'https://github.com/savq/paq-nvim.git', paq_install_path
-    }))
+local M = {};
 
-    if vim.fn.empty(vim.fn.glob(paq_install_path)) > 0 then
-      error('Failed to install paq to "' .. paq_install_path .. '"')
+local is_headless = #vim.api.nvim_list_uis() == 0
+
+local function check_or_install_packer()
+  local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    print('cloning packer.nvim')
+    bootstrap = vim.fn.system({
+      'git', 'clone', '--depth=1', 'https://github.com/wbthomason/packer.nvim', install_path
+    })
+    print(bootstrap)
+
+    if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+      error('Failed to install packer to "' .. install_path .. '"')
     end
 
-    vim.cmd('packadd paq-nvim')
+    vim.cmd [[packadd packer.nvim]]
   end
 end
 
-local paq_config = {
-  'savq/paq-nvim';
-  'neovim/nvim-lspconfig';
-  'tpope/vim-sensible';
-  'editorconfig/editorconfig-vim';
-  'tpope/vim-fugitive';
-  'tpope/vim-rhubarb'; -- make fugitive understand github.com &co
-  'tpope/vim-git';
-  'tpope/vim-surround';
-  'christoomey/vim-tmux-navigator';
-  'airblade/vim-gitgutter';
-  'wincent/terminus';
-  'joshdick/onedark.vim';
-  'kyazdani42/nvim-web-devicons';
-  'kyazdani42/nvim-tree.lua',
-  'folke/trouble.nvim';
+check_or_install_packer()
 
-  -- telescope deps
-  'nvim-lua/popup.nvim';
-  'nvim-lua/plenary.nvim';
-  'nvim-telescope/telescope.nvim';
-  { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' };
+local packer = require 'packer'
+local util = require 'packer.util'
+local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugins-dev.json')
 
-  { 'nvim-treesitter/nvim-treesitter' };
-}
+packer.startup({
+  function(use)
+    use 'wbthomason/packer.nvim'
+    use 'neovim/nvim-lspconfig'
+    use 'tpope/vim-sensible'
+    use 'editorconfig/editorconfig-vim'
+    use 'tpope/vim-fugitive'
+    use 'tpope/vim-rhubarb' -- make fugitive understand github.com &co
+    use 'tpope/vim-git'
+    use 'tpope/vim-surround'
+    use 'christoomey/vim-tmux-navigator'
+    use 'airblade/vim-gitgutter'
+    use 'wincent/terminus'
+    use 'joshdick/onedark.vim'
+    use 'kyazdani42/nvim-web-devicons'
 
-local function update(opts)
-  opts = opts or { quit_on_install = false }
+    use {
+      'kyazdani42/nvim-tree.lua',
+      config = function()
+        require'nvim-tree'.setup { }
+      end
+    }
 
-  check_or_install_paq()
+    use {
+      "folke/trouble.nvim",
+      requires = "kyazdani42/nvim-web-devicons",
+      config = function()
+        require("trouble").setup {}
+      end
+    }
 
+    use {
+      'nvim-telescope/telescope.nvim',
+      requires = {
+        'nvim-lua/popup.nvim',
+        'nvim-lua/plenary.nvim',
+        'folke/trouble.nvim',
+        'nvim-telescope/telescope-fzf-native.nvim'
+      },
+      config = function()
+        local trouble_provider_telescope = require("trouble.providers.telescope")
+
+        local telescope = require('telescope');
+        telescope.setup {
+          defaults = {
+            mappings = {
+              i = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+              n = { ["<c-t>"] = trouble_provider_telescope.open_with_trouble },
+            },
+          },
+        }
+        telescope.load_extension('fzf')
+
+      end
+    }
+    use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make', requires = 'telescope.nvim' }
+
+    use {
+      'nvim-treesitter/nvim-treesitter',
+
+      config = function()
+        require'nvim-treesitter.configs'.setup {
+          auto_install = true,
+
+          highlight = {
+            enable = true,
+
+            -- currently `treesitter-markdown` doesn't support all syntax
+            -- highlighting that we want (e.g. `**foo**` doesn't color that bolded
+            -- text); this allows the older regexp based highlighting to work still
+            additional_vim_regex_highlighting = { 'markdown' },
+          },
+
+          indent = {
+            enable = true,
+          },
+        }
+      end,
+
+      run = function()
+        -- do minor setup here to force sync installation of all plugins (this
+        -- will happen in bootstrap + update)
+        require'nvim-treesitter.configs'.setup {
+          ensure_installed = 'all',
+          sync_install = is_headless,
+        }
+      end,
+    }
+  end,
+  config = {
+    snapshot = snapshot_path,
+  }
+})
+
+function M.update(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
-    pattern = 'PaqDoneSync',
+    pattern = 'PackerComplete',
     callback = function()
-      -- ensure all treesitter grammars and whatnot are installed
-      vim.cmd('TSUpdateSync all')
+      -- delete the existing snapshot so that we can write the new one without prompting
+      vim.fn.system('rm ' .. snapshot_path)
+      packer.snapshot(snapshot_path)
 
-      if opts.quit_on_install then
-        vim.cmd('quit')
-      end
+      vim.defer_fn(function()
+        local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
+
+        vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
+
+        if opts.quit_on_install then
+          vim.cmd('quitall')
+        end
+      end, 2000)
     end
   })
 
-  local paq = require('paq')
-
-  paq(paq_config)
-
-  paq:sync() -- runs paq.clean(), paq.update(), paq.install()
+  packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
 end
 
-local function bootstrap()
-  update { quit_on_install = true }
+function M.bootstrap(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  vim.api.nvim_create_autocmd('User', {
+    once = true,
+    pattern = 'PackerComplete',
+    callback = function()
+      -- once installed, compile the plugins/packer_compiled.lua file
+      packer.compile();
+    end
+  })
+
+  if (opts.quit_on_install) then
+    vim.api.nvim_create_autocmd('User', {
+      once = true,
+      pattern = 'PackerCompileDone',
+      callback = function()
+        vim.cmd('quitall')
+      end
+    })
+  end
+
+  -- install from plugins-dev.json lockfile
+  packer.install()
 end
 
-return {
-  update = update,
-  bootstrap = bootstrap,
-  paq_config = paq_config,
-}
+return M
