@@ -132,6 +132,10 @@ function M.update(opts)
       packer.snapshot(snapshot_path)
 
       vim.defer_fn(function()
+        local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
+
+        vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
+
         if opts.quit_on_install then
           vim.cmd('quitall')
         end
