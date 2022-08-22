@@ -114,10 +114,58 @@ packer.startup({
       end,
     }
   end,
-  config = {
-    snapshot = snapshot_path,
-  }
 })
+
+function M.take_snapshot(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  -- delete the existing snapshot so that we can write the new one without prompting
+  vim.fn.system('rm ' .. snapshot_path)
+  packer.snapshot(snapshot_path)
+
+  vim.defer_fn(function()
+    local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
+
+    vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
+
+    if opts.quit_on_install then
+      vim.cmd('quitall')
+    end
+  end, 5000)
+end
+
+local function install_compile_after_PackerComplete_hook(from, opts)
+  vim.api.nvim_create_autocmd('User', {
+    once = true,
+    pattern = 'PackerComplete',
+    callback = function()
+      print('initial ' .. from .. ' complete, running `packer.clean()` to remove any unspecified dependencies')
+      packer.clean()
+
+      vim.api.nvim_create_autocmd('User', {
+        once = true,
+        pattern = 'PackerComplete',
+        callback = function()
+          vim.api.nvim_create_autocmd('User', {
+            once = true,
+            pattern = 'PackerCompileDone',
+            callback = function()
+              print('`packer.compile()` complete');
+
+              if (opts.quit_on_install) then
+                vim.cmd('quitall')
+              end
+            end
+          })
+
+          print('`packer.clean()` completed, running `packer.compile()` now')
+          -- once installed, compile the plugins/packer_compiled.lua file
+          packer.compile();
+        end
+     })
+    end
+  })
+end
 
 function M.update(opts)
   opts = opts or { quit_on_install = is_headless }
@@ -127,49 +175,44 @@ function M.update(opts)
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      -- delete the existing snapshot so that we can write the new one without prompting
-      vim.fn.system('rm ' .. snapshot_path)
-      packer.snapshot(snapshot_path)
-
-      vim.defer_fn(function()
-        local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
-
-        vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
-
-        if opts.quit_on_install then
-          vim.cmd('quitall')
-        end
-      end, 2000)
-    end
+      M.take_snapshot(opts)
+    end,
   })
 
+  print('running `packer.sync()`')
   packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
 end
 
-function M.bootstrap(opts)
+function M.install(opts)
   opts = opts or { quit_on_install = is_headless }
 
+  -- autocmd User PackerComplete quitall
   vim.api.nvim_create_autocmd('User', {
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      -- once installed, compile the plugins/packer_compiled.lua file
-      packer.compile();
-    end
+      M.take_snapshot(opts)
+    end,
   })
 
-  if (opts.quit_on_install) then
-    vim.api.nvim_create_autocmd('User', {
-      once = true,
-      pattern = 'PackerCompileDone',
-      callback = function()
-        vim.cmd('quitall')
-      end
-    })
-  end
+  -- setup the hook to run packer.compile(), but ensure it doesn't quit early
+  -- since that should be done by `take_snapshot`
+  install_compile_after_PackerComplete_hook('install', { quit_on_install = false })
+
+  print('running `packer.install()`')
+  packer.install() -- Perform `PackerUpdate` and then `PackerCompile`
+end
+
+function M.rollback(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  install_compile_after_PackerComplete_hook('rollback', opts)
 
   -- install from plugins-dev.json lockfile
-  packer.install()
+  print('rolling plugin config back to ' .. snapshot_path)
+  packer.rollback(snapshot_path)
 end
+
+M.bootstrap = M.rollback;
 
 return M
