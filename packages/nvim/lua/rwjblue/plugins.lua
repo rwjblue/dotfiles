@@ -114,9 +114,6 @@ packer.startup({
       end,
     }
   end,
-  config = {
-    snapshot = snapshot_path,
-  }
 })
 
 function M.take_snapshot(opts)
@@ -175,7 +172,7 @@ function M.bootstrap(opts)
   end
 
   -- install from plugins-dev.json lockfile
-  packer.install()
+  packer.rollback(snapshot_path)
 end
 
 return M
