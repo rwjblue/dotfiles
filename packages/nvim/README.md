@@ -33,3 +33,12 @@ To update the version of the underlying plugins run the following commands:
 
     cd ~/.config/nvim
     nvim -c 'lua require("rwjblue.plugins").update()'
+
+Rollback
+========
+
+If, after an update, you determine that you would like to rollback to a prior
+checkout of plugins you would do the following:
+
+    cd ~/.config/nvim
+    nvim --headless -c 'lua require("rwjblue.plugins").rollback()'

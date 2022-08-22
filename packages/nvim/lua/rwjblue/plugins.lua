@@ -149,30 +149,44 @@ function M.update(opts)
   packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
 end
 
-function M.bootstrap(opts)
+function M.rollback(opts)
   opts = opts or { quit_on_install = is_headless }
 
   vim.api.nvim_create_autocmd('User', {
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      -- once installed, compile the plugins/packer_compiled.lua file
-      packer.compile();
+      print('initial rollback complete, running `packer.clean()` to remove any unspecified dependencies')
+      packer.clean()
+
+      vim.api.nvim_create_autocmd('User', {
+        once = true,
+        pattern = 'PackerComplete',
+        callback = function()
+          vim.api.nvim_create_autocmd('User', {
+            once = true,
+            pattern = 'PackerCompileDone',
+            callback = function()
+              print('`packer.compile()` complete');
+
+              if (opts.quit_on_install) then
+                vim.cmd('quitall')
+              end
+            end
+          })
+
+          print('`packer.clean()` completed, running `packer.compile()` now')
+          -- once installed, compile the plugins/packer_compiled.lua file
+          packer.compile();
+        end
+     })
     end
   })
-
-  if (opts.quit_on_install) then
-    vim.api.nvim_create_autocmd('User', {
-      once = true,
-      pattern = 'PackerCompileDone',
-      callback = function()
-        vim.cmd('quitall')
-      end
-    })
-  end
 
   -- install from plugins-dev.json lockfile
   packer.rollback(snapshot_path)
 end
+
+M.bootstrap = M.rollback;
 
 return M
