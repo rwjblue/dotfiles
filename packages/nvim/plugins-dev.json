@@ -6,13 +6,13 @@
     "commit": "517fe3a"
   },
   "nvim-lspconfig": {
-    "commit": "da7461b"
+    "commit": "a33e232"
   },
   "nvim-tree.lua": {
-    "commit": "09a5126"
+    "commit": "e3353c4"
   },
   "nvim-treesitter": {
-    "commit": "2bb9bb7"
+    "commit": "4b536a9"
   },
   "nvim-web-devicons": {
     "commit": "2d02a56"
@@ -21,7 +21,7 @@
     "commit": "1fe54f2"
   },
   "packer.nvim": {
-    "commit": "90b323b"
+    "commit": "3a9f980"
   },
   "plenary.nvim": {
     "commit": "31807ee"
@@ -48,7 +48,7 @@
     "commit": "5143bea"
   },
   "vim-gitgutter": {
-    "commit": "ded1194"
+    "commit": "52d0066"
   },
   "vim-rhubarb": {
     "commit": "cad60fe"
