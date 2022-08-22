@@ -131,32 +131,15 @@ function M.take_snapshot(opts)
     if opts.quit_on_install then
       vim.cmd('quitall')
     end
-  end, 2000)
+  end, 5000)
 end
 
-function M.update(opts)
-  opts = opts or { quit_on_install = is_headless }
-
-  -- autocmd User PackerComplete quitall
+local function install_compile_after_PackerComplete_hook(from, opts)
   vim.api.nvim_create_autocmd('User', {
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      M.take_snapshot(opts)
-    end,
-  })
-
-  packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
-end
-
-function M.rollback(opts)
-  opts = opts or { quit_on_install = is_headless }
-
-  vim.api.nvim_create_autocmd('User', {
-    once = true,
-    pattern = 'PackerComplete',
-    callback = function()
-      print('initial rollback complete, running `packer.clean()` to remove any unspecified dependencies')
+      print('initial ' .. from .. ' complete, running `packer.clean()` to remove any unspecified dependencies')
       packer.clean()
 
       vim.api.nvim_create_autocmd('User', {
@@ -182,8 +165,51 @@ function M.rollback(opts)
      })
     end
   })
+end
+
+function M.update(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  -- autocmd User PackerComplete quitall
+  vim.api.nvim_create_autocmd('User', {
+    once = true,
+    pattern = 'PackerComplete',
+    callback = function()
+      M.take_snapshot(opts)
+    end,
+  })
+
+  print('running `packer.sync()`')
+  packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
+end
+
+function M.install(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  -- autocmd User PackerComplete quitall
+  vim.api.nvim_create_autocmd('User', {
+    once = true,
+    pattern = 'PackerComplete',
+    callback = function()
+      M.take_snapshot(opts)
+    end,
+  })
+
+  -- setup the hook to run packer.compile(), but ensure it doesn't quit early
+  -- since that should be done by `take_snapshot`
+  install_compile_after_PackerComplete_hook('install', { quit_on_install = false })
+
+  print('running `packer.install()`')
+  packer.install() -- Perform `PackerUpdate` and then `PackerCompile`
+end
+
+function M.rollback(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  install_compile_after_PackerComplete_hook('rollback', opts)
 
   -- install from plugins-dev.json lockfile
+  print('rolling plugin config back to ' .. snapshot_path)
   packer.rollback(snapshot_path)
 end
 
