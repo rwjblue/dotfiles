@@ -119,6 +119,24 @@ packer.startup({
   }
 })
 
+function M.take_snapshot(opts)
+  opts = opts or { quit_on_install = is_headless }
+
+  -- delete the existing snapshot so that we can write the new one without prompting
+  vim.fn.system('rm ' .. snapshot_path)
+  packer.snapshot(snapshot_path)
+
+  vim.defer_fn(function()
+    local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
+
+    vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
+
+    if opts.quit_on_install then
+      vim.cmd('quitall')
+    end
+  end, 2000)
+end
+
 function M.update(opts)
   opts = opts or { quit_on_install = is_headless }
 
@@ -127,20 +145,8 @@ function M.update(opts)
     once = true,
     pattern = 'PackerComplete',
     callback = function()
-      -- delete the existing snapshot so that we can write the new one without prompting
-      vim.fn.system('rm ' .. snapshot_path)
-      packer.snapshot(snapshot_path)
-
-      vim.defer_fn(function()
-        local cleanup_script_path = util.join_paths(vim.fn.stdpath('config'), 'scripts', 'cleanup-plugins-snapshot.js')
-
-        vim.fn.system('node ' .. cleanup_script_path .. ' ' .. snapshot_path);
-
-        if opts.quit_on_install then
-          vim.cmd('quitall')
-        end
-      end, 2000)
-    end
+      M.take_snapshot(opts)
+    end,
   })
 
   packer.sync() -- Perform `PackerUpdate` and then `PackerCompile`
