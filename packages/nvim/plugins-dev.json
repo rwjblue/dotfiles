@@ -2,6 +2,9 @@
   "editorconfig-vim": {
     "commit": "d354117"
   },
+  "lsp-colors.nvim": {
+    "commit": "517fe3a"
+  },
   "nvim-lspconfig": {
     "commit": "da7461b"
   },

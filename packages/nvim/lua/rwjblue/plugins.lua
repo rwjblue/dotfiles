@@ -40,6 +40,7 @@ packer.startup({
     use 'wincent/terminus'
     use 'joshdick/onedark.vim'
     use 'kyazdani42/nvim-web-devicons'
+    use 'folke/lsp-colors.nvim'
 
     use {
       'kyazdani42/nvim-tree.lua',
