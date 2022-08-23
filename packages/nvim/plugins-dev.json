@@ -1,4 +1,7 @@
 {
+  "common.nvim": {
+    "commit": "d6b12ea"
+  },
   "editorconfig-vim": {
     "commit": "d354117"
   },
