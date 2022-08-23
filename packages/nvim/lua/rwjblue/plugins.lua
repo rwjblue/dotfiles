@@ -43,6 +43,17 @@ packer.startup({
     use 'folke/lsp-colors.nvim'
 
     use {
+      'malleatus/common.nvim',
+      config = function()
+        require('malleatus').setup {}
+        --
+        -- Most basic setup is done by malleatus/common.nvim, but some overrides are needed
+        --
+        vim.o.relativenumber = false -- override default in malleatus/common.nvim
+      end,
+    }
+
+    use {
       'kyazdani42/nvim-tree.lua',
       config = function()
         require'nvim-tree'.setup { }
