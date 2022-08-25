@@ -28,7 +28,6 @@ local snapshot_path = util.join_paths(vim.fn.stdpath('config'), 'plugins-dev.jso
 packer.startup({
   function(use)
     use 'wbthomason/packer.nvim'
-    use 'neovim/nvim-lspconfig'
     use 'tpope/vim-sensible'
     use 'editorconfig/editorconfig-vim'
     use 'tpope/vim-fugitive'
@@ -40,7 +39,15 @@ packer.startup({
     use 'wincent/terminus'
     use 'joshdick/onedark.vim'
     use 'kyazdani42/nvim-web-devicons'
+
+    -- LSP related plugins
+    use 'neovim/nvim-lspconfig'
     use 'folke/lsp-colors.nvim'
+    use 'hrsh7th/nvim-cmp'
+    use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-nvim-lsp-signature-help'
+    use 'hrsh7th/cmp-nvim-lua'
+    use 'hrsh7th/cmp-nvim-lsp-document-symbol'
 
     use {
       'malleatus/common.nvim',

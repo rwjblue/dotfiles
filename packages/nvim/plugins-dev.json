@@ -1,4 +1,16 @@
 {
+  "cmp-nvim-lsp": {
+    "commit": "affe808"
+  },
+  "cmp-nvim-lsp-document-symbol": {
+    "commit": "c3f0086"
+  },
+  "cmp-nvim-lsp-signature-help": {
+    "commit": "3dd4009"
+  },
+  "cmp-nvim-lua": {
+    "commit": "d276254"
+  },
   "common.nvim": {
     "commit": "d6b12ea"
   },
@@ -7,6 +19,9 @@
   },
   "lsp-colors.nvim": {
     "commit": "517fe3a"
+  },
+  "nvim-cmp": {
+    "commit": "058100d"
   },
   "nvim-lspconfig": {
     "commit": "bdfcca4"
