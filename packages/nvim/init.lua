@@ -198,9 +198,7 @@ local function setup_language_servers()
   )
 end
 
--- using pcall here to prevent an error when nvim-telescope / nvim-treesitter
--- isn't loaded (e.g. when installation of packages is required)
-pcall(setup_language_servers)
+setup_language_servers()
 
 --
 -- Mappings
