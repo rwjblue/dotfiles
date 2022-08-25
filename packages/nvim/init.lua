@@ -123,8 +123,8 @@ end
 local function setup_language_servers()
   -- requires a few installed packages
   --
-  -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted
-  -- brew install rust_analyzer
+  -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted bash-language-server
+  -- brew install rust_analyzer lua-language-server
   local on_attach = function(client, bufnr)
     setup_language_server_keymappings()
 
@@ -156,6 +156,29 @@ local function setup_language_servers()
         },
       },
     },
+  }
+
+  lsp.sumneko_lua.setup {
+    capabilities = capabilities,
+    cmd = { 'lua-language-server' },
+    settings = {
+      Lua = {
+        runtime = {
+          version = 'LuaJIT',
+        },
+        diagnostics = {
+          globals = { 'vim' }
+        },
+        workspace = {
+          library = vim.api.nvim_get_runtime_file('', true)
+        },
+        telemetry = {
+          enable = false
+        }
+      }
+    },
+
+    on_attach = on_lsp_attach
   }
 
   lsp.tsserver.setup { capabilities = capabilities, on_attach = on_attach }
