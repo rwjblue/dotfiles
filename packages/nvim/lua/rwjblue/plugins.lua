@@ -43,8 +43,56 @@ packer.startup({
     -- LSP related plugins
     use 'neovim/nvim-lspconfig'
     use 'folke/lsp-colors.nvim'
-    use 'hrsh7th/nvim-cmp'
+
+    -- Completion related plugins / setup
+    use {
+      'hrsh7th/nvim-cmp',
+      config = function()
+        local cmp = require('cmp')
+        cmp.setup {
+          -- snippet = { expand = function(args) vim.fn["UltiSnips#Anon"](args.body) end },
+          mapping = {
+            ['<c-l>'] = cmp.mapping.confirm({ select = true }),
+            ['<c-c>'] = cmp.mapping.abort(),
+            ['<c-n>'] = cmp.mapping.select_next_item(),
+            ['<c-p>'] = cmp.mapping.select_prev_item(),
+          },
+          window = {
+            completion = cmp.config.window.bordered(),
+            documentation = cmp.config.window.bordered(),
+          },
+          sources = cmp.config.sources({
+            { name = 'nvim_lsp' }, -- complete symbols (via LSP)
+            { name = 'nvim_lsp_signature_help' }, -- signature completion
+            { name = 'nvim_lua' }, -- lua nvim api completion (vim.lsp.* &c.)
+            -- This is useful when there is no LSP, but with an LSP + snippets it's mostly noise
+            -- { name = 'buffer' }, -- autocomplete keywords (&isk) in buffer
+          })
+        }
+
+        cmp.setup.cmdline(':', {
+          mapping = cmp.mapping.preset.cmdline({
+            ['<c-l>'] = {
+              c = function()
+                if cmp.visible() then
+                  cmp.confirm({ select = true })
+                end
+              end,
+            }
+          }),
+          sources = cmp.config.sources({
+            { name = 'cmdline' },
+          })
+        })
+
+        -- see <https://github.com/hrsh7th/nvim-cmp#setup>
+        --  can setup per filetype
+        --    cmp.setup.filetype('myfiletype', {})
+        --  can setup per custom LSP
+      end
+    }
     use 'hrsh7th/cmp-nvim-lsp'
+    use 'hrsh7th/cmp-cmdline'
     use 'hrsh7th/cmp-nvim-lsp-signature-help'
     use 'hrsh7th/cmp-nvim-lua'
     use 'hrsh7th/cmp-nvim-lsp-document-symbol'

@@ -1,4 +1,7 @@
 {
+  "cmp-cmdline": {
+    "commit": "9c0e331"
+  },
   "cmp-nvim-lsp": {
     "commit": "affe808"
   },
