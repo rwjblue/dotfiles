@@ -6,7 +6,7 @@ local function check_or_install_packer()
   local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
   if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
     print('cloning packer.nvim')
-    bootstrap = vim.fn.system({
+    local bootstrap = vim.fn.system({
       'git', 'clone', '--depth=1', 'https://github.com/wbthomason/packer.nvim', install_path
     })
     print(bootstrap)
@@ -111,7 +111,7 @@ packer.startup({
     use {
       'kyazdani42/nvim-tree.lua',
       config = function()
-        require'nvim-tree'.setup { }
+        require 'nvim-tree'.setup {}
       end
     }
 
@@ -153,7 +153,7 @@ packer.startup({
       'nvim-treesitter/nvim-treesitter',
 
       config = function()
-        require'nvim-treesitter.configs'.setup {
+        require 'nvim-treesitter.configs'.setup {
           auto_install = true,
 
           highlight = {
@@ -174,7 +174,7 @@ packer.startup({
       run = function()
         -- do minor setup here to force sync installation of all plugins (this
         -- will happen in bootstrap + update)
-        require'nvim-treesitter.configs'.setup {
+        require 'nvim-treesitter.configs'.setup {
           ensure_installed = 'all',
           sync_install = is_headless,
         }
@@ -229,7 +229,7 @@ local function install_compile_after_PackerComplete_hook(from, opts)
           -- once installed, compile the plugins/packer_compiled.lua file
           packer.compile();
         end
-     })
+      })
     end
   })
 end

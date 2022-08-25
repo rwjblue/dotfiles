@@ -9,11 +9,11 @@ vim.o.clipboard = 'unnamed'
 -- *******************************
 -- * status line                 *
 -- *******************************
-vim.o.laststatus=2                  -- always show status line
+vim.o.laststatus = 2 -- always show status line
 
 local function split(str, sep)
   local result = {}
-  for s in  string.gmatch(str, "([^"..sep.."]+)") do
+  for s in string.gmatch(str, "([^" .. sep .. "]+)") do
     table.insert(result, s)
   end
 
@@ -25,11 +25,11 @@ local function statusline()
   local projectName = directories[#directories]
 
   local t = {
-    '%<%f',                           -- Filename
-    '%w%h%m%r',                       -- Options
-    ' [%{&ff}/%Y]',                   -- filetype
-    ' [' .. projectName .. ']',    -- current dir
-    '%=%-14.(%l,%c%V%) %p%%',         -- Right aligned file nav info
+    '%<%f', -- Filename
+    '%w%h%m%r', -- Options
+    ' [%{&ff}/%Y]', -- filetype
+    ' [' .. projectName .. ']', -- current dir
+    '%=%-14.(%l,%c%V%) %p%%', -- Right aligned file nav info
   }
 
   return table.concat(t)
@@ -96,28 +96,28 @@ vim.g.neoterm_default_mod = ':botright'
 vim.lsp.set_log_level("debug")
 
 local function setup_language_server_keymappings(bufnr)
-    local function map(mode, lhs, rhs, opts)
-      local options = { noremap = true }
+  local function map(mode, lhs, rhs, opts)
+    local options = { noremap = true }
 
-      if opts then
-        options = vim.tbl_extend('force', options, opts)
-      end
-
-      vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, options)
+    if opts then
+      options = vim.tbl_extend('force', options, opts)
     end
 
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
-    map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
-    map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
-    map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
-    map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
-    map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
-    map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
-    map('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>')
-    map('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
-    map('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
-    map("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+    vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, options)
+  end
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
+  map('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>')
+  map('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>')
+  map('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+  map('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>')
+  map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+  map('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>')
+  map('n', '<space>r', '<cmd>lua vim.lsp.buf.rename()<CR>')
+  map('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+  map('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
+  map("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
 end
 
 local function setup_language_servers()
@@ -129,6 +129,7 @@ local function setup_language_servers()
     setup_language_server_keymappings(bufnr)
 
     local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
     --Enable completion triggered by <c-x><c-o>
     option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -237,7 +238,7 @@ local function setup_language_servers()
   }
 
   local formatters = {
-    prettier = { command = "prettier", args = {"--stdin-filepath", "%filepath"}}
+    prettier = { command = "prettier", args = { "--stdin-filepath", "%filepath" } }
   }
 
   local formatFiletypes = {
@@ -275,10 +276,11 @@ local function map(mode, lhs, rhs, opts)
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
 
-map('n', 'Q', '')          -- Disable Ex mode from Q
+map('n', 'Q', '') -- Disable Ex mode from Q
 
 vim.keymap.set('n', '<leader><leader>', '<cmd>nohl | checktime<cr>', { desc = 'use ,, to clear highlights', })
-vim.keymap.set('n', '<leader>nt', function() require('nvim-tree').toggle(true) end, { desc = 'now files (toggle nvim-tree)', })
+vim.keymap.set('n', '<leader>nt', function() require('nvim-tree').toggle(true) end,
+  { desc = 'now files (toggle nvim-tree)', })
 
 -- Added configuration for christoomey/vim-tmux-navigator to allow
 -- Ctrl-H,J,K,L to work for moving in and out of terminals
@@ -305,8 +307,8 @@ map('n', '<Leader>fr', [[<Cmd>lua require('telescope.builtin').live_grep()<CR>]]
 
 -- Trouble mappings
 map('n', '<Leader>xx', '<cmd>Trouble<cr>', { silent = true });
-map('n', '<Leader>xw', '<cmd>Trouble lsp_workspace_diagnostics<cr>', { silent = true });
-map('n', '<Leader>xd', '<cmd>Trouble lsp_document_diagnostics<cr>', { silent = true });
+map('n', '<Leader>xw', '<cmd>Trouble workspace_diagnostics<cr>', { silent = true });
+map('n', '<Leader>xd', '<cmd>Trouble document_diagnostics<cr>', { silent = true });
 
 -- LSP Mappings
 map('n', 'gR', '<cmd>Trouble lsp_references<cr>', { silent = true });
