@@ -9,13 +9,13 @@
     "commit": "517fe3a"
   },
   "nvim-lspconfig": {
-    "commit": "a33e232"
+    "commit": "bdfcca4"
   },
   "nvim-tree.lua": {
-    "commit": "e3353c4"
+    "commit": "c3ea264"
   },
   "nvim-treesitter": {
-    "commit": "4b536a9"
+    "commit": "c170310"
   },
   "nvim-web-devicons": {
     "commit": "2d02a56"
@@ -36,7 +36,7 @@
     "commit": "6791f74"
   },
   "telescope.nvim": {
-    "commit": "28dc08f"
+    "commit": "3e944f0"
   },
   "terminus": {
     "commit": "12b07e3"
@@ -51,7 +51,7 @@
     "commit": "5143bea"
   },
   "vim-gitgutter": {
-    "commit": "52d0066"
+    "commit": "f19b620"
   },
   "vim-rhubarb": {
     "commit": "cad60fe"
@@ -63,6 +63,6 @@
     "commit": "bf3480d"
   },
   "vim-tmux-navigator": {
-    "commit": "9ca5bfe"
+    "commit": "afb45a5"
   }
 }
