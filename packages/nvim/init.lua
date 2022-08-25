@@ -125,7 +125,7 @@ local function setup_language_servers()
   --
   -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted bash-language-server
   -- brew install rust_analyzer lua-language-server
-  local on_attach = function(client, bufnr)
+  local on_lsp_attach = function(client, bufnr)
     setup_language_server_keymappings()
 
     local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
@@ -145,7 +145,7 @@ local function setup_language_servers()
 
   lsp.rust_analyzer.setup {
     capabilities = capabilities,
-    on_attach = on_attach,
+    on_attach = on_lsp_attach,
     flags = {
       debounce_text_changes = 150,
     },
@@ -181,7 +181,7 @@ local function setup_language_servers()
     on_attach = on_lsp_attach
   }
 
-  lsp.tsserver.setup { capabilities = capabilities, on_attach = on_attach }
+  lsp.tsserver.setup { capabilities = capabilities, on_attach = on_lsp_attach }
   lsp.vimls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
   lsp.jsonls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
   lsp.html.setup { capabilities = capabilities, on_attach = on_lsp_attach }
@@ -248,7 +248,7 @@ local function setup_language_servers()
 
   -- see <https://github.com/iamcco/diagnostic-languageserver>
   lsp.diagnosticls.setup {
-    on_attach = on_attach,
+    on_attach = on_lsp_attach,
     filetypes = vim.tbl_keys(filetypes),
     init_options = {
       filetypes = filetypes,
