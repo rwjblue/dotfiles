@@ -95,11 +95,7 @@ vim.g.neoterm_default_mod = ':botright'
 
 vim.lsp.set_log_level("debug")
 
-local function setup_language_servers()
-  -- initial setup from https://jose-elias-alvarez.medium.com/configuring-neovims-lsp-client-for-typescript-development-5789d58ea9c
-  local nvim_lsp = require('lspconfig');
-
-  local on_attach = function(client, bufnr)
+local function setup_language_server_keymappings(bufnr)
     local function map(mode, lhs, rhs, opts)
       local options = { noremap = true }
 
@@ -109,10 +105,6 @@ local function setup_language_servers()
 
       vim.api.nvim_buf_set_keymap(bufnr, mode, lhs, rhs, options)
     end
-    local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-    --Enable completion triggered by <c-x><c-o>
-    option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     map('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>')
@@ -126,12 +118,27 @@ local function setup_language_servers()
     map('n', '<space>a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
     map('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>')
     map("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>")
+end
+
+local function setup_language_servers()
+  local on_attach = function(client, bufnr)
+    setup_language_server_keymappings()
+
+    local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+    --Enable completion triggered by <c-x><c-o>
+    option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- use LSP for formatxpr
+    option('formatexpr', 'v:lua.vim.lsp.formatexpr()')
   end
 
-  nvim_lsp.tsserver.setup {
-    on_attach = on_attach,
-  }
-  nvim_lsp.rust_analyzer.setup {
+  local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+  -- See also https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md
+  local lsp = require('lspconfig');
+
+  lsp.rust_analyzer.setup {
+    capabilities = capabilities,
     on_attach = on_attach,
     flags = {
       debounce_text_changes = 150,
@@ -145,18 +152,35 @@ local function setup_language_servers()
     },
   }
 
-  local filetypes = {
-    typescript = 'eslint',
-    javascript = 'eslint',
+  lsp.tsserver.setup { capabilities = capabilities, on_attach = on_attach }
+  lsp.vimls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.jsonls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.html.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.cssls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.bashls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.ccls.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+  lsp.pylsp.setup { capabilities = capabilities, on_attach = on_lsp_attach }
+
+  lsp.yamlls.setup {
+    capabilities = capabilities,
+    on_attach = on_lsp_attach,
+    schemas = {
+      -- per-file modelines look like
+      -- # yaml-language-server: $schema=<urlToTheSchema|relativeFilePath|absoluteFilePath}>
+      --
+      -- Otherwise patterns can be added here
+      ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+    }
   }
+
 
   local linters = {
     eslint = {
-      sourceName = "eslint",
-      command = "eslint", -- consider using https://github.com/mantoni/eslint_d.js/ to make this a bit faster...
-      rootPatterns = { ".eslintrc.js", "package.json" },
+      sourceName = 'eslint',
+      -- TODO: try https://github.com/mantoni/eslint_d.js/
+      command = 'eslint',
       debounce = 100,
-      args = {"--stdin", "--stdin-filename", "%filepath", "--format", "json"},
+      args = { "--stdin", "--stdin-filename", "%filepath", "--format", "json" },
       parseJson = {
         errorsRoot = "[0].messages",
         line = "line",
@@ -166,8 +190,21 @@ local function setup_language_servers()
         message = "${message} [${ruleId}]",
         security = "severity"
       },
-      securities = {[2] = "error", [1] = "warning"}
+      securities = { [2] = "error", [1] = "warning" },
+      rootPatterns = {
+        '.eslintrc',
+        '.eslintrc.cjs',
+        '.eslintrc.js',
+        '.eslintrc.json',
+        '.eslintrc.yaml',
+        '.eslintrc.yml',
+      }
     }
+  }
+
+  local filetypes = {
+    typescript = 'eslint',
+    javascript = 'eslint',
   }
 
   local formatters = {
@@ -175,10 +212,13 @@ local function setup_language_servers()
   }
 
   local formatFiletypes = {
-    typescript = "prettier",
+    typescript = 'prettier',
+    javascript = 'prettier',
+    markdown = 'prettier',
   }
 
-  nvim_lsp.diagnosticls.setup {
+  -- see <https://github.com/iamcco/diagnostic-languageserver>
+  lsp.diagnosticls.setup {
     on_attach = on_attach,
     filetypes = vim.tbl_keys(filetypes),
     init_options = {
@@ -188,14 +228,6 @@ local function setup_language_servers()
       formatFiletypes = formatFiletypes
     }
   }
-
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
-    vim.lsp.diagnostic.on_publish_diagnostics, {
-      virtual_text = true,
-      signs = true,
-      update_in_insert = true,
-    }
-  )
 end
 
 setup_language_servers()
