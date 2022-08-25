@@ -1,5 +1,9 @@
 rwjblue = {} -- Namespace for functions in mappings, autocmds, etc
 
+---use comma as <leader> (default \)
+vim.g.mapleader      = ','
+vim.g.maplocalleader = ','
+
 vim.o.clipboard = 'unnamed'
 
 -- *******************************
