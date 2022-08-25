@@ -126,7 +126,7 @@ local function setup_language_servers()
   -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted bash-language-server
   -- brew install rust_analyzer lua-language-server
   local on_lsp_attach = function(client, bufnr)
-    setup_language_server_keymappings()
+    setup_language_server_keymappings(bufnr)
 
     local function option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
     --Enable completion triggered by <c-x><c-o>
