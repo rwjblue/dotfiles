@@ -121,6 +121,10 @@ local function setup_language_server_keymappings(bufnr)
 end
 
 local function setup_language_servers()
+  -- requires a few installed packages
+  --
+  -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted
+  -- brew install rust_analyzer
   local on_attach = function(client, bufnr)
     setup_language_server_keymappings()
 
