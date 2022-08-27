@@ -124,7 +124,7 @@ local function setup_language_servers()
   -- requires a few installed packages
   --
   -- volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted bash-language-server
-  -- brew install rust_analyzer lua-language-server
+  -- brew install rust-analyzer lua-language-server
   local on_lsp_attach = function(client, bufnr)
     setup_language_server_keymappings(bufnr)
 

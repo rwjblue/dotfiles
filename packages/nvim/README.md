@@ -17,6 +17,11 @@ and the following commands:
     git clone git://github.com/rwjblue/dotvim.git ~/.config/nvim
     nvim --headless -u NONE -c 'lua require("rwjblue.plugins").bootstrap()'
 
+The following additional utilities are required (mostly for language server stuff):
+
+    volta install diagnostic-languageserver typescript-language-server yaml-language-server vim-language-server vscode-langservers-extracted bash-language-server
+    brew install rust-analyzer lua-language-server
+
 ## Upgrading Neovim Config
 
 Upgrading is also very simple.
