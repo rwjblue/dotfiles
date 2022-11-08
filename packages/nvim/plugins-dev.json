@@ -1,86 +1,86 @@
 {
   "cmp-cmdline": {
-    "commit": "9c0e331"
+    "commit": "c66c379"
   },
   "cmp-nvim-lsp": {
-    "commit": "affe808"
+    "commit": "78924d1"
   },
   "cmp-nvim-lsp-document-symbol": {
-    "commit": "c3f0086"
+    "commit": "069a207"
   },
   "cmp-nvim-lsp-signature-help": {
-    "commit": "3dd4009"
+    "commit": "d2768cb"
   },
   "cmp-nvim-lua": {
     "commit": "d276254"
   },
   "common.nvim": {
-    "commit": "d6b12ea"
+    "commit": "dd6e6c6"
   },
   "editorconfig-vim": {
-    "commit": "d354117"
+    "commit": "6bba259"
   },
   "lsp-colors.nvim": {
-    "commit": "517fe3a"
+    "commit": "4e6da19"
   },
   "nvim-cmp": {
-    "commit": "058100d"
+    "commit": "9bb8ee6"
   },
   "nvim-lspconfig": {
-    "commit": "bdfcca4"
+    "commit": "f40eae0"
   },
   "nvim-tree.lua": {
-    "commit": "c3ea264"
+    "commit": "7e89276"
   },
   "nvim-treesitter": {
-    "commit": "c170310"
+    "commit": "d37fc85a"
   },
   "nvim-web-devicons": {
-    "commit": "2d02a56"
+    "commit": "520776f"
   },
   "onedark.vim": {
-    "commit": "1fe54f2"
+    "commit": "b6b5ffe"
   },
   "packer.nvim": {
-    "commit": "3a9f980"
+    "commit": "6afb674"
   },
   "plenary.nvim": {
-    "commit": "31807ee"
+    "commit": "4b7e520"
   },
   "popup.nvim": {
     "commit": "b7404d3"
   },
   "telescope-fzf-native.nvim": {
-    "commit": "6791f74"
+    "commit": "65c0ee3"
   },
   "telescope.nvim": {
-    "commit": "3e944f0"
+    "commit": "cc77713"
   },
   "terminus": {
     "commit": "12b07e3"
   },
   "trouble.nvim": {
-    "commit": "da61737"
+    "commit": "ed65f84"
   },
   "vim-fugitive": {
-    "commit": "b411b75"
+    "commit": "01f3e0a"
   },
   "vim-git": {
     "commit": "5143bea"
   },
   "vim-gitgutter": {
-    "commit": "f19b620"
+    "commit": "400a120"
   },
   "vim-rhubarb": {
     "commit": "cad60fe"
   },
   "vim-sensible": {
-    "commit": "226203b"
+    "commit": "8985da7"
   },
   "vim-surround": {
-    "commit": "bf3480d"
+    "commit": "3d188ed"
   },
   "vim-tmux-navigator": {
-    "commit": "afb45a5"
+    "commit": "48390f3"
   }
 }
