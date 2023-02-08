@@ -13,16 +13,15 @@ local function map(mode, lhs, rhs, opts)
 end
 
 -- allow Ctrl-H,J,K,L to work for moving in and out of terminals
---
--- copy the original keymaps from:
--- https://github.com/LazyVim/LazyVim/blob/v1.6.0/lua/lazyvim/config/keymaps.lua#L20-L30
+-- copy the original keymaps from:key
+-- https://github.com/LazyVim/LazyVim/blob/v1.6.0/lua/lazyvim/config/keymaps.lua#L20-L30 key
 -- and add them for terminal mode
 
 -- Move to window using the <ctrl> hjkl keys
-map("t", "<C-h>", "<C-w>h", { desc = "Go to left window" })
-map("t", "<C-j>", "<C-w>j", { desc = "Go to lower window" })
-map("t", "<C-k>", "<C-w>k", { desc = "Go to upper window" })
-map("t", "<C-l>", "<C-w>l", { desc = "Go to right window" })
+map("t", "<C-h>", [[<C-\><C-n><C-w>h]], { desc = "Go to left window" })
+map("t", "<C-j>", [[<C-\><C-n><C-w>j]], { desc = "Go to lower window" })
+map("t", "<C-k>", [[<C-\><C-n><C-w>k]], { desc = "Go to upper window" })
+map("t", "<C-l>", [[<C-\><C-n><C-w>l]], { desc = "Go to right window" })
 
 -- Resize window using <ctrl> arrow keys
 map("t", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })

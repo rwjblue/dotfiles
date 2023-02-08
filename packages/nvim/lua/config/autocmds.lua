@@ -13,3 +13,28 @@ vim.api.nvim_create_autocmd("FileType", {
     require("persistence").stop()
   end,
 })
+
+local terminal_setup = augroup("terminal_setup")
+
+vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
+  group = terminal_setup,
+  callback = function(args)
+    if vim.startswith(vim.api.nvim_buf_get_name(args.buf), "term://") then
+      vim.cmd("startinsert")
+    end
+  end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {
+  group = terminal_setup,
+  callback = function()
+    local win_id = vim.api.nvim_get_current_win()
+    local win = vim.wo[win_id]
+
+    win.number = false
+    win.relativenumber = false
+    win.winfixwidth = true
+
+    vim.api.nvim_win_set_width(win_id, 100)
+  end,
+})
