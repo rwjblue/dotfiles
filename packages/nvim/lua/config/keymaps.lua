@@ -28,3 +28,6 @@ map("t", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 map("t", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
 map("t", "<C-Left>", "<cmd>vertical resize -2<cr>", { desc = "Decrease window width" })
 map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window width" })
+
+-- Enable exiting terminal mode with Esc
+map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
