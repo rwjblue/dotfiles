@@ -31,3 +31,8 @@ map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 
 -- Enable exiting terminal mode with Esc
 map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
+
+-- remove the "move up" and "move down" keymaps added by LazyVim
+-- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L32-L38
+vim.keymap.del({ "n", "v", "i" }, "<a-j>")
+vim.keymap.del({ "n", "v", "i" }, "<a-k>")
