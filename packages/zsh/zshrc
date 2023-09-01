@@ -54,12 +54,12 @@ export KEYTIMEOUT=1
 
 # Setup fasd
 #
-eval "$(fasd --init auto)"
+# eval "$(fasd --init auto)"
 
 # Common Aliases
 # --------------
-alias z='fasd_cd -d'     # cd, same functionality as j in autojump
-alias zz='fasd_cd -d -i' # cd with interactive selection
+# alias z='fasd_cd -d'     # cd, same functionality as j in autojump
+# alias zz='fasd_cd -d -i' # cd with interactive selection
 
 alias g='git'
 alias gst='g status -sb'      # use short version of git status
