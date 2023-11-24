@@ -10,6 +10,7 @@ return {
         "isort",
         "stylua",
         "typescript-language-server",
+        "codelldb",
       },
     },
   },
