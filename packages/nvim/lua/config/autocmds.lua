@@ -49,8 +49,8 @@ local function updatePluginLockFile()
     local dateTime = os.date("%Y-%m-%d %H:%M:%S")
 
     -- Run Git commands to add and commit changes
-    os.execute("git add lazy-lock.json")
-    os.execute('git commit -m "Update plugins ' .. dateTime .. '"')
+    os.execute("git add lazy-lock.json > /dev/null 2>&1")
+    os.execute('git commit --quiet -m "Update plugins ' .. dateTime .. '"')
   end
 end
 
