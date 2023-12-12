@@ -1,17 +1,10 @@
 return {
   {
     "williamboman/mason.nvim",
-    opts = {
-      ensure_installed = {
-        "black",
-        "shellcheck",
-        "shfmt",
-        "flake8",
-        "isort",
-        "stylua",
-        "typescript-language-server",
-        "codelldb",
-      },
-    },
+    opts = function(_, opts)
+      vim.list_extend(opts.ensure_installed, {
+        -- add any additional tools here
+      })
+    end,
   },
 }
