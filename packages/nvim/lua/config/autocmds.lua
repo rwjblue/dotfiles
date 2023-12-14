@@ -56,6 +56,11 @@ end
 
 -- Create autocommands for LazyInstall and LazyUpdate events
 vim.api.nvim_create_autocmd("User", {
-  pattern = { "LazyInstall", "LazyUpdate" },
+  pattern = "LazyInstall",
+  callback = updatePluginLockFile,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "LazyUpdate",
   callback = updatePluginLockFile,
 })
