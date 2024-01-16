@@ -33,6 +33,6 @@ map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
 
 -- remove the "move up" and "move down" keymaps added by LazyVim
--- https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua#L32-L38
+-- https://github.com/LazyVim/LazyVim/blob/879e29504d43e9f178d967ecc34d482f902e5a91/lua/lazyvim/config/keymaps.lua#L26-L32
 vim.keymap.del({ "n", "v", "i" }, "<a-j>")
 vim.keymap.del({ "n", "v", "i" }, "<a-k>")
