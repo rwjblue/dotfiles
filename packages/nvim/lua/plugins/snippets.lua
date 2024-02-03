@@ -7,15 +7,18 @@ return {
   { "rafamadriz/friendly-snippets", enabled = false },
 
   {
+    -- automatically inherits the default configuration from:
+    --   https://github.com/LazyVim/LazyVim/blob/v10.9.1/lua/lazyvim/plugins/coding.lua#L3-L31
     "L3MON4D3/LuaSnip",
+
+    -- ensure that the plugin is loaded if we open any `.snippets` files (enables syntax hihglighting)
+    event = { "BufRead *.snippets" },
     config = function(_, opts)
       require("luasnip").setup(opts)
 
-      local snippet_paths = { "~/.config/nvim/snippets" }
-      require("luasnip.loaders.from_snipmate").lazy_load({
-        paths = snippet_paths,
-      })
-      require("luasnip.loaders.from_lua").lazy_load({ paths = snippet_paths })
+      -- automatically loads *.snippets files from the top level /snippets directory
+      require("luasnip.loaders.from_snipmate").lazy_load()
+      require("luasnip.loaders.from_lua").lazy_load()
     end,
   },
 }
