@@ -4,6 +4,20 @@ return {
     opts = function(_, opts)
       vim.list_extend(opts.ensure_installed, {
         -- add any additional parsers here
+        "diff",
+        "dockerfile",
+        "dot",
+        "git_rebase",
+        "gitattributes",
+        "gitcommit",
+        "gitignore",
+        "graphql",
+        "hcl",
+        "http",
+        "jq",
+        "make",
+        "mermaid",
+        "sql",
       })
     end,
   },
