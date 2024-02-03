@@ -1,3 +1,7 @@
+vim.api.nvim_create_user_command("EditSnippets", function()
+  require("luasnip.loaders").edit_snippet_files({})
+end, { desc = "Edit snippets used in this buffer" })
+
 return {
   -- disable (suggestion from @hjdivad)
   { "rafamadriz/friendly-snippets", enabled = false },
@@ -13,10 +17,6 @@ return {
         paths = snippet_paths,
       })
       require("luasnip.loaders.from_lua").lazy_load({ paths = snippet_paths })
-
-      vim.api.nvim_create_user_command("HiEditSnippets", function()
-        require("luasnip.loaders").edit_snippet_files({})
-      end, { desc = "Edit snippets used in this buffer" })
     end,
   },
 }
