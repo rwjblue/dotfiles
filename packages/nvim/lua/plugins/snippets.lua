@@ -8,7 +8,6 @@ return {
 
   {
     "L3MON4D3/LuaSnip",
-    ft = "snippets",
     config = function(_, opts)
       require("luasnip").setup(opts)
 
