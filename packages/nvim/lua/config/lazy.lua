@@ -13,6 +13,9 @@ require("lazy").setup({
     -- import any extras modules here
     -- import/override with your plugins
     { import = "plugins" },
+
+    -- add project-level extension support for `.lazy.lua` files
+    { import = "plugins.extras.util.lazyrc" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
