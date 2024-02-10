@@ -20,7 +20,7 @@ snippet rust-ci
         - uses: taiki-e/install-action@v2
           with:
             tool: cargo-nextest
-        - run: cargo llvm-cov nextest --workspace
+        - run: cargo nextest run --workspace
   
     lint:
       runs-on: ubuntu-latest
