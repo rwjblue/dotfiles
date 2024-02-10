@@ -4,21 +4,44 @@ end, { desc = "Edit snippets used in this buffer" })
 
 local ft_group = vim.api.nvim_create_augroup("rwjblue_snippets", { clear = true })
 
-vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
-  pattern = ".github/workflows/*.yml",
-  group = ft_group,
-  callback = function()
-    require("luasnip").filetype_extend("yaml", { "github-workflow" })
-  end,
-})
+-- Configuration for LuaSnip Filetype Extensions
+--
+-- This configuration table defines a series of auto-commands to dynamically
+-- extend filetypes with specific snippet collections based on the file
+-- patterns. Each entry in the table specifies a unique setup for extending a
+-- filetype with a targeted snippet collection when opening or creating files
+-- that match a given pattern.
+--
+-- Structure of each configuration entry:
+--
+-- - `pattern`: A string representing the file pattern to match. This can
+--   include specific filenames (e.g., "Cargo.toml") or patterns (e.g.,
+--   ".github/workflows/*.yml") to target files within certain directories or
+--   with certain extensions.
+-- - `extend`: The filetype to be extended. This is the base filetype (e.g.,
+--   "toml", "yaml") that LuaSnip will use to determine which set of snippets to
+--   activate, in addition to the specific ones being added.
+-- - `with`: The specific snippet collection to add to the filetype. This is
+--   typically a custom snippet group name (e.g., "cargo", "github-workflow")
+--   that corresponds to a set of snippets designed for particular use cases or
+--   project structures.
+--
+-- To add or modify the auto-commands, simply adjust the entries in the
+-- `extended_configs` table.
+local extended_configs = {
+  { pattern = "Cargo.toml", extend = "toml", with = "cargo" },
+  { pattern = ".github/workflows/*.yml", extend = "yaml", with = "github-workflow" },
+}
 
-vim.api.nvim_create_autocmd({ "BufRead" }, {
-  pattern = "Cargo.toml",
-  group = ft_group,
-  callback = function()
-    require("luasnip").filetype_extend("toml", { "cargo" })
-  end,
-})
+for _, config in ipairs(extended_configs) do
+  vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+    pattern = config.pattern,
+    group = ft_group,
+    callback = function()
+      require("luasnip").filetype_extend(config.extend, { config.with })
+    end,
+  })
+end
 
 return {
   -- disable (suggestion from @hjdivad)
