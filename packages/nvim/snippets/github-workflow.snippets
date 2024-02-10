@@ -1,0 +1,91 @@
+snippet rust-ci
+  name: "Test Suite"
+
+  on:
+    push:
+      branches:
+        - "main"
+        - "master"
+    pull_request:
+    workflow_dispatch:
+  
+  jobs:
+    test:
+      name: cargo test
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions-rust-lang/setup-rust-toolchain@v1
+  
+        - uses: taiki-e/install-action@v2
+          with:
+            tool: cargo-nextest
+        - run: cargo llvm-cov nextest --workspace
+  
+    lint:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v4
+        # Ensure rustfmt is installed and setup problem matcher
+        - uses: actions-rust-lang/setup-rust-toolchain@v1
+          with:
+            components: rustfmt,clippy
+  
+        - name: cargo fmt
+          uses: actions-rust-lang/rustfmt@v1
+  
+        - name: cargo clippy
+          run: "cargo clippy -- -D warnings"
+  
+snippet rust-build
+  name: Build
+  
+  on:
+    push:
+      branches:
+        - "main"
+        - "master"
+      tags:
+        - "v*"
+    pull_request:
+    workflow_dispatch:
+  
+  jobs:
+    build:
+      strategy:
+        fail-fast: false
+  
+        matrix:
+          include:
+            - target: x86_64-unknown-linux-gnu
+              os: ubuntu-latest
+            - target: x86_64-apple-darwin
+              os: macos-latest
+            - target: aarch64-apple-darwin
+              os: macos-latest
+  
+      runs-on: ${{ matrix.os }}
+  
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions-rust-lang/setup-rust-toolchain@v1
+          with:
+            # setup-rust-toolchain automatically uses Swatinem/rust-cache with some
+            # default settings, but we need to tweak those settings to get a rust-cache
+            # for each platform instead
+            cache: false
+            target: ${{ matrix.target }}
+  
+        - uses: Swatinem/rust-cache@v2
+          with:
+            key: "${{ matrix.os }}-${{ matrix.target }}"
+  
+        - name: Build
+          run: cargo build --release --target ${{ matrix.target }}
+  
+        - name: Upload Artifacts
+          uses: actions/upload-artifact@v4
+          with:
+            name: ${{ matrix.target }}
+            path: target/${{ matrix.target }}/release/
+  

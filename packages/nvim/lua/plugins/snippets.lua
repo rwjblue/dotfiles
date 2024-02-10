@@ -2,6 +2,24 @@ vim.api.nvim_create_user_command("EditSnippets", function()
   require("luasnip.loaders").edit_snippet_files({})
 end, { desc = "Edit snippets used in this buffer" })
 
+local ft_group = vim.api.nvim_create_augroup("rwjblue_snippets", { clear = true })
+
+vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+  pattern = ".github/workflows/*.yml",
+  group = ft_group,
+  callback = function()
+    require("luasnip").filetype_extend("yaml", { "github-workflow" })
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufRead" }, {
+  pattern = "Cargo.toml",
+  group = ft_group,
+  callback = function()
+    require("luasnip").filetype_extend("toml", { "cargo" })
+  end,
+})
+
 return {
   -- disable (suggestion from @hjdivad)
   { "rafamadriz/friendly-snippets", enabled = false },
