@@ -62,14 +62,21 @@ alias gd='g diff'             # show unstaged changes
 alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
-# ensure ls uses colors
-if [[ "$OSTYPE" == darwin* ]]; then
-  alias ls="ls -G"
-else
-  alias ls="ls --color=auto"
-fi
+alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
 
-alias ll="ls -lah"
+# use eza if it exists
+# https://github.com/eza-community/eza (replacement for https://github.com/ogham/exa)
+if which eza > /dev/null 2>&1; then
+  alias ls='eza --color-scale'
+  alias ll='eza -l --all --no-user --changed --sort=modified --color-scale'
+  alias lt='eza --tree --level 3 -l --no-permissions --no-user --no-time --color-scale'
+else
+  # setup ls
+  ls / --color=auto > /dev/null 2>&1
+  if [[ $? == 0 ]]; then
+    alias ls='ls --color=auto'
+  fi
+fi
 
 # Tmux helper functions
 
