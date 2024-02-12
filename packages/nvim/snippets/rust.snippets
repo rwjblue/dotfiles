@@ -8,3 +8,6 @@ snippet tests "tests module for unit tests"
 					assert_eq!(1, 1, "Pretty sure 1==1")
 			}
 	}
+
+snippet tracing-init "Setup `tracing` and `tracing_subscriber` crates"
+  tracing_subscriber::fmt::init();
