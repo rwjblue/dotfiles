@@ -55,6 +55,7 @@ export KEYTIMEOUT=1
 # Setup zoxide - defines `z` and `zi` commands
 eval "$(zoxide init zsh)"
 
+# git related aliases
 alias g='git'
 alias gst='g status -sb'      # use short version of git status
 alias gap='g add -p'          # the best way to run git add
@@ -63,6 +64,9 @@ alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
+
+# helpful unixy aliases
+alias lsof-tcp-listen='lsof -iTCP -sTCP:LISTEN -P'
 
 # use eza if it exists
 # https://github.com/eza-community/eza (replacement for https://github.com/ogham/exa)
