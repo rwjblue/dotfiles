@@ -11,6 +11,8 @@ zplug mafredri/zsh-async, use:async.zsh, from:github
 zplug modules/history, from:prezto
 zplug modules/completion, from:prezto
 
+zplug "~/.zsh/completions", from:local, use:'_*'
+
 # Install plugins if there are plugins that have not been installed
 if ! zplug check; then
   zplug install
