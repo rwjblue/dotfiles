@@ -1,0 +1,17 @@
+# ~/.config/sheldon/plugins.toml
+
+[plugins.zsh-async]
+github = "mafredri/zsh-async"
+use = ["async.zsh"]
+
+[plugins.prezto-history]
+github = "sorin-ionescu/prezto"
+use = ["modules/history/init.zsh"]
+
+[plugins.prezto-completion]
+github = "sorin-ionescu/prezto"
+use = ["modules/completion/init.zsh"]
+
+[plugins.local-completions]
+local = "~/.zsh/completions"
+use = ["*"]

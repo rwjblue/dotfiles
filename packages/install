@@ -77,6 +77,7 @@ link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
 copy-dotfile "zsh/zshrc.local" "$HOME/.zshrc.local"
+link-dotfile "zsh/sheldon" "$HOME/.config/sheldon"
 
 link-dotfile "git/gitconfig" "$HOME/.gitconfig"
 link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
@@ -115,8 +116,14 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install zplug fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza
+  brew install zplug fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon
 else
+  if ! which sheldon > /dev/null 2>&1; then
+    echo "Installing sheldon"
+    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
+      | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
+  fi
+
   if [[ ! -d $HOME/.zplug ]]; then
     echo "Installing zplug"
     git clone https://github.com/zplug/zplug.git $HOME/.zplug
