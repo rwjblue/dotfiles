@@ -1,24 +1,3 @@
-# Setup zplug
-# --------------------------------------
-if [[ "$OSTYPE" == darwin* ]]; then
-  export ZPLUG_HOME=$HOMEBREW_PREFIX/opt/zplug
-else
-  export ZPLUG_HOME=$HOME/.zplug
-fi
-source $ZPLUG_HOME/init.zsh
-
-zplug mafredri/zsh-async, use:async.zsh, from:github
-zplug modules/history, from:prezto
-zplug modules/completion, from:prezto
-
-zplug "~/.zsh/completions", from:local, use:'_*'
-
-# Install plugins if there are plugins that have not been installed
-if ! zplug check; then
-  zplug install
-fi
-
-zplug load # --verbose (if curious what is going on)
 # Load Sheldon plugins
 eval "$(sheldon source)"
 
