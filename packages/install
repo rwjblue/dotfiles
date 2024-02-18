@@ -72,7 +72,7 @@ link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
 
 mkdir -p ~/bin
 
-link-dotfile "zsh/completions" "$HOME/.zsh/completions"
+link-dotfile "zsh" "$HOME/.zsh"
 link-dotfile "zsh/zshenv" "$HOME/.zshenv"
 link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
