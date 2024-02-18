@@ -116,17 +116,12 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install zplug fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon
+  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon
 else
   if ! which sheldon > /dev/null 2>&1; then
     echo "Installing sheldon"
     curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
       | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
-  fi
-
-  if [[ ! -d $HOME/.zplug ]]; then
-    echo "Installing zplug"
-    git clone https://github.com/zplug/zplug.git $HOME/.zplug
   fi
 
   if [[ ! -d $HOME/.fzf ]]; then
