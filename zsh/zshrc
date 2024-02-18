@@ -19,6 +19,8 @@ if ! zplug check; then
 fi
 
 zplug load # --verbose (if curious what is going on)
+# Load Sheldon plugins
+eval "$(sheldon source)"
 
 # ensure we use a stable SSH_AUTH_SOCK (so reconnecting to prior tmux sessions
 # continue to be able to auth)
