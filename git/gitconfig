@@ -78,3 +78,5 @@
 	fsckobjects = true
 [receive]
 	fsckObjects = true
+[blame]
+	ignoreRevsFile = .git-blame-ignore-revs
