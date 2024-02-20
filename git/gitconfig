@@ -84,3 +84,5 @@
 	sort = -committerdate
 [tag]
 	sort = taggerdate
+[log]
+	date = iso
