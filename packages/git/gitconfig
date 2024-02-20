@@ -40,3 +40,5 @@
 [credential "https://linkedin.ghe.com"]
 	helper = 
 	helper = !/opt/homebrew/bin/gh auth git-credential
+[merge]
+	conflictStyle = zdiff3
