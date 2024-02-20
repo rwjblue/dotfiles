@@ -42,3 +42,5 @@
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [merge]
 	conflictStyle = zdiff3
+[push]
+	default = current
