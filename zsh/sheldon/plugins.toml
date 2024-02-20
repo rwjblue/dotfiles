@@ -14,7 +14,8 @@ apply = ["defer"]
 [plugins.prezto-history]
 github = "sorin-ionescu/prezto"
 use = ["modules/history/init.zsh"]
-apply = ["defer"]
+# for history to work, it must be sourced eagerly
+apply = ["source"]
 
 [plugins.prezto-completion]
 github = "sorin-ionescu/prezto"
