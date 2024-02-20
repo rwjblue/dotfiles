@@ -80,3 +80,7 @@
 	fsckObjects = true
 [blame]
 	ignoreRevsFile = .git-blame-ignore-revs
+[branch]
+	sort = -committerdate
+[tag]
+	sort = taggerdate
