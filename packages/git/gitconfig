@@ -10,6 +10,7 @@
   autosquash = true
 [diff]
   colorMoved = zebra
+  algorithm = histogram
 [github]
   user = rwjblue
 [hub]
