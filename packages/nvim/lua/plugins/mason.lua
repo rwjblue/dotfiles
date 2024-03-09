@@ -12,7 +12,6 @@ return {
         -- python
         "ruff-lsp",
         "pyright",
-        "black",
       })
     end,
   },
