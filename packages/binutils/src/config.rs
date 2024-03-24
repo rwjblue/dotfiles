@@ -1,10 +1,14 @@
 use std::env;
 use std::fmt;
+use std::fs;
+use std::fs::File;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use serde::de::{self, Visitor};
 use serde::{Deserialize, Serialize};
+use toml;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Session {
@@ -18,6 +22,31 @@ pub struct Window {
     #[serde(serialize_with = "path_to_string", deserialize_with = "string_to_path")]
     pub path: PathBuf,
     pub command: String,
+}
+
+pub fn get_config_file_path() -> PathBuf {
+    let home_dir = env::var("HOME").expect("HOME environment variable not set");
+    Path::new(&home_dir).join(".config/binutils.toml")
+}
+
+pub fn write_config(session: &Session) -> Result<()> {
+    let config_path = get_config_file_path();
+    let toml_str = toml::to_string_pretty(&session)?;
+
+    let config_dir = config_path.parent().unwrap();
+    fs::create_dir_all(config_dir)?;
+
+    let mut file = File::create(config_path)?;
+    file.write_all(toml_str.as_bytes())?;
+    Ok(())
+}
+
+pub fn read_config() -> Result<Session> {
+    let config_path = get_config_file_path();
+    let toml_str = fs::read_to_string(config_path)?;
+    let session: Session = toml::from_str(&toml_str)?;
+
+    Ok(session)
 }
 
 fn path_to_string<S>(path: &Path, serializer: S) -> Result<S::Ok, S::Error>
@@ -73,6 +102,45 @@ mod tests {
     use super::*;
     use std::env;
     use tempfile::tempdir;
+
+    #[derive(Debug, Clone)]
+    struct TestEnvironment {
+        _home: PathBuf,
+        _config_dir: PathBuf,
+        original_home: Option<String>,
+    }
+
+    impl Drop for TestEnvironment {
+        fn drop(&mut self) {
+            match &self.original_home {
+                Some(home) => env::set_var("HOME", home),
+                None => env::remove_var("HOME"),
+            }
+        }
+    }
+
+    fn setup_test_environment() -> TestEnvironment {
+        let original_home = env::var("HOME").ok();
+        let temp_dir = tempdir().expect("Failed to create temp dir");
+        let temp_home = temp_dir.into_path();
+
+        env::set_var(
+            "HOME",
+            temp_home
+                .to_str()
+                .expect("Failed to convert temp path to str"),
+        );
+
+        // Ensure config directory exists
+        let config_dir = temp_home.join(".config");
+        fs::create_dir_all(&config_dir).expect("Failed to create .config directory");
+
+        TestEnvironment {
+            _home: temp_home,
+            _config_dir: config_dir,
+            original_home,
+        }
+    }
 
     #[test]
     fn test_replace_tokens_in_path_with_home() {
@@ -141,5 +209,32 @@ mod tests {
             temp_path_str,
             "Temporary paths should not be altered if they do not contain the home directory."
         );
+    }
+
+    #[test]
+    fn test_write_and_read_config() {
+        let _env = setup_test_environment();
+
+        let session = Session {
+            name: "Test Session".to_string(),
+            windows: vec![Window {
+                name: "Test Window".to_string(),
+                path: PathBuf::from("/some/path"),
+                command: "echo 'Hello, world!'".to_string(),
+            }],
+        };
+
+        // Write the config
+        write_config(&session).expect("Failed to write config");
+
+        // Read the config
+        let read_session = read_config().expect("Failed to read config");
+
+        // Assert that the written and read sessions are equal
+        assert_eq!(session.name, read_session.name);
+        assert_eq!(session.windows.len(), read_session.windows.len());
+        assert_eq!(session.windows[0].name, read_session.windows[0].name);
+        assert_eq!(session.windows[0].path, read_session.windows[0].path);
+        assert_eq!(session.windows[0].command, read_session.windows[0].command);
     }
 }
