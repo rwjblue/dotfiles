@@ -116,7 +116,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed
+  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat
 else
   if ! which sheldon > /dev/null 2>&1; then
     echo "Installing sheldon"
