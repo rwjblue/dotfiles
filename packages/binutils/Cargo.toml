@@ -1,0 +1,16 @@
+[package]
+name = "binutils"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.79"
+clap = { version = "4.5.3", features = ["derive"] }
+serde = { version = "1.0.197", features = ["derive"] }
+tmux_interface = { version = "0.3.2", features = ["tmux_3_4"] }
+toml = "0.8.12"
+
+[dev-dependencies]
+tempfile = "3.10.1"
