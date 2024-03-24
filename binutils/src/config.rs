@@ -11,6 +11,16 @@ use serde::{Deserialize, Serialize};
 use toml;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Config {
+    pub tmux: Tmux,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Tmux {
+    pub sessions: Vec<Session>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Session {
     pub name: String,
     pub windows: Vec<Window>,
@@ -29,9 +39,9 @@ pub fn get_config_file_path() -> PathBuf {
     Path::new(&home_dir).join(".config/binutils.toml")
 }
 
-pub fn write_config(session: &Session) -> Result<()> {
+pub fn write_config(config: &Config) -> Result<()> {
     let config_path = get_config_file_path();
-    let toml_str = toml::to_string_pretty(&session)?;
+    let toml_str = toml::to_string_pretty(&config)?;
 
     let config_dir = config_path.parent().unwrap();
     fs::create_dir_all(config_dir)?;
@@ -41,12 +51,12 @@ pub fn write_config(session: &Session) -> Result<()> {
     Ok(())
 }
 
-pub fn read_config() -> Result<Session> {
+pub fn read_config() -> Result<Config> {
     let config_path = get_config_file_path();
     let toml_str = fs::read_to_string(config_path)?;
-    let session: Session = toml::from_str(&toml_str)?;
+    let config: Config = toml::from_str(&toml_str)?;
 
-    Ok(session)
+    Ok(config)
 }
 
 fn path_to_string<S>(path: &Path, serializer: S) -> Result<S::Ok, S::Error>
@@ -105,8 +115,8 @@ mod tests {
 
     #[derive(Debug, Clone)]
     struct TestEnvironment {
-        _home: PathBuf,
-        _config_dir: PathBuf,
+        home: PathBuf,
+        config_dir: PathBuf,
         original_home: Option<String>,
     }
 
@@ -136,8 +146,8 @@ mod tests {
         fs::create_dir_all(&config_dir).expect("Failed to create .config directory");
 
         TestEnvironment {
-            _home: temp_home,
-            _config_dir: config_dir,
+            home: temp_home,
+            config_dir,
             original_home,
         }
     }
@@ -215,26 +225,45 @@ mod tests {
     fn test_write_and_read_config() {
         let _env = setup_test_environment();
 
-        let session = Session {
-            name: "Test Session".to_string(),
-            windows: vec![Window {
-                name: "Test Window".to_string(),
-                path: PathBuf::from("/some/path"),
-                command: "echo 'Hello, world!'".to_string(),
-            }],
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "Test Session".to_string(),
+                    windows: vec![Window {
+                        name: "Test Window".to_string(),
+                        path: PathBuf::from("/some/path"),
+                        command: "echo 'Hello, world!'".to_string(),
+                    }],
+                }],
+            },
         };
 
         // Write the config
-        write_config(&session).expect("Failed to write config");
+        write_config(&config).expect("Failed to write config");
 
         // Read the config
-        let read_session = read_config().expect("Failed to read config");
+        let read_config = read_config().expect("Failed to read config");
 
         // Assert that the written and read sessions are equal
-        assert_eq!(session.name, read_session.name);
-        assert_eq!(session.windows.len(), read_session.windows.len());
-        assert_eq!(session.windows[0].name, read_session.windows[0].name);
-        assert_eq!(session.windows[0].path, read_session.windows[0].path);
-        assert_eq!(session.windows[0].command, read_session.windows[0].command);
+        assert_eq!(
+            config.tmux.sessions[0].name,
+            read_config.tmux.sessions[0].name
+        );
+        assert_eq!(
+            config.tmux.sessions[0].windows.len(),
+            read_config.tmux.sessions[0].windows.len()
+        );
+        assert_eq!(
+            config.tmux.sessions[0].windows[0].name,
+            read_config.tmux.sessions[0].windows[0].name
+        );
+        assert_eq!(
+            config.tmux.sessions[0].windows[0].path,
+            read_config.tmux.sessions[0].windows[0].path
+        );
+        assert_eq!(
+            config.tmux.sessions[0].windows[0].command,
+            read_config.tmux.sessions[0].windows[0].command
+        );
     }
 }
