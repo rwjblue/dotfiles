@@ -110,13 +110,15 @@ fn revert_tokens_in_path(path: &Path) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use insta::assert_snapshot;
     use std::env;
     use tempfile::tempdir;
 
     #[derive(Debug, Clone)]
     struct TestEnvironment {
-        home: PathBuf,
-        config_dir: PathBuf,
+        _home: PathBuf,
+        _config_dir: PathBuf,
+        config_file: PathBuf,
         original_home: Option<String>,
     }
 
@@ -146,8 +148,9 @@ mod tests {
         fs::create_dir_all(&config_dir).expect("Failed to create .config directory");
 
         TestEnvironment {
-            home: temp_home,
-            config_dir,
+            _home: temp_home,
+            config_file: config_dir.join("binutils.toml"),
+            _config_dir: config_dir,
             original_home,
         }
     }
@@ -265,5 +268,51 @@ mod tests {
             config.tmux.sessions[0].windows[0].command,
             read_config.tmux.sessions[0].windows[0].command
         );
+    }
+
+    #[test]
+    fn test_write_config() {
+        let env = setup_test_environment();
+
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "Test Session".to_string(),
+                    windows: vec![
+                        Window {
+                            name: "Test Window".to_string(),
+                            path: PathBuf::from("/some/path"),
+                            command: "echo 'Hello, world!'".to_string(),
+                        },
+                        Window {
+                            name: "Second Window".to_string(),
+                            path: PathBuf::from("/some/other-path"),
+                            command: "nvim".to_string(),
+                        },
+                    ],
+                }],
+            },
+        };
+
+        // Write the config
+        write_config(&config).expect("Failed to write config");
+
+        // Assert that the config file was created
+        let written_config = fs::read_to_string(&env.config_file).expect("Failed to read config");
+
+        assert_snapshot!(written_config, @r###"
+        [[tmux.sessions]]
+        name = "Test Session"
+
+        [[tmux.sessions.windows]]
+        name = "Test Window"
+        path = "/some/path"
+        command = "echo 'Hello, world!'"
+
+        [[tmux.sessions.windows]]
+        name = "Second Window"
+        path = "/some/other-path"
+        command = "nvim"
+        "###);
     }
 }
