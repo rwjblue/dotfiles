@@ -78,6 +78,7 @@ link-dotfile "zsh/zprofile" "$HOME/.zprofile"
 link-dotfile "zsh/zshrc" "$HOME/.zshrc"
 copy-dotfile "zsh/zshrc.local" "$HOME/.zshrc.local"
 link-dotfile "zsh/sheldon" "$HOME/.config/sheldon"
+link-dotfile "atuin" "$HOME/.config/atuin"
 
 link-dotfile "git/gitconfig" "$HOME/.gitconfig"
 link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
@@ -116,7 +117,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
-  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat
+  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat atuin
 else
   if ! which sheldon > /dev/null 2>&1; then
     echo "Installing sheldon"
