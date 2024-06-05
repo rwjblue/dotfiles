@@ -130,9 +130,33 @@ else
   fi
 
   if ! which starship > /dev/null 2>&1; then
+    echo "Installing starship"
     curl -sS https://starship.rs/install.sh | sh -s -- --force
   fi
 
+
+  if ! which zoxide > /dev/null 2>&1; then
+    echo "Installing zoxide"
+    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  fi
+
+  if ! which eza > /dev/null 2>&1; then
+    echo "Installing eza"
+    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
+    sudo chmod +x eza
+    sudo chown root:root eza
+    sudo mv eza /usr/local/bin/eza
+  fi
+
+  if ! which bat > /dev/null 2>&1; then
+    echo "Installing bat"
+    cargo install --locked bat
+  fi
+
+  if ! which delta > /dev/null 2>&1; then
+    echo "Installing delta"
+    cargo install --locked git-delta
+  fi
 
   if [[ ! -d $HOME/.fzf ]]; then
     echo "Installing fzf"
