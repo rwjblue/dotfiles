@@ -127,6 +127,11 @@ else
     export PATH="$HOME/.local/bin:$PATH"
   fi
 
+  if ! which starship > /dev/null 2>&1; then
+    curl -sS https://starship.rs/install.sh | sh -s -- --force
+  fi
+
+
   if [[ ! -d $HOME/.fzf ]]; then
     echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
