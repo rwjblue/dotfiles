@@ -133,3 +133,6 @@ else
     $HOME/.fzf/install
   fi
 fi
+
+# now setup the shell
+sheldon lock
