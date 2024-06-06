@@ -1,3 +1,0 @@
-#!/usr/bin/env sh
-
-FORCE=true ./install

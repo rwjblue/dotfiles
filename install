@@ -2,6 +2,10 @@
 
 set -e # fail if anything exits non-zero
 
+if [ -f /etc/rdev.conf ]; then
+  FORCE="true"
+fi
+
 DOTFILES=$(dirname ${(%):-%x})
 
 abspath() {
