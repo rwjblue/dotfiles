@@ -161,7 +161,7 @@ else
   if [[ ! -d $HOME/.fzf ]]; then
     echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
-    $HOME/.fzf/install
+    $HOME/.fzf/install --all
   fi
 fi
 
