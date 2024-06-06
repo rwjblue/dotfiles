@@ -130,7 +130,11 @@ else
     # put any rdev specific setup here
   fi
 
-  echo "updating rust toolchain"
+  if ! which rustup > /dev/null 2>&1; then
+    echo "Installing rustup"
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+  fi
+
   rustup self update
   rustup update stable
 
