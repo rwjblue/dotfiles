@@ -160,17 +160,17 @@ else
 
   if ! which eza > /dev/null 2>&1; then
     echo "Installing eza"
-    cargo binstall eza
+    cargo binstall --locked --no-confirm eza
   fi
 
   if ! which bat > /dev/null 2>&1; then
     echo "Installing bat"
-    cargo binstall bat
+    cargo binstall --locked --no-confirm bat
   fi
 
   if ! which delta > /dev/null 2>&1; then
     echo "Installing delta"
-    cargo binstall git-delta
+    cargo binstall --locked --no-confirm git-delta
   fi
 
   if [[ ! -d $HOME/.fzf ]]; then
