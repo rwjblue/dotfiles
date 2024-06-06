@@ -121,6 +121,20 @@ if [[ "$OSTYPE" == darwin* ]]; then
 
   brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat atuin
 else
+  # we are within an rdev if this file exists
+  if [ -f /etc/rdev.conf ]; then
+    # Get the current default shell of the user
+    current_shell=$(getent passwd $USER | cut -d: -f7)
+
+    # Check if the current shell is zsh
+    if [ "$current_shell" != "/usr/bin/zsh" ]; then
+      echo "Current shell is $current_shell. Changing to /usr/bin/zsh..."
+      chsh -s /usr/bin/zsh
+    else
+      echo "The default shell is already /usr/bin/zsh."
+    fi
+  fi
+
   if ! which sheldon > /dev/null 2>&1; then
     echo "Installing sheldon"
     curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
