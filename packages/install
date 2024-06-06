@@ -128,6 +128,17 @@ else
   # we are within an rdev if this file exists
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
+
+    # just make sure that we are using current / up to date rust in rdev
+    mint toolchains rust
+  fi
+
+  rustup self update
+  rustup update stable
+
+  if ! which cargo-binstall > /dev/null 2>&1; then
+    echo "Installing cargo-binstall"
+    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
   fi
 
   if ! which sheldon > /dev/null 2>&1; then
@@ -151,20 +162,17 @@ else
 
   if ! which eza > /dev/null 2>&1; then
     echo "Installing eza"
-    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
-    sudo chmod +x eza
-    sudo chown root:root eza
-    sudo mv eza /usr/local/bin/eza
+    cargo binstall eza
   fi
 
   if ! which bat > /dev/null 2>&1; then
     echo "Installing bat"
-    cargo install --locked bat
+    cargo binstall bat
   fi
 
   if ! which delta > /dev/null 2>&1; then
     echo "Installing delta"
-    cargo install --locked git-delta
+    cargo binstall git-delta
   fi
 
   if [[ ! -d $HOME/.fzf ]]; then
