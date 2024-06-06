@@ -128,11 +128,9 @@ else
   # we are within an rdev if this file exists
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
-
-    # just make sure that we are using current / up to date rust in rdev
-    mint toolchains rust
   fi
 
+  echo "updating rust toolchain"
   rustup self update
   rustup update stable
 
