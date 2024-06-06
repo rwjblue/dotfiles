@@ -1,1 +1,6 @@
-export PATH="$PATH:$HOME/.local/bin:$HOME/.cargo/bin"
+if [ -f /etc/rdev.conf ]; then
+  if [[ $- == *i* ]]; then
+    export SHELL=/usr/bin/zsh
+    exec /usr/bin/zsh -l
+  fi
+fi
