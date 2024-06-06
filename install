@@ -6,6 +6,33 @@ if [ -f /etc/rdev.conf ]; then
   FORCE="true"
 fi
 
+log_file="$HOME/dotfiles_install_log.txt"
+
+log() {
+  local message="$1"
+  local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  echo "$timestamp - $message" | tee -a "$log_file"
+}
+
+log_error() {
+  local message="$1"
+  local exit_code="$2"
+  local timestamp=$(date +"%Y-%m-%d %H:%M:%S")
+  echo "$timestamp - ERROR: $message (Exit code: $exit_code)" | tee -a "$log_file"
+}
+
+run_command() {
+  local command="$1"
+  log "Running command: $command"
+  {
+    eval "$command" 2>&1 | tee >(tee -a "$log_file") | tail -n +1
+  } || {
+    local exit_code=$?
+    log_error "Command failed: $command" "$exit_code"
+    exit $exit_code
+  }
+}
+
 DOTFILES=$(dirname ${(%):-%x})
 
 abspath() {
@@ -41,13 +68,13 @@ link-dotfile() {
     if [ -L $TARGET ]; then
       current=$(readlink $TARGET)
       if [ $current != $ABSOLUTE_SOURCE ]; then
-        echo "$TARGET already exists and is symlinked to $current"
+        log "$TARGET already exists and is symlinked to $current"
       fi
     else
-      echo "$TARGET already exists"
+      log "$TARGET already exists"
     fi
   else
-    echo "creating link for $TARGET"
+    log "creating link for $TARGET"
     mkdir -p "$(dirname $TARGET)"
     ln -s $ABSOLUTE_SOURCE "$TARGET"
   fi
@@ -64,9 +91,9 @@ copy-dotfile() {
   fi
 
   if [ -e $TARGET ]; then
-    echo "$TARGET already exists";
+    log "$TARGET already exists";
   else
-    echo "creating $TARGET"
+    log "creating $TARGET"
     mkdir -p $(dirname $TARGET)
     cp $ABSOLUTE_SOURCE $TARGET
   fi
@@ -103,74 +130,71 @@ if [[ "$OSTYPE" == darwin* ]]; then
 fi
 
 if [ ! -d ~/.ssh ]; then
-  echo "Creating .ssh dir"
+  log "Creating .ssh dir"
   mkdir $HOME/.ssh
 fi
 link-dotfile "ssh/rc" "$HOME/.ssh/rc"
 
 if [[ ! -x "$(command -v volta)" ]]; then
-  echo "installing volta"
+  log "installing volta"
   curl https://get.volta.sh | bash
 
-  echo "installing current node & yarn"
+  log "installing current node & yarn"
   $HOME/.volta/volta install node
   $HOME/.volta/volta install yarn
 fi
 
 if [[ "$OSTYPE" == darwin* ]]; then
   if ! command -v brew >/dev/null; then
-    echo "Installing Homebrew ..."
+    log "Installing Homebrew ..."
     /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   fi
 
   brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat atuin
 else
-  # we are within an rdev if this file exists
   if [ -f /etc/rdev.conf ]; then
-    # put any rdev specific setup here
+    log "Running rdev specific setup"
+    run_command "sudo yum install -y gcc make openssl-devel curl-devel expat-devel gettext-devel"
   fi
 
   if ! which sheldon > /dev/null 2>&1; then
-    echo "Installing sheldon"
-    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
-      | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
-
+    log "Installing sheldon"
+    run_command "curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin"
     export PATH="$HOME/.local/bin:$PATH"
   fi
 
   if ! which starship > /dev/null 2>&1; then
-    echo "Installing starship"
-    curl -sS https://starship.rs/install.sh | sh -s -- --force
+    log "Installing starship"
+    run_command "curl -sS https://starship.rs/install.sh | sh -s -- --force"
   fi
 
-
   if ! which zoxide > /dev/null 2>&1; then
-    echo "Installing zoxide"
-    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    log "Installing zoxide"
+    run_command "curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh"
   fi
 
   if ! which eza > /dev/null 2>&1; then
-    echo "Installing eza"
-    wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
-    sudo chmod +x eza
-    sudo chown root:root eza
-    sudo mv eza /usr/local/bin/eza
+    log "Installing eza"
+    run_command "wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz"
+    run_command "sudo chmod +x eza"
+    run_command "sudo chown root:root eza"
+    run_command "sudo mv eza /usr/local/bin/eza"
   fi
 
   if ! which bat > /dev/null 2>&1; then
-    echo "Installing bat"
-    cargo install --locked bat
+    log "Installing bat"
+    run_command "cargo install --locked bat"
   fi
 
   if ! which delta > /dev/null 2>&1; then
-    echo "Installing delta"
-    cargo install --locked git-delta
+    log "Installing delta"
+    run_command "cargo install --locked git-delta"
   fi
 
   if [[ ! -d $HOME/.fzf ]]; then
-    echo "Installing fzf"
-    git clone https://github.com/junegunn/fzf.git $HOME/.fzf
-    $HOME/.fzf/install --bin
+    log "Installing fzf"
+    run_command "git clone https://github.com/junegunn/fzf.git $HOME/.fzf"
+    run_command "$HOME/.fzf/install --bin"
   fi
 fi
 
