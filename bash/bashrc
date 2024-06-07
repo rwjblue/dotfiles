@@ -1,4 +1,14 @@
 if [ -f /etc/rdev.conf ]; then
+  # source tmux config (this can't be done in `./install` because I use
+  # `base-index 1` and `pane-base-index 1` and the rdev infrastructure assumes
+  # that `build.0` is the first pane)
+  #
+  # doing it here is a bit of a hack (it just makes sourcing the file lazy
+  # enough that the `rdev create` command can finish)
+  if tmux ls > /dev/null 2>&1; then
+    tmux source-file ~/.tmux.conf
+  fi
+
   if [[ $- == *i* ]]; then
     export SHELL=/usr/bin/zsh
     exec /usr/bin/zsh -l
