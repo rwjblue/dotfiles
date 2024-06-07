@@ -133,6 +133,31 @@ else
   # we are within an rdev if this file exists
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
+
+    echo "installing packages required for neovim"
+    sudo yum update -y
+    sudo yum install -y gcc make cmake unzip ninja-build gettext curl
+
+    echo "installing neovim"
+    echo "initial nvim version"
+    nvim --version
+
+    CURRENT_DIR=$(pwd)
+    mkdir -p $HOME/neovim/
+    cd $HOME/neovim/
+
+    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+    chmod u+x nvim.appimage
+
+    # no fuse support, so we have to extract manually
+    ./nvim.appimage --appimage-extract
+    sudo rm /usr/local/bin/nvim
+    sudo ln -s $HOME/neovim/squashfs-root/AppRun /usr/local/bin/nvim
+
+    cd $CURRENT_DIR
+
+    echo "installed nvim version"
+    nvim --version
   fi
 
   if ! which rustup > /dev/null 2>&1; then
@@ -186,6 +211,14 @@ else
     echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
     $HOME/.fzf/install --bin
+  fi
+
+  if [[ ! -d $HOME/.config/nvim ]]; then
+    echo "setting up dotvim"
+    git clone https://github.com/rwjblue/dotvim.git $HOME/.config/nvim
+
+    echo "installing deps"
+    nvim --headless '+Lazy! restore' +qa
   fi
 fi
 
