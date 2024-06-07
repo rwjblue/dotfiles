@@ -93,6 +93,11 @@ copy-dotfile "git/gitconfig.local" "$HOME/.gitconfig.local"
 link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
 copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
+if tmux ls > /dev/null 2>&1; then
+    tmux source-file ~/.tmux.conf
+fi
+
+
 link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
 
 if [[ "$OSTYPE" == darwin* ]]; then
