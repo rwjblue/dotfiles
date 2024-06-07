@@ -134,10 +134,6 @@ else
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
 
-    echo "installing packages required for neovim"
-    sudo yum update -y
-    sudo yum install -y gcc make cmake unzip ninja-build gettext curl
-
     echo "installing neovim"
     echo "initial nvim version"
     nvim --version
