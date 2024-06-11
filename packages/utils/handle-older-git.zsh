@@ -1,5 +1,7 @@
 #!/usr/bin/env zsh
 
+set -e
+
 # Get the installed Git version
 GIT_VERSION=$(git --version | awk '{print $3}')
 
@@ -23,8 +25,7 @@ else
   echo "Git version does not support zdiff3. Using diff3 instead."
   git config --global merge.conflictStyle diff3
 
-  git config --global --unset transfer.fsckobjects
-  git config --global --unset fetch.fsckobjects
-  git config --global --unset receive.fsckObjects
+  git config --global --unset transfer.fsckobjects || true
+  git config --global --unset fetch.fsckobjects || true
+  git config --global --unset receive.fsckobjects || true
 fi
-
