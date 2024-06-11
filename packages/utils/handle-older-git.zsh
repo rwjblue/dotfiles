@@ -22,5 +22,9 @@ if version_ge "$GIT_VERSION" "$MIN_VERSION"; then
 else
   echo "Git version does not support zdiff3. Using diff3 instead."
   git config --global merge.conflictStyle diff3
+
+  git config --global --unset transfer.fsckobjects
+  git config --global --unset fetch.fsckobjects
+  git config --global --unset receive.fsckObjects
 fi
 
