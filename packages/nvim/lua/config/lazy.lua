@@ -22,6 +22,7 @@ require("lazy").setup({
 
     -- disable copilot on rdev
     non_rdev and { import = "lazyvim.plugins.extras.coding.copilot" } or nil,
+    non_rdev and { import = "lazyvim.plugins.extras.coding.copilot-chat" } or nil,
 
     -- import/override with your plugins
     { import = "plugins" },
@@ -37,7 +38,7 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
-    enabled = true, -- automatically check for plugin updates
+    enabled = true,    -- automatically check for plugin updates
     frequency = 86400, -- check for updates once a day
   },
   performance = {
