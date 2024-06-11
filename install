@@ -152,8 +152,7 @@ else
 
     # Download and install Git from source
     echo "Installing dependencies for git"
-    sudo yum install -y dh-autoreconf curl-devel expat-devel gettext-devel \
-      openssl-devel perl-devel zlib-devel
+    sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel
 
     echo "Downloading Git source"
     DESIRED_GIT_VERSION="2.40.1"
