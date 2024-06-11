@@ -129,27 +129,6 @@ else
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
 
-    echo "installing neovim"
-    echo "initial nvim version"
-    nvim --version
-
-    CURRENT_DIR=$(pwd)
-    mkdir -p $HOME/neovim/
-    cd $HOME/neovim/
-
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
-    chmod u+x nvim.appimage
-
-    # no fuse support, so we have to extract manually
-    ./nvim.appimage --appimage-extract
-    sudo rm /usr/local/bin/nvim
-    sudo ln -s $HOME/neovim/squashfs-root/AppRun /usr/local/bin/nvim
-
-    cd $CURRENT_DIR
-
-    echo "installed nvim version"
-    nvim --version
-
     # Download and install Git from source
     echo "Installing dependencies for git"
     sudo yum install -y curl-devel expat-devel gettext-devel openssl-devel perl-devel zlib-devel
@@ -166,6 +145,7 @@ else
     sudo make prefix=/usr/local install
 
     git --version
+    ./utils/setup-rdev-nvim.zsh
   fi
 
   if ! which rustup > /dev/null 2>&1; then
