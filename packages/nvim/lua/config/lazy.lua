@@ -1,6 +1,10 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+local function file_exists(path)
+  return (vim.uv or vim.loop).fs_stat(path) ~= nil
+end
+
+if not file_exists(lazypath) then
   -- bootstrap lazy.nvim
   -- stylua: ignore
   vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable",
@@ -8,13 +12,17 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
+local non_rdev = not file_exists("/etc/rdev.conf")
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim",                               import = "lazyvim.plugins" },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
 
-    { import = "lazyvim.plugins.extras.coding.copilot" },
+    -- disable copilot on rdev
+    non_rdev and { import = "lazyvim.plugins.extras.coding.copilot" } or nil,
+
     -- import/override with your plugins
     { import = "plugins" },
   },
@@ -29,7 +37,7 @@ require("lazy").setup({
   },
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
-    enabled = true,    -- automatically check for plugin updates
+    enabled = true, -- automatically check for plugin updates
     frequency = 86400, -- check for updates once a day
   },
   performance = {
