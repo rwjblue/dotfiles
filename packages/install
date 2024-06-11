@@ -6,7 +6,7 @@ if [ -f /etc/rdev.conf ]; then
   FORCE="true"
 fi
 
-DOTFILES=$(dirname ${(%):-%x})
+DOTFILES=$(dirname "$(realpath "$0")")
 
 abspath() {
   # generate absolute path from relative path
@@ -128,8 +128,8 @@ else
   # we are within an rdev if this file exists
   if [ -f /etc/rdev.conf ]; then
     # put any rdev specific setup here
-    ./utils/handle-older-git.zsh
-    ./utils/setup-rdev-nvim.zsh
+    "$DOTFILES/utils/handle-older-git.zsh"
+    "$DOTFILES/utils/setup-rdev-nvim.zsh"
   fi
 
   if ! which rustup > /dev/null 2>&1; then
