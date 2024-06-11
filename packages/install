@@ -190,7 +190,7 @@ else
     git clone https://github.com/rwjblue/dotvim.git $HOME/.config/nvim
 
     echo "installing deps"
-    nvim --headless '+Lazy! restore' +qa
+    nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
   fi
 fi
 
