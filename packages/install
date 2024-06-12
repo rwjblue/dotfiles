@@ -185,9 +185,10 @@ else
     $HOME/.fzf/install --bin
   fi
 
-  if [[ ! -d $HOME/.config/nvim ]]; then
+  if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
     echo "setting up dotvim"
-    git clone https://github.com/rwjblue/dotvim.git $HOME/.config/nvim
+    git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
+    ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
 
     echo "installing deps"
     nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
