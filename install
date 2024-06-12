@@ -147,6 +147,8 @@ else
   if ! which cargo-binstall > /dev/null 2>&1; then
     echo "Installing cargo-binstall"
     curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+  else
+    echo "cargo-binstall already installed"
   fi
 
   if ! which sheldon > /dev/null 2>&1; then
@@ -155,38 +157,52 @@ else
       | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
 
     export PATH="$HOME/.local/bin:$PATH"
+  else
+    echo "sheldon already installed"
   fi
 
   if ! which starship > /dev/null 2>&1; then
     echo "Installing starship"
     curl -sS https://starship.rs/install.sh | sh -s -- --force
+  else
+    echo "starship already installed"
   fi
 
 
   if ! which zoxide > /dev/null 2>&1; then
     echo "Installing zoxide"
     curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+  else
+    echo "zoxide already installed"
   fi
 
   if ! which eza > /dev/null 2>&1; then
     echo "Installing eza"
     cargo binstall --locked --no-confirm eza
+  else
+    echo "eza already installed"
   fi
 
   if ! which bat > /dev/null 2>&1; then
     echo "Installing bat"
     cargo binstall --locked --no-confirm bat
+  else
+    echo "bat already installed"
   fi
 
   if ! which delta > /dev/null 2>&1; then
     echo "Installing delta"
     cargo binstall --locked --no-confirm git-delta
+  else
+    echo "delta already installed"
   fi
 
   if [[ ! -d $HOME/.fzf ]]; then
     echo "Installing fzf"
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
     $HOME/.fzf/install --bin
+  else
+    echo "fzf already installed"
   fi
 fi
 
@@ -201,6 +217,8 @@ if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/s
 
   echo "installing deps"
   nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
+else
+  echo "dotvim already setup"
 fi
 
 # now setup the shell
