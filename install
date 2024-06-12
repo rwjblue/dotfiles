@@ -194,6 +194,8 @@ fi
 # required dependencies first (so neovim is installed and up to date)
 if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
   echo "setting up dotvim"
+  rm -rf $HOME/.config/nvim
+
   git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
   ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
 
