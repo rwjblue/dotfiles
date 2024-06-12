@@ -188,15 +188,17 @@ else
     git clone https://github.com/junegunn/fzf.git $HOME/.fzf
     $HOME/.fzf/install --bin
   fi
+fi
 
-  if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
-    echo "setting up dotvim"
-    git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
-    ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
+# make sure dotvim is setup properly, have to do this after installing the various
+# required dependencies first (so neovim is installed and up to date)
+if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
+  echo "setting up dotvim"
+  git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
+  ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
 
-    echo "installing deps"
-    nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
-  fi
+  echo "installing deps"
+  nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
 fi
 
 # now setup the shell
