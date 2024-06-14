@@ -233,7 +233,7 @@ mod tests {
 
     #[test]
     fn test_write_and_read_config() {
-        let _env = setup_test_environment();
+        let env = setup_test_environment();
 
         let config = Config {
             tmux: Tmux {
@@ -250,6 +250,20 @@ mod tests {
 
         // Write the config
         write_config(&config).expect("Failed to write config");
+
+        let written_toml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
+
+        assert_toml_snapshot!(written_toml_str, @r###"
+        '''
+        [[tmux.sessions]]
+        name = "Test Session"
+
+        [[tmux.sessions.windows]]
+        name = "Test Window"
+        path = "/some/path"
+        command = "echo 'Hello, world!'"
+        '''
+        "###);
 
         // Read the config
         let read_config = read_config().expect("Failed to read config");
