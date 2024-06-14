@@ -9,13 +9,13 @@ edition = "2021"
 anyhow = "1.0.79"
 clap = { version = "4.5.3", features = ["derive"] }
 serde = { version = "1.0.197", features = ["derive"] }
-temp-env = "0.3.6"
 tmux_interface = { version = "0.3.2", features = ["tmux_3_4"] }
 toml = "0.8.12"
 
 [dev-dependencies]
 insta = { version = "1.36.1", features = ["yaml", "toml"] }
 tempfile = "3.10.1"
+temp-env = "0.3.6"
 
 [profile.dev.package]
 insta.opt-level = 3
