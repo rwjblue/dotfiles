@@ -26,12 +26,19 @@ pub struct Session {
     pub windows: Vec<Window>,
 }
 
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum Command {
+    Single(String),
+    Multiple(Vec<String>),
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Window {
     pub name: String,
     #[serde(serialize_with = "path_to_string", deserialize_with = "string_to_path")]
     pub path: PathBuf,
-    pub command: String,
+    pub command: Command,
 }
 
 pub fn get_config_file_path() -> PathBuf {
@@ -110,7 +117,7 @@ fn revert_tokens_in_path(path: &Path) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use insta::assert_snapshot;
+    use insta::{assert_snapshot, assert_toml_snapshot};
     use std::env;
     use tempfile::tempdir;
 
@@ -235,7 +242,7 @@ mod tests {
                     windows: vec![Window {
                         name: "Test Window".to_string(),
                         path: PathBuf::from("/some/path"),
-                        command: "echo 'Hello, world!'".to_string(),
+                        command: Command::Single("echo 'Hello, world!'".to_string()),
                     }],
                 }],
             },
@@ -276,21 +283,34 @@ mod tests {
 
         let config = Config {
             tmux: Tmux {
-                sessions: vec![Session {
-                    name: "Test Session".to_string(),
-                    windows: vec![
-                        Window {
-                            name: "Test Window".to_string(),
-                            path: PathBuf::from("/some/path"),
-                            command: "echo 'Hello, world!'".to_string(),
-                        },
-                        Window {
-                            name: "Second Window".to_string(),
-                            path: PathBuf::from("/some/other-path"),
-                            command: "nvim".to_string(),
-                        },
-                    ],
-                }],
+                sessions: vec![
+                    Session {
+                        name: "Test Session".to_string(),
+                        windows: vec![
+                            Window {
+                                name: "Test Window".to_string(),
+                                path: PathBuf::from("/some/path"),
+                                command: Command::Single("echo 'Hello, world!'".to_string()),
+                            },
+                            Window {
+                                name: "Second Window".to_string(),
+                                path: PathBuf::from("/some/other-path"),
+                                command: Command::Single("nvim".to_string()),
+                            },
+                        ],
+                    },
+                    Session {
+                        name: "Second Session".to_string(),
+                        windows: vec![Window {
+                            name: "Third Window".to_string(),
+                            path: PathBuf::from("~/"),
+                            command: Command::Multiple(vec![
+                                "echo 'Hello, world!'".to_string(),
+                                "echo 'Goodbye, world!'".to_string(),
+                            ]),
+                        }],
+                    },
+                ],
             },
         };
 
@@ -300,7 +320,8 @@ mod tests {
         // Assert that the config file was created
         let written_config = fs::read_to_string(&env.config_file).expect("Failed to read config");
 
-        assert_snapshot!(written_config, @r###"
+        assert_toml_snapshot!(written_config, @r###"
+        '''
         [[tmux.sessions]]
         name = "Test Session"
 
@@ -313,6 +334,18 @@ mod tests {
         name = "Second Window"
         path = "/some/other-path"
         command = "nvim"
+
+        [[tmux.sessions]]
+        name = "Second Session"
+
+        [[tmux.sessions.windows]]
+        name = "Third Window"
+        path = "~/"
+        command = [
+            "echo 'Hello, world!'",
+            "echo 'Goodbye, world!'",
+        ]
+        '''
         "###);
     }
 }
