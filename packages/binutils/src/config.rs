@@ -20,7 +20,7 @@ pub struct Tmux {
     pub sessions: Vec<Session>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Session {
     pub name: String,
     pub windows: Vec<Window>,
@@ -33,7 +33,7 @@ pub enum Command {
     Multiple(Vec<String>),
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Window {
     pub name: String,
     #[serde(serialize_with = "path_to_string", deserialize_with = "string_to_path")]
@@ -268,27 +268,7 @@ mod tests {
         // Read the config
         let read_config = read_config().expect("Failed to read config");
 
-        // Assert that the written and read sessions are equal
-        assert_eq!(
-            config.tmux.sessions[0].name,
-            read_config.tmux.sessions[0].name
-        );
-        assert_eq!(
-            config.tmux.sessions[0].windows.len(),
-            read_config.tmux.sessions[0].windows.len()
-        );
-        assert_eq!(
-            config.tmux.sessions[0].windows[0].name,
-            read_config.tmux.sessions[0].windows[0].name
-        );
-        assert_eq!(
-            config.tmux.sessions[0].windows[0].path,
-            read_config.tmux.sessions[0].windows[0].path
-        );
-        assert_eq!(
-            config.tmux.sessions[0].windows[0].command,
-            read_config.tmux.sessions[0].windows[0].command
-        );
+        assert_eq!(config.tmux.sessions, read_config.tmux.sessions);
     }
 
     #[test]
