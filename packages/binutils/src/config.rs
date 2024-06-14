@@ -43,7 +43,7 @@ pub struct Window {
 
 pub fn get_config_file_path() -> PathBuf {
     let home_dir = env::var("HOME").expect("HOME environment variable not set");
-    Path::new(&home_dir).join(".config/binutils.toml")
+    Path::new(&home_dir).join(".config/binutils/config.toml")
 }
 
 pub fn write_config(config: &Config) -> Result<()> {
@@ -151,12 +151,12 @@ mod tests {
         );
 
         // Ensure config directory exists
-        let config_dir = temp_home.join(".config");
+        let config_dir = temp_home.join(".config/binutils");
         fs::create_dir_all(&config_dir).expect("Failed to create .config directory");
 
         TestEnvironment {
             _home: temp_home,
-            config_file: config_dir.join("binutils.toml"),
+            config_file: config_dir.join("config.toml"),
             _config_dir: config_dir,
             original_home,
         }
