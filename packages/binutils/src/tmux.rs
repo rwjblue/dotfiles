@@ -150,8 +150,10 @@ mod tests {
     fn create_tmux_session(
         session_name: &str,
         window_name: &str,
-        socket_name: &str,
+        options: &impl TmuxOptions,
     ) -> Result<(), std::io::Error> {
+        let socket_name = get_socket_name(options);
+
         // Create the session with the initial window
         let _ = Command::new("tmux")
             .arg("-L")
@@ -164,12 +166,14 @@ mod tests {
             .arg(window_name)
             .status()?;
 
-        assert!(tmux_server_running(socket_name));
+        assert!(tmux_server_running(options));
 
         Ok(())
     }
 
-    fn kill_tmux_server(socket_name: &str) -> Result<()> {
+    fn kill_tmux_server(options: &impl TmuxOptions) -> Result<()> {
+        let socket_name = get_socket_name(options);
+
         let _ = Command::new("tmux")
             .arg("-L")
             .arg(socket_name)
@@ -179,7 +183,9 @@ mod tests {
         Ok(())
     }
 
-    fn tmux_server_running(socket_name: &str) -> bool {
+    fn tmux_server_running(options: &impl TmuxOptions) -> bool {
+        let socket_name = get_socket_name(options);
+
         Command::new("tmux")
             .arg("-L")
             .arg(socket_name)
@@ -187,6 +193,15 @@ mod tests {
             .status()
             .map(|status| status.success())
             .unwrap_or(false)
+    }
+
+    fn build_testing_options() -> TestingTmuxOptions {
+        TestingTmuxOptions {
+            dry_run: false,
+            debug: false,
+            attach: None,
+            socket_name: generate_socket_name(),
+        }
     }
 
     #[test]
@@ -209,18 +224,11 @@ mod tests {
 
     #[test]
     fn test_gather_tmux_state() -> Result<()> {
-        let socket_name = generate_socket_name();
+        let options = build_testing_options();
 
-        assert!(!tmux_server_running(&socket_name));
+        assert!(!tmux_server_running(&options));
 
-        let options = TestingTmuxOptions {
-            dry_run: false,
-            debug: false,
-            attach: Some(false),
-            socket_name,
-        };
-
-        let _ = create_tmux_session("foo", "bar", &options.socket_name);
+        let _ = create_tmux_session("foo", "bar", &options);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
@@ -230,7 +238,7 @@ mod tests {
         }
         "###);
 
-        kill_tmux_server(&options.socket_name)?;
+        kill_tmux_server(&options)?;
 
         Ok(())
     }
