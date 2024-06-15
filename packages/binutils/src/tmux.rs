@@ -31,6 +31,12 @@ pub fn in_tmux() -> bool {
     std::env::var("TMUX").is_ok()
 }
 
+fn get_socket_name(options: &impl TmuxOptions) -> String {
+    options
+        .socket_name()
+        .unwrap_or_else(|| "default".to_string())
+}
+
 pub fn startup_tmux(config: Config, options: &impl TmuxOptions) {
     for session in config.tmux.sessions {
         for window in session.windows {
@@ -51,7 +57,7 @@ type TmuxState = HashMap<String, Vec<String>>;
 fn gather_tmux_state(options: &impl TmuxOptions) -> TmuxState {
     let mut state = HashMap::new();
 
-    let socket_name = options.socket_name().unwrap_or_else(|| "default".into());
+    let socket_name = get_socket_name(options);
 
     let sessions_output = Command::new("tmux")
         .arg("-L")
