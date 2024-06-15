@@ -16,6 +16,7 @@ toml = "0.8.12"
 insta = { version = "1.36.1", features = ["yaml", "toml"] }
 tempfile = "3.10.1"
 temp-env = "0.3.6"
+rand = "0.8.5"
 
 [profile.dev.package]
 insta.opt-level = 3

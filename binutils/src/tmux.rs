@@ -102,6 +102,7 @@ fn run_command(mut cmd: Command, opts: &impl TmuxOptions) {
 #[cfg(test)]
 mod tests {
     use insta::assert_debug_snapshot;
+    use rand::{distributions::Alphanumeric, Rng};
 
     use super::*;
     use crate::test_utils::setup_test_environment;
@@ -130,6 +131,16 @@ mod tests {
         }
     }
 
+    fn generate_socket_name() -> String {
+        let rng = rand::thread_rng();
+        let socket_name: String = rng
+            .sample_iter(&Alphanumeric)
+            .take(30)
+            .map(char::from)
+            .collect();
+        socket_name
+    }
+
     fn create_tmux_session(
         session_name: &str,
         window_name: &str,
@@ -147,6 +158,8 @@ mod tests {
             .arg(window_name)
             .status()?;
 
+        assert!(tmux_server_running(socket_name));
+
         Ok(())
     }
 
@@ -158,6 +171,16 @@ mod tests {
             .status()?;
 
         Ok(())
+    }
+
+    fn tmux_server_running(socket_name: &str) -> bool {
+        Command::new("tmux")
+            .arg("-L")
+            .arg(socket_name)
+            .arg("has-session")
+            .status()
+            .map(|status| status.success())
+            .unwrap_or(false)
     }
 
     #[test]
@@ -180,11 +203,15 @@ mod tests {
 
     #[test]
     fn test_gather_tmux_state() -> Result<()> {
+        let socket_name = generate_socket_name();
+
+        assert!(!tmux_server_running(&socket_name));
+
         let options = TestingTmuxOptions {
             dry_run: false,
             debug: false,
             attach: Some(false),
-            socket_name: "some-rando-1".into(),
+            socket_name,
         };
 
         let _ = create_tmux_session("foo", "bar", &options.socket_name);
