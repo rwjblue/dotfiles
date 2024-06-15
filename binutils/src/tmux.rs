@@ -111,7 +111,10 @@ mod tests {
     use rand::{distributions::Alphanumeric, Rng};
 
     use super::*;
-    use crate::test_utils::setup_test_environment;
+    use crate::{
+        config::{Session, Tmux},
+        test_utils::setup_test_environment,
+    };
 
     struct TestingTmuxOptions {
         dry_run: bool,
@@ -196,12 +199,19 @@ mod tests {
     }
 
     fn build_testing_options() -> TestingTmuxOptions {
-        TestingTmuxOptions {
+        let options = TestingTmuxOptions {
             dry_run: false,
             debug: false,
             attach: None,
             socket_name: generate_socket_name(),
-        }
+        };
+
+        assert!(
+            !tmux_server_running(&options),
+            "precond - tmux server should not be running on randomized socket name"
+        );
+
+        options
     }
 
     #[test]
@@ -226,14 +236,25 @@ mod tests {
     fn test_gather_tmux_state() -> Result<()> {
         let options = build_testing_options();
 
-        assert!(!tmux_server_running(&options));
-
-        let _ = create_tmux_session("foo", "bar", &options);
+        create_tmux_session("foo", "bar", &options)?;
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
             "foo": [
                 "bar",
+            ],
+        }
+        "###);
+
+        create_tmux_session("baz", "qux", &options)?;
+
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "bar",
+            ],
+            "baz": [
+                "qux",
             ],
         }
         "###);
