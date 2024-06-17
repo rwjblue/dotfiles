@@ -178,6 +178,12 @@ mod tests {
         }
     }
 
+    impl Drop for TestingTmuxOptions {
+        fn drop(&mut self) {
+            kill_tmux_server(self).unwrap();
+        }
+    }
+
     fn generate_socket_name() -> String {
         let rng = rand::thread_rng();
         let socket_name: String = rng
@@ -296,8 +302,6 @@ mod tests {
             ],
         }
         "###);
-
-        kill_tmux_server(&options)?;
 
         Ok(())
     }
