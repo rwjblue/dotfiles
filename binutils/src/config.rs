@@ -1,12 +1,10 @@
 use std::env;
-use std::fmt;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
-use serde::de::{self, Visitor};
 use serde::{Deserialize, Serialize};
 use toml;
 
@@ -37,8 +35,8 @@ pub enum Command {
 pub struct Window {
     pub name: String,
     #[serde(serialize_with = "path_to_string", deserialize_with = "string_to_path")]
-    pub path: PathBuf,
-    pub command: Command,
+    pub path: Option<PathBuf>,
+    pub command: Option<Command>,
 }
 
 pub fn get_config_file_path() -> PathBuf {
@@ -66,36 +64,25 @@ pub fn read_config() -> Result<Config> {
     Ok(config)
 }
 
-fn path_to_string<S>(path: &Path, serializer: S) -> Result<S::Ok, S::Error>
+pub fn path_to_string<S>(path: &Option<PathBuf>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
 {
-    let path_with_tokens = revert_tokens_in_path(path);
-    serializer.serialize_str(&path_with_tokens)
+    match path {
+        Some(p) => {
+            let path_str = revert_tokens_in_path(p);
+            serializer.serialize_some(&path_str)
+        }
+        None => serializer.serialize_none(),
+    }
 }
 
-fn string_to_path<'de, D>(deserializer: D) -> Result<PathBuf, D::Error>
+fn string_to_path<'de, D>(deserializer: D) -> Result<Option<PathBuf>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
-    struct StringVisitor;
-
-    impl<'de> Visitor<'de> for StringVisitor {
-        type Value = PathBuf;
-
-        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
-            formatter.write_str("a string representing a path")
-        }
-
-        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-        where
-            E: de::Error,
-        {
-            Ok(PathBuf::from(replace_tokens_in_path(v)))
-        }
-    }
-
-    deserializer.deserialize_string(StringVisitor)
+    let opt = Option::<String>::deserialize(deserializer)?;
+    Ok(opt.map(|s| PathBuf::from(replace_tokens_in_path(&s))))
 }
 
 fn replace_tokens_in_path(path: &str) -> String {
@@ -201,8 +188,8 @@ mod tests {
                     name: "Test Session".to_string(),
                     windows: vec![Window {
                         name: "Test Window".to_string(),
-                        path: PathBuf::from("/some/path"),
-                        command: Command::Single("echo 'Hello, world!'".to_string()),
+                        path: Some(PathBuf::from("/some/path")),
+                        command: Some(Command::Single("echo 'Hello, world!'".to_string())),
                     }],
                 }],
             },
@@ -243,26 +230,38 @@ mod tests {
                         windows: vec![
                             Window {
                                 name: "Test Window".to_string(),
-                                path: PathBuf::from("/some/path"),
-                                command: Command::Single("echo 'Hello, world!'".to_string()),
+                                path: Some(PathBuf::from("/some/path")),
+                                command: Some(Command::Single("echo 'Hello, world!'".to_string())),
                             },
                             Window {
                                 name: "Second Window".to_string(),
-                                path: PathBuf::from("/some/other-path"),
-                                command: Command::Single("nvim".to_string()),
+                                path: Some(PathBuf::from("/some/other-path")),
+                                command: Some(Command::Single("nvim".to_string())),
+                            },
+                            Window {
+                                name: "Window without path".to_string(),
+                                path: None,
+                                command: Some(Command::Single("nvim".to_string())),
                             },
                         ],
                     },
                     Session {
                         name: "Second Session".to_string(),
-                        windows: vec![Window {
-                            name: "Third Window".to_string(),
-                            path: PathBuf::from("~/"),
-                            command: Command::Multiple(vec![
-                                "echo 'Hello, world!'".to_string(),
-                                "echo 'Goodbye, world!'".to_string(),
-                            ]),
-                        }],
+                        windows: vec![
+                            Window {
+                                name: "Fourth Window".to_string(),
+                                path: Some(PathBuf::from("~/")),
+                                command: Some(Command::Multiple(vec![
+                                    "echo 'Hello, world!'".to_string(),
+                                    "echo 'Goodbye, world!'".to_string(),
+                                ])),
+                            },
+                            Window {
+                                name: "Window without command".to_string(),
+                                path: Some(PathBuf::from("/some/other-path")),
+                                command: None,
+                            },
+                        ],
                     },
                 ],
             },
@@ -289,16 +288,24 @@ mod tests {
         path = "/some/other-path"
         command = "nvim"
 
+        [[tmux.sessions.windows]]
+        name = "Window without path"
+        command = "nvim"
+
         [[tmux.sessions]]
         name = "Second Session"
 
         [[tmux.sessions.windows]]
-        name = "Third Window"
+        name = "Fourth Window"
         path = "~/"
         command = [
             "echo 'Hello, world!'",
             "echo 'Goodbye, world!'",
         ]
+
+        [[tmux.sessions.windows]]
+        name = "Window without command"
+        path = "/some/other-path"
         '''
         "###);
     }
