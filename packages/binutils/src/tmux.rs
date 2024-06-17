@@ -37,15 +37,53 @@ fn get_socket_name(options: &impl TmuxOptions) -> String {
 }
 
 pub fn startup_tmux(config: Config, options: &impl TmuxOptions) {
+    let mut current_state = gather_tmux_state(options);
+
     for session in config.tmux.sessions {
         for window in session.windows {
-            ensure_window(window)
+            ensure_window(&session.name, &window.name, &mut current_state, options);
         }
     }
 }
 
-fn ensure_window(window: Window) {
-    todo!()
+fn ensure_window(
+    session_name: &str,
+    window_name: &str,
+    current_state: &mut TmuxState,
+    options: &impl TmuxOptions,
+) {
+    let socket_name = get_socket_name(options);
+
+    if let Some(windows) = current_state.get(session_name) {
+        if windows.contains(&window_name.to_string()) {
+            // Window already exists, do nothing
+        } else {
+            // Window does not exist, create it
+            let mut cmd = Command::new("tmux");
+            cmd.arg("-L")
+                .arg(&socket_name)
+                .arg("new-window")
+                .arg("-t")
+                .arg(session_name)
+                .arg("-n")
+                .arg(window_name);
+
+            run_command(cmd, options);
+        }
+    } else {
+        // Session does not exist, create it and the window
+        let mut cmd = Command::new("tmux");
+        cmd.arg("-L")
+            .arg(&socket_name)
+            .arg("new-session")
+            .arg("-d")
+            .arg("-s")
+            .arg(session_name)
+            .arg("-n")
+            .arg(window_name);
+
+        run_command(cmd, options);
+    }
 }
 
 type TmuxState = BTreeMap<String, Vec<String>>;
@@ -106,6 +144,7 @@ fn run_command(mut cmd: Command, opts: &impl TmuxOptions) {
 
 #[cfg(test)]
 mod tests {
+    use anyhow::Result;
     use insta::assert_debug_snapshot;
     use rand::{distributions::Alphanumeric, Rng};
 
@@ -259,6 +298,26 @@ mod tests {
         "###);
 
         kill_tmux_server(&options)?;
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_creates_all_windows_when_server_is_not_started() -> Result<()> {
+        let options = build_testing_options();
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: todo!(),
+                        command: todo!(),
+                    }],
+                }],
+            },
+        };
+        startup_tmux(config, &options);
 
         Ok(())
     }
