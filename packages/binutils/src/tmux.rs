@@ -1,5 +1,4 @@
-use anyhow::Result;
-use std::{collections::HashMap, process::Command};
+use std::{collections::BTreeMap, process::Command};
 
 use crate::config::{Config, Window};
 
@@ -49,13 +48,13 @@ fn ensure_window(window: Window) {
     todo!()
 }
 
-type TmuxState = HashMap<String, Vec<String>>;
+type TmuxState = BTreeMap<String, Vec<String>>;
 
 /// Runs `tmux list-sessions -F #{session_name}` to gather sessions, then for each session
 /// runs `tmux list-windows -F #{window_name}` and returns a HashMap where the keys are session
 /// names and the values is an array of the window names.
 fn gather_tmux_state(options: &impl TmuxOptions) -> TmuxState {
-    let mut state = HashMap::new();
+    let mut state = BTreeMap::new();
 
     let socket_name = get_socket_name(options);
 
@@ -250,11 +249,11 @@ mod tests {
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
-            "foo": [
-                "bar",
-            ],
             "baz": [
                 "qux",
+            ],
+            "foo": [
+                "bar",
             ],
         }
         "###);
