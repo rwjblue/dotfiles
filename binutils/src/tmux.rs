@@ -315,13 +315,92 @@ mod tests {
                     name: "foo".to_string(),
                     windows: vec![Window {
                         name: "bar".to_string(),
-                        path: todo!(),
-                        command: todo!(),
+                        path: None,
+                        command: None,
                     }],
                 }],
             },
         };
         startup_tmux(config, &options);
+
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "bar",
+            ],
+        }
+        "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_creates_missing_windows_when_server_is_already_started() -> Result<()> {
+        let options = build_testing_options();
+
+        create_tmux_session("foo", "baz", &options)?;
+
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: None,
+                    }],
+                }],
+            },
+        };
+        startup_tmux(config, &options);
+
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "baz",
+                "bar",
+            ],
+        }
+        "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_does_nothing_if_already_started() -> Result<()> {
+        let options = build_testing_options();
+
+        create_tmux_session("foo", "bar", &options)?;
+
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "bar",
+            ],
+        }
+        "###);
+
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: None,
+                    }],
+                }],
+            },
+        };
+        startup_tmux(config, &options);
+
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "bar",
+            ],
+        }
+        "###);
 
         Ok(())
     }
