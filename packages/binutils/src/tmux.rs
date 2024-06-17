@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, process::Command};
 
-use crate::config::{Config, Window};
+use crate::config::Config;
 
 /// `TmuxOptions` is a trait for managing various options for working with these tmux utilities.
 ///
@@ -111,7 +111,7 @@ mod tests {
 
     use super::*;
     use crate::{
-        config::{Session, Tmux},
+        config::{Session, Tmux, Window},
         test_utils::setup_test_environment,
     };
 
