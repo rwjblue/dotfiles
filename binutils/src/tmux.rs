@@ -1,3 +1,4 @@
+use anyhow::Result;
 use std::{collections::BTreeMap, process::Command};
 
 use crate::config::{Config, Window};
@@ -36,14 +37,22 @@ fn get_socket_name(options: &impl TmuxOptions) -> String {
         .unwrap_or_else(|| "default".to_string())
 }
 
-pub fn startup_tmux(config: Config, options: &impl TmuxOptions) {
+pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<String>> {
     let mut current_state = gather_tmux_state(options);
+    let mut commands = vec![];
 
     for session in config.tmux.sessions {
         for window in session.windows {
-            ensure_window(&session.name, &window, &mut current_state, options);
+            let command_executed =
+                ensure_window(&session.name, &window, &mut current_state, options)?;
+
+            if let Some(command_executed) = command_executed {
+                commands.push(command_to_string(&command_executed));
+            }
         }
     }
+
+    Ok(commands)
 }
 
 fn ensure_window(
@@ -51,12 +60,13 @@ fn ensure_window(
     window: &Window,
     current_state: &mut TmuxState,
     options: &impl TmuxOptions,
-) {
+) -> Result<Option<Command>> {
     let socket_name = get_socket_name(options);
 
     if let Some(windows) = current_state.get(session_name) {
         if windows.contains(&window.name) {
             // Window already exists, do nothing
+            Ok(None)
         } else {
             // Window does not exist, create it
             let mut cmd = Command::new("tmux");
@@ -72,7 +82,9 @@ fn ensure_window(
                 cmd.arg("-c").arg(path);
             }
 
-            run_command(cmd, options);
+            let cmd = run_command(cmd, options)?;
+
+            Ok(Some(cmd))
         }
     } else {
         // Session does not exist, create it and the window
@@ -90,7 +102,9 @@ fn ensure_window(
             cmd.arg("-c").arg(path);
         }
 
-        run_command(cmd, options);
+        let cmd = run_command(cmd, options)?;
+
+        Ok(Some(cmd))
     }
 }
 
@@ -139,21 +153,37 @@ fn gather_tmux_state(options: &impl TmuxOptions) -> TmuxState {
     state
 }
 
-fn run_command(mut cmd: Command, opts: &impl TmuxOptions) {
+fn run_command(mut cmd: Command, opts: &impl TmuxOptions) -> Result<Command> {
     if opts.is_dry_run() {
-        println!("{:?}", cmd);
-        return;
+        println!("{}", command_to_string(&cmd));
+    } else {
+        cmd.output()?;
     }
 
-    let _ = cmd
-        .output()
-        .map_err(|err| println!("Error executing cmd\n{}", err));
+    Ok(cmd)
+}
+
+fn command_to_string(cmd: &Command) -> String {
+    let mut cmd_string = String::new();
+
+    if let Some(program) = cmd.get_program().to_str() {
+        cmd_string.push_str(program);
+    }
+
+    for arg in cmd.get_args() {
+        if let Some(arg_str) = arg.to_str() {
+            cmd_string.push(' ');
+            cmd_string.push_str(arg_str);
+        }
+    }
+
+    cmd_string
 }
 
 #[cfg(test)]
 mod tests {
     use anyhow::Result;
-    use insta::assert_debug_snapshot;
+    use insta::{assert_debug_snapshot, assert_snapshot, assert_yaml_snapshot};
     use rand::{distributions::Alphanumeric, Rng};
 
     use super::*;
@@ -266,6 +296,13 @@ mod tests {
         options
     }
 
+    fn sanitize_socket_name(commands: Vec<String>, options: &TestingTmuxOptions) -> Vec<String> {
+        commands
+            .iter()
+            .map(|command| command.replace(&options.socket_name, "[SOCKET_NAME]"))
+            .collect()
+    }
+
     #[test]
     fn test_in_tmux_within_tmux() {
         temp_env::with_var(
@@ -329,7 +366,13 @@ mod tests {
                 }],
             },
         };
-        startup_tmux(config, &options);
+        let commands = startup_tmux(config, &options)?;
+        let commands = sanitize_socket_name(commands, &options);
+
+        assert_yaml_snapshot!(commands, @r###"
+        ---
+        - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
+        "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
@@ -360,7 +403,14 @@ mod tests {
                 }],
             },
         };
-        startup_tmux(config, &options);
+
+        let commands = startup_tmux(config, &options)?;
+        let commands = sanitize_socket_name(commands, &options);
+
+        assert_yaml_snapshot!(commands, @r###"
+        ---
+        - "tmux -L [SOCKET_NAME] new-window -t foo -n bar"
+        "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
@@ -400,7 +450,13 @@ mod tests {
                 }],
             },
         };
-        startup_tmux(config, &options);
+        let commands = startup_tmux(config, &options)?;
+        let commands = sanitize_socket_name(commands, &options);
+
+        assert_yaml_snapshot!(commands, @r###"
+        ---
+        []
+        "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
