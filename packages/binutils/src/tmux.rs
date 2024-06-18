@@ -1,5 +1,5 @@
 use anyhow::Result;
-use std::{collections::BTreeMap, process::Command};
+use std::{collections::BTreeMap, collections::HashMap, process::Command};
 
 use crate::config::{Config, Window};
 
@@ -304,10 +304,22 @@ mod tests {
         options
     }
 
-    fn sanitize_socket_name(commands: Vec<String>, options: &TestingTmuxOptions) -> Vec<String> {
+    fn sanitize_commands(
+        commands: Vec<String>,
+        options: &TestingTmuxOptions,
+        additional_replacements: Option<HashMap<String, String>>,
+    ) -> Vec<String> {
         commands
             .iter()
-            .map(|command| command.replace(&options.socket_name, "[SOCKET_NAME]"))
+            .map(|command| {
+                let mut updated_command = command.replace(&options.socket_name, "[SOCKET_NAME]");
+                if let Some(replacements) = &additional_replacements {
+                    for (key, value) in replacements {
+                        updated_command = updated_command.replace(key, value);
+                    }
+                }
+                updated_command
+            })
             .collect()
     }
 
@@ -375,7 +387,7 @@ mod tests {
             },
         };
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_socket_name(commands, &options);
+        let commands = sanitize_commands(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
@@ -413,7 +425,7 @@ mod tests {
         };
 
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_socket_name(commands, &options);
+        let commands = sanitize_commands(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
@@ -459,7 +471,7 @@ mod tests {
             },
         };
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_socket_name(commands, &options);
+        let commands = sanitize_commands(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
