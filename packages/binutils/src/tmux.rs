@@ -68,6 +68,10 @@ fn ensure_window(
                 .arg("-n")
                 .arg(&window.name);
 
+            if let Some(path) = &window.path {
+                cmd.arg("-c").arg(path);
+            }
+
             run_command(cmd, options);
         }
     } else {
@@ -81,6 +85,10 @@ fn ensure_window(
             .arg(session_name)
             .arg("-n")
             .arg(&window.name);
+
+        if let Some(path) = &window.path {
+            cmd.arg("-c").arg(path);
+        }
 
         run_command(cmd, options);
     }
