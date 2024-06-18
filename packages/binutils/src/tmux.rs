@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, process::Command};
 
-use crate::config::Config;
+use crate::config::{Config, Window};
 
 /// `TmuxOptions` is a trait for managing various options for working with these tmux utilities.
 ///
@@ -41,21 +41,21 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) {
 
     for session in config.tmux.sessions {
         for window in session.windows {
-            ensure_window(&session.name, &window.name, &mut current_state, options);
+            ensure_window(&session.name, &window, &mut current_state, options);
         }
     }
 }
 
 fn ensure_window(
     session_name: &str,
-    window_name: &str,
+    window: &Window,
     current_state: &mut TmuxState,
     options: &impl TmuxOptions,
 ) {
     let socket_name = get_socket_name(options);
 
     if let Some(windows) = current_state.get(session_name) {
-        if windows.contains(&window_name.to_string()) {
+        if windows.contains(&window.name) {
             // Window already exists, do nothing
         } else {
             // Window does not exist, create it
@@ -66,7 +66,7 @@ fn ensure_window(
                 .arg("-t")
                 .arg(session_name)
                 .arg("-n")
-                .arg(window_name);
+                .arg(&window.name);
 
             run_command(cmd, options);
         }
@@ -80,7 +80,7 @@ fn ensure_window(
             .arg("-s")
             .arg(session_name)
             .arg("-n")
-            .arg(window_name);
+            .arg(&window.name);
 
         run_command(cmd, options);
     }
