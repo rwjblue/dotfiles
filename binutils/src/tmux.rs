@@ -173,7 +173,15 @@ fn command_to_string(cmd: &Command) -> String {
     for arg in cmd.get_args() {
         if let Some(arg_str) = arg.to_str() {
             cmd_string.push(' ');
-            cmd_string.push_str(arg_str);
+            // Check if arg_str contains any spaces, quotes, etc.
+            if arg_str.contains(|c: char| c.is_whitespace() || c == '\'' || c == '\"') {
+                // If it does, wrap arg_str in quotes that do not conflict with the quotes in the string.
+                // Use single quotes if the string contains double quotes, and vice versa.
+                let quote_char = if arg_str.contains('\'') { '\"' } else { '\'' };
+                cmd_string.push_str(&format!("{}{}{}", quote_char, arg_str, quote_char));
+            } else {
+                cmd_string.push_str(arg_str);
+            }
         }
     }
 
