@@ -1,7 +1,7 @@
 use anyhow::Result;
 use std::{collections::BTreeMap, collections::HashMap, process::Command};
 
-use crate::config::{Config, Window};
+use crate::config::{Command as ConfigCommand, Config, Window};
 
 /// `TmuxOptions` is a trait for managing various options for working with these tmux utilities.
 ///
@@ -43,11 +43,11 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<St
 
     for session in config.tmux.sessions {
         for window in session.windows {
-            let command_executed =
+            let commands_executed =
                 ensure_window(&session.name, &window, &mut current_state, options)?;
 
-            if let Some(command_executed) = command_executed {
-                commands.push(command_to_string(&command_executed));
+            for command in commands_executed {
+                commands.push(command_to_string(&command));
             }
         }
     }
@@ -60,13 +60,13 @@ fn ensure_window(
     window: &Window,
     current_state: &mut TmuxState,
     options: &impl TmuxOptions,
-) -> Result<Option<Command>> {
+) -> Result<Vec<Command>> {
     let socket_name = get_socket_name(options);
+    let mut commands_executed = vec![];
 
     if let Some(windows) = current_state.get(session_name) {
         if windows.contains(&window.name) {
             // Window already exists, do nothing
-            Ok(None)
         } else {
             // Window does not exist, create it
             let mut cmd = Command::new("tmux");
@@ -82,9 +82,8 @@ fn ensure_window(
                 cmd.arg("-c").arg(path);
             }
 
-            let cmd = run_command(cmd, options)?;
-
-            Ok(Some(cmd))
+            commands_executed.push(run_command(cmd, options)?);
+            commands_executed.extend(execute_command(session_name, &window, options)?);
         }
     } else {
         // Session does not exist, create it and the window
@@ -102,10 +101,53 @@ fn ensure_window(
             cmd.arg("-c").arg(path);
         }
 
-        let cmd = run_command(cmd, options)?;
-
-        Ok(Some(cmd))
+        commands_executed.push(run_command(cmd, options)?);
+        commands_executed.extend(execute_command(session_name, &window, options)?);
     }
+
+    Ok(commands_executed)
+}
+
+fn execute_command(
+    session_name: &str,
+    window: &Window,
+    options: &impl TmuxOptions,
+) -> Result<Vec<Command>> {
+    let mut commands_executed = vec![];
+
+    if let Some(command) = &window.command {
+        match command {
+            ConfigCommand::Single(command) => {
+                let mut cmd = Command::new("tmux");
+                cmd.arg("-L")
+                    .arg(get_socket_name(options))
+                    .arg("send-keys")
+                    .arg("-t")
+                    .arg(format!("{}:{}", session_name, window.name))
+                    .arg(command)
+                    .arg("C-m");
+
+                let cmd = run_command(cmd, options)?;
+                commands_executed.push(cmd);
+            }
+            ConfigCommand::Multiple(commands) => {
+                for command in commands {
+                    let mut cmd = Command::new("tmux");
+                    cmd.arg("-L")
+                        .arg("send-keys")
+                        .arg("-t")
+                        .arg(format!("{}:{}", session_name, window.name))
+                        .arg(command)
+                        .arg("C-m");
+
+                    let cmd = run_command(cmd, options)?;
+                    commands_executed.push(cmd);
+                }
+            }
+        }
+    }
+
+    Ok(commands_executed)
 }
 
 type TmuxState = BTreeMap<String, Vec<String>>;
@@ -193,6 +235,7 @@ mod tests {
     use anyhow::Result;
     use insta::{assert_debug_snapshot, assert_snapshot, assert_yaml_snapshot};
     use rand::{distributions::Alphanumeric, Rng};
+    use tempfile::tempdir;
 
     use super::*;
     use crate::{
@@ -485,6 +528,56 @@ mod tests {
             ],
         }
         "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_invokes_command_when_window_is_created() -> Result<()> {
+        let options = build_testing_options();
+
+        let temp_dir = tempdir().expect("Failed to create a temporary directory");
+        let temp_path = temp_dir.path();
+        let temp_path = temp_path.join("some-file.txt");
+        let temp_path_str = temp_path
+            .to_str()
+            .expect("Failed to convert temp path to str");
+
+        let mut additional_replacements = HashMap::new();
+        additional_replacements.insert(
+            temp_path_str.to_string(),
+            "/tmp/random-value/some-file.txt".to_string(),
+        );
+
+        let config = Config {
+            tmux: Tmux {
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: Some(ConfigCommand::Single(format!("touch {}", temp_path_str))),
+                    }],
+                }],
+            },
+        };
+
+        let commands = startup_tmux(config, &options)?;
+        let commands = sanitize_commands(commands, &options, Some(additional_replacements));
+        assert_yaml_snapshot!(commands, @r###"
+        ---
+        - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
+        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar 'touch /tmp/random-value/some-file.txt' C-m"
+        "###);
+        assert_debug_snapshot!(gather_tmux_state(&options), @r###"
+        {
+            "foo": [
+                "bar",
+            ],
+        }
+        "###);
+
+        assert!(temp_path.exists(), "command not executed");
 
         Ok(())
     }
