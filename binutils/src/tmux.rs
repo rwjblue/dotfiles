@@ -125,7 +125,7 @@ fn execute_command(
                     .arg("-t")
                     .arg(format!("{}:{}", session_name, window.name))
                     .arg(command)
-                    .arg("C-m");
+                    .arg("Enter");
 
                 let cmd = run_command(cmd, options)?;
                 commands_executed.push(cmd);
@@ -134,11 +134,12 @@ fn execute_command(
                 for command in commands {
                     let mut cmd = Command::new("tmux");
                     cmd.arg("-L")
+                        .arg(get_socket_name(options))
                         .arg("send-keys")
                         .arg("-t")
                         .arg(format!("{}:{}", session_name, window.name))
                         .arg(command)
-                        .arg("C-m");
+                        .arg("Enter");
 
                     let cmd = run_command(cmd, options)?;
                     commands_executed.push(cmd);
@@ -148,6 +149,18 @@ fn execute_command(
     }
 
     Ok(commands_executed)
+}
+
+fn quote_command(command: &String) -> String {
+    if command.contains(|c: char| c.is_whitespace() || c == '\'' || c == '\"') {
+        // If it does, wrap arg_str in quotes that do not conflict with the quotes in the string.
+        // Use single quotes if the string contains double quotes, and vice versa.
+        let quote_char = if command.contains('\'') { '\"' } else { '\'' };
+
+        format!("{}{}{}", quote_char, command, quote_char)
+    } else {
+        command.clone()
+    }
 }
 
 type TmuxState = BTreeMap<String, Vec<String>>;
@@ -215,15 +228,7 @@ fn command_to_string(cmd: &Command) -> String {
     for arg in cmd.get_args() {
         if let Some(arg_str) = arg.to_str() {
             cmd_string.push(' ');
-            // Check if arg_str contains any spaces, quotes, etc.
-            if arg_str.contains(|c: char| c.is_whitespace() || c == '\'' || c == '\"') {
-                // If it does, wrap arg_str in quotes that do not conflict with the quotes in the string.
-                // Use single quotes if the string contains double quotes, and vice versa.
-                let quote_char = if arg_str.contains('\'') { '\"' } else { '\'' };
-                cmd_string.push_str(&format!("{}{}{}", quote_char, arg_str, quote_char));
-            } else {
-                cmd_string.push_str(arg_str);
-            }
+            cmd_string.push_str(arg_str);
         }
     }
 
@@ -232,6 +237,12 @@ fn command_to_string(cmd: &Command) -> String {
 
 #[cfg(test)]
 mod tests {
+    use std::{
+        path::{Path, PathBuf},
+        thread::sleep,
+        time::{Duration, Instant},
+    };
+
     use anyhow::Result;
     use insta::{assert_debug_snapshot, assert_snapshot, assert_yaml_snapshot};
     use rand::{distributions::Alphanumeric, Rng};
@@ -347,7 +358,7 @@ mod tests {
         options
     }
 
-    fn sanitize_commands(
+    fn sanitize_commands_executed(
         commands: Vec<String>,
         options: &TestingTmuxOptions,
         additional_replacements: Option<HashMap<String, String>>,
@@ -364,6 +375,26 @@ mod tests {
                 updated_command
             })
             .collect()
+    }
+
+    fn wait_for_file(path: &Path, message: String) {
+        let start = Instant::now();
+        let timeout = Duration::from_secs(2);
+
+        loop {
+            // Check if the file exists
+            if path.exists() {
+                break;
+            }
+
+            // Sleep for 10ms
+            sleep(Duration::from_millis(10));
+
+            // Check if the elapsed time is greater than the timeout
+            if start.elapsed() > timeout {
+                panic!("{}", message);
+            }
+        }
     }
 
     #[test]
@@ -430,7 +461,7 @@ mod tests {
             },
         };
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_commands(commands, &options, None);
+        let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
@@ -468,7 +499,7 @@ mod tests {
         };
 
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_commands(commands, &options, None);
+        let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
@@ -514,7 +545,7 @@ mod tests {
             },
         };
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_commands(commands, &options, None);
+        let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
         ---
@@ -537,7 +568,7 @@ mod tests {
         let options = build_testing_options();
 
         let temp_dir = tempdir().expect("Failed to create a temporary directory");
-        let temp_path = temp_dir.path();
+        let temp_path = temp_dir.into_path();
         let temp_path = temp_path.join("some-file.txt");
         let temp_path_str = temp_path
             .to_str()
@@ -563,11 +594,13 @@ mod tests {
         };
 
         let commands = startup_tmux(config, &options)?;
-        let commands = sanitize_commands(commands, &options, Some(additional_replacements));
+
+        let commands =
+            sanitize_commands_executed(commands, &options, Some(additional_replacements));
         assert_yaml_snapshot!(commands, @r###"
         ---
         - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
-        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar 'touch /tmp/random-value/some-file.txt' C-m"
+        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar touch /tmp/random-value/some-file.txt Enter"
         "###);
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
@@ -577,7 +610,14 @@ mod tests {
         }
         "###);
 
-        assert!(temp_path.exists(), "command not executed");
+        wait_for_file(
+            &temp_path,
+            format!(
+                "tmux socket: {} -- file not created: {}",
+                options.socket_name,
+                temp_path.to_str().unwrap()
+            ),
+        );
 
         Ok(())
     }
