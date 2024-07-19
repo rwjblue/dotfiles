@@ -1,6 +1,3 @@
-# Most of the local configuration is done via the individual files in zsh/plugins/*
-
-eval "$(sheldon source)"
 
 # Setup vi Mode
 # -------------
