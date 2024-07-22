@@ -1,21 +1,2 @@
 # vim: tw=0 ft=zsh
 
-export LANG='en_US.UTF-8'
-
-local _HOMEBREW_PREFIX;
-if [[ "$OSTYPE" == darwin* ]]; then
-  if [[ -r /opt/homebrew ]]; then
-    _HOMEBREW_PREFIX=/opt/homebrew
-  else
-    _HOMEBREW_PREFIX=/usr/local
-  fi
-fi
-
-# use nvim as default editor
-export EDITOR="$_HOMEBREW_PREFIX/bin/nvim"
-
-export PATH="$PATH:$_HOMEBREW_PREFIX/opt/fzf/bin"
-
-if [ -x "$_HOMEBREW_PREFIX/bin/brew" ]; then
-  eval $($_HOMEBREW_PREFIX/bin/brew shellenv)
-fi
