@@ -24,4 +24,9 @@ apply = ["fpath"]
 [plugins.local-plugins]
 local = "~/.zsh/plugins"
 use = ["*"]
+apply = ["source"]
+
+[plugins.local-deferred-plugins]
+local = "~/.zsh/plugins_deferred"
+use = ["*"]
 apply = ["defer"]
