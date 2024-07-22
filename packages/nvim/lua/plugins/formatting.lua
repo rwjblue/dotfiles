@@ -6,7 +6,7 @@ return {
     -- Define your formatters
     formatters_by_ft = {
       lua = { "stylua" },
-      -- disable python formatter, which will force conform.nvim to fallback to ruff-lsp instead
+      -- disable python formatter, which will force conform.nvim to fallback to ruff instead
       python = {},
       json = { "fixjson" },
       javascript = { { "prettierd", "prettier" } },

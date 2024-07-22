@@ -8,10 +8,6 @@ return {
         -- json
         "jq",
         "fixjson",
-
-        -- python
-        "ruff-lsp",
-        "pyright",
       })
     end,
   },
