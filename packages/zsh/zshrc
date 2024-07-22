@@ -6,5 +6,8 @@ export KEYTIMEOUT=1
 
 eval "$(starship init zsh)"
 
+# Most of the local configuration is done via the individual files in zsh/plugins/*
+eval "$(sheldon source)"
+
 # load local (non-suitable for pushing to GH) tweaks
 [ -f ~/.zshrc.local ] && source ~/.zshrc.local

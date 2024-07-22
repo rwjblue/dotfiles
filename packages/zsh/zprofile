@@ -19,6 +19,3 @@ export PATH="$PATH:$_HOMEBREW_PREFIX/opt/fzf/bin"
 if [ -x "$_HOMEBREW_PREFIX/bin/brew" ]; then
   eval $($_HOMEBREW_PREFIX/bin/brew shellenv)
 fi
-
-# Most of the local configuration is done via the individual files in zsh/plugins/*
-eval "$(sheldon source)"
