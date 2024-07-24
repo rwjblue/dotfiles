@@ -16,6 +16,11 @@ github = "sorin-ionescu/prezto"
 use = ["modules/completion/init.zsh"]
 apply = ["defer"]
 
+[plugins.homebrew-completions]
+local = "/opt/homebrew/share/zsh/site-functions/"
+use = ["*"]
+apply = ["fpath"]
+
 [plugins.local-completions]
 local = "~/.zsh/completions"
 use = ["*"]
@@ -30,3 +35,6 @@ apply = ["source"]
 local = "~/.zsh/plugins_deferred"
 use = ["*"]
 apply = ["defer"]
+
+[plugins.compinit]
+inline = 'autoload -Uz compinit && zsh-defer compinit'
