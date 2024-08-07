@@ -1,41 +1,92 @@
+use anyhow::{Context, Result};
 use std::env;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
+use std::process::Command;
 use std::time::{SystemTime, UNIX_EPOCH};
-use walkdir::WalkDir;
+use tracing::{debug, info, trace};
+use walkdir::{DirEntry, WalkDir};
 
-pub fn get_max_mod_time<P: AsRef<Path>>(dir: P) -> SystemTime {
+fn modified_time(path: &Path) -> Result<SystemTime> {
+    let metadata = fs::metadata(path).context(format!(
+        "Failed to get metadata: {}",
+        path.to_string_lossy()
+    ))?;
+
+    metadata.modified().context(format!(
+        "Failed to get modified time for path: {}",
+        path.to_string_lossy()
+    ))
+}
+
+// TODO: we could use `ignore` crate to read .gitignore files
+fn should_include(entry: &DirEntry) -> bool {
+    if entry.file_type().is_dir() {
+        let name = entry.file_name().to_str().unwrap_or("");
+        name != "target" && name != ".git"
+    } else {
+        true
+    }
+}
+
+// TODO: we could take the modified time of the env::current_exe() and just stop walking the first
+// time we find a file that is newer
+pub fn get_max_mod_time<P: AsRef<Path>>(dir: P) -> Result<SystemTime> {
     let mut max_mod_time = UNIX_EPOCH;
-    for entry in WalkDir::new(dir) {
-        let entry = entry.unwrap();
+
+    for entry in WalkDir::new(dir).into_iter().filter_entry(should_include) {
+        let entry = entry?;
+        trace!("evaluating entry: {:?}", entry.path());
         if entry.file_type().is_file() {
-            let metadata = fs::metadata(entry.path()).unwrap();
-            let mod_time = metadata.modified().unwrap();
+            let mod_time = modified_time(entry.path())?;
             if mod_time > max_mod_time {
+                debug!("Found newer file: {:?}", entry.path());
                 max_mod_time = mod_time;
             }
         }
     }
-    max_mod_time
+
+    Ok(max_mod_time)
 }
 
-pub fn is_build_up_to_date() -> bool {
-    let (crate_root, build_output_dir) = get_crate_root_and_target_dir();
+pub fn is_build_up_to_date() -> Result<bool> {
+    let crate_root = env!("CARGO_MANIFEST_DIR");
+    let current_exe = env::current_exe()?;
 
-    let max_source_mod_time = get_max_mod_time(crate_root);
-    let max_target_mod_time = get_max_mod_time(build_output_dir);
+    debug!("crate_root: {}", crate_root);
+    debug!("current_exe: {}", current_exe.to_string_lossy());
 
-    max_target_mod_time >= max_source_mod_time
+    let max_source_mod_time = get_max_mod_time(crate_root)?;
+    let exe_mod_time = modified_time(&current_exe)?;
+
+    let build_up_to_date = exe_mod_time >= max_source_mod_time;
+
+    info!("build up to date: {}", build_up_to_date);
+
+    Ok(build_up_to_date)
 }
 
-fn get_crate_root_and_target_dir() -> (PathBuf, PathBuf) {
-    let crate_root = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR is not set");
-    let out_dir = env::var("OUT_DIR").expect("OUT_DIR is not set");
-    let target_dir = Path::new(&out_dir)
-        .parent()
-        .and_then(|p| p.parent())
-        .expect("Could not determine target directory")
-        .to_path_buf();
+pub fn run_cargo_build() -> Result<()> {
+    let crate_root = env!("CARGO_MANIFEST_DIR");
+    info!("Running cargo build, in {}", crate_root);
 
-    (PathBuf::from(crate_root), target_dir)
+    let path = Path::new(crate_root);
+    if !path.exists() {
+        anyhow::bail!("The specified path does not exist: {}", path.display());
+    }
+
+    let output = Command::new("cargo")
+        .arg("build")
+        .current_dir(path)
+        .output()
+        .context("Failed to execute cargo build command")?;
+
+    if output.status.success() {
+        Ok(())
+    } else {
+        println!("Cargo build failed.");
+        println!("stdout: {}", String::from_utf8_lossy(&output.stdout));
+        println!("stderr: {}", String::from_utf8_lossy(&output.stderr));
+        anyhow::bail!("Cargo build failed with status: {}", output.status);
+    }
 }
