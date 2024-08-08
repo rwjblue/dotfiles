@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.79"
 clap = { version = "4.5.3", features = ["derive"] }
+nix = { version = "0.29.0", default-features = false, features = ["process"] }
 serde = { version = "1.0.197", features = ["derive"] }
 tmux_interface = { version = "0.3.2", features = ["tmux_3_4"] }
 toml = "0.8.12"
