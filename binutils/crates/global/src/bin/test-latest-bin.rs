@@ -10,13 +10,7 @@ fn main() -> Result<()> {
         )
         .init();
 
-    if latest_bin::is_build_up_to_date()? {
-        println!("Build is up to date");
-    } else {
-        latest_bin::run_cargo_build()?;
-
-        println!("Build is up to date");
-    }
+    latest_bin::ensure_latest_bin()?;
 
     Ok(())
 }
