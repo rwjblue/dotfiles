@@ -68,9 +68,25 @@ pub fn write_config(config: &Config) -> Result<()> {
     Ok(())
 }
 
+fn expand_tilde(path: PathBuf) -> PathBuf {
+    let path_str = path.to_str().unwrap_or_default();
+
+    match path_str.strip_prefix("~") {
+        Some(stripped) => {
+            let home_dir = env::var("HOME").expect("HOME environment variable not set");
+            let expanded = format!("{}{}", home_dir, stripped);
+
+            PathBuf::from(expanded)
+        }
+        None => path,
+    }
+}
+
 pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
     let config_path = match config_path {
         Some(config_path) => {
+            let config_path = expand_tilde(config_path);
+
             if !config_path.is_file() {
                 error!(
                     "The specified config path is not a file: {}",
@@ -82,6 +98,7 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
                     config_path.display()
                 ));
             }
+
             config_path
         }
         None => {
@@ -240,6 +257,57 @@ mod tests {
         let _env = setup_test_environment();
 
         let config = read_config(None).expect("read_config(None) when no config exists failed");
+
+        assert_debug_snapshot!(config, @r###"
+        Config {
+            tmux: Some(
+                Tmux {
+                    sessions: [],
+                },
+            ),
+        }
+        "###);
+    }
+
+    #[test]
+    fn test_read_config_custom_file() {
+        let env = setup_test_environment();
+
+        let config_file_path = env.config_dir.join("custom-config.toml");
+        let config = default_config();
+
+        let mut file = File::create(&config_file_path).expect("Could not create file");
+        let toml_str = toml::to_string_pretty(&config).expect("could not convert to toml");
+        file.write_all(toml_str.as_bytes())
+            .expect("could not write to config");
+
+        let config = read_config(Some(config_file_path)).expect("error reading from config");
+
+        assert_debug_snapshot!(config, @r###"
+        Config {
+            tmux: Some(
+                Tmux {
+                    sessions: [],
+                },
+            ),
+        }
+        "###);
+    }
+
+    #[test]
+    fn test_read_config_custom_file_with_tilde() {
+        let env = setup_test_environment();
+
+        let config_file_path = env.home.join("custom-config.toml");
+        let config = default_config();
+
+        let mut file = File::create(&config_file_path).expect("Could not create file");
+        let toml_str = toml::to_string_pretty(&config).expect("could not convert to toml");
+        file.write_all(toml_str.as_bytes())
+            .expect("could not write to config");
+
+        let config = read_config(Some(PathBuf::from("~/custom-config.toml")))
+            .expect("could not read config");
 
         assert_debug_snapshot!(config, @r###"
         Config {
