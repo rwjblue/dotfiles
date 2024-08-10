@@ -1,9 +1,71 @@
+use std::path::PathBuf;
+
 use anyhow::Result;
 use binutils::config::read_config;
+use binutils::latest_bin;
 use binutils::tmux;
+use clap::Parser;
+use tmux::{startup_tmux, TmuxOptions};
+use tracing_subscriber::EnvFilter;
 
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct CliTmuxOptions {
+    /// Enable dry run mode. No commands will be executed.
+    #[arg(long)]
+    dry_run: bool,
+
+    /// Enable debug mode. Provides additional output for debugging.
+    #[arg(long)]
+    debug: bool,
+
+    /// Attach to the tmux session after starting it.
+    #[arg(long)]
+    attach: Option<bool>,
+
+    /// Specify the tmux socket name.
+    #[arg(long)]
+    socket_name: Option<String>,
+
+    /// Path to the configuration file.
+    config_file: Option<PathBuf>,
+}
+
+impl TmuxOptions for CliTmuxOptions {
+    fn is_dry_run(&self) -> bool {
+        self.dry_run
+    }
+
+    fn is_debug(&self) -> bool {
+        self.debug
+    }
+
+    fn should_attach(&self) -> Option<bool> {
+        self.attach
+    }
+
+    fn socket_name(&self) -> Option<String> {
+        self.socket_name.clone()
+    }
+}
 fn main() -> Result<()> {
-    let _config = read_config()?;
+    // Initialize tracing, but only if RUST_LOG is set
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("off")),
+        )
+        .init();
+
+    latest_bin::ensure_latest_bin()?;
+
+    let options = CliTmuxOptions::parse();
+    // TODO: figure out how to do this without cloning
+    let config = read_config(options.config_file.clone())?;
+
+    let commands = startup_tmux(config, &options)?;
+    for command in commands {
+        println!("{}", command);
+    }
 
     Ok(())
 }
