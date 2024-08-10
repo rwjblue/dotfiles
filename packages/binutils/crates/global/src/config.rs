@@ -9,13 +9,12 @@ use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use toml;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Config {
-    // TODO: make tmux optional
-    pub tmux: Tmux,
+    pub tmux: Option<Tmux>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Tmux {
     pub sessions: Vec<Session>,
 }
@@ -44,7 +43,7 @@ pub struct Window {
 fn default_config() -> Config {
     Config {
         // TODO: make tmux optional
-        tmux: Tmux { sessions: vec![] },
+        tmux: Some(Tmux { sessions: vec![] }),
     }
 }
 
@@ -244,9 +243,11 @@ mod tests {
 
         assert_debug_snapshot!(config, @r###"
         Config {
-            tmux: Tmux {
-                sessions: [],
-            },
+            tmux: Some(
+                Tmux {
+                    sessions: [],
+                },
+            ),
         }
         "###);
     }
@@ -289,7 +290,7 @@ mod tests {
         let env = setup_test_environment();
 
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "Test Session".to_string(),
                     windows: vec![Window {
@@ -298,7 +299,7 @@ mod tests {
                         command: Some(Command::Single("echo 'Hello, world!'".to_string())),
                     }],
                 }],
-            },
+            }),
         };
 
         // Write the config
@@ -321,7 +322,7 @@ mod tests {
         // Read the config
         let read_config = read_config(None).expect("Failed to read config");
 
-        assert_eq!(config.tmux.sessions, read_config.tmux.sessions);
+        assert_eq!(config.tmux, read_config.tmux);
     }
 
     #[test]
@@ -329,7 +330,7 @@ mod tests {
         let env = setup_test_environment();
 
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![
                     Session {
                         name: "Test Session".to_string(),
@@ -370,7 +371,7 @@ mod tests {
                         ],
                     },
                 ],
-            },
+            }),
         };
 
         // Write the config

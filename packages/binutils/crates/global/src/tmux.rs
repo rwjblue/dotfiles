@@ -1,5 +1,6 @@
 use anyhow::Result;
 use std::{collections::BTreeMap, collections::HashMap, process::Command};
+use tracing::debug;
 
 use crate::config::{Command as ConfigCommand, Config, Window};
 
@@ -41,14 +42,21 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<St
     let mut current_state = gather_tmux_state(options);
     let mut commands = vec![];
 
-    for session in config.tmux.sessions {
-        for window in session.windows {
-            let commands_executed =
-                ensure_window(&session.name, &window, &mut current_state, options)?;
+    match config.tmux {
+        Some(tmux) => {
+            for session in tmux.sessions {
+                for window in session.windows {
+                    let commands_executed =
+                        ensure_window(&session.name, &window, &mut current_state, options)?;
 
-            for command in commands_executed {
-                commands.push(command_to_string(&command));
+                    for command in commands_executed {
+                        commands.push(command_to_string(&command));
+                    }
+                }
             }
+        }
+        None => {
+            debug!("No tmux configuration found, skipping tmux setup");
         }
     }
 
@@ -449,7 +457,7 @@ mod tests {
     fn test_creates_all_windows_when_server_is_not_started() -> Result<()> {
         let options = build_testing_options();
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -458,7 +466,7 @@ mod tests {
                         command: None,
                     }],
                 }],
-            },
+            }),
         };
         let commands = startup_tmux(config, &options)?;
         let commands = sanitize_commands_executed(commands, &options, None);
@@ -486,7 +494,7 @@ mod tests {
         create_tmux_session("foo", "baz", &options)?;
 
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -495,7 +503,7 @@ mod tests {
                         command: None,
                     }],
                 }],
-            },
+            }),
         };
 
         let commands = startup_tmux(config, &options)?;
@@ -533,7 +541,7 @@ mod tests {
         "###);
 
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -542,7 +550,7 @@ mod tests {
                         command: None,
                     }],
                 }],
-            },
+            }),
         };
         let commands = startup_tmux(config, &options)?;
         let commands = sanitize_commands_executed(commands, &options, None);
@@ -581,7 +589,7 @@ mod tests {
         );
 
         let config = Config {
-            tmux: Tmux {
+            tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -590,7 +598,7 @@ mod tests {
                         command: Some(ConfigCommand::Single(format!("touch {}", temp_path_str))),
                     }],
                 }],
-            },
+            }),
         };
 
         let commands = startup_tmux(config, &options)?;
