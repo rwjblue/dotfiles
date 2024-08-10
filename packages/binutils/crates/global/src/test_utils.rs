@@ -6,8 +6,8 @@ use tempfile::tempdir;
 
 #[derive(Debug, Clone)]
 pub struct TestEnvironment {
-    _home: PathBuf,
-    _config_dir: PathBuf,
+    pub home: PathBuf,
+    pub config_dir: PathBuf,
     pub config_file: PathBuf,
     pub original_home: Option<String>,
 }
@@ -38,9 +38,9 @@ pub fn setup_test_environment() -> TestEnvironment {
     fs::create_dir_all(&config_dir).expect("Failed to create .config directory");
 
     TestEnvironment {
-        _home: temp_home,
+        home: temp_home,
         config_file: config_dir.join("config.toml"),
-        _config_dir: config_dir,
+        config_dir,
         original_home,
     }
 }
