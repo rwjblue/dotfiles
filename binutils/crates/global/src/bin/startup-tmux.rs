@@ -21,13 +21,14 @@ struct CliTmuxOptions {
 
     /// Attach to the tmux session after starting it.
     #[arg(long)]
-    attach: Option<bool>,
+    attach: bool,
 
-    /// Specify the tmux socket name.
+    /// Specify the tmux socket name. Defaults to the main tmux socket.
     #[arg(long)]
     socket_name: Option<String>,
 
     /// Path to the configuration file.
+    #[arg(long)]
     config_file: Option<PathBuf>,
 }
 
@@ -41,7 +42,7 @@ impl TmuxOptions for CliTmuxOptions {
     }
 
     fn should_attach(&self) -> Option<bool> {
-        self.attach
+        Some(self.attach)
     }
 
     fn socket_name(&self) -> Option<String> {
