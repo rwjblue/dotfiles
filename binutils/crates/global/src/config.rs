@@ -354,6 +354,44 @@ mod tests {
     }
 
     #[test]
+    fn test_write_and_read_config_tmux_windows_without_path() {
+        let env = setup_test_environment();
+
+        let config = Config {
+            tmux: Some(Tmux {
+                sessions: vec![Session {
+                    name: "Test Session".to_string(),
+                    windows: vec![Window {
+                        name: "Test Window".to_string(),
+                        path: None,
+                        command: Some(Command::Single("echo 'Hello, world!'".to_string())),
+                    }],
+                }],
+            }),
+        };
+
+        write_config(&config).expect("Failed to write config");
+
+        let written_toml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
+
+        assert_toml_snapshot!(written_toml_str, @r###"
+        '''
+        [[tmux.sessions]]
+        name = "Test Session"
+
+        [[tmux.sessions.windows]]
+        name = "Test Window"
+        command = "echo 'Hello, world!'"
+        '''
+        "###);
+
+        // Read the config
+        let read_config = read_config(None).expect("Failed to read config");
+
+        assert_eq!(config, read_config);
+    }
+
+    #[test]
     fn test_write_and_read_config() {
         let env = setup_test_environment();
 
@@ -370,7 +408,6 @@ mod tests {
             }),
         };
 
-        // Write the config
         write_config(&config).expect("Failed to write config");
 
         let written_toml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
@@ -483,5 +520,9 @@ mod tests {
         path = "/some/other-path"
         '''
         "###);
+
+        let final_config = read_config(None).expect("Failed to read config");
+
+        assert_eq!(config, final_config);
     }
 }
