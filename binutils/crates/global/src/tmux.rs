@@ -1,5 +1,5 @@
 use anyhow::Result;
-use std::{collections::BTreeMap, collections::HashMap, process::Command};
+use std::{collections::BTreeMap, process::Command};
 use tracing::debug;
 
 use crate::config::{Command as ConfigCommand, Config, Window};
@@ -91,7 +91,7 @@ fn ensure_window(
             }
 
             commands_executed.push(run_command(cmd, options)?);
-            commands_executed.extend(execute_command(session_name, &window, options)?);
+            commands_executed.extend(execute_command(session_name, window, options)?);
         }
     } else {
         // Session does not exist, create it and the window
@@ -110,7 +110,7 @@ fn ensure_window(
         }
 
         commands_executed.push(run_command(cmd, options)?);
-        commands_executed.extend(execute_command(session_name, &window, options)?);
+        commands_executed.extend(execute_command(session_name, window, options)?);
     }
 
     Ok(commands_executed)
@@ -157,18 +157,6 @@ fn execute_command(
     }
 
     Ok(commands_executed)
-}
-
-fn quote_command(command: &String) -> String {
-    if command.contains(|c: char| c.is_whitespace() || c == '\'' || c == '\"') {
-        // If it does, wrap arg_str in quotes that do not conflict with the quotes in the string.
-        // Use single quotes if the string contains double quotes, and vice versa.
-        let quote_char = if command.contains('\'') { '\"' } else { '\'' };
-
-        format!("{}{}{}", quote_char, command, quote_char)
-    } else {
-        command.clone()
-    }
 }
 
 type TmuxState = BTreeMap<String, Vec<String>>;
@@ -246,21 +234,19 @@ fn command_to_string(cmd: &Command) -> String {
 #[cfg(test)]
 mod tests {
     use std::{
-        path::{Path, PathBuf},
+        collections::HashMap,
+        path::Path,
         thread::sleep,
         time::{Duration, Instant},
     };
 
     use anyhow::Result;
-    use insta::{assert_debug_snapshot, assert_snapshot, assert_yaml_snapshot};
+    use insta::{assert_debug_snapshot, assert_yaml_snapshot};
     use rand::{distributions::Alphanumeric, Rng};
     use tempfile::tempdir;
 
     use super::*;
-    use crate::{
-        config::{Session, Tmux, Window},
-        test_utils::setup_test_environment,
-    };
+    use crate::config::{Session, Tmux, Window};
 
     struct TestingTmuxOptions {
         dry_run: bool,

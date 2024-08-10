@@ -3,7 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use tracing::{debug, error, info, trace};
+use tracing::{debug, error, trace};
 
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
