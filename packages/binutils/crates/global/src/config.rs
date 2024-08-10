@@ -3,6 +3,7 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
+use tracing::{debug, info, trace};
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
@@ -48,6 +49,9 @@ pub fn write_config(config: &Config) -> Result<()> {
     let config_path = get_config_file_path();
     let toml_str = toml::to_string_pretty(&config)?;
 
+    debug!("Writing config to: {}", config_path.display());
+    trace!("Config: {}", toml_str);
+
     let config_dir = config_path.parent().unwrap();
     fs::create_dir_all(config_dir)?;
 
@@ -56,10 +60,15 @@ pub fn write_config(config: &Config) -> Result<()> {
     Ok(())
 }
 
-pub fn read_config() -> Result<Config> {
-    let config_path = get_config_file_path();
+pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
+    let config_path = config_path.unwrap_or_else(get_config_file_path);
+    debug!("Reading config from: {}", config_path.display());
+
+    // TODO - handle missing config file
     let toml_str = fs::read_to_string(config_path)?;
     let config: Config = toml::from_str(&toml_str)?;
+
+    trace!("Config: {:?}", config);
 
     Ok(config)
 }
@@ -179,6 +188,19 @@ mod tests {
     }
 
     #[test]
+    fn test_read_config_missing_file() {
+        let _env = setup_test_environment();
+
+        let result = read_config(None);
+
+        // Assert that an error is returned
+        assert!(
+            result.is_err(),
+            "Expected an error when reading a missing config file"
+        );
+    }
+
+    #[test]
     fn test_write_and_read_config() {
         let env = setup_test_environment();
 
@@ -213,7 +235,7 @@ mod tests {
         "###);
 
         // Read the config
-        let read_config = read_config().expect("Failed to read config");
+        let read_config = read_config(None).expect("Failed to read config");
 
         assert_eq!(config.tmux.sessions, read_config.tmux.sessions);
     }
