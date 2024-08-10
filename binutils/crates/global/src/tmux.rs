@@ -1,5 +1,5 @@
 use anyhow::Result;
-use std::{collections::BTreeMap, process::Command};
+use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::debug;
 
 use crate::config::{Command as ConfigCommand, Config, Window};
@@ -26,6 +26,8 @@ pub trait TmuxOptions {
     ///
     /// Returns `Some(true)` if we should attach, `Some(false)` if we should not, and `None` if the decision is left to the default behavior.
     fn should_attach(&self) -> Option<bool>;
+
+    fn config_file(&self) -> Option<PathBuf>;
 }
 
 pub fn in_tmux() -> bool {
@@ -253,6 +255,7 @@ mod tests {
         debug: bool,
         attach: Option<bool>,
         socket_name: String,
+        _config_file: Option<PathBuf>,
     }
     impl TmuxOptions for TestingTmuxOptions {
         fn is_dry_run(&self) -> bool {
@@ -269,6 +272,10 @@ mod tests {
 
         fn socket_name(&self) -> Option<String> {
             Some(self.socket_name.clone())
+        }
+
+        fn config_file(&self) -> Option<PathBuf> {
+            None
         }
     }
 
@@ -342,6 +349,7 @@ mod tests {
             debug: false,
             attach: None,
             socket_name: generate_socket_name(),
+            _config_file: None,
         };
 
         assert!(

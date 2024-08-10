@@ -27,9 +27,9 @@ struct CliTmuxOptions {
     #[arg(long)]
     socket_name: Option<String>,
 
-    /// Path to the configuration file.
+    /// Path to the configuration file. Defaults to `~/.config/binutils/config.toml`.
     #[arg(long)]
-    config_file: Option<PathBuf>,
+    config_file: Option<String>,
 }
 
 impl TmuxOptions for CliTmuxOptions {
@@ -48,7 +48,12 @@ impl TmuxOptions for CliTmuxOptions {
     fn socket_name(&self) -> Option<String> {
         self.socket_name.clone()
     }
+
+    fn config_file(&self) -> Option<PathBuf> {
+        self.config_file.as_ref().map(PathBuf::from)
+    }
 }
+
 fn main() -> Result<()> {
     // Initialize tracing, but only if RUST_LOG is set
     tracing_subscriber::fmt()
@@ -61,7 +66,7 @@ fn main() -> Result<()> {
 
     let options = CliTmuxOptions::parse();
     // TODO: figure out how to do this without cloning
-    let config = read_config(options.config_file.clone())?;
+    let config = read_config(options.config_file())?;
 
     let commands = startup_tmux(config, &options)?;
     for command in commands {
