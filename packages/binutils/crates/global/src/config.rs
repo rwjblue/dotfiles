@@ -3,14 +3,15 @@ use std::fs;
 use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
-use tracing::{debug, info, trace};
+use tracing::{debug, error, info, trace};
 
-use anyhow::Result;
+use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 use toml;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
+    // TODO: make tmux optional
     pub tmux: Tmux,
 }
 
@@ -40,11 +41,19 @@ pub struct Window {
     pub command: Option<Command>,
 }
 
+fn default_config() -> Config {
+    Config {
+        // TODO: make tmux optional
+        tmux: Tmux { sessions: vec![] },
+    }
+}
+
 pub fn get_config_file_path() -> PathBuf {
     let home_dir = env::var("HOME").expect("HOME environment variable not set");
     Path::new(&home_dir).join(".config/binutils/config.toml")
 }
 
+// TODO: support passing in a custom config path
 pub fn write_config(config: &Config) -> Result<()> {
     let config_path = get_config_file_path();
     let toml_str = toml::to_string_pretty(&config)?;
@@ -61,12 +70,48 @@ pub fn write_config(config: &Config) -> Result<()> {
 }
 
 pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
-    let config_path = config_path.unwrap_or_else(get_config_file_path);
-    debug!("Reading config from: {}", config_path.display());
+    let config_path = match config_path {
+        Some(config_path) => {
+            if !config_path.is_file() {
+                error!(
+                    "The specified config path is not a file: {}",
+                    config_path.display()
+                );
 
-    // TODO - handle missing config file
-    let toml_str = fs::read_to_string(config_path)?;
-    let config: Config = toml::from_str(&toml_str)?;
+                return Err(anyhow::anyhow!(
+                    "The specified config path is not a file: {}",
+                    config_path.display()
+                ));
+            }
+            config_path
+        }
+        None => {
+            trace!("No config path specified, using default config path");
+            get_config_file_path()
+        }
+    };
+
+    let config = if config_path.is_file() {
+        debug!("Reading config from: {}", config_path.display());
+
+        let toml_str = fs::read_to_string(&config_path).with_context(|| {
+            format!(
+                "Could not read config file from: {}",
+                &config_path.display()
+            )
+        })?;
+        let config: Config = toml::from_str(&toml_str)
+            // TODO: include the error information (e.g. why didn't it parse) into the context
+            .with_context(|| format!("Could not parse config file: {}", &config_path.display()))?;
+        config
+    } else {
+        debug!(
+            "Using default config. No config file found at: {}",
+            config_path.display()
+        );
+
+        default_config()
+    };
 
     trace!("Config: {:?}", config);
 
@@ -114,7 +159,7 @@ fn revert_tokens_in_path(path: &Path) -> String {
 mod tests {
     use super::*;
     use crate::test_utils::setup_test_environment;
-    use insta::{assert_snapshot, assert_toml_snapshot};
+    use insta::{assert_debug_snapshot, assert_snapshot, assert_toml_snapshot};
     use std::env;
     use tempfile::tempdir;
 
@@ -191,13 +236,45 @@ mod tests {
     fn test_read_config_missing_file() {
         let _env = setup_test_environment();
 
-        let result = read_config(None);
+        let config = read_config(None).expect("read_config(None) when no config exists failed");
 
-        // Assert that an error is returned
-        assert!(
-            result.is_err(),
-            "Expected an error when reading a missing config file"
+        assert_debug_snapshot!(config, @r###"
+        Config {
+            tmux: Tmux {
+                sessions: [],
+            },
+        }
+        "###);
+    }
+
+    #[test]
+    fn test_read_config_invalid_toml_contents() -> Result<()> {
+        let env = setup_test_environment();
+
+        let mut file = File::create(&env.config_file)?;
+        file.write_all(b"invalid toml contents")?;
+
+        let err = read_config(None).unwrap_err();
+
+        assert_eq!(
+            err.to_string(),
+            format!(
+                "Could not parse config file: {}",
+                &env.config_file.display()
+            )
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_read_config_missing_file_specified() {
+        let _env = setup_test_environment();
+
+        let result = read_config(Some(PathBuf::from("/some/nonexistent/file")));
+        let err = result.unwrap_err();
+
+        assert_snapshot!(err, @"The specified config path is not a file: /some/nonexistent/file");
     }
 
     #[test]
