@@ -1,23 +1,21 @@
 use anyhow::{Context, Result};
 use nix::unistd::execv;
-use std::env;
 use std::ffi::CString;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
 use std::time::SystemTime;
+use std::{env, path::PathBuf};
 use tracing::{debug, info, trace};
 use walkdir::{DirEntry, WalkDir};
 
 fn modified_time(path: &Path) -> Result<SystemTime> {
-    let metadata = fs::metadata(path).context(format!(
-        "Failed to get metadata: {}",
-        path.to_string_lossy()
-    ))?;
+    let metadata =
+        fs::metadata(path).context(format!("Failed to get metadata: {}", path.display()))?;
 
     metadata.modified().context(format!(
         "Failed to get modified time for path: {}",
-        path.to_string_lossy()
+        path.display()
     ))
 }
 
@@ -47,12 +45,22 @@ pub fn has_updated_files<P: AsRef<Path>>(dir: P, current_exe_mod_time: SystemTim
     Ok(false)
 }
 
-pub fn needs_rebuild() -> Result<bool> {
-    let crate_root = env!("CARGO_MANIFEST_DIR");
-    let current_exe = env::current_exe().context("Failed to get the current executable path")?;
+fn get_current_exe() -> Result<PathBuf> {
+    env::current_exe().context("Failed to get the current executable path")
+}
 
-    debug!("crate_root: {}", crate_root);
-    debug!("current_exe: {}", current_exe.to_string_lossy());
+fn get_crate_root() -> PathBuf {
+    let crate_root = env!("CARGO_MANIFEST_DIR");
+
+    PathBuf::from(crate_root)
+}
+
+pub fn needs_rebuild() -> Result<bool> {
+    let crate_root = get_crate_root();
+    let current_exe = get_current_exe()?;
+
+    debug!("crate_root: {}", crate_root.display());
+    debug!("current_exe: {}", current_exe.display());
 
     let exe_mod_time = modified_time(&current_exe)?;
     let needs_rebuild = has_updated_files(crate_root, exe_mod_time)?;
@@ -63,17 +71,19 @@ pub fn needs_rebuild() -> Result<bool> {
 }
 
 pub fn run_cargo_build() -> Result<()> {
-    let crate_root = env!("CARGO_MANIFEST_DIR");
-    info!("Running cargo build, in {}", crate_root);
+    let crate_root = get_crate_root();
+    info!("Running cargo build, in {}", crate_root.display());
 
-    let path = Path::new(crate_root);
-    if !path.exists() {
-        anyhow::bail!("The specified path does not exist: {}", path.display());
+    if !crate_root.exists() {
+        anyhow::bail!(
+            "The specified path does not exist: {}",
+            crate_root.display()
+        );
     }
 
     let output = Command::new("cargo")
         .arg("build")
-        .current_dir(path)
+        .current_dir(crate_root)
         .output()
         .context("Failed to execute cargo build command")?;
 
@@ -88,7 +98,7 @@ pub fn run_cargo_build() -> Result<()> {
 }
 
 pub fn exec_updated_bin() -> Result<()> {
-    let current_exe = env::current_exe().context("Failed to get current executable path")?;
+    let current_exe = get_current_exe()?;
 
     let exe_cstring = CString::new(
         current_exe
@@ -109,6 +119,19 @@ pub fn exec_updated_bin() -> Result<()> {
 }
 
 pub fn ensure_latest_bin() -> Result<()> {
+    if !cfg!(debug_assertions) {
+        debug!("Not running a debug build, skipping check for latest bin");
+
+        return Ok(());
+    }
+
+    let current_exe = get_current_exe()?;
+    let crate_root = get_crate_root();
+
+    if !current_exe.starts_with(crate_root) {
+        return Ok(());
+    }
+
     if needs_rebuild()? {
         run_cargo_build()?;
         exec_updated_bin()?
