@@ -100,9 +100,13 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
                 &config_path.display()
             )
         })?;
-        let config: Config = toml::from_str(&toml_str)
-            // TODO: include the error information (e.g. why didn't it parse) into the context
-            .with_context(|| format!("Could not parse config file: {}", &config_path.display()))?;
+        let config: Config = toml::from_str(&toml_str).map_err(|e| {
+            anyhow::anyhow!(
+                "Could not parse config file: {}.\n\nParsing error:\n{}",
+                &config_path.display(),
+                e
+            )
+        })?;
         config
     } else {
         debug!(
@@ -158,7 +162,7 @@ fn revert_tokens_in_path(path: &Path) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::test_utils::setup_test_environment;
+    use crate::test_utils::{setup_test_environment, stabilize_home_paths};
     use insta::{assert_debug_snapshot, assert_snapshot, assert_toml_snapshot};
     use std::env;
     use tempfile::tempdir;
@@ -256,13 +260,16 @@ mod tests {
 
         let err = read_config(None).unwrap_err();
 
-        assert_eq!(
-            err.to_string(),
-            format!(
-                "Could not parse config file: {}",
-                &env.config_file.display()
-            )
-        );
+        assert_snapshot!(stabilize_home_paths(&env, &err.to_string()), @r###"
+        Could not parse config file: {home}/.config/binutils/config.toml.
+
+        Parsing error:
+        TOML parse error at line 1, column 9
+          |
+        1 | invalid toml contents
+          |         ^
+        expected `.`, `=`
+        "###);
 
         Ok(())
     }
