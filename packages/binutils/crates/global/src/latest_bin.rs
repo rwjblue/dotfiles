@@ -3,9 +3,9 @@ use nix::unistd::execv;
 use std::env;
 use std::ffi::CString;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::Command;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::SystemTime;
 use tracing::{debug, info, trace};
 use walkdir::{DirEntry, WalkDir};
 
