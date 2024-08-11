@@ -5,38 +5,52 @@ use anyhow::Result;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
+/// Configuration for the application.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Config {
+    /// Optional tmux configuration. Including sessions and windows to be created.
     pub tmux: Option<Tmux>,
 }
 
+/// Tmux configuration.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Tmux {
+    /// List of tmux sessions.
     pub sessions: Vec<Session>,
 }
 
+/// Configuration for a tmux session.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Session {
+    /// Name of the session.
     pub name: String,
+    /// List of windows in the session.
     pub windows: Vec<Window>,
 }
 
+/// Command to be executed in a tmux window.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(untagged)]
 pub enum Command {
+    /// A single command as a string.
     Single(String),
+    /// Multiple commands as a list of strings.
     Multiple(Vec<String>),
 }
 
+/// Configuration for a tmux window.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Window {
+    /// Name of the window.
     pub name: String,
+    /// Optional path to set as the working directory for the window.
     #[serde(
         default,
         serialize_with = "path_to_string",
         deserialize_with = "string_to_path"
     )]
     pub path: Option<PathBuf>,
+    /// Optional command to run in the window.
     pub command: Option<Command>,
 }
 
