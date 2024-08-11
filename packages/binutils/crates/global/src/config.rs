@@ -35,7 +35,11 @@ pub enum Command {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Window {
     pub name: String,
-    #[serde(serialize_with = "path_to_string", deserialize_with = "string_to_path")]
+    #[serde(
+        default,
+        serialize_with = "path_to_string",
+        deserialize_with = "string_to_path"
+    )]
     pub path: Option<PathBuf>,
     pub command: Option<Command>,
 }
@@ -156,7 +160,10 @@ where
     D: serde::Deserializer<'de>,
 {
     let opt = Option::<String>::deserialize(deserializer)?;
-    Ok(opt.map(|s| PathBuf::from(replace_tokens_in_path(&s))))
+    match opt {
+        Some(s) => Ok(Some(PathBuf::from(replace_tokens_in_path(&s)))),
+        None => Ok(None),
+    }
 }
 
 fn replace_tokens_in_path(path: &str) -> String {
