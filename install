@@ -95,6 +95,8 @@ copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
 link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
 
+link-dotfile "binutils/config/config.toml" "$HOME/.config/binutils/config.toml"
+
 if [[ "$OSTYPE" == darwin* ]]; then
   link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
   link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"

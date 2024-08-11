@@ -1,0 +1,28 @@
+[[tmux.sessions]]
+name = "Test Session"
+
+[[tmux.sessions.windows]]
+name = "Test Window"
+path = "/some/path"
+command = "echo 'Hello, world!'"
+
+[[tmux.sessions.windows]]
+name = "Second Window"
+path = "/some/other-path"
+command = "nvim"
+
+[[tmux.sessions.windows]]
+name = "Window without path"
+command = "nvim"
+
+[[tmux.sessions]]
+name = "Second Session"
+
+[[tmux.sessions.windows]]
+name = "Fourth Window"
+path = "~/"
+command = ["echo 'Hello, world!'", "echo 'Goodbye, world!'"]
+
+[[tmux.sessions.windows]]
+name = "Window without command"
+path = "/some/other-path"
