@@ -8,8 +8,7 @@ use tracing::{debug, error, trace};
 use anyhow::{Context, Result};
 use toml;
 
-use crate::config::default_config;
-
+use super::default_config;
 use super::types::{expand_tilde, Config};
 
 pub fn get_config_file_path() -> PathBuf {
@@ -93,7 +92,7 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
 mod tests {
     use super::super::types::{Command, Config, Session, Tmux, Window};
     use super::*;
-    use crate::test_utils::{setup_test_environment, stabilize_home_paths};
+    use test_utils::{setup_test_environment, stabilize_home_paths};
     use insta::{assert_debug_snapshot, assert_snapshot, assert_toml_snapshot};
     use std::env;
 

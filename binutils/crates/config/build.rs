@@ -3,7 +3,7 @@ use std::fs;
 use std::path::PathBuf;
 
 pub mod config {
-    include!("src/config/types.rs");
+    include!("src/types.rs");
 }
 
 fn main() -> Result<()> {

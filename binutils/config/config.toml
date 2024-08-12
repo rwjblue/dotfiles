@@ -1,4 +1,4 @@
-#:schema ../crates/global/config_schema.json
+#:schema ../crates/config/config_schema.json
 
 [[tmux.sessions]]
 name = "Test Session"

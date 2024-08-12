@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::debug;
 
-use crate::config::{Command as ConfigCommand, Config, Window};
+use config::{Command as ConfigCommand, Config, Window};
 
 /// `TmuxOptions` is a trait for managing various options for working with these tmux utilities.
 ///
@@ -248,7 +248,7 @@ mod tests {
     use tempfile::tempdir;
 
     use super::*;
-    use crate::config::{Session, Tmux, Window};
+    use config::{Session, Tmux, Window};
 
     struct TestingTmuxOptions {
         dry_run: bool,

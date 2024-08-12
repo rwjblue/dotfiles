@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use binutils::config::read_config;
+use config::read_config;
 use binutils::latest_bin;
 use binutils::tmux;
 use clap::Parser;

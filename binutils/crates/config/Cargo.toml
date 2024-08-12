@@ -1,25 +1,18 @@
 [package]
-name = "binutils"
+name = "config"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 anyhow = "1.0.79"
-clap = { version = "4.5.3", features = ["derive"] }
-nix = { version = "0.29.0", default-features = false, features = ["process"] }
+schemars = "0.8.21"
+serde = { version = "1.0.197", features = ["derive"] }
 toml = "0.8.12"
 tracing = "0.1.40"
-tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
-walkdir = "2.5.0"
-config = { path = "../config" }
 
 [dev-dependencies]
 insta = { version = "1.36.1", features = ["yaml", "toml"] }
 tempfile = "3.10.1"
-temp-env = "0.3.6"
-rand = "0.8.5"
 test_utils = { path = "../test_utils" }
 
 [build-dependencies]
