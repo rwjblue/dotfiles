@@ -1,6 +1,0 @@
-[build]
-# When `cargo build` is called from within the crate itself (i.e. *NOT* from the workspace root)
-# this configures the compiled binary to be put into the crate local `target` directory.
-#
-# Note: when building from the workspace root, this config has no effect
-target-dir = "target"
