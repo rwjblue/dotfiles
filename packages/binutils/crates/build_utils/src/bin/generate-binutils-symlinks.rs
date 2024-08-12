@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use anyhow::Result;
 use tracing_subscriber::EnvFilter;
 
@@ -9,7 +11,8 @@ fn main() -> Result<()> {
         )
         .init();
 
-    build_utils::generate_symlinks()?;
+    let crate_root = env!("CARGO_MANIFEST_DIR");
+    build_utils::generate_symlinks(Some(PathBuf::from(crate_root)))?;
 
     Ok(())
 }
