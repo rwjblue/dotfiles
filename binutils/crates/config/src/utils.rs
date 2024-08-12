@@ -6,7 +6,6 @@ use std::path::{Path, PathBuf};
 use tracing::{debug, error, trace};
 
 use anyhow::{Context, Result};
-use toml;
 
 use super::default_config;
 use super::types::Config;
