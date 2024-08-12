@@ -1,9 +1,7 @@
 [package]
-name = "binutils"
+name = "latest_bin"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 anyhow = "1.0.79"
@@ -14,7 +12,6 @@ tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
 config = { path = "../config" }
-latest_bin = { path = "../latest_bin" }
 
 [dev-dependencies]
 insta = { version = "1.36.1", features = ["yaml", "toml"] }
@@ -22,9 +19,3 @@ tempfile = "3.10.1"
 temp-env = "0.3.6"
 rand = "0.8.5"
 test_utils = { path = "../test_utils" }
-
-[build-dependencies]
-anyhow = "1.0.79"
-schemars = "0.8.21"
-serde = { version = "1.0.197", features = ["derive"] }
-serde_json = "1.0.122"

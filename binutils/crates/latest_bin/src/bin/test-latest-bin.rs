@@ -1,5 +1,4 @@
 use anyhow::Result;
-use binutils::latest_bin;
 use tracing_subscriber::EnvFilter;
 
 fn main() -> Result<()> {
