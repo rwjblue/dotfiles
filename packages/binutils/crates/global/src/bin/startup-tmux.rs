@@ -1,11 +1,9 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use binutils::latest_bin;
-use binutils::tmux;
+use binutils::tmux::{startup_tmux, TmuxOptions};
 use clap::Parser;
 use config::read_config;
-use tmux::{startup_tmux, TmuxOptions};
 use tracing_subscriber::EnvFilter;
 
 #[derive(Parser, Debug)]
