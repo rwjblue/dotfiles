@@ -56,7 +56,6 @@ pub struct Window {
 
 pub fn default_config() -> Config {
     Config {
-        // TODO: make tmux optional
         tmux: Some(Tmux { sessions: vec![] }),
     }
 }
@@ -85,36 +84,26 @@ where
     }
 }
 
-// TODO: use ~ instead of {home} (duh)
-fn replace_tokens_in_path(path: &str) -> String {
-    let home_dir = env::var("HOME").unwrap_or_default();
-    path.replace("{home}", &home_dir)
+pub fn replace_tokens_in_path(path: &str) -> String {
+    match path.strip_prefix("~") {
+        Some(stripped) => {
+            let home_dir = env::var("HOME").expect("HOME environment variable not set");
+
+            format!("{}{}", home_dir, stripped)
+        }
+        None => path.to_string(),
+    }
 }
 
-// TODO: use ~ instead of {home} (duh)
 fn revert_tokens_in_path(path: &Path) -> String {
     let home_dir = env::var("HOME").unwrap_or_default();
     let path_str = path.to_str().unwrap_or("");
 
-    if path_str.starts_with(&home_dir) {
-        path_str.replace(&home_dir, "{home}")
-    } else {
-        path_str.to_string()
-    }
-}
-
-// TODO: move this into replace_tokens_in_path and revert_tokens_in_path
-pub fn expand_tilde(path: PathBuf) -> PathBuf {
-    let path_str = path.to_str().unwrap_or_default();
-
-    match path_str.strip_prefix("~") {
+    match path_str.strip_prefix(&home_dir) {
         Some(stripped) => {
-            let home_dir = env::var("HOME").expect("HOME environment variable not set");
-            let expanded = format!("{}{}", home_dir, stripped);
-
-            PathBuf::from(expanded)
+            format!("~{}", stripped)
         }
-        None => path,
+        None => path_str.to_string(),
     }
 }
 
@@ -128,7 +117,7 @@ mod tests {
     #[test]
     fn test_replace_tokens_in_path_with_home() {
         let home_dir = env::var("HOME").expect("HOME not set");
-        let path = "{home}/some/path";
+        let path = "~/some/path";
         assert_eq!(
             replace_tokens_in_path(path),
             format!("{}/some/path", home_dir)
@@ -139,7 +128,7 @@ mod tests {
     fn test_revert_tokens_in_path_to_home() {
         let home_dir = env::var("HOME").expect("HOME not set");
         let path = PathBuf::from(format!("{}/some/path", home_dir));
-        assert_eq!(revert_tokens_in_path(&path), "{home}/some/path");
+        assert_eq!(revert_tokens_in_path(&path), "~/some/path");
     }
 
     #[test]
@@ -168,14 +157,14 @@ mod tests {
     #[test]
     fn test_path_just_home_token() {
         let home_dir = env::var("HOME").expect("HOME not set");
-        assert_eq!(replace_tokens_in_path("{home}"), home_dir);
+        assert_eq!(replace_tokens_in_path("~"), home_dir);
     }
 
     #[test]
     fn test_path_just_home_directory() {
         let home_dir = env::var("HOME").expect("HOME not set");
         let path = PathBuf::from(&home_dir);
-        assert_eq!(revert_tokens_in_path(&path), "{home}");
+        assert_eq!(revert_tokens_in_path(&path), "~");
     }
 
     // This test ensures that paths without the home directory are handled correctly
