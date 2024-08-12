@@ -18,7 +18,7 @@ pub fn get_config_file_path() -> PathBuf {
 fn expand_tilde(path: PathBuf) -> PathBuf {
     let path_str = path.to_str().unwrap_or_default();
 
-    match path_str.strip_prefix("~") {
+    match path_str.strip_prefix('~') {
         Some(stripped) => {
             let home_dir = env::var("HOME").expect("HOME environment variable not set");
             let expanded = format!("{}{}", home_dir, stripped);
@@ -158,7 +158,7 @@ mod tests {
         let config_file_path = env.home.join("custom-config.toml");
         let config = default_config();
 
-        let mut file = File::create(&config_file_path).expect("Could not create file");
+        let mut file = File::create(config_file_path).expect("Could not create file");
         let toml_str = toml::to_string_pretty(&config).expect("could not convert to toml");
         file.write_all(toml_str.as_bytes())
             .expect("could not write to config");
