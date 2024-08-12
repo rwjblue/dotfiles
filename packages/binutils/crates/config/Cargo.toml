@@ -20,7 +20,3 @@ anyhow = "1.0.79"
 schemars = "0.8.21"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.122"
-
-[profile.dev.package]
-insta.opt-level = 3
-similar.opt-level = 3
