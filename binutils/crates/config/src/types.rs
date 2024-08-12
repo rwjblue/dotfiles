@@ -85,7 +85,7 @@ where
 }
 
 pub fn replace_tokens_in_path(path: &str) -> String {
-    match path.strip_prefix("~") {
+    match path.strip_prefix('~') {
         Some(stripped) => {
             let home_dir = env::var("HOME").expect("HOME environment variable not set");
 
