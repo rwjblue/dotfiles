@@ -47,5 +47,5 @@ pub fn setup_test_environment() -> TestEnvironment {
 
 pub fn stabilize_home_paths(env: &TestEnvironment, input: &str) -> String {
     let home_str = env.home.to_str().expect("Failed to convert PathBuf to str");
-    input.replace(home_str, "{home}")
+    input.replace(home_str, "~")
 }

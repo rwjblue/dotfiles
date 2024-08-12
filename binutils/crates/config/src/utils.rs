@@ -9,11 +9,25 @@ use anyhow::{Context, Result};
 use toml;
 
 use super::default_config;
-use super::types::{expand_tilde, Config};
+use super::types::Config;
 
 pub fn get_config_file_path() -> PathBuf {
     let home_dir = env::var("HOME").expect("HOME environment variable not set");
     Path::new(&home_dir).join(".config/binutils/config.toml")
+}
+
+fn expand_tilde(path: PathBuf) -> PathBuf {
+    let path_str = path.to_str().unwrap_or_default();
+
+    match path_str.strip_prefix("~") {
+        Some(stripped) => {
+            let home_dir = env::var("HOME").expect("HOME environment variable not set");
+            let expanded = format!("{}{}", home_dir, stripped);
+
+            PathBuf::from(expanded)
+        }
+        None => path,
+    }
 }
 
 // TODO: support passing in a custom config path
@@ -92,9 +106,9 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
 mod tests {
     use super::super::types::{Command, Config, Session, Tmux, Window};
     use super::*;
-    use test_utils::{setup_test_environment, stabilize_home_paths};
     use insta::{assert_debug_snapshot, assert_snapshot, assert_toml_snapshot};
     use std::env;
+    use test_utils::{setup_test_environment, stabilize_home_paths};
 
     #[test]
     fn test_read_config_missing_file() {
@@ -174,7 +188,7 @@ mod tests {
         let err = read_config(None).unwrap_err();
 
         assert_snapshot!(stabilize_home_paths(&env, &err.to_string()), @r###"
-        Could not parse config file: {home}/.config/binutils/config.toml.
+        Could not parse config file: ~/.config/binutils/config.toml.
 
         Parsing error:
         TOML parse error at line 1, column 9
@@ -306,7 +320,7 @@ mod tests {
                         windows: vec![
                             Window {
                                 name: "Fourth Window".to_string(),
-                                path: Some(PathBuf::from("~/")),
+                                path: Some(env.home.clone()),
                                 command: Some(Command::Multiple(vec![
                                     "echo 'Hello, world!'".to_string(),
                                     "echo 'Goodbye, world!'".to_string(),
@@ -353,7 +367,7 @@ mod tests {
 
         [[tmux.sessions.windows]]
         name = "Fourth Window"
-        path = "~/"
+        path = "~"
         command = [
             "echo 'Hello, world!'",
             "echo 'Goodbye, world!'",
