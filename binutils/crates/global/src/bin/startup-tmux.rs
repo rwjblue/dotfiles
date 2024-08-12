@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use config::read_config;
 use binutils::latest_bin;
 use binutils::tmux;
 use clap::Parser;
+use config::read_config;
 use tmux::{startup_tmux, TmuxOptions};
 use tracing_subscriber::EnvFilter;
 
