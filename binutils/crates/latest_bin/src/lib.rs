@@ -49,6 +49,8 @@ fn get_current_exe() -> Result<PathBuf> {
     env::current_exe().context("Failed to get the current executable path")
 }
 
+// TODO: change this to get_workspace_root: use get_current_exe and walk upwards to trim off
+// /target/debug finding the workspace root
 fn get_crate_root() -> PathBuf {
     let crate_root = env!("CARGO_MANIFEST_DIR");
 
@@ -131,10 +133,13 @@ pub fn ensure_latest_bin() -> Result<()> {
     debug!("current_exe: {}", current_exe.display());
     debug!("crate_root: {}", crate_root.display());
 
-    if !current_exe.starts_with(crate_root) {
-        info!("opting out of ensure_latest_bin");
-        return Ok(());
-    }
+    // TODO: figure out how to bring this back; the main issue is that when we are building the
+    // workspace root and using generate-binutils-symlinks we no longer can tell at execution
+    // time if we are running the crate root symlink or the workspace root /targets folder version
+    // if !current_exe.starts_with(crate_root) {
+    //    info!("opting out of ensure_latest_bin");
+    //    return Ok(());
+    // }
 
     if needs_rebuild()? {
         run_cargo_build()?;
