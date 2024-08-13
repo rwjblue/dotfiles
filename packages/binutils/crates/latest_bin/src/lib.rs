@@ -128,7 +128,11 @@ pub fn ensure_latest_bin() -> Result<()> {
     let current_exe = get_current_exe()?;
     let crate_root = get_crate_root();
 
+    debug!("current_exe: {}", current_exe.display());
+    debug!("crate_root: {}", crate_root.display());
+
     if !current_exe.starts_with(crate_root) {
+        info!("opting out of ensure_latest_bin");
         return Ok(());
     }
 
