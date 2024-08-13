@@ -181,4 +181,41 @@ mod tests {
 
         assert!(crate_target_dir.join("hello_world").exists());
     }
+
+    #[test]
+    fn test_test_package_bin_is_executable() {
+        let temp_dir = tempdir().unwrap();
+        let packages = vec![FakePackage {
+            name: "test_package".to_string(),
+            bins: vec!["hello_world".to_string()],
+        }];
+        create_workspace_with_packages(temp_dir.path(), packages);
+
+        let profile = "debug";
+
+        let package_dir = temp_dir.path().join("test_package");
+        let crate_target_dir = package_dir.join("target").join(profile);
+
+        generate_symlinks(Some(temp_dir.path().to_path_buf())).unwrap();
+
+        let bin_path = crate_target_dir.join("hello_world");
+        assert!(bin_path.exists(), "precond - file exists");
+
+        let output = std::process::Command::new(bin_path.clone())
+            .output()
+            .expect("failed to execute process");
+
+        assert!(
+            output.status.success(),
+            "process did not exit successfully: {}",
+            output.status
+        );
+
+        let stdout = String::from_utf8_lossy(&output.stdout);
+        assert_eq!(
+            stdout.trim(),
+            format!("\"{}\"", bin_path.to_string_lossy().trim()),
+            "stdout does not match expected output"
+        );
+    }
 }
