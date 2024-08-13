@@ -1,30 +1,20 @@
 #:schema ../crates/config/config_schema.json
 
 [[tmux.sessions]]
-name = "Test Session"
+name = "✅ todos"
 
 [[tmux.sessions.windows]]
-name = "Test Window"
-path = "/some/path"
-command = "echo 'Hello, world!'"
-
-[[tmux.sessions.windows]]
-name = "Second Window"
-path = "/some/other-path"
-command = "nvim"
-
-[[tmux.sessions.windows]]
-name = "Window without path"
-command = "nvim"
+name = "todos"
 
 [[tmux.sessions]]
-name = "Second Session"
+name = "dotfiles"
 
 [[tmux.sessions.windows]]
-name = "Fourth Window"
-path = "~/"
-command = ["echo 'Hello, world!'", "echo 'Goodbye, world!'"]
+name = "dotvim"
+path = "~/src/rwjblue/dotvim"
+command = "nvim"
 
 [[tmux.sessions.windows]]
-name = "Window without command"
-path = "/some/other-path"
+name = "dotfiles"
+path = "~/src/rwjblue/dotfiles"
+command = "nvim"
