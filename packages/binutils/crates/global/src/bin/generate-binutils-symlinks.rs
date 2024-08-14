@@ -14,7 +14,7 @@ fn main() -> Result<()> {
     latest_bin::ensure_latest_bin()?;
 
     let crate_root = env!("CARGO_MANIFEST_DIR");
-    build_utils::generate_symlinks(Some(PathBuf::from(crate_root)))?;
+    binutils::build_utils::generate_symlinks(Some(PathBuf::from(crate_root)))?;
 
     Ok(())
 }
