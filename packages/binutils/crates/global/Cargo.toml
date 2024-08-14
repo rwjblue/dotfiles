@@ -16,6 +16,8 @@ tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
 config = { path = "../config" }
 latest_bin = { path = "../latest_bin" }
+regex = "1.10.6"
+shellexpand = "3.1.0"
 
 [dev-dependencies]
 insta = { version = "1.36.1", features = ["yaml", "toml"] }
