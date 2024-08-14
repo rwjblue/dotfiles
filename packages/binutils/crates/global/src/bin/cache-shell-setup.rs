@@ -6,11 +6,11 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::process::Command;
 
-// TODO: refactor to take two arguments the source path and the destination path
-// then update the logic to not mutate the source file, it just emits the new content
-// to the destination file
-fn process_file(file_path: &Path) -> Result<()> {
-    let file = File::open(file_path).context("Failed to open file for reading")?;
+fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
+    let source_file = source_file.as_ref();
+    let dest_file = dest_file.as_ref();
+
+    let file = File::open(source_file).context("Failed to open file for reading")?;
     let reader = BufReader::new(file);
 
     let output_start_regex = Regex::new(r"# OUTPUT START: (.+)").unwrap();
@@ -60,7 +60,13 @@ fn process_file(file_path: &Path) -> Result<()> {
         }
     }
 
-    let mut output_file = File::create(file_path).context("Failed to open file for writing")?;
+    if let Some(parent) = dest_file.parent() {
+        fs::create_dir_all(parent)
+            .with_context(|| format!("Failed to create directories for path: {:?}", parent))?;
+    }
+
+    let mut output_file = File::create(dest_file)
+        .with_context(|| format!("Failed to open file for writing: {}", dest_file.display()))?;
 
     for line in new_content {
         writeln!(output_file, "{}", line).context("Failed to write line")?;
@@ -71,21 +77,41 @@ fn process_file(file_path: &Path) -> Result<()> {
     Ok(())
 }
 
-fn process_directory(dir: &Path) -> Result<()> {
+fn process_directory(source_dir: &Path, dest_dir: &Path) -> Result<()> {
     let zsh_filenames = ["zshrc", "zshenv", "zprofile", "zlogin", "zlogout"];
 
-    for entry in fs::read_dir(dir).context("Failed to read directory")? {
+    for entry in fs::read_dir(source_dir).context("Failed to read directory")? {
         let entry = entry.context("Failed to process directory entry")?;
         let path = entry.path();
 
-        let is_zsh_file = path.extension().and_then(|s| s.to_str()) == Some("zsh");
-        let is_special_zsh_file = path
-            .file_name()
-            .and_then(|s| s.to_str())
-            .map_or(false, |name| zsh_filenames.contains(&name));
+        if path.starts_with(dest_dir) {
+            continue;
+        }
 
-        if is_zsh_file || is_special_zsh_file {
-            process_file(&path).context(format!("Failed to process file {:?}", path))?;
+        // TODO: if the entry is a directory, recurse
+        if path.is_dir() {
+            let relative_path = path
+                .strip_prefix(source_dir)
+                .context("Failed to get relative path")?;
+            let new_dest_dir = dest_dir.join(relative_path);
+
+            process_directory(&path, &new_dest_dir)
+                .context(format!("Failed to process directory {:?}", path))?;
+        } else {
+            let is_zsh_file = path.extension().and_then(|s| s.to_str()) == Some("zsh");
+            let is_special_zsh_file = path
+                .file_name()
+                .and_then(|s| s.to_str())
+                .map_or(false, |name| zsh_filenames.contains(&name));
+
+            if is_zsh_file || is_special_zsh_file {
+                let relative_path = path
+                    .strip_prefix(source_dir)
+                    .context("Failed to get relative path")?;
+                let dest_file = dest_dir.join(relative_path);
+                process_file(&path, &dest_file)
+                    .context(format!("Failed to process file {:?}", path))?;
+            }
         }
     }
     Ok(())
@@ -104,36 +130,97 @@ fn process_directory(dir: &Path) -> Result<()> {
 struct Args {
     /// Directory path to process
     #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/")]
-    directory: String,
+    source: String,
+
+    /// Directory path to emit the expanded output into
+    #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/dist/")]
+    destination: String,
 }
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let directory = shellexpand::tilde(&args.directory).to_string();
-    let directory = Path::new(&directory);
+    let source_dir = shellexpand::tilde(&args.source).to_string();
+    let source_dir = Path::new(&source_dir);
 
-    process_directory(directory).context("Failed to process directory")
+    let dest_dir = shellexpand::tilde(&args.destination).to_string();
+    let dest_dir = Path::new(&dest_dir);
+
+    process_directory(source_dir, dest_dir).context("Failed to process directory")
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use insta::assert_snapshot;
+    use insta::{assert_debug_snapshot, assert_snapshot};
+    use std::collections::BTreeMap;
     use std::fs::write;
     use tempfile::tempdir;
+
+    fn fixturify_read<S: AsRef<Path>>(from: S) -> Result<BTreeMap<String, String>> {
+        let path = from.as_ref();
+        let mut file_map = BTreeMap::new();
+
+        for entry in walkdir::WalkDir::new(path) {
+            let entry = entry?;
+            let path = entry.path();
+
+            if path.is_file() {
+                let relative_path = path
+                    .strip_prefix(&from)
+                    .with_context(|| {
+                        format!(
+                            "Failed to strip prefix from path: {:?} with prefix: {:?}",
+                            path, path
+                        )
+                    })?
+                    .to_path_buf();
+                let file_content = fs::read_to_string(path)
+                    .with_context(|| format!("Failed to read file: {:?}", path))?;
+                file_map.insert(relative_path.to_string_lossy().to_string(), file_content);
+            }
+        }
+        Ok(file_map)
+    }
+
+    fn fixturify_write<S: AsRef<Path>>(to: S, file_map: BTreeMap<String, String>) -> Result<()> {
+        let base_path = to.as_ref();
+
+        for (relative_path, content) in file_map {
+            let full_path = base_path.join(&relative_path);
+
+            if let Some(parent) = full_path.parent() {
+                fs::create_dir_all(parent).with_context(|| {
+                    format!("Failed to create directories for path: {:?}", parent)
+                })?;
+            }
+
+            fs::write(&full_path, &content).with_context(|| {
+                format!("Failed to write file: {:?}, with:\n{}", full_path, content)
+            })?;
+        }
+
+        Ok(())
+    }
 
     #[test]
     fn test_process_file_with_valid_command() -> Result<()> {
         let dir = tempdir()?;
-        let file_path = dir.path().join("test.zsh");
+        let source_file = dir.path().join("test.zsh");
+        let dest_file = dir.path().join("output.zsh");
 
         let content = "# CMD: echo 'hello world'\n";
-        write(&file_path, content)?;
+        write(&source_file, content)?;
 
-        process_file(&file_path)?;
+        process_file(&source_file, &dest_file)?;
 
-        let processed_content = fs::read_to_string(&file_path)?;
+        let source_contents = fs::read_to_string(&source_file)?;
+
+        assert_snapshot!(source_contents, @r###"
+        # CMD: echo 'hello world'
+        "###);
+
+        let processed_content = fs::read_to_string(&dest_file)?;
         assert_snapshot!(processed_content, @r###"
         # CMD: echo 'hello world'
         # OUTPUT START: echo 'hello world'
@@ -148,14 +235,21 @@ mod tests {
     #[test]
     fn test_process_file_with_existing_output() -> Result<()> {
         let dir = tempdir()?;
-        let file_path = dir.path().join("test.zsh");
+        let source_file = dir.path().join("test.zsh");
+        let dest_file = dir.path().join("output.zsh");
 
-        let content = "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nold output\n# OUTPUT END: echo 'hello world'\n";
-        write(&file_path, content)?;
+        write(&source_file, "# CMD: echo 'hello world'\n")?;
+        write(&dest_file, "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nold output\n# OUTPUT END: echo 'hello world'\n")?;
 
-        process_file(&file_path)?;
+        process_file(&source_file, &dest_file)?;
 
-        let processed_content = fs::read_to_string(&file_path)?;
+        let source_contents = fs::read_to_string(&source_file)?;
+
+        assert_snapshot!(source_contents, @r###"
+        # CMD: echo 'hello world'
+        "###);
+
+        let processed_content = fs::read_to_string(&dest_file)?;
         assert_snapshot!(processed_content, @r###"
         # CMD: echo 'hello world'
         # OUTPUT START: echo 'hello world'
@@ -170,20 +264,62 @@ mod tests {
     #[test]
     fn test_process_file_with_invalid_command() -> Result<()> {
         let dir = tempdir()?;
-        let file_path = dir.path().join("test.zsh");
+        let source_file = dir.path().join("test.zsh");
+        let dest_file = dir.path().join("output.zsh");
 
         let content = "# CMD: invalidcommand\n";
-        write(&file_path, content)?;
+        write(&source_file, content)?;
 
         // Process the file (should not panic, just print error)
-        process_file(&file_path)?;
+        process_file(&source_file, &dest_file)?;
 
-        let processed_content = fs::read_to_string(&file_path)?;
+        let source_contents = fs::read_to_string(&source_file)?;
+
+        assert_snapshot!(source_contents, @r###"
+        # CMD: invalidcommand
+        "###);
+
+        let processed_content = fs::read_to_string(&dest_file)?;
 
         assert_snapshot!(processed_content, @r###"
         # CMD: invalidcommand
         "###);
 
         Ok(())
+    }
+
+    #[test]
+    fn test_process_directory() {
+        let temp_dir = tempdir().unwrap();
+        let base_dir = temp_dir.path();
+
+        let source_files: BTreeMap<String, String> = BTreeMap::from([
+            (
+                "zsh/zshrc".to_string(),
+                "# CMD: echo 'hello world'\n".to_string(),
+            ),
+            (
+                "zsh/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n".to_string(),
+            ),
+        ]);
+
+        fixturify_write(base_dir, source_files).unwrap();
+
+        let source_dir = base_dir.join("zsh");
+        let dest_dir = base_dir.join("zsh/dist");
+
+        process_directory(&source_dir, &dest_dir).unwrap();
+
+        let file_map = fixturify_read(base_dir).unwrap();
+
+        assert_debug_snapshot!(file_map, @r###"
+        {
+            "zsh/dist/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n# OUTPUT START: echo 'goodbye world'\ngoodbye world\n\n# OUTPUT END: echo 'goodbye world'\n",
+            "zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
+            "zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
+            "zsh/zshrc": "# CMD: echo 'hello world'\n",
+        }
+        "###)
     }
 }
