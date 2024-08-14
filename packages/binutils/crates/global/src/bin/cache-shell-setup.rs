@@ -6,6 +6,9 @@ use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::process::Command;
 
+// TODO: refactor to take two arguments the source path and the destination path
+// then update the logic to not mutate the source file, it just emits the new content
+// to the destination file
 fn process_file(file_path: &Path) -> Result<()> {
     let file = File::open(file_path).context("Failed to open file for reading")?;
     let reader = BufReader::new(file);
