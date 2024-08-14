@@ -69,10 +69,19 @@ fn process_file(file_path: &Path) -> Result<()> {
 }
 
 fn process_directory(dir: &Path) -> Result<()> {
+    let zsh_filenames = ["zshrc", "zshenv", "zprofile", "zlogin", "zlogout"];
+
     for entry in fs::read_dir(dir).context("Failed to read directory")? {
         let entry = entry.context("Failed to process directory entry")?;
         let path = entry.path();
-        if path.is_file() && path.extension().and_then(|s| s.to_str()) == Some("zsh") {
+
+        let is_zsh_file = path.extension().and_then(|s| s.to_str()) == Some("zsh");
+        let is_special_zsh_file = path
+            .file_name()
+            .and_then(|s| s.to_str())
+            .map_or(false, |name| zsh_filenames.contains(&name));
+
+        if is_zsh_file || is_special_zsh_file {
             process_file(&path).context(format!("Failed to process file {:?}", path))?;
         }
     }
@@ -91,7 +100,7 @@ fn process_directory(dir: &Path) -> Result<()> {
 #[command(name = "cache-shell-setup")]
 struct Args {
     /// Directory path to process
-    #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/plugins/")]
+    #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/")]
     directory: String,
 }
 
