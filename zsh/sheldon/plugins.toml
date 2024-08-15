@@ -22,14 +22,14 @@ use = ["*"]
 apply = ["fpath"]
 
 [plugins.local-plugins]
-local = "~/.zsh/dist/plugins"
+local = "~/.zsh/plugins"
 use = ["*"]
 apply = ["source"]
 
-#[plugins.local-deferred-plugins]
-#local = "~/.zsh/dist/plugins_deferred"
-#use = ["*"]
-#apply = ["defer"]
+[plugins.local-deferred-plugins]
+local = "~/.zsh/plugins_deferred"
+use = ["*"]
+apply = ["defer"]
 
 [plugins.compinit]
 inline = 'autoload -Uz compinit && zsh-defer compinit'

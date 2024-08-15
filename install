@@ -78,11 +78,11 @@ mkdir -p ~/bin
 
 link-dotfile "bash/bashrc" "$HOME/.bashrc"
 
-link-dotfile "zsh" "$HOME/.zsh"
-link-dotfile "zsh/zshenv" "$HOME/.zshenv"
-link-dotfile "zsh/zprofile" "$HOME/.zprofile"
-link-dotfile "zsh/zshrc" "$HOME/.zshrc"
-copy-dotfile "zsh/zshrc.local" "$HOME/.zshrc.local"
+link-dotfile "zsh/dist/" "$HOME/.zsh"
+link-dotfile "zsh/dist/zshenv" "$HOME/.zshenv"
+link-dotfile "zsh/dist/zprofile" "$HOME/.zprofile"
+link-dotfile "zsh/dist/zshrc" "$HOME/.zshrc"
+copy-dotfile "zsh/dist/zshrc.local" "$HOME/.zshrc.local"
 link-dotfile "zsh/sheldon" "$HOME/.config/sheldon"
 link-dotfile "atuin" "$HOME/.config/atuin"
 
