@@ -1,6 +1,5 @@
 use anyhow::{Context, Result};
-use clap::Parser;
-use regex::Regex;
+use clap::{Parser, ValueEnum};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
@@ -13,11 +12,7 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
     let file = File::open(source_file).context("Failed to open file for reading")?;
     let reader = BufReader::new(file);
 
-    let output_start_regex = Regex::new(r"# OUTPUT START: (.+)").unwrap();
-    let output_end_regex = Regex::new(r"# OUTPUT END: (.+)").unwrap();
-
     let mut new_content = Vec::new();
-    let mut skip_output_block = false;
 
     for line in reader.lines() {
         let line = line.context("Failed to read line")?;
@@ -46,15 +41,6 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
                     String::from_utf8_lossy(&output.stderr)
                 );
             }
-
-            skip_output_block = true;
-        } else if skip_output_block {
-            if output_end_regex.is_match(&line) {
-                skip_output_block = false;
-            }
-        } else if output_start_regex.is_match(&line) {
-            // If we find an unexpected OUTPUT START, skip until the corresponding OUTPUT END
-            skip_output_block = true;
         } else {
             new_content.push(line);
         }
@@ -78,8 +64,6 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
 }
 
 fn process_directory(source_dir: &Path, dest_dir: &Path) -> Result<()> {
-    let zsh_filenames = ["zshrc", "zshenv", "zprofile", "zlogin", "zlogout"];
-
     for entry in fs::read_dir(source_dir).context("Failed to read directory")? {
         let entry = entry.context("Failed to process directory entry")?;
         let path = entry.path();
@@ -88,33 +72,32 @@ fn process_directory(source_dir: &Path, dest_dir: &Path) -> Result<()> {
             continue;
         }
 
-        // TODO: if the entry is a directory, recurse
         if path.is_dir() {
             let relative_path = path
                 .strip_prefix(source_dir)
                 .context("Failed to get relative path")?;
             let new_dest_dir = dest_dir.join(relative_path);
 
+            fs::create_dir_all(&new_dest_dir).context("Failed to create destination directory")?;
             process_directory(&path, &new_dest_dir)
                 .context(format!("Failed to process directory {:?}", path))?;
         } else {
-            let is_zsh_file = path.extension().and_then(|s| s.to_str()) == Some("zsh");
-            let is_special_zsh_file = path
-                .file_name()
-                .and_then(|s| s.to_str())
-                .map_or(false, |name| zsh_filenames.contains(&name));
-
-            if is_zsh_file || is_special_zsh_file {
-                let relative_path = path
-                    .strip_prefix(source_dir)
-                    .context("Failed to get relative path")?;
-                let dest_file = dest_dir.join(relative_path);
-                process_file(&path, &dest_file)
-                    .context(format!("Failed to process file {:?}", path))?;
-            }
+            let relative_path = path
+                .strip_prefix(source_dir)
+                .context("Failed to get relative path")?;
+            let dest_file = dest_dir.join(relative_path);
+            process_file(&path, &dest_file)
+                .context(format!("Failed to process file {:?}", path))?;
         }
     }
     Ok(())
+}
+
+/// Represents whether to clear the destination directory
+#[derive(ValueEnum, Clone, PartialEq)]
+enum DestinationStrategy {
+    Clear,
+    Merge,
 }
 
 /// cache-shell-setup
@@ -135,10 +118,14 @@ struct Args {
     /// Directory path to emit the expanded output into
     #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/dist/")]
     destination: String,
+
+    /// Whether to clear the destination directory before processing
+    #[clap(value_enum, long, default_value_t = DestinationStrategy::Clear)]
+    destination_strategy: DestinationStrategy,
 }
 
-fn main() -> Result<()> {
-    let args = Args::parse();
+fn run(args: Vec<String>) -> Result<()> {
+    let args = Args::parse_from(args);
 
     let source_dir = shellexpand::tilde(&args.source).to_string();
     let source_dir = Path::new(&source_dir);
@@ -146,7 +133,16 @@ fn main() -> Result<()> {
     let dest_dir = shellexpand::tilde(&args.destination).to_string();
     let dest_dir = Path::new(&dest_dir);
 
+    if args.destination_strategy == DestinationStrategy::Clear {
+        fs::remove_dir_all(dest_dir).context("Failed to clear destination directory")?;
+    }
+
     process_directory(source_dir, dest_dir).context("Failed to process directory")
+}
+
+fn main() -> Result<()> {
+    let args: Vec<String> = std::env::args().collect();
+    run(args)
 }
 
 #[cfg(test)]
@@ -156,6 +152,7 @@ mod tests {
     use std::collections::BTreeMap;
     use std::fs::write;
     use tempfile::tempdir;
+    use test_utils::setup_test_environment;
 
     fn fixturify_read<S: AsRef<Path>>(from: S) -> Result<BTreeMap<String, String>> {
         let path = from.as_ref();
@@ -319,6 +316,85 @@ mod tests {
             "zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
             "zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
             "zsh/zshrc": "# CMD: echo 'hello world'\n",
+        }
+        "###)
+    }
+
+    #[test]
+    fn test_run_with_defaults() {
+        let env = setup_test_environment();
+
+        let source_files: BTreeMap<String, String> = BTreeMap::from([
+            (
+                "src/rwjblue/dotfiles/zsh/zshrc".to_string(),
+                "# CMD: echo 'hello world'\n".to_string(),
+            ),
+            (
+                "src/rwjblue/dotfiles/zsh/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n".to_string(),
+            ),
+            (
+                "src/rwjblue/dotfiles/zsh/dist/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n# OLD OUTPUT SHOULD BE DELETED".to_string(),
+            ),
+        ]);
+
+        fixturify_write(&env.home, source_files).unwrap();
+
+        run(vec![]).unwrap();
+
+        let file_map = fixturify_read(&env.home).unwrap();
+
+        assert_debug_snapshot!(file_map, @r###"
+        {
+            "src/rwjblue/dotfiles/zsh/dist/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n# OUTPUT START: echo 'goodbye world'\ngoodbye world\n\n# OUTPUT END: echo 'goodbye world'\n",
+            "src/rwjblue/dotfiles/zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
+            "src/rwjblue/dotfiles/zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
+            "src/rwjblue/dotfiles/zsh/zshrc": "# CMD: echo 'hello world'\n",
+        }
+        "###)
+    }
+
+    #[test]
+    fn test_run_with_merging() {
+        let env = setup_test_environment();
+
+        let source_files: BTreeMap<String, String> = BTreeMap::from([
+            (
+                "src/rwjblue/dotfiles/zsh/zshrc".to_string(),
+                "# CMD: echo 'hello world'\n".to_string(),
+            ),
+            (
+                "src/rwjblue/dotfiles/zsh/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n".to_string(),
+            ),
+            (
+                "src/rwjblue/dotfiles/zsh/dist/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n# OLD OUTPUT SHOULD BE DELETED".to_string(),
+            ),
+            (
+                "src/rwjblue/dotfiles/zsh/dist/plugins/weird-other-thing.zsh".to_string(),
+                "# HAHAHA WTF IS THIS?!?! DO NOT WORRY ABOUT".to_string(),
+            ),
+        ]);
+
+        fixturify_write(&env.home, source_files).unwrap();
+
+        run(vec![
+            "cache-shell-setup".into(),
+            "--destination-strategy=merge".into(),
+        ])
+        .unwrap();
+
+        let file_map = fixturify_read(&env.home).unwrap();
+
+        assert_debug_snapshot!(file_map, @r###"
+        {
+            "src/rwjblue/dotfiles/zsh/dist/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n# OUTPUT START: echo 'goodbye world'\ngoodbye world\n\n# OUTPUT END: echo 'goodbye world'\n",
+            "src/rwjblue/dotfiles/zsh/dist/plugins/weird-other-thing.zsh": "# HAHAHA WTF IS THIS?!?! DO NOT WORRY ABOUT",
+            "src/rwjblue/dotfiles/zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
+            "src/rwjblue/dotfiles/zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
+            "src/rwjblue/dotfiles/zsh/zshrc": "# CMD: echo 'hello world'\n",
         }
         "###)
     }
