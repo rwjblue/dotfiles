@@ -242,8 +242,20 @@ install-requirements() {
   fi
 }
 
+build-binutils() {
+  echo "building binutils"
+  cargo build --manifest-path=binutils/crates/Cargo.toml
+
+  echo "setting up binutils symlinks"
+  binutils/crates/target/debug/generate-binutils-symlinks
+
+  echo "cache shell setup"
+  binutils/crates/target/debug/cache-shell-setup
+}
+
 install-requirements
 setup-config
+build-binutils
 
 # now setup the shell
 sheldon lock
