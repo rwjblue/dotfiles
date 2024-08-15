@@ -72,160 +72,167 @@ copy-dotfile() {
   fi
 }
 
-link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
+setup-config() {
+  link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
 
-mkdir -p ~/bin
+  mkdir -p ~/bin
 
-link-dotfile "bash/bashrc" "$HOME/.bashrc"
+  link-dotfile "bash/bashrc" "$HOME/.bashrc"
 
-link-dotfile "zsh/dist/" "$HOME/.zsh"
-link-dotfile "zsh/dist/zshenv" "$HOME/.zshenv"
-link-dotfile "zsh/dist/zprofile" "$HOME/.zprofile"
-link-dotfile "zsh/dist/zshrc" "$HOME/.zshrc"
-copy-dotfile "zsh/dist/zshrc.local" "$HOME/.zshrc.local"
-link-dotfile "zsh/sheldon" "$HOME/.config/sheldon"
-link-dotfile "atuin" "$HOME/.config/atuin"
+  link-dotfile "zsh/dist/" "$HOME/.zsh"
+  link-dotfile "zsh/dist/zshenv" "$HOME/.zshenv"
+  link-dotfile "zsh/dist/zprofile" "$HOME/.zprofile"
+  link-dotfile "zsh/dist/zshrc" "$HOME/.zshrc"
+  copy-dotfile "zsh/dist/zshrc.local" "$HOME/.zshrc.local"
+  link-dotfile "zsh/sheldon" "$HOME/.config/sheldon"
+  link-dotfile "atuin" "$HOME/.config/atuin"
 
-link-dotfile "git/gitconfig" "$HOME/.gitconfig"
-link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
-copy-dotfile "git/gitconfig.local" "$HOME/.gitconfig.local"
+  link-dotfile "git/gitconfig" "$HOME/.gitconfig"
+  link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
+  copy-dotfile "git/gitconfig.local" "$HOME/.gitconfig.local"
 
-link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
-copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
+  link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
+  copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
-link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
+  link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
 
-link-dotfile "binutils/config/config.toml" "$HOME/.config/binutils/config.toml"
+  link-dotfile "binutils/config/config.toml" "$HOME/.config/binutils/config.toml"
 
-if [[ "$OSTYPE" == darwin* ]]; then
-  link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
-  link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
-  link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
-  link-dotfile "tealdeer/config.toml" "$HOME/Library/Application Support/tealdeer/config.toml"
-fi
-
-if [ ! -d ~/.ssh ]; then
-  echo "Creating .ssh dir"
-  mkdir $HOME/.ssh
-fi
-link-dotfile "ssh/rc" "$HOME/.ssh/rc"
-
-if [[ ! -x "$(command -v volta)" ]]; then
-  echo "installing volta"
-  curl https://get.volta.sh | bash
-
-  echo "installing current node & yarn"
-  $HOME/.volta/volta install node
-  $HOME/.volta/volta install yarn
-else
-  echo "volta already installed, updating node & yarn"
-  volta install node
-  volta install yarn
-fi
-
-if [[ "$OSTYPE" == darwin* ]]; then
-  if ! command -v brew >/dev/null; then
-    echo "Installing Homebrew ..."
-    /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  if [[ "$OSTYPE" == darwin* ]]; then
+    link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+    link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
+    link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
+    link-dotfile "tealdeer/config.toml" "$HOME/Library/Application Support/tealdeer/config.toml"
   fi
 
-  brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat atuin
-else
-  # we are within an rdev if this file exists
-  if [ -f /etc/rdev.conf ]; then
-    # put any rdev specific setup here
-    "$DOTFILES/utils/handle-older-git.zsh"
-    "$DOTFILES/utils/setup-rdev-nvim.zsh"
+  if [ ! -d ~/.ssh ]; then
+    echo "Creating .ssh dir"
+    mkdir $HOME/.ssh
   fi
+  link-dotfile "ssh/rc" "$HOME/.ssh/rc"
+}
 
-  if ! which rustup > /dev/null 2>&1; then
-    echo "Installing rustup"
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    . $HOME/.cargo/env
-  fi
+install-requirements() {
+  if [[ ! -x "$(command -v volta)" ]]; then
+    echo "installing volta"
+    curl https://get.volta.sh | bash
 
-  echo "Updating rustup"
-  rustup self update
-
-  echo "Updating rust stable"
-  rustup update stable
-
-  if ! which cargo-binstall > /dev/null 2>&1; then
-    echo "Installing cargo-binstall"
-    curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    echo "installing current node & yarn"
+    $HOME/.volta/volta install node
+    $HOME/.volta/volta install yarn
   else
-    echo "cargo-binstall already installed"
+    echo "volta already installed, updating node & yarn"
+    volta install node
+    volta install yarn
   fi
 
-  if ! which sheldon > /dev/null 2>&1; then
-    echo "Installing sheldon"
-    curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
-      | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
+  if [[ "$OSTYPE" == darwin* ]]; then
+    if ! command -v brew >/dev/null; then
+      echo "Installing Homebrew ..."
+      /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+    fi
 
-    export PATH="$HOME/.local/bin:$PATH"
+    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza sheldon git git-delta gnu-sed bat atuin
   else
-    echo "sheldon already installed"
+    # we are within an rdev if this file exists
+    if [ -f /etc/rdev.conf ]; then
+      # put any rdev specific setup here
+      "$DOTFILES/utils/handle-older-git.zsh"
+      "$DOTFILES/utils/setup-rdev-nvim.zsh"
+    fi
+
+    if ! which rustup > /dev/null 2>&1; then
+      echo "Installing rustup"
+      curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      . $HOME/.cargo/env
+    fi
+
+    echo "Updating rustup"
+    rustup self update
+
+    echo "Updating rust stable"
+    rustup update stable
+
+    if ! which cargo-binstall > /dev/null 2>&1; then
+      echo "Installing cargo-binstall"
+      curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+    else
+      echo "cargo-binstall already installed"
+    fi
+
+    if ! which sheldon > /dev/null 2>&1; then
+      echo "Installing sheldon"
+      curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
+        | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin
+
+      export PATH="$HOME/.local/bin:$PATH"
+    else
+      echo "sheldon already installed"
+    fi
+
+    if ! which starship > /dev/null 2>&1; then
+      echo "Installing starship"
+      curl -sS https://starship.rs/install.sh | sh -s -- --force
+    else
+      echo "starship already installed"
+    fi
+
+
+    if ! which zoxide > /dev/null 2>&1; then
+      echo "Installing zoxide"
+      curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
+    else
+      echo "zoxide already installed"
+    fi
+
+    if ! which eza > /dev/null 2>&1; then
+      echo "Installing eza"
+      cargo binstall --locked --no-confirm eza
+    else
+      echo "eza already installed"
+    fi
+
+    if ! which bat > /dev/null 2>&1; then
+      echo "Installing bat"
+      cargo binstall --locked --no-confirm bat
+    else
+      echo "bat already installed"
+    fi
+
+    if ! which delta > /dev/null 2>&1; then
+      echo "Installing delta"
+      cargo binstall --locked --no-confirm git-delta
+    else
+      echo "delta already installed"
+    fi
+
+    if [[ ! -d $HOME/.fzf ]]; then
+      echo "Installing fzf"
+      git clone https://github.com/junegunn/fzf.git $HOME/.fzf
+      $HOME/.fzf/install --bin
+    else
+      echo "fzf already installed"
+    fi
   fi
 
-  if ! which starship > /dev/null 2>&1; then
-    echo "Installing starship"
-    curl -sS https://starship.rs/install.sh | sh -s -- --force
+  # make sure dotvim is setup properly, have to do this after installing the various
+  # required dependencies first (so neovim is installed and up to date)
+  if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
+    echo "setting up dotvim"
+    rm -rf $HOME/.config/nvim
+
+    git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
+    ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
+
+    echo "installing deps"
+    nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
   else
-    echo "starship already installed"
+    echo "dotvim already setup"
   fi
+}
 
-
-  if ! which zoxide > /dev/null 2>&1; then
-    echo "Installing zoxide"
-    curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-  else
-    echo "zoxide already installed"
-  fi
-
-  if ! which eza > /dev/null 2>&1; then
-    echo "Installing eza"
-    cargo binstall --locked --no-confirm eza
-  else
-    echo "eza already installed"
-  fi
-
-  if ! which bat > /dev/null 2>&1; then
-    echo "Installing bat"
-    cargo binstall --locked --no-confirm bat
-  else
-    echo "bat already installed"
-  fi
-
-  if ! which delta > /dev/null 2>&1; then
-    echo "Installing delta"
-    cargo binstall --locked --no-confirm git-delta
-  else
-    echo "delta already installed"
-  fi
-
-  if [[ ! -d $HOME/.fzf ]]; then
-    echo "Installing fzf"
-    git clone https://github.com/junegunn/fzf.git $HOME/.fzf
-    $HOME/.fzf/install --bin
-  else
-    echo "fzf already installed"
-  fi
-fi
-
-# make sure dotvim is setup properly, have to do this after installing the various
-# required dependencies first (so neovim is installed and up to date)
-if [[ ! -L $HOME/.config/nvim ]] || [[ $(readlink $HOME/.config/nvim) != $HOME/src/rwjblue/dotvim ]]; then
-  echo "setting up dotvim"
-  rm -rf $HOME/.config/nvim
-
-  git clone https://github.com/rwjblue/dotvim.git $HOME/src/rwjblue/dotvim
-  ln -s $HOME/src/rwjblue/dotvim $HOME/.config/nvim
-
-  echo "installing deps"
-  nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
-else
-  echo "dotvim already setup"
-fi
+install-requirements
+setup-config
 
 # now setup the shell
 sheldon lock
