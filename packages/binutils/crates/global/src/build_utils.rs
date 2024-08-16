@@ -66,6 +66,7 @@ fn process_package(package: &Package, profile: &str, workspace_target_dir: &Path
 }
 
 pub fn generate_symlinks(working_dir: Option<PathBuf>) -> Result<()> {
+    info!("Generating crate local target symlinks for local workspace packages");
     let working_dir = working_dir.unwrap_or(PathBuf::from("."));
 
     // TODO: automatically support both debug and release profiles
