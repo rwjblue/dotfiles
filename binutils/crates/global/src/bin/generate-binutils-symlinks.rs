@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
+use tracing::debug;
 use tracing_subscriber::EnvFilter;
 
 fn main() -> Result<()> {
@@ -14,6 +15,7 @@ fn main() -> Result<()> {
     latest_bin::ensure_latest_bin()?;
 
     let crate_root = env!("CARGO_MANIFEST_DIR");
+    debug!("crate_root: {}", crate_root);
     binutils::build_utils::generate_symlinks(Some(PathBuf::from(crate_root)))?;
 
     Ok(())
