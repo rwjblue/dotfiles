@@ -1,5 +1,4 @@
 use anyhow::Result;
-use tracing::debug;
 use tracing_subscriber::EnvFilter;
 
 fn main() -> Result<()> {
@@ -9,10 +8,9 @@ fn main() -> Result<()> {
         )
         .init();
 
-    latest_bin::ensure_latest_bin()?;
+    latest_bin::run_cargo_build()?;
 
     let crate_root = latest_bin::get_crate_root()?;
-    debug!("crate_root: {}", crate_root.display());
     binutils::build_utils::generate_symlinks(Some(crate_root))?;
 
     Ok(())
