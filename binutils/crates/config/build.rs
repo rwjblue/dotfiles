@@ -12,11 +12,15 @@ fn main() -> Result<()> {
 
     let schema = schemars::schema_for!(config::Config);
 
-    fs::write(
-        &dest_path,
-        serde_json::to_string_pretty(&schema).with_context(|| "error stringifying the schema")?,
-    )
-    .with_context(|| format!("error writing schema to {:?}", dest_path))?;
+    let new_content =
+        serde_json::to_string_pretty(&schema).with_context(|| "error stringifying the schema")?;
+    let existing_content = fs::read_to_string(&dest_path).unwrap_or_default();
+
+    // Only write if the file is different (keep the output stable if possible)
+    if existing_content != new_content {
+        fs::write(&dest_path, new_content)
+            .with_context(|| format!("error writing schema to {:?}", dest_path))?;
+    }
 
     Ok(())
 }
