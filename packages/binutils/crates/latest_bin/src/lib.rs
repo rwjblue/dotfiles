@@ -45,20 +45,33 @@ pub fn has_updated_files<P: AsRef<Path>>(dir: P, current_exe_mod_time: SystemTim
     Ok(false)
 }
 
+/// Get the path to the current executable making sure it is canonicalized.
 fn get_current_exe() -> Result<PathBuf> {
-    env::current_exe().context("Failed to get the current executable path")
+    let current_exe = env::current_exe().context("Failed to get the current executable path")?;
+    let canonicalized_exe = current_exe
+        .canonicalize()
+        .context("Failed to canonicalize the executable path")?;
+    Ok(canonicalized_exe)
 }
 
-// TODO: change this to get_workspace_root: use get_current_exe and walk upwards to trim off
-// /target/debug finding the workspace root
-fn get_crate_root() -> PathBuf {
-    let crate_root = env!("CARGO_MANIFEST_DIR");
+/// Finds the nearest crate root by traversing up the directory tree from the current executable
+/// (after resolving symlinks).
+fn get_crate_root() -> Result<PathBuf> {
+    let current_exe = get_current_exe()?;
+    let mut path = current_exe.as_path();
 
-    PathBuf::from(crate_root)
+    while let Some(parent) = path.parent() {
+        if parent.join("Cargo.toml").exists() {
+            return Ok(parent.to_path_buf());
+        }
+        path = parent;
+    }
+
+    Err(anyhow::anyhow!("Failed to find workspace root"))
 }
 
 pub fn needs_rebuild() -> Result<bool> {
-    let crate_root = get_crate_root();
+    let crate_root = get_crate_root()?;
     let current_exe = get_current_exe()?;
 
     debug!("crate_root: {}", crate_root.display());
@@ -73,7 +86,7 @@ pub fn needs_rebuild() -> Result<bool> {
 }
 
 pub fn run_cargo_build() -> Result<()> {
-    let crate_root = get_crate_root();
+    let crate_root = get_crate_root()?;
     info!("Running cargo build, in {}", crate_root.display());
 
     if !crate_root.exists() {
@@ -128,7 +141,7 @@ pub fn ensure_latest_bin() -> Result<()> {
     }
 
     let current_exe = get_current_exe()?;
-    let crate_root = get_crate_root();
+    let crate_root = get_crate_root()?;
 
     debug!("current_exe: {}", current_exe.display());
     debug!("crate_root: {}", crate_root.display());
