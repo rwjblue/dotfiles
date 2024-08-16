@@ -15,7 +15,7 @@ tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
 config = { path = "../config" }
-latest_bin = { path = "../latest_bin" }
+latest_bin = { git = "https://github.com/malleatus/shared_binutils.git" }
 regex = "1.10.6"
 shellexpand = "3.1.0"
 
