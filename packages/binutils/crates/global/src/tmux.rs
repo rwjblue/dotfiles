@@ -623,4 +623,10 @@ mod tests {
 
         Ok(())
     }
+
+    // TODO: write tests that start multiple windows
+    // TODO: fix --attach (doesn't seem to work)
+    // TODO: validate paths eagerly (and error instead of running & failing)
+    // TODO: support project specific crates that automatically get added to $PATH within the window
+    // TODO: don't print out the commands when not in --dry-run
 }

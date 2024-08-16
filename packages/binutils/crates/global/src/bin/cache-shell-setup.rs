@@ -422,3 +422,11 @@ mod tests {
         "###)
     }
 }
+
+// TODO: Add support to handle race conditions: currently sheldon source reads the files in
+// zsh/dist *but* we also have `# CMD: sheldon source` (which reads those files)
+// Try adding "passes" so you can `# CMD(1): sheldon source` (where the default is "pass 0")
+// and each pass would get flushed to disk together -- this does make a z-index war kinda thing
+// but in practice who cares?
+//
+// TODO: read the paths for source & destination from the config
