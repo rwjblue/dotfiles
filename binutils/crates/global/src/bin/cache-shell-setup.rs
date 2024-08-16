@@ -4,10 +4,14 @@ use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::process::Command;
+use tracing::{debug, error, info, trace};
+use tracing_subscriber::EnvFilter;
 
 fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
     let source_file = source_file.as_ref();
     let dest_file = dest_file.as_ref();
+
+    debug!("Processing file: {}", source_file.display());
 
     let file = File::open(source_file).context("Failed to open file for reading")?;
     let reader = BufReader::new(file);
@@ -22,6 +26,8 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
 
             new_content.push(format!("# CMD: {}", trimmed_command));
 
+            trace!("Running command: {}", trimmed_command);
+
             let output = Command::new("sh")
                 .arg("-c")
                 .arg(trimmed_command)
@@ -35,8 +41,8 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
                     trimmed_command, output_str, trimmed_command
                 ));
             } else {
-                eprintln!(
-                    "Failed to run command '{}': {}",
+                error!(
+                    "Failed to run command '{}':\n {}",
                     trimmed_command,
                     String::from_utf8_lossy(&output.stderr)
                 );
@@ -51,6 +57,9 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
             .with_context(|| format!("Failed to create directories for path: {:?}", parent))?;
     }
 
+    debug!("Writing to file: {}", dest_file.display());
+    trace!("New content:\n{}", new_content.join("\n"));
+
     let mut output_file = File::create(dest_file)
         .with_context(|| format!("Failed to open file for writing: {}", dest_file.display()))?;
 
@@ -64,7 +73,11 @@ fn process_file<S: AsRef<Path>>(source_file: S, dest_file: S) -> Result<()> {
 }
 
 fn process_directory(source_dir: &Path, dest_dir: &Path) -> Result<()> {
-    for entry in fs::read_dir(source_dir).context("Failed to read directory")? {
+    info!("Scanning directory: {}", source_dir.display());
+
+    for entry in fs::read_dir(source_dir)
+        .with_context(|| format!("Failed to read directory: {}", source_dir.display()))?
+    {
         let entry = entry.context("Failed to process directory entry")?;
         let path = entry.path();
 
@@ -134,6 +147,7 @@ fn run(args: Vec<String>) -> Result<()> {
     let dest_dir = Path::new(&dest_dir);
 
     if args.destination_strategy == DestinationStrategy::Clear {
+        info!("Clearing destination directory");
         fs::remove_dir_all(dest_dir).context("Failed to clear destination directory")?;
     }
 
@@ -141,6 +155,15 @@ fn run(args: Vec<String>) -> Result<()> {
 }
 
 fn main() -> Result<()> {
+    // Initialize tracing, use `info` by default
+    tracing_subscriber::fmt()
+        .with_env_filter(
+            EnvFilter::try_from_default_env().unwrap_or_else(|_| EnvFilter::new("info")),
+        )
+        .init();
+
+    latest_bin::ensure_latest_bin()?;
+
     let args: Vec<String> = std::env::args().collect();
     run(args)
 }
