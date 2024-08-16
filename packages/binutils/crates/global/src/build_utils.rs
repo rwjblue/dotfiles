@@ -71,7 +71,6 @@ pub fn generate_symlinks(working_dir: Option<PathBuf>) -> Result<()> {
     // TODO: automatically support both debug and release profiles
     let profile = "debug";
 
-    // Load the metadata of the workspace
     let metadata = MetadataCommand::new()
         .current_dir(working_dir)
         .exec()
@@ -79,10 +78,8 @@ pub fn generate_symlinks(working_dir: Option<PathBuf>) -> Result<()> {
 
     let workspace_root = PathBuf::from(&metadata.workspace_root);
 
-    // The workspace's target directory
     let workspace_target_dir = workspace_root.join("target").join(profile);
 
-    // Iterate over each package in the workspace
     for package in metadata.workspace_packages() {
         process_package(package, profile, &workspace_target_dir)?;
     }
