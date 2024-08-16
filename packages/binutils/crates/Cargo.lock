@@ -344,7 +344,6 @@ checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
 [[package]]
 name = "latest_bin"
 version = "0.1.0"
-source = "git+https://github.com/malleatus/shared_binutils.git#c6184c4b24d2ad5885874f3a1326978d0044a85e"
 dependencies = [
  "anyhow",
  "nix",
