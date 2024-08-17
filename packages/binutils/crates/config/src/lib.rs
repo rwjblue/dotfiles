@@ -9,3 +9,5 @@ pub use utils::{read_config, write_config};
 // sort of #include like system to the config file
 // TODO: add support for specifying the default session to connect to when `startup-tmux --attach`
 // is ran
+// TODO: add support within a tmux window to specify environment variables (can be set with `tmux
+// new-window -e FOO=bar`)
