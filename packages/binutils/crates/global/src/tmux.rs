@@ -121,9 +121,18 @@ fn ensure_window(
 
     if let Some(windows) = current_state.get(session_name) {
         if windows.contains(&window.name) {
-            // Window already exists, do nothing
+            trace!(
+                "Window {} already exists in session {}, skipping creation",
+                window.name,
+                session_name
+            );
         } else {
-            // Window does not exist, create it
+            trace!(
+                "Window {} does not exist in session {}, creating it",
+                window.name,
+                session_name
+            );
+
             let mut cmd = Command::new("tmux");
             cmd.arg("-L")
                 .arg(&socket_name)
@@ -141,7 +150,12 @@ fn ensure_window(
             commands_executed.extend(execute_command(session_name, window, options)?);
         }
     } else {
-        // Session does not exist, create it and the window
+        trace!(
+            "Session {} does not exist, creating it and window {}",
+            session_name,
+            window.name
+        );
+
         let mut cmd = Command::new("tmux");
         cmd.arg("-L")
             .arg(&socket_name)
@@ -156,7 +170,10 @@ fn ensure_window(
             cmd.arg("-c").arg(path);
         }
 
+        // push the session / window creation command
         commands_executed.push(run_command(cmd, options)?);
+
+        // push any commands referenced in the config for the window
         commands_executed.extend(execute_command(session_name, window, options)?);
     }
 
@@ -252,9 +269,9 @@ fn gather_tmux_state(options: &impl TmuxOptions) -> TmuxState {
 }
 
 fn run_command(mut cmd: Command, opts: &impl TmuxOptions) -> Result<Command> {
+    trace!("Running: {}", generate_debug_string_for_command(&cmd));
+
     if opts.is_dry_run() {
-        println!("{}", command_to_string(&cmd));
-    } else {
         cmd.output()?;
     }
 
