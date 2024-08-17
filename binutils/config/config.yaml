@@ -15,3 +15,7 @@ tmux:
         - name: "dotfiles"
           path: "~/src/rwjblue/dotfiles"
           command: "nvim"
+
+        - name: "shared_binutils"
+          path: "~/src/malleatus/shared_binutils"
+          command: "nvim"
