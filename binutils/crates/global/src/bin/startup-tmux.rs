@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use binutils::tmux::{startup_tmux, TmuxOptions};
+use binutils::tmux::{maybe_attach_tmux, startup_tmux, TmuxOptions};
 use clap::Parser;
 use config::read_config;
 use tracing_subscriber::EnvFilter;
@@ -17,9 +17,10 @@ struct CliTmuxOptions {
     #[arg(long)]
     debug: bool,
 
-    /// Attach to the tmux session after starting it.
+    /// Attach to the tmux session after starting it. Defaults to attaching if not within a
+    /// TMUX session already.
     #[arg(long)]
-    attach: bool,
+    attach: Option<bool>,
 
     /// Specify the tmux socket name. Defaults to the main tmux socket.
     #[arg(long)]
@@ -40,7 +41,7 @@ impl TmuxOptions for CliTmuxOptions {
     }
 
     fn should_attach(&self) -> Option<bool> {
-        Some(self.attach)
+        self.attach
     }
 
     fn socket_name(&self) -> Option<String> {
@@ -63,12 +64,20 @@ fn main() -> Result<()> {
     latest_bin::ensure_latest_bin()?;
 
     let options = CliTmuxOptions::parse();
-    // TODO: figure out how to do this without cloning
     let config = read_config(options.config_file())?;
 
     let commands = startup_tmux(config, &options)?;
-    for command in commands {
-        println!("{}", command);
+    let would_attach = maybe_attach_tmux(&options, None)?;
+
+    if options.dry_run {
+        println!("Would run the following commands:");
+        for command in commands {
+            println!("\t{}", command);
+        }
+
+        if would_attach {
+            println!("\ttmux attach");
+        }
     }
 
     Ok(())
