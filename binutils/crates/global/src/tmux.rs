@@ -538,11 +538,18 @@ mod tests {
             tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
-                    windows: vec![Window {
-                        name: "bar".to_string(),
-                        path: None,
-                        command: None,
-                    }],
+                    windows: vec![
+                        Window {
+                            name: "bar".to_string(),
+                            path: None,
+                            command: None,
+                        },
+                        Window {
+                            name: "baz".to_string(),
+                            path: None,
+                            command: None,
+                        },
+                    ],
                 }],
             }),
         };
@@ -552,6 +559,7 @@ mod tests {
         assert_yaml_snapshot!(commands, @r###"
         ---
         - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
+        - "tmux -L [SOCKET_NAME] new-session -d -s foo -n baz"
         "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
