@@ -1,0 +1,17 @@
+#:schema: ../crates/config/config_schema.json
+
+tmux:
+  sessions:
+    - name: "✅ todos"
+      windows:
+        - name: "todos"
+
+    - name: "dotfiles"
+      windows:
+        - name: "dotvim"
+          path: "~/src/rwjblue/dotvim"
+          command: "nvim"
+
+        - name: "dotfiles"
+          path: "~/src/rwjblue/dotfiles"
+          command: "nvim"

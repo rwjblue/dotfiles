@@ -12,7 +12,7 @@ use super::types::Config;
 
 pub fn get_config_file_path() -> PathBuf {
     let home_dir = env::var("HOME").expect("HOME environment variable not set");
-    Path::new(&home_dir).join(".config/binutils/config.toml")
+    Path::new(&home_dir).join(".config/binutils/config.yaml")
 }
 
 fn expand_tilde(path: PathBuf) -> PathBuf {
@@ -32,16 +32,16 @@ fn expand_tilde(path: PathBuf) -> PathBuf {
 // TODO: support passing in a custom config path
 pub fn write_config(config: &Config) -> Result<()> {
     let config_path = get_config_file_path();
-    let toml_str = toml::to_string_pretty(&config)?;
+    let yaml_str = serde_yml::to_string(&config)?;
 
     debug!("Writing config to: {}", config_path.display());
-    trace!("Config: {}", toml_str);
+    trace!("Config: {}", yaml_str);
 
     let config_dir = config_path.parent().unwrap();
     fs::create_dir_all(config_dir)?;
 
     let mut file = File::create(config_path)?;
-    file.write_all(toml_str.as_bytes())?;
+    file.write_all(yaml_str.as_bytes())?;
     Ok(())
 }
 
@@ -73,13 +73,13 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
     let config = if config_path.is_file() {
         debug!("Reading config from: {}", config_path.display());
 
-        let toml_str = fs::read_to_string(&config_path).with_context(|| {
+        let yaml_str = fs::read_to_string(&config_path).with_context(|| {
             format!(
                 "Could not read config file from: {}",
                 &config_path.display()
             )
         })?;
-        let config: Config = toml::from_str(&toml_str).map_err(|e| {
+        let config: Config = serde_yml::from_str(&yaml_str).map_err(|e| {
             anyhow::anyhow!(
                 "Could not parse config file: {}.\n\nParsing error:\n{}",
                 &config_path.display(),
@@ -105,7 +105,7 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
 mod tests {
     use super::super::types::{Command, Config, Session, Tmux, Window};
     use super::*;
-    use insta::{assert_debug_snapshot, assert_snapshot, assert_toml_snapshot};
+    use insta::{assert_debug_snapshot, assert_snapshot};
     use std::env;
     use test_utils::{setup_test_environment, stabilize_home_paths};
 
@@ -130,12 +130,12 @@ mod tests {
     fn test_read_config_custom_file() {
         let env = setup_test_environment();
 
-        let config_file_path = env.config_dir.join("custom-config.toml");
+        let config_file_path = env.config_dir.join("custom-config.yaml");
         let config = default_config();
 
         let mut file = File::create(&config_file_path).expect("Could not create file");
-        let toml_str = toml::to_string_pretty(&config).expect("could not convert to toml");
-        file.write_all(toml_str.as_bytes())
+        let yaml_str = serde_yml::to_string(&config).expect("could not convert to yaml");
+        file.write_all(yaml_str.as_bytes())
             .expect("could not write to config");
 
         let config = read_config(Some(config_file_path)).expect("error reading from config");
@@ -155,15 +155,15 @@ mod tests {
     fn test_read_config_custom_file_with_tilde() {
         let env = setup_test_environment();
 
-        let config_file_path = env.home.join("custom-config.toml");
+        let config_file_path = env.home.join("custom-config.yaml");
         let config = default_config();
 
         let mut file = File::create(config_file_path).expect("Could not create file");
-        let toml_str = toml::to_string_pretty(&config).expect("could not convert to toml");
-        file.write_all(toml_str.as_bytes())
+        let yaml_str = serde_yml::to_string(&config).expect("could not convert to yaml");
+        file.write_all(yaml_str.as_bytes())
             .expect("could not write to config");
 
-        let config = read_config(Some(PathBuf::from("~/custom-config.toml")))
+        let config = read_config(Some(PathBuf::from("~/custom-config.yaml")))
             .expect("could not read config");
 
         assert_debug_snapshot!(config, @r###"
@@ -178,23 +178,19 @@ mod tests {
     }
 
     #[test]
-    fn test_read_config_invalid_toml_contents() -> Result<()> {
+    fn test_read_config_invalid_yaml() -> Result<()> {
         let env = setup_test_environment();
 
         let mut file = File::create(&env.config_file)?;
-        file.write_all(b"invalid toml contents")?;
+        file.write_all(b"invalid yaml contents")?;
 
         let err = read_config(None).unwrap_err();
 
         assert_snapshot!(stabilize_home_paths(&env, &err.to_string()), @r###"
-        Could not parse config file: ~/.config/binutils/config.toml.
+        Could not parse config file: ~/.config/binutils/config.yaml.
 
         Parsing error:
-        TOML parse error at line 1, column 9
-          |
-        1 | invalid toml contents
-          |         ^
-        expected `.`, `=`
+        invalid type: string "invalid yaml contents", expected struct Config
         "###);
 
         Ok(())
@@ -229,17 +225,16 @@ mod tests {
 
         write_config(&config).expect("Failed to write config");
 
-        let written_toml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
+        let written_yaml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
 
-        assert_toml_snapshot!(written_toml_str, @r###"
-        '''
-        [[tmux.sessions]]
-        name = "Test Session"
-
-        [[tmux.sessions.windows]]
-        name = "Test Window"
-        command = "echo 'Hello, world!'"
-        '''
+        assert_snapshot!(written_yaml_str, @r###"
+        tmux:
+          sessions:
+          - name: Test Session
+            windows:
+            - name: Test Window
+              path: null
+              command: echo 'Hello, world!'
         "###);
 
         // Read the config
@@ -267,18 +262,16 @@ mod tests {
 
         write_config(&config).expect("Failed to write config");
 
-        let written_toml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
+        let written_yaml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
 
-        assert_toml_snapshot!(written_toml_str, @r###"
-        '''
-        [[tmux.sessions]]
-        name = "Test Session"
-
-        [[tmux.sessions.windows]]
-        name = "Test Window"
-        path = "/some/path"
-        command = "echo 'Hello, world!'"
-        '''
+        assert_snapshot!(written_yaml_str, @r###"
+        tmux:
+          sessions:
+          - name: Test Session
+            windows:
+            - name: Test Window
+              path: /some/path
+              command: echo 'Hello, world!'
         "###);
 
         // Read the config
@@ -342,40 +335,30 @@ mod tests {
         // Assert that the config file was created
         let written_config = fs::read_to_string(&env.config_file).expect("Failed to read config");
 
-        assert_toml_snapshot!(written_config, @r###"
-        '''
-        [[tmux.sessions]]
-        name = "Test Session"
-
-        [[tmux.sessions.windows]]
-        name = "Test Window"
-        path = "/some/path"
-        command = "echo 'Hello, world!'"
-
-        [[tmux.sessions.windows]]
-        name = "Second Window"
-        path = "/some/other-path"
-        command = "nvim"
-
-        [[tmux.sessions.windows]]
-        name = "Window without path"
-        command = "nvim"
-
-        [[tmux.sessions]]
-        name = "Second Session"
-
-        [[tmux.sessions.windows]]
-        name = "Fourth Window"
-        path = "~"
-        command = [
-            "echo 'Hello, world!'",
-            "echo 'Goodbye, world!'",
-        ]
-
-        [[tmux.sessions.windows]]
-        name = "Window without command"
-        path = "/some/other-path"
-        '''
+        assert_snapshot!(written_config, @r###"
+        tmux:
+          sessions:
+          - name: Test Session
+            windows:
+            - name: Test Window
+              path: /some/path
+              command: echo 'Hello, world!'
+            - name: Second Window
+              path: /some/other-path
+              command: nvim
+            - name: Window without path
+              path: null
+              command: nvim
+          - name: Second Session
+            windows:
+            - name: Fourth Window
+              path: '~'
+              command:
+              - echo 'Hello, world!'
+              - echo 'Goodbye, world!'
+            - name: Window without command
+              path: /some/other-path
+              command: null
         "###);
 
         let final_config = read_config(None).expect("Failed to read config");

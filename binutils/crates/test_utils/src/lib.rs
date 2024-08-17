@@ -39,7 +39,7 @@ pub fn setup_test_environment() -> TestEnvironment {
 
     TestEnvironment {
         home: temp_home,
-        config_file: config_dir.join("config.toml"),
+        config_file: config_dir.join("config.yaml"),
         config_dir,
         original_home,
     }

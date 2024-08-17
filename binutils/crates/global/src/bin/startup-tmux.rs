@@ -25,7 +25,7 @@ struct CliTmuxOptions {
     #[arg(long)]
     socket_name: Option<String>,
 
-    /// Path to the configuration file. Defaults to `~/.config/binutils/config.toml`.
+    /// Path to the configuration file. Defaults to `~/.config/binutils/config.yaml`.
     #[arg(long)]
     config_file: Option<String>,
 }
