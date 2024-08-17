@@ -148,6 +148,9 @@ fn ensure_window(
                 cmd.arg("-c").arg(path);
             }
 
+            // TODO: if we have one and only one command to run, we can specify it here as part of
+            // `new-window` command
+
             commands_executed.push(run_command(cmd, options)?);
             commands_executed.extend(execute_command(session_name, window, options)?);
 
