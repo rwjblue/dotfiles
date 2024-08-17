@@ -96,7 +96,7 @@ setup-config() {
 
   link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
 
-  link-dotfile "binutils/config/config.toml" "$HOME/.config/binutils/config.toml"
+  link-dotfile "binutils/config/config.yaml" "$HOME/.config/binutils/config.yaml"
 
   if [[ "$OSTYPE" == darwin* ]]; then
     link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"

@@ -209,6 +209,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
+ "serde_yml",
  "tempfile",
  "test_utils",
  "toml 0.8.19",
@@ -373,6 +374,12 @@ dependencies = [
  "bitflags",
  "libc",
 ]
+
+[[package]]
+name = "libyml"
+version = "0.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64804cc6a5042d4f05379909ba25b503ec04e2c082151d62122d5dcaa274b961"
 
 [[package]]
 name = "linked-hash-map"
@@ -724,6 +731,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eb5b1b31579f3811bf615c144393417496f152e12ac8b7663bf664f4a815306d"
 dependencies = [
  "serde",
+]
+
+[[package]]
+name = "serde_yml"
+version = "0.0.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "48e76bab63c3fd98d27c17f9cbce177f64a91f5e69ac04cafe04e1bb25d1dc3c"
+dependencies = [
+ "indexmap",
+ "itoa",
+ "libyml",
+ "log",
+ "memchr",
+ "ryu",
+ "serde",
+ "serde_json",
+ "tempfile",
 ]
 
 [[package]]

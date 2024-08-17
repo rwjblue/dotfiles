@@ -7,6 +7,7 @@ edition = "2021"
 anyhow = "1.0.79"
 schemars = "0.8.21"
 serde = { version = "1.0.197", features = ["derive"] }
+serde_yml = "0.0.11"
 toml = "0.8.12"
 tracing = "0.1.40"
 
