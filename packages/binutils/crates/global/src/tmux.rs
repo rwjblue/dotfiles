@@ -271,7 +271,7 @@ fn gather_tmux_state(options: &impl TmuxOptions) -> TmuxState {
 fn run_command(mut cmd: Command, opts: &impl TmuxOptions) -> Result<Command> {
     trace!("Running: {}", generate_debug_string_for_command(&cmd));
 
-    if opts.is_dry_run() {
+    if !opts.is_dry_run() {
         cmd.output()?;
     }
 
