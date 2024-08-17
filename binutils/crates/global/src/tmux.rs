@@ -53,7 +53,7 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<St
                         ensure_window(&session.name, &window, &mut current_state, options)?;
 
                     for command in commands_executed {
-                        commands.push(command_to_string(&command));
+                        commands.push(generate_debug_string_for_command(&command));
                     }
                 }
             }
@@ -261,7 +261,8 @@ fn run_command(mut cmd: Command, opts: &impl TmuxOptions) -> Result<Command> {
     Ok(cmd)
 }
 
-fn command_to_string(cmd: &Command) -> String {
+/// Generates a debug string representation of a `Command`.
+fn generate_debug_string_for_command(cmd: &Command) -> String {
     let mut cmd_string = String::new();
 
     if let Some(program) = cmd.get_program().to_str() {
@@ -271,7 +272,28 @@ fn command_to_string(cmd: &Command) -> String {
     for arg in cmd.get_args() {
         if let Some(arg_str) = arg.to_str() {
             cmd_string.push(' ');
-            cmd_string.push_str(arg_str);
+
+            if arg_str.contains(' ') || arg_str.contains('"') {
+                cmd_string.push('\'');
+                for c in arg_str.chars() {
+                    if c == '\'' {
+                        cmd_string.push('\\');
+                    }
+                    cmd_string.push(c);
+                }
+                cmd_string.push('\'');
+            } else if arg_str.contains('\'') {
+                cmd_string.push('"');
+                for c in arg_str.chars() {
+                    if c == '"' {
+                        cmd_string.push('\\');
+                    }
+                    cmd_string.push(c);
+                }
+                cmd_string.push('"');
+            } else {
+                cmd_string.push_str(arg_str);
+            }
         }
     }
 
@@ -647,7 +669,7 @@ mod tests {
         assert_yaml_snapshot!(commands, @r###"
         ---
         - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
-        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar touch /tmp/random-value/some-file.txt Enter"
+        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar 'touch /tmp/random-value/some-file.txt' Enter"
         "###);
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
