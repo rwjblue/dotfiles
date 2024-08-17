@@ -119,7 +119,9 @@ fn ensure_window(
     let socket_name = get_socket_name(options);
     let mut commands_executed = vec![];
 
-    if let Some(windows) = current_state.get(session_name) {
+    trace!("Current state: {:#?}", current_state);
+
+    if let Some(windows) = current_state.get_mut(session_name) {
         if windows.contains(&window.name) {
             trace!(
                 "Window {} already exists in session {}, skipping creation",
@@ -138,7 +140,7 @@ fn ensure_window(
                 .arg(&socket_name)
                 .arg("new-window")
                 .arg("-t")
-                .arg(session_name)
+                .arg(format!("{}:", session_name))
                 .arg("-n")
                 .arg(&window.name);
 
@@ -148,6 +150,8 @@ fn ensure_window(
 
             commands_executed.push(run_command(cmd, options)?);
             commands_executed.extend(execute_command(session_name, window, options)?);
+
+            windows.push(window.name.to_string());
         }
     } else {
         trace!(
@@ -175,6 +179,8 @@ fn ensure_window(
 
         // push any commands referenced in the config for the window
         commands_executed.extend(execute_command(session_name, window, options)?);
+
+        current_state.insert(session_name.to_string(), vec![window.name.to_string()]);
     }
 
     Ok(commands_executed)
@@ -549,6 +555,16 @@ mod tests {
                             path: None,
                             command: None,
                         },
+                        Window {
+                            name: "qux".to_string(),
+                            path: None,
+                            command: None,
+                        },
+                        Window {
+                            name: "derp".to_string(),
+                            path: None,
+                            command: None,
+                        },
                     ],
                 }],
             }),
@@ -559,13 +575,18 @@ mod tests {
         assert_yaml_snapshot!(commands, @r###"
         ---
         - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar"
-        - "tmux -L [SOCKET_NAME] new-session -d -s foo -n baz"
+        - "tmux -L [SOCKET_NAME] new-window -t foo: -n baz"
+        - "tmux -L [SOCKET_NAME] new-window -t foo: -n qux"
+        - "tmux -L [SOCKET_NAME] new-window -t foo: -n derp"
         "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
         {
             "foo": [
                 "bar",
+                "baz",
+                "qux",
+                "derp",
             ],
         }
         "###);
@@ -583,11 +604,18 @@ mod tests {
             tmux: Some(Tmux {
                 sessions: vec![Session {
                     name: "foo".to_string(),
-                    windows: vec![Window {
-                        name: "bar".to_string(),
-                        path: None,
-                        command: None,
-                    }],
+                    windows: vec![
+                        Window {
+                            name: "baz".to_string(),
+                            path: None,
+                            command: None,
+                        },
+                        Window {
+                            name: "bar".to_string(),
+                            path: None,
+                            command: None,
+                        },
+                    ],
                 }],
             }),
         };
@@ -597,7 +625,7 @@ mod tests {
 
         assert_yaml_snapshot!(commands, @r###"
         ---
-        - "tmux -L [SOCKET_NAME] new-window -t foo -n bar"
+        - "tmux -L [SOCKET_NAME] new-window -t foo: -n bar"
         "###);
 
         assert_debug_snapshot!(gather_tmux_state(&options), @r###"
@@ -716,7 +744,6 @@ mod tests {
         Ok(())
     }
 
-    // TODO: write tests that start multiple windows
     // TODO: validate paths eagerly (and error instead of running & failing)
     // TODO: support project specific crates that automatically get added to $PATH within the window
 }
