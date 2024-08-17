@@ -1,6 +1,7 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
+use std::ffi;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
-use tracing::debug;
+use tracing::{debug, trace};
 
 use config::{Command as ConfigCommand, Config, Window};
 
@@ -63,6 +64,50 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<St
     }
 
     Ok(commands)
+}
+
+pub fn maybe_attach_tmux(options: &impl TmuxOptions, session_name: Option<&str>) -> Result<bool> {
+    let should_attach = options.should_attach().unwrap_or_else(|| {
+        trace!("`--attach` was not explicitly specified, checking $TMUX");
+
+        !in_tmux()
+    });
+
+    if !should_attach {
+        trace!("Not attaching to tmux session: options.should_attach() returned false");
+        return Ok(false);
+    }
+
+    if options.is_dry_run() {
+        trace!("Not attaching due to -dry-run");
+        return Ok(true);
+    }
+
+    let cmd = ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?;
+    let args = if let Some(session_name) = session_name {
+        vec![
+            ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?,
+            ffi::CString::new("attach").context("Failed to create CString for 'attach'")?,
+            ffi::CString::new("-t").context("Failed to create CString for '-t'")?,
+            ffi::CString::new(session_name).with_context(|| {
+                format!(
+                    "Failed to create CString for session name '{}'",
+                    session_name
+                )
+            })?,
+        ]
+    } else {
+        vec![
+            ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?,
+            ffi::CString::new("attach").context("Failed to create CString for 'attach'")?,
+        ]
+    };
+
+    // Execute the command
+    nix::unistd::execvp(&cmd, &args).context("Failed to execute tmux attach command")?;
+
+    // SAFETY: We should never actually hit this line, as execvp should replace the current process
+    Ok(true)
 }
 
 fn ensure_window(
@@ -625,8 +670,6 @@ mod tests {
     }
 
     // TODO: write tests that start multiple windows
-    // TODO: fix --attach (doesn't seem to work)
     // TODO: validate paths eagerly (and error instead of running & failing)
     // TODO: support project specific crates that automatically get added to $PATH within the window
-    // TODO: don't print out the commands when not in --dry-run
 }
