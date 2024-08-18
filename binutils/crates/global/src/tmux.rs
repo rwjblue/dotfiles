@@ -41,16 +41,16 @@ fn get_socket_name(options: &impl TmuxOptions) -> String {
         .unwrap_or_else(|| "default".to_string())
 }
 
-pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<String>> {
+pub fn startup_tmux(config: &Config, options: &impl TmuxOptions) -> Result<Vec<String>> {
     let mut current_state = gather_tmux_state(options);
     let mut commands = vec![];
 
-    match config.tmux {
+    match &config.tmux {
         Some(tmux) => {
-            for session in tmux.sessions {
-                for window in session.windows {
+            for session in &tmux.sessions {
+                for window in &session.windows {
                     let commands_executed =
-                        ensure_window(&session.name, &window, &mut current_state, options)?;
+                        ensure_window(&session.name, window, &mut current_state, options)?;
 
                     for command in commands_executed {
                         commands.push(generate_debug_string_for_command(&command));
@@ -66,7 +66,7 @@ pub fn startup_tmux(config: Config, options: &impl TmuxOptions) -> Result<Vec<St
     Ok(commands)
 }
 
-pub fn maybe_attach_tmux(options: &impl TmuxOptions, session_name: Option<&str>) -> Result<bool> {
+pub fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<bool> {
     let should_attach = options.should_attach().unwrap_or_else(|| {
         trace!("`--attach` was not explicitly specified, checking $TMUX");
 
@@ -84,10 +84,11 @@ pub fn maybe_attach_tmux(options: &impl TmuxOptions, session_name: Option<&str>)
     }
 
     let mut cmd = Command::new("tmux");
-    if let Some(session_name) = session_name {
-        cmd.args(["attach", "-t", session_name]);
-    } else {
-        cmd.arg("attach");
+    cmd.arg("attach");
+    if let Some(tmux) = &config.tmux {
+        if let Some(default_session) = &tmux.default_session {
+            cmd.arg("-t").arg(default_session);
+        }
     }
 
     let result = cmd.exec();
@@ -543,6 +544,7 @@ mod tests {
         let options = build_testing_options();
         let config = Config {
             tmux: Some(Tmux {
+                default_session: None,
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![
@@ -607,6 +609,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: None,
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![
@@ -663,6 +666,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: None,
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -712,6 +716,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: None,
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
@@ -773,6 +778,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: None,
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {

@@ -18,6 +18,10 @@ pub struct Config {
 pub struct Tmux {
     /// List of tmux sessions.
     pub sessions: Vec<Session>,
+
+    /// The default session to attach to when `startup-tmux --attach` is ran.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub default_session: Option<String>,
 }
 
 /// Configuration for a tmux session.
@@ -48,10 +52,13 @@ pub struct Window {
     #[serde(
         default,
         serialize_with = "path_to_string",
-        deserialize_with = "string_to_path"
+        deserialize_with = "string_to_path",
+        skip_serializing_if = "Option::is_none"
     )]
     pub path: Option<PathBuf>,
+
     /// Optional command to run in the window.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub command: Option<Command>,
 
     /// Additional environment variables to set in the window.
@@ -61,7 +68,10 @@ pub struct Window {
 
 pub fn default_config() -> Config {
     Config {
-        tmux: Some(Tmux { sessions: vec![] }),
+        tmux: Some(Tmux {
+            default_session: None,
+            sessions: vec![],
+        }),
     }
 }
 
