@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use std::os::unix::process::CommandExt;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::{debug, trace};
@@ -137,6 +137,12 @@ fn ensure_window(
             // TODO: if we have one and only one command to run, we can specify it here as part of
             // `new-window` command
 
+            if let Some(env) = &window.env {
+                for (key, value) in env {
+                    cmd.arg("-e").arg(format!("{}={}", key, value));
+                }
+            }
+
             commands_executed.push(run_command(cmd, options)?);
             commands_executed.extend(execute_command(session_name, window, options)?);
 
@@ -161,6 +167,12 @@ fn ensure_window(
 
         if let Some(path) = &window.path {
             cmd.arg("-c").arg(path);
+        }
+
+        if let Some(env) = &window.env {
+            for (key, value) in env {
+                cmd.arg("-e").arg(format!("{}={}", key, value));
+            }
         }
 
         // push the session / window creation command
@@ -677,6 +689,67 @@ mod tests {
             ],
         }
         "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_sets_specified_environment_variables_when_window_is_created() -> Result<()> {
+        let options = build_testing_options();
+
+        let temp_dir = tempdir().expect("Failed to create a temporary directory");
+        let temp_path = temp_dir.into_path();
+        let temp_path = temp_path.join("some-file.txt");
+        let temp_path_str = temp_path
+            .to_str()
+            .expect("Failed to convert temp path to str");
+
+        let mut additional_replacements = HashMap::new();
+        additional_replacements.insert(
+            temp_path_str.to_string(),
+            "/tmp/random-value/some-file.txt".to_string(),
+        );
+
+        let config = Config {
+            tmux: Some(Tmux {
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: Some(ConfigCommand::Single(format!(
+                            "echo \"$FOO-$BAZ\" > {}",
+                            temp_path_str
+                        ))),
+                        env: Some(HashMap::from([
+                            ("FOO".to_string(), "bar".to_string()),
+                            ("BAZ".to_string(), "qux".to_string()),
+                        ])),
+                    }],
+                }],
+            }),
+        };
+
+        let commands = startup_tmux(config, &options)?;
+
+        let commands =
+            sanitize_commands_executed(commands, &options, Some(additional_replacements));
+        assert_yaml_snapshot!(commands, @r###"
+        ---
+        - "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar -e BAZ=qux -e FOO=bar"
+        - "tmux -L [SOCKET_NAME] send-keys -t foo:bar 'echo \"$FOO-$BAZ\" > /tmp/random-value/some-file.txt' Enter"
+        "###);
+
+        wait_for_file(
+            &temp_path,
+            format!(
+                "tmux socket: {} -- file not created: {}",
+                options.socket_name,
+                temp_path.to_str().unwrap()
+            ),
+        );
+
+        assert_eq!(std::fs::read_to_string(&temp_path)?, "bar-qux\n");
 
         Ok(())
     }
