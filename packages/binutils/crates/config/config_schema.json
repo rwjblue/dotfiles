@@ -88,6 +88,16 @@
             }
           ]
         },
+        "env": {
+          "description": "Additional environment variables to set in the window.",
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "name": {
           "description": "Name of the window.",
           "type": "string"
