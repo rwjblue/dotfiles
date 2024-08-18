@@ -745,7 +745,7 @@ mod tests {
                             "echo \"$FOO-$BAZ\" > {}",
                             temp_path_str
                         ))),
-                        env: Some(HashMap::from([
+                        env: Some(BTreeMap::from([
                             ("FOO".to_string(), "bar".to_string()),
                             ("BAZ".to_string(), "qux".to_string()),
                         ])),

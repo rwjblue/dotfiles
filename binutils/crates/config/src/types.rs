@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::env;
 use std::path::{Path, PathBuf};
 
@@ -63,7 +63,7 @@ pub struct Window {
 
     /// Additional environment variables to set in the window.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub env: Option<HashMap<String, String>>,
+    pub env: Option<BTreeMap<String, String>>,
 }
 
 pub fn default_config() -> Config {
