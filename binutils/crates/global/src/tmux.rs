@@ -1,5 +1,4 @@
 use anyhow::Result;
-use std::env;
 use std::os::unix::process::CommandExt;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::{debug, trace};
@@ -344,6 +343,7 @@ fn generate_debug_string_for_command(cmd: &Command) -> String {
 mod tests {
     use std::{
         collections::HashMap,
+        env,
         path::Path,
         thread::sleep,
         time::{Duration, Instant},
