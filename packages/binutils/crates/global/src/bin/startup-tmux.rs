@@ -66,8 +66,8 @@ fn main() -> Result<()> {
     let options = CliTmuxOptions::parse();
     let config = read_config(options.config_file())?;
 
-    let commands = startup_tmux(config, &options)?;
-    let would_attach = maybe_attach_tmux(&options, None)?;
+    let commands = startup_tmux(&config, &options)?;
+    let would_attach = maybe_attach_tmux(&config, &options)?;
 
     if options.dry_run {
         println!("Would run the following commands:");

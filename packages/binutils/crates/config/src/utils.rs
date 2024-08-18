@@ -120,6 +120,7 @@ mod tests {
             tmux: Some(
                 Tmux {
                     sessions: [],
+                    default_session: None,
                 },
             ),
         }
@@ -145,6 +146,7 @@ mod tests {
             tmux: Some(
                 Tmux {
                     sessions: [],
+                    default_session: None,
                 },
             ),
         }
@@ -171,6 +173,7 @@ mod tests {
             tmux: Some(
                 Tmux {
                     sessions: [],
+                    default_session: None,
                 },
             ),
         }
@@ -212,6 +215,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: Some("Test Session".to_string()),
                 sessions: vec![Session {
                     name: "Test Session".to_string(),
                     windows: vec![Window {
@@ -234,8 +238,8 @@ mod tests {
           - name: Test Session
             windows:
             - name: Test Window
-              path: null
               command: echo 'Hello, world!'
+          default_session: Test Session
         "###);
 
         // Read the config
@@ -250,6 +254,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: Some("Test Session".to_string()),
                 sessions: vec![Session {
                     name: "Test Session".to_string(),
                     windows: vec![Window {
@@ -274,6 +279,7 @@ mod tests {
             - name: Test Window
               path: /some/path
               command: echo 'Hello, world!'
+          default_session: Test Session
         "###);
 
         // Read the config
@@ -288,6 +294,7 @@ mod tests {
 
         let config = Config {
             tmux: Some(Tmux {
+                default_session: Some("Test Session".to_string()),
                 sessions: vec![
                     Session {
                         name: "Test Session".to_string(),
@@ -354,7 +361,6 @@ mod tests {
               path: /some/other-path
               command: nvim
             - name: Window without path
-              path: null
               command: nvim
           - name: Second Session
             windows:
@@ -365,7 +371,7 @@ mod tests {
               - echo 'Goodbye, world!'
             - name: Window without command
               path: /some/other-path
-              command: null
+          default_session: Test Session
         "###);
 
         let final_config = read_config(None).expect("Failed to read config");
