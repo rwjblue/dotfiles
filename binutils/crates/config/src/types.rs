@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::env;
 use std::path::{Path, PathBuf};
 
@@ -52,6 +53,10 @@ pub struct Window {
     pub path: Option<PathBuf>,
     /// Optional command to run in the window.
     pub command: Option<Command>,
+
+    /// Additional environment variables to set in the window.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub env: Option<HashMap<String, String>>,
 }
 
 pub fn default_config() -> Config {
