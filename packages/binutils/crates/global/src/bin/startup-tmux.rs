@@ -1,7 +1,7 @@
 use std::path::PathBuf;
 
 use anyhow::Result;
-use binutils::tmux::{maybe_attach_tmux, startup_tmux, TmuxOptions};
+use binutils::tmux::{startup_tmux, TmuxOptions};
 use clap::Parser;
 use config::read_config;
 use tracing_subscriber::EnvFilter;
@@ -67,16 +67,11 @@ fn main() -> Result<()> {
     let config = read_config(options.config_file())?;
 
     let commands = startup_tmux(&config, &options)?;
-    let would_attach = maybe_attach_tmux(&config, &options)?;
 
     if options.dry_run {
         println!("Would run the following commands:");
         for command in commands {
             println!("\t{}", command);
-        }
-
-        if would_attach {
-            println!("\ttmux attach");
         }
     }
 

@@ -1,4 +1,5 @@
 use anyhow::Result;
+use std::env;
 use std::os::unix::process::CommandExt;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::{debug, trace};
@@ -29,6 +30,10 @@ pub trait TmuxOptions {
     fn should_attach(&self) -> Option<bool>;
 
     fn config_file(&self) -> Option<PathBuf>;
+
+    fn _is_testing(&self) -> bool {
+        false
+    }
 }
 
 pub fn in_tmux() -> bool {
@@ -57,6 +62,11 @@ pub fn startup_tmux(config: &Config, options: &impl TmuxOptions) -> Result<Vec<S
                     }
                 }
             }
+
+            if let Some(attach_command) = maybe_attach_tmux(config, options)? {
+                // NOTE: this only runs for `--dry-run` or `--attach=false` cases
+                commands.push(generate_debug_string_for_command(&attach_command));
+            }
         }
         None => {
             debug!("No tmux configuration found, skipping tmux setup");
@@ -66,7 +76,7 @@ pub fn startup_tmux(config: &Config, options: &impl TmuxOptions) -> Result<Vec<S
     Ok(commands)
 }
 
-pub fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<bool> {
+fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<Option<Command>> {
     let should_attach = options.should_attach().unwrap_or_else(|| {
         trace!("`--attach` was not explicitly specified, checking $TMUX");
 
@@ -75,12 +85,7 @@ pub fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<
 
     if !should_attach {
         trace!("Not attaching to tmux session: options.should_attach() returned false");
-        return Ok(false);
-    }
-
-    if options.is_dry_run() {
-        trace!("Not attaching due to -dry-run");
-        return Ok(true);
+        return Ok(None);
     }
 
     let mut cmd = Command::new("tmux");
@@ -91,10 +96,20 @@ pub fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<
         }
     }
 
-    let result = cmd.exec();
+    let should_attach = !options.is_dry_run() && !options._is_testing();
 
-    // SAFETY: We should never actually hit this line, as exec should replace the current process
-    anyhow::bail!("Failed to execute tmux attach command: {:?}", result);
+    if should_attach {
+        let result = cmd.exec();
+        // SAFETY: We should never actually hit this line, as exec should replace the current process
+        anyhow::bail!("Failed to execute tmux attach command: {:?}", result)
+    } else {
+        trace!(
+            "Not attaching! Dry run: {} -- Testing: {}",
+            options.is_dry_run(),
+            options._is_testing()
+        );
+        Ok(Some(cmd))
+    }
 }
 
 fn ensure_window(
@@ -369,6 +384,10 @@ mod tests {
         fn config_file(&self) -> Option<PathBuf> {
             None
         }
+
+        fn _is_testing(&self) -> bool {
+            true
+        }
     }
 
     impl Drop for TestingTmuxOptions {
@@ -576,7 +595,7 @@ mod tests {
                 }],
             }),
         };
-        let commands = startup_tmux(config, &options)?;
+        let commands = startup_tmux(&config, &options)?;
         let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
@@ -630,7 +649,7 @@ mod tests {
             }),
         };
 
-        let commands = startup_tmux(config, &options)?;
+        let commands = startup_tmux(&config, &options)?;
         let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
@@ -678,7 +697,7 @@ mod tests {
                 }],
             }),
         };
-        let commands = startup_tmux(config, &options)?;
+        let commands = startup_tmux(&config, &options)?;
         let commands = sanitize_commands_executed(commands, &options, None);
 
         assert_yaml_snapshot!(commands, @r###"
@@ -735,7 +754,7 @@ mod tests {
             }),
         };
 
-        let commands = startup_tmux(config, &options)?;
+        let commands = startup_tmux(&config, &options)?;
 
         let commands =
             sanitize_commands_executed(commands, &options, Some(additional_replacements));
@@ -791,7 +810,7 @@ mod tests {
             }),
         };
 
-        let commands = startup_tmux(config, &options)?;
+        let commands = startup_tmux(&config, &options)?;
 
         let commands =
             sanitize_commands_executed(commands, &options, Some(additional_replacements));
@@ -816,6 +835,78 @@ mod tests {
                 temp_path.to_str().unwrap()
             ),
         );
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_attempts_to_attach_to_default_session() -> Result<()> {
+        // TODO: is there a better way to do this?
+        unsafe {
+            env::remove_var("TMUX");
+        }
+
+        let options = build_testing_options();
+
+        let config = Config {
+            tmux: Some(Tmux {
+                default_session: Some("foo".to_string()),
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: None,
+                        env: None,
+                    }],
+                }],
+            }),
+        };
+        let commands = startup_tmux(&config, &options)?;
+        let commands = sanitize_commands_executed(commands, &options, None);
+
+        assert_debug_snapshot!(commands, @r###"
+        [
+            "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar",
+            "tmux attach -t foo",
+        ]
+        "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_attempts_to_attach_without_default_session() -> Result<()> {
+        // TODO: is there a better way to do this?
+        unsafe {
+            env::remove_var("TMUX");
+        }
+
+        let options = build_testing_options();
+
+        let config = Config {
+            tmux: Some(Tmux {
+                default_session: None,
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: None,
+                        command: None,
+                        env: None,
+                    }],
+                }],
+            }),
+        };
+        let commands = startup_tmux(&config, &options)?;
+        let commands = sanitize_commands_executed(commands, &options, None);
+
+        assert_debug_snapshot!(commands, @r###"
+        [
+            "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar",
+            "tmux attach",
+        ]
+        "###);
 
         Ok(())
     }
