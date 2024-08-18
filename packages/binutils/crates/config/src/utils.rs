@@ -127,7 +127,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_config_custom_file() {
+    fn test_read_default_config_file() {
         let env = setup_test_environment();
 
         let config_file_path = env.config_dir.join("custom-config.yaml");
