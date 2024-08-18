@@ -1,5 +1,5 @@
 use anyhow::{Context, Result};
-use std::ffi;
+use std::os::unix::process::CommandExt;
 use std::{collections::BTreeMap, path::PathBuf, process::Command};
 use tracing::{debug, trace};
 
@@ -83,31 +83,17 @@ pub fn maybe_attach_tmux(options: &impl TmuxOptions, session_name: Option<&str>)
         return Ok(true);
     }
 
-    let cmd = ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?;
-    let args = if let Some(session_name) = session_name {
-        vec![
-            ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?,
-            ffi::CString::new("attach").context("Failed to create CString for 'attach'")?,
-            ffi::CString::new("-t").context("Failed to create CString for '-t'")?,
-            ffi::CString::new(session_name).with_context(|| {
-                format!(
-                    "Failed to create CString for session name '{}'",
-                    session_name
-                )
-            })?,
-        ]
+    let mut cmd = Command::new("tmux");
+    if let Some(session_name) = session_name {
+        cmd.args(["attach", "-t", session_name]);
     } else {
-        vec![
-            ffi::CString::new("tmux").context("Failed to create CString for 'tmux'")?,
-            ffi::CString::new("attach").context("Failed to create CString for 'attach'")?,
-        ]
-    };
+        cmd.arg("attach");
+    }
 
-    // Execute the command
-    nix::unistd::execvp(&cmd, &args).context("Failed to execute tmux attach command")?;
+    let result = cmd.exec();
 
-    // SAFETY: We should never actually hit this line, as execvp should replace the current process
-    Ok(true)
+    // SAFETY: We should never actually hit this line, as exec should replace the current process
+    anyhow::bail!("Failed to execute tmux attach command: {:?}", result);
 }
 
 fn ensure_window(
