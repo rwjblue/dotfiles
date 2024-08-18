@@ -134,25 +134,17 @@ fn ensure_window(
                 cmd.arg("-c").arg(path);
             }
 
+            // TODO: if we have one and only one command to run, we can specify it here as part of
+            // `new-window` command
+
             if let Some(env) = &window.env {
                 for (key, value) in env {
                     cmd.arg("-e").arg(format!("{}={}", key, value));
                 }
             }
 
-            let should_run_window_commands =
-                if let Some(ConfigCommand::Single(command)) = &window.command {
-                    cmd.arg(command);
-                    false
-                } else {
-                    true
-                };
-
             commands_executed.push(run_command(cmd, options)?);
-
-            if should_run_window_commands {
-                commands_executed.extend(execute_command(session_name, window, options)?);
-            }
+            commands_executed.extend(execute_command(session_name, window, options)?);
 
             windows.push(window.name.to_string());
         }
