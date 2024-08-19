@@ -1,7 +1,7 @@
 mod types;
 mod utils;
 
-pub use types::{default_config, Command, Config, Session, Tmux, Window};
+pub use types::{default_config, Command, Config, Session, ShellCache, Tmux, Window};
 pub use utils::{read_config, write_config};
 
 // TODO: add support for either "local.config.toml" over `config.toml` if present, or adding some

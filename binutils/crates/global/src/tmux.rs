@@ -562,6 +562,7 @@ mod tests {
     fn test_creates_all_windows_when_server_is_not_started() -> Result<()> {
         let options = build_testing_options();
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
@@ -627,6 +628,7 @@ mod tests {
         create_tmux_session("foo", "baz", &options)?;
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
@@ -684,6 +686,7 @@ mod tests {
         "###);
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
@@ -734,6 +737,7 @@ mod tests {
         );
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
@@ -796,6 +800,7 @@ mod tests {
         );
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
@@ -849,6 +854,7 @@ mod tests {
         let options = build_testing_options();
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: Some("foo".to_string()),
                 sessions: vec![Session {
@@ -885,6 +891,7 @@ mod tests {
         let options = build_testing_options();
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
                 sessions: vec![Session {
