@@ -24,6 +24,7 @@ tempfile = "3.10.1"
 temp-env = "0.3.6"
 rand = "0.8.5"
 test_utils = { path = "../test_utils" }
+fixturify = { git = "https://github.com/malleatus/shared_binutils.git" }
 
 [build-dependencies]
 anyhow = "1.0.79"
