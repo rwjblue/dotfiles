@@ -1,4 +1,4 @@
-#:schema: ../crates/config/config_schema.json
+# yaml-language-server: $schema=../crates/config/config_schema.json
 
 shell_caching:
   source: ~/src/rwjblue/dotfiles/zsh/
