@@ -364,13 +364,16 @@ mod tests {
     fn test_run_with_config() {
         let env = setup_test_environment();
 
-        write_config(&Config {
-            shell_caching: Some(ShellCache {
-                source: "~/other-path/zsh/".to_string(),
-                destination: "~/other-path/zsh/dist/".to_string(),
-            }),
-            tmux: None,
-        })
+        write_config(
+            &Config {
+                shell_caching: Some(ShellCache {
+                    source: "~/other-path/zsh/".to_string(),
+                    destination: "~/other-path/zsh/dist/".to_string(),
+                }),
+                tmux: None,
+            },
+            None,
+        )
         .unwrap();
 
         let source_files: BTreeMap<String, String> = BTreeMap::from([
