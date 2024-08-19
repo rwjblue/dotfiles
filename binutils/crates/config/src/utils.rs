@@ -10,11 +10,6 @@ use anyhow::{Context, Result};
 use super::default_config;
 use super::types::Config;
 
-pub fn get_config_file_path() -> PathBuf {
-    let home_dir = env::var("HOME").expect("HOME environment variable not set");
-    Path::new(&home_dir).join(".config/binutils/config.yaml")
-}
-
 fn expand_tilde(path: PathBuf) -> PathBuf {
     let path_str = path.to_str().unwrap_or_default();
 
@@ -31,7 +26,8 @@ fn expand_tilde(path: PathBuf) -> PathBuf {
 
 // TODO: support passing in a custom config path
 pub fn write_config(config: &Config) -> Result<()> {
-    let config_path = get_config_file_path();
+    let home_dir = env::var("HOME").expect("HOME environment variable not set");
+    let config_path = Path::new(&home_dir).join(".config/binutils/config.yaml");
     let yaml_str = serde_yml::to_string(&config)?;
 
     debug!("Writing config to: {}", config_path.display());
@@ -66,7 +62,15 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
         }
         None => {
             trace!("No config path specified, using default config path");
-            get_config_file_path()
+
+            let home_dir = env::var("HOME").expect("HOME environment variable not set");
+
+            let local_config_file = Path::new(&home_dir).join(".config/binutils/local.config.yaml");
+            if local_config_file.exists() {
+                local_config_file
+            } else {
+                Path::new(&home_dir).join(".config/binutils/config.yaml")
+            }
         }
     };
 
@@ -103,6 +107,8 @@ pub fn read_config(config_path: Option<PathBuf>) -> Result<Config> {
 
 #[cfg(test)]
 mod tests {
+    use crate::ShellCache;
+
     use super::super::types::{Command, Config, Session, Tmux, Window};
     use super::*;
     use insta::{assert_debug_snapshot, assert_snapshot};
@@ -129,7 +135,7 @@ mod tests {
     }
 
     #[test]
-    fn test_read_default_config_file() {
+    fn test_read_default_custom_config_file_path() {
         let env = setup_test_environment();
 
         let config_file_path = env.config_dir.join("custom-config.yaml");
@@ -150,6 +156,104 @@ mod tests {
                     default_session: None,
                 },
             ),
+            shell_caching: None,
+        }
+        "###);
+    }
+
+    #[test]
+    fn test_read_default_local_config_file() {
+        let env = setup_test_environment();
+
+        let config_file_path = env.config_dir.join("local.config.yaml");
+        let config = Config {
+            shell_caching: None,
+            tmux: Some(Tmux {
+                default_session: Some("Test Session".to_string()),
+                sessions: vec![Session {
+                    name: "Test Session".to_string(),
+                    windows: vec![Window {
+                        name: "Test Window".to_string(),
+                        path: None,
+                        command: Some(Command::Single("echo 'Hello, world!'".to_string())),
+                        env: None,
+                    }],
+                }],
+            }),
+        };
+
+        let mut file = File::create(&config_file_path).expect("Could not create file");
+        let yaml_str = serde_yml::to_string(&config).expect("could not convert to yaml");
+        file.write_all(yaml_str.as_bytes())
+            .expect("could not write to config");
+
+        let config = read_config(None).expect("error reading from config");
+
+        assert_debug_snapshot!(config, @r###"
+        Config {
+            tmux: Some(
+                Tmux {
+                    sessions: [
+                        Session {
+                            name: "Test Session",
+                            windows: [
+                                Window {
+                                    name: "Test Window",
+                                    path: None,
+                                    command: Some(
+                                        Single(
+                                            "echo 'Hello, world!'",
+                                        ),
+                                    ),
+                                    env: None,
+                                },
+                            ],
+                        },
+                    ],
+                    default_session: Some(
+                        "Test Session",
+                    ),
+                },
+            ),
+            shell_caching: None,
+        }
+        "###);
+    }
+
+    #[test]
+    fn test_read_config_local_config_wins() {
+        let env = setup_test_environment();
+
+        let local_config_path = env.config_dir.join("local.config.yaml");
+        let config = Config {
+            shell_caching: None,
+            tmux: None,
+        };
+
+        let mut file = File::create(&local_config_path).expect("Could not create file");
+        let yaml_str = serde_yml::to_string(&config).expect("could not convert to yaml");
+        file.write_all(yaml_str.as_bytes())
+            .expect("could not write to config");
+
+        let local_config_path = env.config_dir.join("config.yaml");
+        let config = Config {
+            shell_caching: Some(ShellCache {
+                source: "~/foo".to_string(),
+                destination: "~/foo/dist".to_string(),
+            }),
+            tmux: None,
+        };
+
+        let mut file = File::create(&local_config_path).expect("Could not create file");
+        let yaml_str = serde_yml::to_string(&config).expect("could not convert to yaml");
+        file.write_all(yaml_str.as_bytes())
+            .expect("could not write to config");
+
+        let config = read_config(None).expect("error reading from config");
+
+        assert_debug_snapshot!(config, @r###"
+        Config {
+            tmux: None,
             shell_caching: None,
         }
         "###);
