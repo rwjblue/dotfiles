@@ -2,7 +2,7 @@ use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
 use std::fs::{self, File};
 use std::io::{BufRead, BufReader, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use tracing::{debug, error, info, trace};
 use tracing_subscriber::EnvFilter;
@@ -107,7 +107,7 @@ fn process_directory(source_dir: &Path, dest_dir: &Path) -> Result<()> {
 }
 
 /// Represents whether to clear the destination directory
-#[derive(ValueEnum, Clone, PartialEq)]
+#[derive(ValueEnum, Clone, Debug, PartialEq)]
 enum DestinationStrategy {
     Clear,
     Merge,
@@ -121,16 +121,20 @@ enum DestinationStrategy {
 /// It processes all `.zsh` files in a specified directory, looks for specific
 /// commands (e.g., `# CMD:`), executes them, and stores their output directly
 /// in the `.zsh` files, ensuring the operation is idempotent.
-#[derive(Parser)]
+#[derive(Parser, Debug)]
 #[command(name = "cache-shell-setup")]
 struct Args {
+    /// Path to the configuration file. Defaults to `~/.config/binutils/config.yaml`.
+    #[arg(long)]
+    config_file: Option<String>,
+
     /// Directory path to process
-    #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/")]
-    source: String,
+    #[clap(short, long)]
+    source: Option<String>,
 
     /// Directory path to emit the expanded output into
-    #[clap(short, long, default_value = "~/src/rwjblue/dotfiles/zsh/dist/")]
-    destination: String,
+    #[clap(short, long)]
+    destination: Option<String>,
 
     /// Whether to clear the destination directory before processing
     #[clap(value_enum, long, default_value_t = DestinationStrategy::Clear)]
@@ -139,11 +143,29 @@ struct Args {
 
 fn run(args: Vec<String>) -> Result<()> {
     let args = Args::parse_from(args);
+    let config_file = args.config_file.as_ref().map(PathBuf::from);
+    let config = config::read_config(config_file)?;
 
-    let source_dir = shellexpand::tilde(&args.source).to_string();
+    let source_dir = if let Some(source) = args.source {
+        source
+    } else if let Some(shell_caching) = &config.shell_caching {
+        shell_caching.source.clone()
+    } else {
+        anyhow::bail!("No source directory provided. Either use the --source flag or set it in the config file. \nArgs: {:?} \nConfig: {:?}", args, config);
+    };
+
+    let destination_dir = if let Some(destination) = args.destination {
+        destination
+    } else if let Some(shell_caching) = &config.shell_caching {
+        shell_caching.destination.clone()
+    } else {
+        anyhow::bail!("No source directory provided. Either use the --source flag or set it in the config file");
+    };
+
+    let source_dir = shellexpand::tilde(&source_dir).to_string();
     let source_dir = Path::new(&source_dir);
 
-    let dest_dir = shellexpand::tilde(&args.destination).to_string();
+    let dest_dir = shellexpand::tilde(&destination_dir).to_string();
     let dest_dir = Path::new(&dest_dir);
 
     if args.destination_strategy == DestinationStrategy::Clear {
@@ -171,6 +193,7 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use config::{write_config, Config, ShellCache};
     use insta::{assert_debug_snapshot, assert_snapshot};
     use std::collections::BTreeMap;
     use std::fs::write;
@@ -344,7 +367,7 @@ mod tests {
     }
 
     #[test]
-    fn test_run_with_defaults() {
+    fn test_run_with_args() {
         let env = setup_test_environment();
 
         let source_files: BTreeMap<String, String> = BTreeMap::from([
@@ -364,7 +387,12 @@ mod tests {
 
         fixturify_write(&env.home, source_files).unwrap();
 
-        run(vec![]).unwrap();
+        run(vec![
+            "cache-shell-setup".to_string(),
+            "--source=~/src/rwjblue/dotfiles/zsh".to_string(),
+            "--destination=~/src/rwjblue/dotfiles/zsh/dist".to_string(),
+        ])
+        .unwrap();
 
         let file_map = fixturify_read(&env.home).unwrap();
 
@@ -374,6 +402,51 @@ mod tests {
             "src/rwjblue/dotfiles/zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
             "src/rwjblue/dotfiles/zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
             "src/rwjblue/dotfiles/zsh/zshrc": "# CMD: echo 'hello world'\n",
+        }
+        "###)
+    }
+
+    #[test]
+    fn test_run_with_config() {
+        let env = setup_test_environment();
+
+        write_config(&Config {
+            shell_caching: Some(ShellCache {
+                source: "~/other-path/zsh/".to_string(),
+                destination: "~/other-path/zsh/dist/".to_string(),
+            }),
+            tmux: None,
+        })
+        .unwrap();
+
+        let source_files: BTreeMap<String, String> = BTreeMap::from([
+            (
+                "other-path/zsh/zshrc".to_string(),
+                "# CMD: echo 'hello world'\n".to_string(),
+            ),
+            (
+                "other-path/zsh/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n".to_string(),
+            ),
+            (
+                "other-path/zsh/dist/plugins/thing.zsh".to_string(),
+                "# CMD: echo 'goodbye world'\n# OLD OUTPUT SHOULD BE DELETED".to_string(),
+            ),
+        ]);
+
+        fixturify_write(&env.home, source_files).unwrap();
+
+        run(vec![]).unwrap();
+
+        let file_map = fixturify_read(&env.home).unwrap();
+
+        assert_debug_snapshot!(file_map, @r###"
+        {
+            ".config/binutils/config.yaml": "shell_caching:\n  source: ~/other-path/zsh/\n  destination: ~/other-path/zsh/dist/\n",
+            "other-path/zsh/dist/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n# OUTPUT START: echo 'goodbye world'\ngoodbye world\n\n# OUTPUT END: echo 'goodbye world'\n",
+            "other-path/zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
+            "other-path/zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
+            "other-path/zsh/zshrc": "# CMD: echo 'hello world'\n",
         }
         "###)
     }
@@ -404,7 +477,9 @@ mod tests {
         fixturify_write(&env.home, source_files).unwrap();
 
         run(vec![
-            "cache-shell-setup".into(),
+            "cache-shell-setup".to_string(),
+            "--source=~/src/rwjblue/dotfiles/zsh".to_string(),
+            "--destination=~/src/rwjblue/dotfiles/zsh/dist".to_string(),
             "--destination-strategy=merge".into(),
         ])
         .unwrap();
@@ -428,5 +503,3 @@ mod tests {
 // Try adding "passes" so you can `# CMD(1): sheldon source` (where the default is "pass 0")
 // and each pass would get flushed to disk together -- this does make a z-index war kinda thing
 // but in practice who cares?
-//
-// TODO: read the paths for source & destination from the config

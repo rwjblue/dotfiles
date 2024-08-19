@@ -123,6 +123,7 @@ mod tests {
                     default_session: None,
                 },
             ),
+            shell_caching: None,
         }
         "###);
     }
@@ -149,6 +150,7 @@ mod tests {
                     default_session: None,
                 },
             ),
+            shell_caching: None,
         }
         "###);
     }
@@ -176,6 +178,7 @@ mod tests {
                     default_session: None,
                 },
             ),
+            shell_caching: None,
         }
         "###);
     }
@@ -214,6 +217,7 @@ mod tests {
         let env = setup_test_environment();
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: Some("Test Session".to_string()),
                 sessions: vec![Session {
@@ -253,6 +257,7 @@ mod tests {
         let env = setup_test_environment();
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: Some("Test Session".to_string()),
                 sessions: vec![Session {
@@ -293,6 +298,7 @@ mod tests {
         let env = setup_test_environment();
 
         let config = Config {
+            shell_caching: None,
             tmux: Some(Tmux {
                 default_session: Some("Test Session".to_string()),
                 sessions: vec![

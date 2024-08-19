@@ -4,6 +4,17 @@
   "description": "Configuration for the application.",
   "type": "object",
   "properties": {
+    "shell_caching": {
+      "description": "Optional configuration for cache-shell-setup",
+      "anyOf": [
+        {
+          "$ref": "#/definitions/ShellCache"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "tmux": {
       "description": "Optional tmux configuration. Including sessions and windows to be created.",
       "anyOf": [
@@ -51,6 +62,21 @@
           "items": {
             "$ref": "#/definitions/Window"
           }
+        }
+      }
+    },
+    "ShellCache": {
+      "type": "object",
+      "required": [
+        "destination",
+        "source"
+      ],
+      "properties": {
+        "destination": {
+          "type": "string"
+        },
+        "source": {
+          "type": "string"
         }
       }
     },

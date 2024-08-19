@@ -10,7 +10,18 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 pub struct Config {
     /// Optional tmux configuration. Including sessions and windows to be created.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub tmux: Option<Tmux>,
+
+    /// Optional configuration for cache-shell-setup
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub shell_caching: Option<ShellCache>,
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+pub struct ShellCache {
+    pub source: String,
+    pub destination: String,
 }
 
 /// Tmux configuration.
@@ -68,6 +79,7 @@ pub struct Window {
 
 pub fn default_config() -> Config {
     Config {
+        shell_caching: None,
         tmux: Some(Tmux {
             default_session: None,
             sessions: vec![],

@@ -1,5 +1,9 @@
 #:schema: ../crates/config/config_schema.json
 
+shell_caching:
+  source: ~/src/rwjblue/dotfiles/zsh/
+  destination: ~/src/rwjblue/dotfiles/zsh/dist/
+
 tmux:
   sessions:
     - name: "✅ todos"
