@@ -200,52 +200,6 @@ mod tests {
     use tempfile::tempdir;
     use test_utils::setup_test_environment;
 
-    fn fixturify_read<S: AsRef<Path>>(from: S) -> Result<BTreeMap<String, String>> {
-        let path = from.as_ref();
-        let mut file_map = BTreeMap::new();
-
-        for entry in walkdir::WalkDir::new(path) {
-            let entry = entry?;
-            let path = entry.path();
-
-            if path.is_file() {
-                let relative_path = path
-                    .strip_prefix(&from)
-                    .with_context(|| {
-                        format!(
-                            "Failed to strip prefix from path: {:?} with prefix: {:?}",
-                            path, path
-                        )
-                    })?
-                    .to_path_buf();
-                let file_content = fs::read_to_string(path)
-                    .with_context(|| format!("Failed to read file: {:?}", path))?;
-                file_map.insert(relative_path.to_string_lossy().to_string(), file_content);
-            }
-        }
-        Ok(file_map)
-    }
-
-    fn fixturify_write<S: AsRef<Path>>(to: S, file_map: BTreeMap<String, String>) -> Result<()> {
-        let base_path = to.as_ref();
-
-        for (relative_path, content) in file_map {
-            let full_path = base_path.join(&relative_path);
-
-            if let Some(parent) = full_path.parent() {
-                fs::create_dir_all(parent).with_context(|| {
-                    format!("Failed to create directories for path: {:?}", parent)
-                })?;
-            }
-
-            fs::write(&full_path, &content).with_context(|| {
-                format!("Failed to write file: {:?}, with:\n{}", full_path, content)
-            })?;
-        }
-
-        Ok(())
-    }
-
     #[test]
     fn test_process_file_with_valid_command() -> Result<()> {
         let dir = tempdir()?;
@@ -347,14 +301,14 @@ mod tests {
             ),
         ]);
 
-        fixturify_write(base_dir, source_files).unwrap();
+        fixturify::write(base_dir, source_files).unwrap();
 
         let source_dir = base_dir.join("zsh");
         let dest_dir = base_dir.join("zsh/dist");
 
         process_directory(&source_dir, &dest_dir).unwrap();
 
-        let file_map = fixturify_read(base_dir).unwrap();
+        let file_map = fixturify::read(base_dir).unwrap();
 
         assert_debug_snapshot!(file_map, @r###"
         {
@@ -385,7 +339,7 @@ mod tests {
             ),
         ]);
 
-        fixturify_write(&env.home, source_files).unwrap();
+        fixturify::write(&env.home, source_files).unwrap();
 
         run(vec![
             "cache-shell-setup".to_string(),
@@ -394,7 +348,7 @@ mod tests {
         ])
         .unwrap();
 
-        let file_map = fixturify_read(&env.home).unwrap();
+        let file_map = fixturify::read(&env.home).unwrap();
 
         assert_debug_snapshot!(file_map, @r###"
         {
@@ -434,11 +388,11 @@ mod tests {
             ),
         ]);
 
-        fixturify_write(&env.home, source_files).unwrap();
+        fixturify::write(&env.home, source_files).unwrap();
 
         run(vec![]).unwrap();
 
-        let file_map = fixturify_read(&env.home).unwrap();
+        let file_map = fixturify::read(&env.home).unwrap();
 
         assert_debug_snapshot!(file_map, @r###"
         {
@@ -474,7 +428,7 @@ mod tests {
             ),
         ]);
 
-        fixturify_write(&env.home, source_files).unwrap();
+        fixturify::write(&env.home, source_files).unwrap();
 
         run(vec![
             "cache-shell-setup".to_string(),
@@ -484,7 +438,7 @@ mod tests {
         ])
         .unwrap();
 
-        let file_map = fixturify_read(&env.home).unwrap();
+        let file_map = fixturify::read(&env.home).unwrap();
 
         assert_debug_snapshot!(file_map, @r###"
         {
