@@ -199,7 +199,9 @@ name = "config"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "clap",
  "insta",
+ "latest_bin",
  "schemars",
  "serde",
  "serde_json",
@@ -208,6 +210,7 @@ dependencies = [
  "test_utils",
  "toml 0.8.19",
  "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
