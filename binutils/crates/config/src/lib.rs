@@ -152,10 +152,14 @@ fn expand_tilde(path: PathBuf) -> PathBuf {
     }
 }
 
-// TODO: support passing in a custom config path
-pub fn write_config(config: &Config) -> Result<()> {
-    let home_dir = env::var("HOME").expect("HOME environment variable not set");
-    let config_path = Path::new(&home_dir).join(".config/binutils/config.yaml");
+pub fn write_config(config: &Config, config_path: Option<PathBuf>) -> Result<()> {
+    let config_path = if let Some(config_path) = config_path {
+        config_path
+    } else {
+        let home_dir = env::var("HOME").expect("HOME environment variable not set");
+        Path::new(&home_dir).join(".config/binutils/config.yaml")
+    };
+
     let yaml_str = serde_yml::to_string(&config)?;
 
     debug!("Writing config to: {}", config_path.display());
@@ -531,7 +535,7 @@ mod tests {
             }),
         };
 
-        write_config(&config).expect("Failed to write config");
+        write_config(&config, None).expect("Failed to write config");
 
         let written_yaml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
 
@@ -571,7 +575,7 @@ mod tests {
             }),
         };
 
-        write_config(&config).expect("Failed to write config");
+        write_config(&config, None).expect("Failed to write config");
 
         let written_yaml_str = fs::read_to_string(&env.config_file).expect("failed to read config");
 
@@ -649,7 +653,7 @@ mod tests {
         };
 
         // Write the config
-        write_config(&config).expect("Failed to write config");
+        write_config(&config, None).expect("Failed to write config");
 
         // Assert that the config file was created
         let written_config = fs::read_to_string(&env.config_file).expect("Failed to read config");
