@@ -149,9 +149,6 @@ fn ensure_window(
                 cmd.arg("-c").arg(path);
             }
 
-            // TODO: if we have one and only one command to run, we can specify it here as part of
-            // `new-window` command
-
             if let Some(env) = &window.env {
                 for (key, value) in env {
                     cmd.arg("-e").arg(format!("{}={}", key, value));
