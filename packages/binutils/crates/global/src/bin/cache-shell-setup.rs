@@ -193,7 +193,6 @@ fn main() -> Result<()> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use config::{write_config, Config, ShellCache};
     use insta::{assert_debug_snapshot, assert_snapshot};
     use std::collections::BTreeMap;
     use std::fs::write;
@@ -364,17 +363,12 @@ mod tests {
     fn test_run_with_config() {
         let env = setup_test_environment();
 
-        write_config(
-            &Config {
-                shell_caching: Some(ShellCache {
-                    source: "~/other-path/zsh/".to_string(),
-                    destination: "~/other-path/zsh/dist/".to_string(),
-                }),
-                tmux: None,
-            },
-            None,
+        let config_path = &env.config_file;
+        fs::write(
+            config_path,
+            r###"return { shell_caching = { source = "~/other-path/zsh", destination = "~/other-path/zsh/dist" } }"###,
         )
-        .unwrap();
+        .expect("Could not write to config file");
 
         let source_files: BTreeMap<String, String> = BTreeMap::from([
             (
@@ -399,7 +393,7 @@ mod tests {
 
         assert_debug_snapshot!(file_map, @r###"
         {
-            ".config/binutils/config.yaml": "shell_caching:\n  source: ~/other-path/zsh/\n  destination: ~/other-path/zsh/dist/\n",
+            ".config/binutils/config.lua": "return { shell_caching = { source = \"~/other-path/zsh\", destination = \"~/other-path/zsh/dist\" } }",
             "other-path/zsh/dist/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n# OUTPUT START: echo 'goodbye world'\ngoodbye world\n\n# OUTPUT END: echo 'goodbye world'\n",
             "other-path/zsh/dist/zshrc": "# CMD: echo 'hello world'\n# OUTPUT START: echo 'hello world'\nhello world\n\n# OUTPUT END: echo 'hello world'\n",
             "other-path/zsh/plugins/thing.zsh": "# CMD: echo 'goodbye world'\n",
