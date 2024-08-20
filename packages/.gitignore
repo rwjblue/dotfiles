@@ -2,3 +2,4 @@
 target/
 zsh/dist/
 binutils/config/local.config.yaml
+local-dotfiles/
