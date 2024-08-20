@@ -570,24 +570,28 @@ mod tests {
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                         Window {
                             name: "baz".to_string(),
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                         Window {
                             name: "qux".to_string(),
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                         Window {
                             name: "derp".to_string(),
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                     ],
                 }],
@@ -636,12 +640,14 @@ mod tests {
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                         Window {
                             name: "bar".to_string(),
                             path: None,
                             command: None,
                             env: None,
+                            linked_crates: None,
                         },
                     ],
                 }],
@@ -689,6 +695,7 @@ mod tests {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
+                        linked_crates: None,
                         name: "bar".to_string(),
                         path: None,
                         command: None,
@@ -740,6 +747,7 @@ mod tests {
                 sessions: vec![Session {
                     name: "foo".to_string(),
                     windows: vec![Window {
+                        linked_crates: None,
                         name: "bar".to_string(),
                         path: None,
                         command: Some(ConfigCommand::Single(format!(
@@ -807,6 +815,7 @@ mod tests {
                         path: None,
                         command: Some(ConfigCommand::Single(format!("touch {}", temp_path_str))),
                         env: None,
+                        linked_crates: None,
                     }],
                 }],
             }),
@@ -861,6 +870,7 @@ mod tests {
                         path: None,
                         command: None,
                         env: None,
+                        linked_crates: None,
                     }],
                 }],
             }),
@@ -898,6 +908,7 @@ mod tests {
                         path: None,
                         command: None,
                         env: None,
+                        linked_crates: None,
                     }],
                 }],
             }),
