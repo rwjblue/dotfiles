@@ -33,9 +33,6 @@ vim.api.nvim_create_autocmd("TermOpen", {
 
     win.number = false
     win.relativenumber = false
-    win.winfixwidth = true
-
-    vim.api.nvim_win_set_width(win_id, 100)
   end,
 })
 
