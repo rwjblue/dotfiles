@@ -32,7 +32,7 @@ return {
             command = "nvim"
           }
         }
-      }
+      },
     }
   }
 }
