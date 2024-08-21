@@ -340,7 +340,7 @@ fn generate_debug_string_for_command(cmd: &Command) -> String {
 mod tests {
     use std::{
         collections::HashMap,
-        env,
+        env, fs,
         path::Path,
         thread::sleep,
         time::{Duration, Instant},
@@ -350,6 +350,9 @@ mod tests {
     use insta::{assert_debug_snapshot, assert_yaml_snapshot};
     use rand::{distributions::Alphanumeric, Rng};
     use tempfile::tempdir;
+    use test_utils::{create_workspace_with_packages, FakeBin, FakePackage};
+
+    use crate::build_utils::generate_symlinks;
 
     use super::*;
     use config::{Session, Tmux, Window};
@@ -559,6 +562,7 @@ mod tests {
     fn test_creates_all_windows_when_server_is_not_started() -> Result<()> {
         let options = build_testing_options();
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -629,6 +633,7 @@ mod tests {
         create_tmux_session("foo", "baz", &options)?;
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -689,6 +694,7 @@ mod tests {
         "###);
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -741,6 +747,7 @@ mod tests {
         );
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -805,6 +812,7 @@ mod tests {
         );
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -860,6 +868,7 @@ mod tests {
         let options = build_testing_options();
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: Some("foo".to_string()),
@@ -898,6 +907,7 @@ mod tests {
         let options = build_testing_options();
 
         let config = Config {
+            crate_locations: None,
             shell_caching: None,
             tmux: Some(Tmux {
                 default_session: None,
@@ -922,6 +932,79 @@ mod tests {
             "tmux attach",
         ]
         "###);
+
+        Ok(())
+    }
+
+    #[test]
+    fn test_linked_crates() -> Result<()> {
+        let temp_dir = tempdir()?;
+        let options = build_testing_options();
+
+        let workspace_dir = temp_dir.path().join("workspace");
+        create_workspace_with_packages(
+            workspace_dir.as_path(),
+            vec![FakePackage {
+                name: "foo".to_string(),
+                bins: vec![FakeBin {
+                    name: "bar".to_string(),
+                    contents: Some(
+                        r###"
+                        use std::fs::File;
+
+                        fn main() {
+                            File::create("foo.txt").unwrap();
+                        }"###
+                            .to_string(),
+                    ),
+                }],
+            }],
+        );
+
+        generate_symlinks(Some(workspace_dir.clone())).unwrap();
+
+        let working_dir = temp_dir.path().join("working_dir");
+        fs::create_dir_all(&working_dir)?;
+
+        let config = Config {
+            crate_locations: Some(vec![workspace_dir.to_string_lossy().to_string()]),
+            shell_caching: None,
+            tmux: Some(Tmux {
+                default_session: Some("foo".to_string()),
+                sessions: vec![Session {
+                    name: "foo".to_string(),
+                    windows: vec![Window {
+                        name: "bar".to_string(),
+                        path: Some(working_dir.to_path_buf()),
+                        command: Some(ConfigCommand::Single("bar".to_string())),
+                        env: None,
+                        linked_crates: Some(vec!["foo".to_string()]),
+                    }],
+                }],
+            }),
+        };
+        let commands = startup_tmux(&config, &options)?;
+        let commands = sanitize_commands_executed(
+            commands,
+            &options,
+            Some(HashMap::from([(
+                temp_dir.path().to_string_lossy().to_string(),
+                "[TEMP_DIR]".to_string(),
+            )])),
+        );
+
+        assert_debug_snapshot!(commands, @r###"
+        [
+            "tmux -L [SOCKET_NAME] new-session -d -s foo -n bar -c [TEMP_DIR]/working_dir",
+            "tmux -L [SOCKET_NAME] send-keys -t foo:bar bar Enter",
+        ]
+        "###);
+
+        let expected_file_path = working_dir.join("foo.txt");
+        wait_for_file(
+            expected_file_path.as_path(),
+            format!("file not created: {}", expected_file_path.display()),
+        );
 
         Ok(())
     }
