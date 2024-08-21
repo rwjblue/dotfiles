@@ -27,6 +27,11 @@ return {
             command = "nvim"
           },
           {
+            name = "binutils",
+            path = "~/src/rwjblue/dotfiles/binutils",
+            command = "nvim"
+          },
+          {
             name = "shared_binutils",
             path = "~/src/malleatus/shared_binutils",
             command = "nvim"
