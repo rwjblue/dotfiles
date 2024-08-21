@@ -56,3 +56,14 @@ vim.keymap.set("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 -- https://github.com/LazyVim/LazyVim/blob/879e29504d43e9f178d967ecc34d482f902e5a91/lua/lazyvim/config/keymaps.lua#L26-L32
 vim.keymap.del({ "n", "v", "i" }, "<a-j>")
 vim.keymap.del({ "n", "v", "i" }, "<a-k>")
+
+-- TODO: need to debug this more; it's not working as expected
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-1>', '1gt', { noremap = true, silent = true, desc = "Go to tab 1" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-2>', '2gt', { noremap = true, silent = true, desc = "Go to tab 2" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-3>', '3gt', { noremap = true, silent = true, desc = "Go to tab 3" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-4>', '4gt', { noremap = true, silent = true, desc = "Go to tab 4" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-5>', '5gt', { noremap = true, silent = true, desc = "Go to tab 5" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-6>', '6gt', { noremap = true, silent = true, desc = "Go to tab 6" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-7>', '7gt', { noremap = true, silent = true, desc = "Go to tab 7" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-8>', '8gt', { noremap = true, silent = true, desc = "Go to tab 8" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-9>', '9gt', { noremap = true, silent = true, desc = "Go to tab 9" })
