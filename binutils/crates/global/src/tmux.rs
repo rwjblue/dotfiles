@@ -111,6 +111,48 @@ fn maybe_attach_tmux(config: &Config, options: &impl TmuxOptions) -> Result<Opti
     }
 }
 
+fn determine_commands_for_window(
+    window: &Window,
+    crates: BTreeMap<String, PathBuf>,
+) -> Result<Option<Vec<String>>> {
+    let mut commands: Vec<String> = if let Some(command) = &window.command {
+        match command {
+            config::Command::Single(cmd) => vec![cmd.clone()],
+            config::Command::Multiple(cmds) => cmds.clone(),
+        }
+    } else if window.linked_crates.is_some() {
+        vec![]
+    } else {
+        // no command, no linked crates; nothing to do
+        return Ok(None);
+    };
+
+    if let Some(linked_crates) = &window.linked_crates {
+        // TODO: find the linked_crates using crate_locations and add them to the PATH
+        for linked_crate in linked_crates {
+            if let Some(crate_path) = crates.get(linked_crate) {
+                let new_command = format!(
+                    "export PATH={}:$PATH",
+                    crate_path.to_str().unwrap_or_default()
+                );
+                commands.push(new_command);
+            } else {
+                anyhow::bail!(
+                    "Could not find crate: {} for linking into {}",
+                    linked_crate,
+                    window.name
+                );
+            }
+        }
+    }
+
+    if commands.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(commands))
+    }
+}
+
 fn ensure_window(
     session_name: &str,
     window: &Window,
@@ -934,6 +976,104 @@ mod tests {
         "###);
 
         Ok(())
+    }
+
+    #[test]
+    fn determine_commands_for_window_single_command() {
+        let window = Window {
+            path: None,
+            env: None,
+            name: "test_window".to_string(),
+            command: Some(config::Command::Single("echo Hello".to_string())),
+            linked_crates: None,
+        };
+        let crates = BTreeMap::new();
+        let result = determine_commands_for_window(&window, crates).unwrap();
+        assert_debug_snapshot!(result, @r###"
+        Some(
+            [
+                "echo Hello",
+            ],
+        )
+        "###);
+    }
+
+    #[test]
+    fn determine_commands_for_window_multiple_commands() {
+        let window = Window {
+            path: None,
+            env: None,
+            name: "test_window".to_string(),
+            command: Some(config::Command::Multiple(vec![
+                "echo Hello".to_string(),
+                "echo World".to_string(),
+            ])),
+            linked_crates: None,
+        };
+        let crates = BTreeMap::new();
+        let result = determine_commands_for_window(&window, crates).unwrap();
+        assert_debug_snapshot!(result, @r###"
+        Some(
+            [
+                "echo Hello",
+                "echo World",
+            ],
+        )
+        "###);
+    }
+
+    #[test]
+    fn determine_commands_for_window_no_command_with_linked_crates() {
+        let window = Window {
+            path: None,
+            env: None,
+            name: "test_window".to_string(),
+            command: None,
+            linked_crates: Some(vec!["crate1".to_string()]),
+        };
+        let mut crates = BTreeMap::new();
+        crates.insert("crate1".to_string(), PathBuf::from("/path/to/crate1"));
+        let result = determine_commands_for_window(&window, crates).unwrap();
+        assert_debug_snapshot!(result, @r###"
+        Some(
+            [
+                "export PATH=/path/to/crate1:$PATH",
+            ],
+        )
+        "###);
+    }
+
+    #[test]
+    fn determine_commands_for_window_no_command_no_linked_crates() {
+        let window = Window {
+            path: None,
+            env: None,
+            name: "test_window".to_string(),
+            command: None,
+            linked_crates: None,
+        };
+        let crates = BTreeMap::new();
+        let result = determine_commands_for_window(&window, crates).unwrap();
+        assert_debug_snapshot!(result, @"None");
+    }
+
+    #[test]
+    fn determine_commands_for_window_missing_crate() {
+        let window = Window {
+            path: None,
+            env: None,
+            name: "test_window".to_string(),
+            command: None,
+            linked_crates: Some(vec!["missing_crate".to_string()]),
+        };
+        let crates = BTreeMap::new();
+        let result = determine_commands_for_window(&window, crates);
+
+        assert_debug_snapshot!(result, @r###"
+        Err(
+            "Could not find crate: missing_crate for linking into test_window",
+        )
+        "###);
     }
 
     #[test]
