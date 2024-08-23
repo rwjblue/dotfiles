@@ -1,1 +1,0 @@
-export PATH="$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug/:$HOME/.local/bin:$PATH"

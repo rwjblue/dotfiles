@@ -1,2 +1,15 @@
 # CMD: brew shellenv
 # CMD: sheldon source
+
+{
+  function path_add() {
+    case ":$PATH:" in
+      *:"$1":*) ;;
+      *) PATH="$1${PATH+:$PATH}" ;;
+    esac
+    export PATH
+  }
+
+  path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
+  path_add "$HOME/.local/bin"
+}
