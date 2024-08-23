@@ -12,6 +12,7 @@ local function is_retina()
 end
 
 
+config.audible_bell = "Disabled"
 config.color_scheme = 'Tokyo Night'
 
 -- TODO: figure out if we are being displayed on a retina screen, and use Regular instead of Bold here
