@@ -57,13 +57,23 @@ vim.keymap.set("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
 vim.keymap.del({ "n", "v", "i" }, "<a-j>")
 vim.keymap.del({ "n", "v", "i" }, "<a-k>")
 
--- TODO: need to debug this more; it's not working as expected
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-1>', '1gt', { noremap = true, silent = true, desc = "Go to tab 1" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-2>', '2gt', { noremap = true, silent = true, desc = "Go to tab 2" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-3>', '3gt', { noremap = true, silent = true, desc = "Go to tab 3" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-4>', '4gt', { noremap = true, silent = true, desc = "Go to tab 4" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-5>', '5gt', { noremap = true, silent = true, desc = "Go to tab 5" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-6>', '6gt', { noremap = true, silent = true, desc = "Go to tab 6" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-7>', '7gt', { noremap = true, silent = true, desc = "Go to tab 7" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-8>', '8gt', { noremap = true, silent = true, desc = "Go to tab 8" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<D-9>', '9gt', { noremap = true, silent = true, desc = "Go to tab 9" })
+-- CMD+1, CMD+2, &c are all mapped to F1, F2, &c in wezterm config
+-- this allows using CMD+<NUMBER> to change to the specific tab
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F1>', '<Cmd>tabnext 1<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 1" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F2>', '<Cmd>tabnext 2<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 2" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F3>', '<Cmd>tabnext 3<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 3" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F4>', '<Cmd>tabnext 4<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 4" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F5>', '<Cmd>tabnext 5<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 5" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F6>', '<Cmd>tabnext 6<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 6" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F7>', '<Cmd>tabnext 7<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 7" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F8>', '<Cmd>tabnext 8<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 8" })
+vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F9>', '<Cmd>tabnext 9<cr>',
+  { noremap = true, silent = true, desc = "Go to tab 9" })
