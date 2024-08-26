@@ -16,7 +16,7 @@ config.audible_bell = "Disabled"
 config.color_scheme = 'Tokyo Night'
 
 -- TODO: figure out if we are being displayed on a retina screen, and use Regular instead of Bold here
-config.font = wezterm.font({ family = 'Berkeley Mono', weight = "Bold" })
+config.font = wezterm.font({ family = 'Berkeley Mono', weight = "Regular" })
 config.font_size = 12.0
 
 config.window_decorations = 'RESIZE'
