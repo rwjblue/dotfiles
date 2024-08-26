@@ -36,22 +36,19 @@ config.keys = {
     mods = 'CMD',
     action = wezterm.action.ToggleFullScreen,
   },
-
-  -- disable the default action for CMD+1, CMD+2, etc
-  { key = '1', mods = 'CMD',        action = wezterm.action.DisableDefaultAssignment },
-  { key = '2', mods = 'CMD',        action = wezterm.action.DisableDefaultAssignment },
-  { key = '3', mods = 'CMD',        action = wezterm.action.DisableDefaultAssignment },
-  -- { key = "1", mods = "CMD",        action = wezterm.action { SendKey = { key = "1", mods = "CTRL" } } },
-  -- { key = "2", mods = "CMD",        action = wezterm.action { SendKey = { key = "2", mods = "CTRL" } } },
-  -- { key = "3", mods = "CMD",        action = wezterm.action { SendKey = { key = "3", mods = "CTRL" } } },
-  -- { key = "4", mods = "CMD", action = wezterm.action { SendKey = { key = "4", mods = "CTRL" } } },
-  -- { key = "5", mods = "CMD", action = wezterm.action { SendKey = { key = "5", mods = "CTRL" } } },
-  -- { key = "6", mods = "CMD", action = wezterm.action { SendKey = { key = "6", mods = "CTRL" } } },
-  -- { key = "7", mods = "CMD", action = wezterm.action { SendKey = { key = "7", mods = "CTRL" } } },
-  -- { key = "8", mods = "CMD", action = wezterm.action { SendKey = { key = "8", mods = "CTRL" } } },
-  -- { key = "9", mods = "CMD", action = wezterm.action { SendKey = { key = "9", mods = "CTRL" } } },
-
 }
+for i = 1, 9 do
+  -- {
+  --     key = "1",
+  --     mods = "CMD",
+  --     action = wezterm.action({ SendKey = { key = "F1" } }),
+  -- },
+  table.insert(config.keys, {
+    key = tostring(i),
+    mods = "CMD",
+    action = wezterm.action({ SendKey = { key = "F" .. i } }),
+  })
+end
 
 -- use this along with Ctrl-Shift-L to see the debug messages for what actual keycodes were detected
 --config.debug_key_events = true
