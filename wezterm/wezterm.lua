@@ -22,12 +22,9 @@ config.font_size = 12.0
 config.window_decorations = 'RESIZE'
 config.hide_tab_bar_if_only_one_tab = true
 config.window_padding = { left = 2, right = 2, top = 2, bottom = 2 }
-config.dpi = 72 -- this is the DPI for my widescreen monitor
---config.dpi = wezterm.gui.get_dpi_for_monitor(wezterm.gui.screens().active)
 
 -- FIXME: calling wezterm.gui.screens() within config seems to make wezterm unresponsive
 --local screens = wezterm.gui.screens()
-
 
 -- native fullscreen is SOOOO slow (the animation kills me)
 config.native_macos_fullscreen_mode = false
