@@ -79,8 +79,8 @@ dependencies = [
  "anyhow",
  "cargo_metadata",
  "clap",
- "config",
  "fixturify",
+ "global",
  "insta",
  "latest_bin",
  "rand",
@@ -317,6 +317,24 @@ dependencies = [
  "cfg-if",
  "libc",
  "wasi",
+]
+
+[[package]]
+name = "global"
+version = "0.1.0"
+source = "git+https://github.com/malleatus/shared_binutils.git#3f06ce4d71a6888c1a157fd4fa6cfffef6f83378"
+dependencies = [
+ "anyhow",
+ "cargo_metadata",
+ "clap",
+ "config",
+ "latest_bin",
+ "regex",
+ "shellexpand",
+ "toml 0.8.19",
+ "tracing",
+ "tracing-subscriber",
+ "walkdir",
 ]
 
 [[package]]
