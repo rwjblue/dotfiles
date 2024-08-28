@@ -9,16 +9,25 @@ return {
     optional = true,
     opts = {
       log_level = "DEBUG",
+      adapters = {
+        openai = function()
+          return require("codecompanion.adapters").extend("openai", {
+            env = {
+              api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential'",
+            },
+          })
+        end,
+      },
       strategies = {
         -- just makes it easier to test out for now (comparing apples to apples)
         chat = {
-          adapter = "copilot",
+          adapter = "openai",
         },
         inline = {
           adapter = "copilot",
         },
         agent = {
-          adapter = "copilot",
+          adapter = "openai",
         },
       },
       display = {
