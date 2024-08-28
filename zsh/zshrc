@@ -11,5 +11,6 @@
   }
 
   path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
+  path_add "$HOME/src/malleatus/shared_binutils/global/target/debug"
   path_add "$HOME/.local/bin"
 }
