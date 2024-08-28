@@ -18,7 +18,9 @@ return {
         i = "<C-c>",
       }
       options.strategies.chat.keymaps.stop.modes.n = "<C-c>"
-      options.strategies.chat.keymaps.save.modes.n = "gS"
+      -- the only change from the PR at the moment is below:
+      --options.strategies.chat.keymaps.save.modes.n = "gS"
+      options.strategies.chat.keymaps.send.modes.n = "gS"
 
       return options
     end,
