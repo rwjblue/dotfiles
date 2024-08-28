@@ -1,3 +1,8 @@
+-- this is meant to be the userland config for the codecompanion extra
+-- that is still in PR stage:
+--    https://github.com/LazyVim/LazyVim/pull/4268
+--
+-- This will remain even after that PR lands
 return {
   {
     "olimorris/codecompanion.nvim",
