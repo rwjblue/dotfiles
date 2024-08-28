@@ -8,9 +8,18 @@ return {
     "olimorris/codecompanion.nvim",
     optional = true,
     opts = {
+      log_level = "DEBUG",
       strategies = {
         -- just makes it easier to test out for now (comparing apples to apples)
-        adapter = "copilot",
+        chat = {
+          adapter = "copilot",
+        },
+        inline = {
+          adapter = "copilot",
+        },
+        agent = {
+          adapter = "copilot",
+        },
       },
       display = {
         chat = {
