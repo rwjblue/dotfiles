@@ -13,8 +13,7 @@ toml = "0.8.12"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
-global = { git = "https://github.com/malleatus/shared_binutils.git" }
-latest_bin = { git = "https://github.com/malleatus/shared_binutils.git" }
+latest_bin = { path = "../../../../../malleatus/shared_binutils/latest_bin" }
 regex = "1.10.6"
 shellexpand = "3.1.0"
 
@@ -23,5 +22,5 @@ insta = { version = "1.36.1", features = ["yaml", "toml"] }
 tempfile = "3.10.1"
 temp-env = "0.3.6"
 rand = "0.8.5"
-test_utils = { git = "https://github.com/malleatus/shared_binutils.git" }
-fixturify = { git = "https://github.com/malleatus/shared_binutils.git" }
+test_utils = { path = "../../../../../malleatus/shared_binutils/test_utils" }
+fixturify = { path = "../../../../../malleatus/shared_binutils/fixturify/" }

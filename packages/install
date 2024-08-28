@@ -244,19 +244,15 @@ install-requirements() {
 }
 
 build-binutils() {
-  echo "building binutils"
-  cargo build --manifest-path=binutils/crates/Cargo.toml
-
-  echo "setting up binutils symlinks"
-  binutils/crates/target/debug/generate-binutils-symlinks
+  "$DOTFILES/utils/build-binutils.zsh"
 
   echo "cache shell setup"
-  binutils/crates/target/debug/cache-shell-setup
+  "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"
 }
 
 install-requirements
-setup-config
 build-binutils
+setup-config
 
 # now setup the shell
 sheldon lock
