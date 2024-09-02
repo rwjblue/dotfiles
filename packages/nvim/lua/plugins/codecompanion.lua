@@ -13,7 +13,7 @@ return {
         openai = function()
           return require("codecompanion.adapters").extend("openai", {
             env = {
-              api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential'",
+              api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential' --reveal",
             },
           })
         end,
