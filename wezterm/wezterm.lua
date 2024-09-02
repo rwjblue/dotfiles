@@ -58,4 +58,9 @@ end
 config.initial_rows = 90
 config.initial_cols = 300
 
+-- Follow https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines
+-- to install a wezterm terminfo to $HOME/.terminfo
+
+config.term = "wezterm"
+
 return config
