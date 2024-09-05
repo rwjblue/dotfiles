@@ -2,17 +2,6 @@ local wezterm = require 'wezterm'
 local act = wezterm.action
 local config = wezterm.config_builder()
 
-local function is_retina()
-  for _, monitor in ipairs(wezterm.gui.screens()) do
-    if monitor.dpi > 100 then
-      return true
-    end
-  end
-  return false
-end
-
-
-config.audible_bell = "Disabled"
 config.color_scheme = 'Tokyo Night'
 
 -- TODO: figure out if we are being displayed on a retina screen, and use Regular instead of Bold here
@@ -23,11 +12,10 @@ config.window_decorations = 'RESIZE'
 config.hide_tab_bar_if_only_one_tab = true
 config.window_padding = { left = 2, right = 2, top = 2, bottom = 2 }
 
--- FIXME: calling wezterm.gui.screens() within config seems to make wezterm unresponsive
---local screens = wezterm.gui.screens()
-
 -- native fullscreen is SOOOO slow (the animation kills me)
 config.native_macos_fullscreen_mode = false
+
+config.audible_bell = "Disabled"
 
 config.keys = {
   { key = 'L', mods = 'SHIFT|CTRL', action = act.ShowDebugOverlay },
