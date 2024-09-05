@@ -1,4 +1,5 @@
 # ~/.config/sheldon/plugins.toml
+shell = "zsh"
 
 [plugins.prezto-completion]
 github = "sorin-ionescu/prezto"
