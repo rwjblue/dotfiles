@@ -4,9 +4,8 @@ local config = wezterm.config_builder()
 
 config.color_scheme = 'Tokyo Night'
 
--- TODO: figure out if we are being displayed on a retina screen, and use Regular instead of Bold here
 config.font = wezterm.font({ family = 'Berkeley Mono', weight = "Regular" })
-config.font_size = 12.0
+config.font_size = 12
 
 config.window_decorations = 'RESIZE'
 config.hide_tab_bar_if_only_one_tab = true
@@ -50,5 +49,11 @@ config.initial_cols = 300
 -- to install a wezterm terminfo to $HOME/.terminfo
 
 config.term = "wezterm"
+
+
+local status_ok, local_config = pcall(require, 'local_config_overrides')
+if status_ok and type(local_config) == 'function' then
+  local_config(config)
+end
 
 return config
