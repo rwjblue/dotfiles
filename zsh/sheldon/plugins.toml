@@ -1,15 +1,9 @@
 # ~/.config/sheldon/plugins.toml
 
-[templates]
-defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
-
-[plugins.zsh-defer]
-github = "romkatv/zsh-defer"
-
 [plugins.prezto-completion]
 github = "sorin-ionescu/prezto"
 use = ["modules/completion/init.zsh"]
-apply = ["defer"]
+apply = ["source"]
 
 [plugins.homebrew-completions]
 local = "/opt/homebrew/share/zsh/site-functions/"
@@ -26,10 +20,5 @@ local = "~/.zsh/plugins"
 use = ["*"]
 apply = ["source"]
 
-[plugins.local-deferred-plugins]
-local = "~/.zsh/plugins_deferred"
-use = ["*"]
-apply = ["defer"]
-
 [plugins.compinit]
-inline = 'autoload -Uz compinit && zsh-defer compinit'
+inline = 'autoload -Uz compinit'
