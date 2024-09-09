@@ -1,5 +1,134 @@
 # CMD: brew shellenv
-# CMD: sheldon source
+# CMD: zoxide init zsh
+# CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
+# CMD: starship init zsh
+
+# TODO: should we use a perma here?
+
+# FETCH: https://raw.githubusercontent.com/sorin-ionescu/prezto/master/modules/completion/init.zsh
+
+fpath=( "/opt/homebrew/share/zsh/site-functions/" $fpath )
+fpath=( "/Users/rjackson/.zsh/completions" $fpath )
+autoload -Uz compinit
+
+# load 1Password configured plugins if 1Password is installed and configured
+# see https://developer.1password.com/docs/cli/shell-plugins
+[ -f ~/.config/op/plugins.sh ] && source ~/.config/op/plugins.sh
+
+#
+# Setup vi Mode
+# -------------
+bindkey -v
+export KEYTIMEOUT=1
+
+export LANG='en_US.UTF-8'
+
+# use nvim as default editor
+export EDITOR="nvim"
+
+export VOLTA_HOME="$HOME/.volta"
+
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# ensure we use a stable SSH_AUTH_SOCK (so reconnecting to prior tmux sessions
+# continue to be able to auth)
+if [[ -r $HOME/.ssh/ssh_auth_sock ]]; then
+  export SSH_AUTH_SOCK=$HOME/.ssh/ssh_auth_sock
+fi
+
+
+if [[ -r $HOME/.cargo/env ]]; then
+. "$HOME/.cargo/env"
+fi
+
+# Setup fzf
+# ---------
+
+if [[ "$OSTYPE" == darwin* ]]; then
+  # Auto-completion
+  [[ $- == *i* ]] && source "/opt/homeberw/opt/fzf/shell/completion.zsh" 2> /dev/null
+
+  # Key bindings
+  source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
+else
+  if [[ ! "$PATH" == */$HOME/.fzf/bin* ]]; then
+    export PATH="$PATH:$HOME/.fzf/bin"
+  fi
+
+  # Auto-completion
+  # ---------------
+  [[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.zsh" 2> /dev/null
+
+  # Key bindings
+  # ------------
+  source "$HOME/.fzf/shell/key-bindings.zsh"
+fi
+
+# These two setup a function to lazy load rbenv and pyenv on demand
+source "$HOME/.zsh/plugins/pyenv/pyenv.zsh"
+source "$HOME/.zsh/plugins/pyenv/rbenv.zsh"
+
+# helpful unixy aliases
+alias lsof-tcp-listen='lsof -iTCP -sTCP:LISTEN -P'
+
+# use eza if it exists
+# https://github.com/eza-community/eza (replacement for https://github.com/ogham/exa)
+if which eza > /dev/null 2>&1; then
+  alias ls='eza'
+  alias ll='eza -l --all --no-user --changed --sort=modified'
+  alias lt='eza --tree --level 3 -l --no-permissions --no-user --no-time'
+else
+  # setup ls
+  ls / --color=auto > /dev/null 2>&1
+  if [[ $? == 0 ]]; then
+    alias ls='ls --color=auto'
+  fi
+fi
+
+
+# Tmux helper functions
+
+# switch to tmux session using fzf to select
+__ts() {
+  if [ "$TMUX" ]; then
+    t_cmd='switch-client'
+  else
+    t_cmd='attach'
+  fi
+
+  # tmux list-sessions | fzf  | cut -d':' -f 1 | echo xargs tmux ${t_cmd} -t
+  t_session=$(tmux list-sessions | fzf  | cut -d':' -f 1)
+
+  # if selected, switch to it
+  if [[ -n "$t_session" ]]; then
+    tmux $t_cmd -t $t_session
+  fi
+}
+
+# use `z` (from zoxide) to switch to a directory, if successful rename the
+# window to the current working directory; this is generally nice when that dir
+# is the name of a specific repo
+function __tz {
+  local result="$(zoxide query -- "$@")" && cd "$result" && tmux rename-window "${PWD##*/}"
+}
+
+alias t='tmux'
+alias ts='__ts'
+alias gz='__tz'
+
+# use fzf to select a specific window in the tmux session
+alias tw='tmux list-windows | fzf  | cut -d':" -f 1 | xargs tmux select-window -t"
+
+# git related aliases
+alias g='git'
+alias gst='g status -sb'      # use short version of git status
+alias gap='g add -p'          # the best way to run git add
+alias gd='g diff'             # show unstaged changes
+alias gds='g diff --staged'   # show staged changes
+alias gc='g commit --verbose' # use verbose mode with $EDITOR
+
+alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
+
 
 {
   function path_add() {
@@ -10,7 +139,11 @@
     export PATH
   }
 
+  path_add "$VOLTA_HOME/bin"
+  path_add "/opt/homebrew/opt/fzf/bin"
   path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
   path_add "$HOME/src/malleatus/shared_binutils/global/target/debug"
   path_add "$HOME/.local/bin"
 }
+
+source "$HOME/.zshrc.local"
