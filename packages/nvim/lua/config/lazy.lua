@@ -31,8 +31,8 @@ require("lazy").setup({
 
     -- disable copilot on rdev
     non_rdev and { import = "lazyvim.plugins.extras.coding.copilot" } or nil,
-    non_rdev and { import = "plugins.extras.coding.avante" } or nil,
-    -- non_rdev and { import = "plugins.extras.coding.codecompanion" } or nil,
+    -- non_rdev and { import = "plugins.extras.coding.avante" } or nil,
+    non_rdev and { import = "plugins.extras.coding.codecompanion" } or nil,
 
     -- NOTE: this is mutually exclusive with codecompanion
     -- non_rdev and { import = "lazyvim.plugins.extras.coding.copilot-chat" } or nil,
