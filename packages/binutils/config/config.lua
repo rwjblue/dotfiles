@@ -1,5 +1,9 @@
 ---@type Config
 return {
+  crate_locations = {
+    "~/src/rwjblue/dotfiles/binutils/crates/",
+    "~/src/malleatus/shared_binutils"
+  },
   shell_caching = {
     source = "~/src/rwjblue/dotfiles/zsh/",
     destination = "~/src/rwjblue/dotfiles/zsh/dist/"
@@ -36,7 +40,7 @@ return {
             name = "shared_binutils",
             path = "~/src/malleatus/shared_binutils",
             command = "nvim"
-          }
+          },
         }
       },
     }
