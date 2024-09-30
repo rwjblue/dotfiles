@@ -65,8 +65,8 @@ else
 fi
 
 # These two setup a function to lazy load rbenv and pyenv on demand
-source "$HOME/.zsh/plugins/pyenv/pyenv.zsh"
-source "$HOME/.zsh/plugins/pyenv/rbenv.zsh"
+source "$HOME/.zsh/plugins/pyenv.zsh"
+source "$HOME/.zsh/plugins/rbenv.zsh"
 
 # helpful unixy aliases
 alias lsof-tcp-listen='lsof -iTCP -sTCP:LISTEN -P'
