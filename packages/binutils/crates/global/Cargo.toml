@@ -17,6 +17,9 @@ regex = { workspace = true }
 shellexpand = { workspace = true }
 latest_bin = { workspace = true }
 
+tree-sitter = "0.23"
+tree-sitter-bash = "0.23"
+
 [dev-dependencies]
 insta = { workspace = true }
 tempfile = { workspace = true }
@@ -24,3 +27,6 @@ temp-env = { workspace = true }
 rand = { workspace = true }
 test_utils = { workspace = true }
 fixturify = { workspace = true }
+
+[build-dependencies]
+cc = "*"
