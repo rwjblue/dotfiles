@@ -1,4 +1,19 @@
-# CMD: brew shellenv
+if [[ ":$PATH:" == *":/opt/homebrew/bin:"* ]]; then
+  # NOTE: specifically avoiding running `CMD: brew shellenv` here the default
+  # LinkedIn machine image puts `/opt/homebrew/bin/` on path via
+  # `/etc/paths.d/` The only real change from `brew shellenv` here is that it
+  # usually emits `export PATH=` without incorporating current `$PATH`. This
+  # makes debugging path issues much more annoying.
+  export HOMEBREW_PREFIX="/opt/homebrew";
+  export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+  export HOMEBREW_REPOSITORY="/opt/homebrew";
+
+  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+else
+  # CMD: brew shellenv
+fi
+
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
 # CMD: starship init zsh
