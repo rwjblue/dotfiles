@@ -1,1 +1,1 @@
-# CMD: rustup completions zsh rustup
+# CMD_SILENT: rustup completions zsh rustup
