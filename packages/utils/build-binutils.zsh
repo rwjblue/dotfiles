@@ -14,12 +14,9 @@ fi
 echo "Building malleatus/shared_binutils"
 (cd "$HOME/src/malleatus/shared_binutils/" && cargo build)
 
-echo "setting up malleatus/shared_binutils symlinks"
-"$HOME/src/malleatus/shared_binutils/target/debug/generate-binutils-symlinks" --workspace-path "$HOME/src/malleatus/shared_binutils/"
-
 echo "Building binutils"
 (cd "$DOTFILES/binutils" && cargo build)
 
 echo "setting up binutils symlinks"
-"$HOME/src/malleatus/shared_binutils/target/debug/generate-binutils-symlinks" --workspace-path "$DOTFILES/binutils"
+"$HOME/src/malleatus/shared_binutils/target/debug/generate-binutils-symlinks"
 
