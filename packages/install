@@ -162,7 +162,7 @@ install-requirements() {
       /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin
+    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd
   else
     # we are within an rdev if this file exists
     if [ -f /etc/rdev.conf ]; then
@@ -205,6 +205,13 @@ install-requirements() {
       cargo binstall --locked --no-confirm git-delta
     else
       echo "delta already installed"
+    fi
+
+    if ! which sd > /dev/null 2>&1; then
+      echo "Installing sd"
+      cargo binstall --locked --no-confirm sd
+    else
+      echo "sd already installed"
     fi
 
     if [[ ! -d $HOME/.fzf ]]; then
