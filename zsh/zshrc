@@ -31,6 +31,8 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 # makes debugging path issues much more annoying.
 _path_remove "/opt/homebrew/bin"
 _path_add "/opt/homebrew/bin"
+
+_path_remove "/opt/homebrew/sbin"
 _path_add "/opt/homebrew/sbin"
 
 # CMD: zoxide init zsh
