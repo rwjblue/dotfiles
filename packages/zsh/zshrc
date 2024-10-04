@@ -26,9 +26,8 @@ export HOMEBREW_REPOSITORY="/opt/homebrew";
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 
 # NOTE: LinkedIn machine image puts `/opt/homebrew/bin/` on path via
-# `/etc/paths.d/` The only real change from `brew shellenv` here is that it
-# usually emits `export PATH=` without incorporating current `$PATH`. This
-# makes debugging path issues much more annoying.
+# `/etc/paths.d/`, but it is in the wrong location (it ends up having it's
+# binaries like `delta` shadowed), so we remove and prepend it
 _path_remove "/opt/homebrew/bin"
 _path_add "/opt/homebrew/bin"
 
