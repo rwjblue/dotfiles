@@ -1,18 +1,37 @@
-if [[ ":$PATH:" == *":/opt/homebrew/bin:"* ]]; then
-  # NOTE: specifically avoiding running `CMD: brew shellenv` here the default
-  # LinkedIn machine image puts `/opt/homebrew/bin/` on path via
-  # `/etc/paths.d/` The only real change from `brew shellenv` here is that it
-  # usually emits `export PATH=` without incorporating current `$PATH`. This
-  # makes debugging path issues much more annoying.
-  export HOMEBREW_PREFIX="/opt/homebrew";
-  export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
-  export HOMEBREW_REPOSITORY="/opt/homebrew";
+function _path_add() {
+  case ":$PATH:" in
+    *:"$1":*) ;;
+    *) PATH="$1${PATH+:$PATH}" ;;
+  esac
+  export PATH
+}
 
-  [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
-  export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-else
-  # CMD: brew shellenv
-fi
+function _path_remove() {
+  case ":$PATH:" in
+    *:"$1":*)
+      PATH=$(echo ":$PATH:" | sed "s,:$1:,," | sed 's/^://;s/:$//')
+      ;;
+  esac
+  export PATH
+}
+
+# NOTE: specifically avoiding running `CMD: brew shellenv` here because it
+# exports `PATH` but just inlines the contents of `$PATH` at the time it runs
+# (which is too eager).
+export HOMEBREW_PREFIX="/opt/homebrew";
+export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
+export HOMEBREW_REPOSITORY="/opt/homebrew";
+
+[ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
+export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
+
+# NOTE: LinkedIn machine image puts `/opt/homebrew/bin/` on path via
+# `/etc/paths.d/` The only real change from `brew shellenv` here is that it
+# usually emits `export PATH=` without incorporating current `$PATH`. This
+# makes debugging path issues much more annoying.
+_path_remove "/opt/homebrew/bin"
+_path_add "/opt/homebrew/bin"
+_path_add "/opt/homebrew/sbin"
 
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
@@ -144,21 +163,10 @@ alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
 
-
-{
-  function path_add() {
-    case ":$PATH:" in
-      *:"$1":*) ;;
-      *) PATH="$1${PATH+:$PATH}" ;;
-    esac
-    export PATH
-  }
-
-  path_add "$VOLTA_HOME/bin"
-  path_add "/opt/homebrew/opt/fzf/bin"
-  path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
-  path_add "$HOME/src/malleatus/shared_binutils/global/target/debug"
-  path_add "$HOME/.local/bin"
-}
+_path_add "$VOLTA_HOME/bin"
+_path_add "/opt/homebrew/opt/fzf/bin"
+_path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
+_path_add "$HOME/src/malleatus/shared_binutils/global/target/debug"
+_path_add "$HOME/.local/bin"
 
 source "$HOME/.zshrc.local"
