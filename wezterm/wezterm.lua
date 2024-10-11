@@ -48,7 +48,10 @@ config.initial_cols = 300
 -- Follow https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines
 -- to install a wezterm terminfo to $HOME/.terminfo
 
-config.term = "wezterm"
+-- FIXME: This seems to cause issues (unknown term type), not sure why? do )i need to
+-- follow those instructions more than once?
+--
+-- config.term = "wezterm"
 
 
 local status_ok, local_config = pcall(require, 'local_config_overrides')
