@@ -15,6 +15,11 @@ function _path_remove() {
   export PATH
 }
 
+function _ensure_first_path() {
+  _path_remove $1
+  _path_add $1
+}
+
 # NOTE: specifically avoiding running `CMD: brew shellenv` here because it
 # exports `PATH` but just inlines the contents of `$PATH` at the time it runs
 # (which is too eager).
@@ -28,11 +33,8 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 # NOTE: LinkedIn machine image puts `/opt/homebrew/bin/` on path via
 # `/etc/paths.d/`, but it is in the wrong location (it ends up having it's
 # binaries like `delta` shadowed), so we remove and prepend it
-_path_remove "/opt/homebrew/bin"
-_path_add "/opt/homebrew/bin"
-
-_path_remove "/opt/homebrew/sbin"
-_path_add "/opt/homebrew/sbin"
+_ensure_first_path "/opt/homebrew/bin"
+_ensure_first_path "/opt/homebrew/sbin"
 
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
@@ -165,10 +167,10 @@ alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
 
-_path_add "$VOLTA_HOME/bin"
-_path_add "/opt/homebrew/opt/fzf/bin"
-_path_add "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
-_path_add "$HOME/src/malleatus/shared_binutils/global/target/debug"
-_path_add "$HOME/.local/bin"
+_ensure_first_path "$VOLTA_HOME/bin"
+_ensure_first_path "/opt/homebrew/opt/fzf/bin"
+_ensure_first_path "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
+_ensure_first_path "$HOME/src/malleatus/shared_binutils/global/target/debug"
+_ensure_first_path "$HOME/.local/bin"
 
 source "$HOME/.zshrc.local"
