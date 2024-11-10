@@ -3,16 +3,16 @@ resolver = "2"
 members = ["crates/*", "../local-dotfiles/crates/*"]
 
 [workspace.dependencies]
-anyhow = "1.0.79"
+anyhow = "1.0.93"
 cargo_metadata = "0.18.1"
-clap = { version = "4.5.3", features = ["derive"] }
-insta = { version = "1.36.1", features = ["yaml", "toml"] }
+clap = { version = "4.5.20", features = ["derive"] }
+insta = { version = "1.41.1", features = ["yaml", "toml"] }
 rand = "0.8.5"
-regex = "1.10.6"
+regex = "1.11.1"
 shellexpand = "3.1.0"
 temp-env = "0.3.6"
-tempfile = "3.10.1"
-toml = "0.8.12"
+tempfile = "3.14.0"
+toml = "0.8.19"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
