@@ -32,10 +32,10 @@ require("lazy").setup({
     -- disable AI related features when using rdev
     --
     -- NOTE: some of the below plugins are mutually exclusive, you can only have one of them enabled at a time
-    non_rdev and { import = "lazyvim.plugins.extras.coding.copilot" } or nil,
-    non_rdev and { import = "plugins.extras.coding.avante" } or nil,
-    --non_rdev and { import = "plugins.extras.coding.codecompanion" } or nil,
-    -- non_rdev and { import = "lazyvim.plugins.extras.coding.copilot-chat" } or nil,
+    non_rdev and { import = "lazyvim.plugins.extras.ai.copilot" } or nil,
+    non_rdev and { import = "plugins.extras.ai.avante" } or nil,
+    --non_rdev and { import = "plugins.extras.ai.codecompanion" } or nil,
+    -- non_rdev and { import = "lazyvim.plugins.extras.ai.copilot-chat" } or nil,
 
     -- import/override with your plugins
     { import = "plugins" },
