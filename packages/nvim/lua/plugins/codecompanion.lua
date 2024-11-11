@@ -17,6 +17,10 @@ return {
             },
           })
         end,
+
+        copilot = {
+          model = "claude-3.5-sonnet"
+        },
       },
       strategies = {
         -- just makes it easier to test out for now (comparing apples to apples)
