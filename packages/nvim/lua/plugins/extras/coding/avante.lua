@@ -1,45 +1,25 @@
+-- originally from https://github.com/LazyVim/LazyVim/pull/4440
 return {
   {
     "yetone/avante.nvim",
     event = "VeryLazy",
-    lazy = false,
-    version = false, -- set this if you want to always pull the latest change
     opts = {
-      -- add any opts here
+      hints = { enabled = false },
     },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = "make",
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      "stevearc/dressing.nvim",
-      "nvim-lua/plenary.nvim",
-      "MunifTanjim/nui.nvim",
-      {
-        -- support for image pasting
-        "HakonHarnes/img-clip.nvim",
-        event = "VeryLazy",
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { "markdown", "Avante" },
-        },
-        ft = { "markdown", "Avante" },
-      },
-    },
+    build = LazyVim.is_win() and "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" or "make",
+    behavior = {
+      auto_suggestions = false, -- use copilot for auto_suggestions
+    }
+  },
+  {
+    "MeanderingProgrammer/render-markdown.nvim",
+    optional = true,
+    ft = function(_, ft)
+      vim.list_extend(ft, { "Avante" })
+    end,
+    opts = function(_, opts)
+      opts.file_types = vim.list_extend(opts.file_types or {}, { "Avante" })
+    end,
   },
   {
     "folke/which-key.nvim",
