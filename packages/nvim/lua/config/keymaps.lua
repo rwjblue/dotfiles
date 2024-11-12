@@ -32,25 +32,11 @@ map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 -- Enable exiting terminal mode with Esc
 map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
 
--- floating terminal
--- slightly modified https://github.com/LazyVim/LazyVim/blob/v10.9.1/lua/lazyvim/config/keymaps.lua#L141-L146
--- in order to add a border to the floating terminal
-local Util = require("lazyvim.util")
-local lazyterm = function()
-  Util.terminal(nil, {
-    cwd = Util.root(),
-    -- possible border options: https://github.com/folke/lazy.nvim/blob/v10.16.0/lua/lazy/view/float.lua#L12
-    border = "rounded",
-  })
-end
-vim.keymap.set("n", "<leader>ft", lazyterm, { desc = "Terminal (root dir)" })
-vim.keymap.set("n", "<leader>fT", function()
-  Util.terminal(nil, {
-    border = "rounded",
-  })
-end, { desc = "Terminal (cwd)" })
-vim.keymap.set("n", "<c-/>", lazyterm, { desc = "Terminal (root dir)" })
-vim.keymap.set("n", "<c-_>", lazyterm, { desc = "which_key_ignore" })
+-- slightly modified https://github.com/LazyVim/LazyVim/blob/v13.2.0/lua/lazyvim/config/keymaps.lua#L161C1-L162C1
+-- in order to use `c-/` to open terminal in cwd (the default is
+-- `LazyVim.root()` which doesn't always behave how I expect)
+vim.keymap.set("n", "<c-/>", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
+
 
 -- remove the "move up" and "move down" keymaps added by LazyVim
 -- https://github.com/LazyVim/LazyVim/blob/879e29504d43e9f178d967ecc34d482f902e5a91/lua/lazyvim/config/keymaps.lua#L26-L32
