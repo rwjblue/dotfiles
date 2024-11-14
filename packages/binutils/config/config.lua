@@ -43,6 +43,14 @@ return {
           },
         }
       },
+      {
+        name = "🦨work",
+        windows = {
+          {
+            name = "default",
+          }
+        }
+      },
     }
   }
 }
