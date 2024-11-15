@@ -10,6 +10,14 @@ return {
     opts = {
       log_level = "DEBUG",
       adapters = {
+        anthropic = function()
+          return require("codecompanion.adapters").extend("anthropic", {
+            env = {
+              api_key = "AI_CLAUDE_API_KEY",
+            },
+          })
+        end,
+
         openai = function()
           return require("codecompanion.adapters").extend("openai", {
             env = {
@@ -25,13 +33,13 @@ return {
       strategies = {
         -- just makes it easier to test out for now (comparing apples to apples)
         chat = {
-          adapter = "openai",
+          adapter = "anthropic",
         },
         inline = {
           adapter = "copilot",
         },
         agent = {
-          adapter = "openai",
+          adapter = "anthropic",
         },
       },
       display = {
