@@ -47,7 +47,8 @@ return {
         name = "🦨work",
         windows = {
           {
-            name = "default",
+            name = "sniff-gh-copilot-usage",
+            path = "~/src/rwjblue/sniff-gh-copilot-usage",
           }
         }
       },
