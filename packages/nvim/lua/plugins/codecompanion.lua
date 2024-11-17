@@ -7,14 +7,12 @@ return {
   {
     "olimorris/codecompanion.nvim",
     optional = true,
-    opts = {
-      log_level = "DEBUG",
-      adapters = {
+    opts = function()
+      -- Adapter configurations
+      local adapters = {
         anthropic = function()
           return require("codecompanion.adapters").extend("anthropic", {
-            env = {
-              api_key = "AI_CLAUDE_API_KEY",
-            },
+            env = { api_key = "AI_CLAUDE_API_KEY" },
           })
         end,
 
@@ -29,29 +27,32 @@ return {
         copilot = {
           model = "claude-3.5-sonnet"
         },
-      },
-      strategies = {
-        -- just makes it easier to test out for now (comparing apples to apples)
+      }
+
+      -- Strategy configurations
+      local strategies = {
+        chat = { adapter = "anthropic" },
+        inline = { adapter = "copilot" },
+        agent = { adapter = "anthropic" },
+      }
+
+      -- Display configurations
+      local display = {
         chat = {
-          adapter = "anthropic",
-        },
-        inline = {
-          adapter = "copilot",
-        },
-        agent = {
-          adapter = "anthropic",
-        },
-      },
-      display = {
-        chat = {
-          window = {
-            layout = "float",
-            border = "rounded",
-            width = 0.6,
-            height = 0.6,
-          }
+          -- window = {
+          --   layout = "float",
+          --   border = "rounded",
+          --   width = 0.6,
+          --   height = 0.6,
+          -- }
         }
       }
-    }
+
+      return {
+        adapters = adapters,
+        strategies = strategies,
+        display = display,
+      }
+    end,
   }
 }
