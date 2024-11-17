@@ -4,6 +4,24 @@ end, { desc = "Edit snippets used in this buffer" })
 
 local ft_group = vim.api.nvim_create_augroup("rwjblue_snippets", { clear = true })
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "snippets",
+  group = ft_group, -- reuse your existing group
+  callback = function()
+    -- Use real tabs
+    vim.opt_local.expandtab = false
+    -- Set tab width
+    vim.opt_local.tabstop = 8
+    vim.opt_local.softtabstop = 0
+    vim.opt_local.shiftwidth = 0 -- 0 means follow tabstop
+    -- Show tabs visually
+    vim.opt_local.list = true
+    vim.opt_local.listchars = {
+      tab = "··→",
+    }
+  end,
+})
+
 -- Configuration for LuaSnip Filetype Extensions
 --
 -- This configuration table defines a series of auto-commands to dynamically
@@ -29,7 +47,7 @@ local ft_group = vim.api.nvim_create_augroup("rwjblue_snippets", { clear = true 
 -- To add or modify the auto-commands, simply adjust the entries in the
 -- `extended_configs` table.
 local extended_configs = {
-  { pattern = "Cargo.toml", extend = "toml", with = "cargo" },
+  { pattern = "Cargo.toml",              extend = "toml", with = "cargo" },
   { pattern = ".github/workflows/*.yml", extend = "yaml", with = "github-workflow" },
 }
 
