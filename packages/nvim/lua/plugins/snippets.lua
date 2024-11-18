@@ -47,8 +47,8 @@ vim.api.nvim_create_autocmd("FileType", {
 -- To add or modify the auto-commands, simply adjust the entries in the
 -- `extended_configs` table.
 local extended_configs = {
-  { pattern = "Cargo.toml",              extend = "toml", with = "cargo" },
-  { pattern = ".github/workflows/*.yml", extend = "yaml", with = "github-workflow" },
+  { pattern = "Cargo.toml",                extend = "toml", with = "cargo" },
+  { pattern = "*/.github/workflows/*.yml", extend = "yaml", with = "github-workflow" },
 }
 
 for _, config in ipairs(extended_configs) do
