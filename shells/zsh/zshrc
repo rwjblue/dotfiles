@@ -22,7 +22,7 @@ function _ensure_first_path() {
 
 # NOTE: specifically avoiding running `CMD: brew shellenv` here because it
 # exports `PATH` but just inlines the contents of `$PATH` at the time it runs
-# (which is too eager).
+# (which is too eager when we use cache-shell-setup).
 export HOMEBREW_PREFIX="/opt/homebrew";
 export HOMEBREW_CELLAR="/opt/homebrew/Cellar";
 export HOMEBREW_REPOSITORY="/opt/homebrew";
