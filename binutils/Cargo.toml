@@ -4,7 +4,6 @@ members = ["crates/*", "../local-dotfiles/crates/*"]
 
 [workspace.dependencies]
 anyhow = "1.0.93"
-cargo_metadata = "0.18.1"
 clap = { version = "4.5.20", features = ["derive"] }
 insta = { version = "1.41.1", features = ["yaml", "toml"] }
 rand = "0.8.5"
