@@ -77,13 +77,13 @@ setup-config() {
 
   mkdir -p ~/bin
 
-  link-dotfile "bash/bashrc" "$HOME/.bashrc"
+  link-dotfile "shells/dist/bash/bashrc" "$HOME/.bashrc"
 
-  link-dotfile "zsh/dist/" "$HOME/.zsh"
-  link-dotfile "zsh/dist/zshenv" "$HOME/.zshenv"
-  link-dotfile "zsh/dist/zprofile" "$HOME/.zprofile"
-  link-dotfile "zsh/dist/zshrc" "$HOME/.zshrc"
-  copy-dotfile "zsh/dist/zshrc.local" "$HOME/.zshrc.local"
+  link-dotfile "shells/dist/zsh/" "$HOME/.zsh"
+  link-dotfile "shells/dist/zsh/zshenv" "$HOME/.zshenv"
+  link-dotfile "shells/dist/zsh/zprofile" "$HOME/.zprofile"
+  link-dotfile "shells/dist/zsh/zshrc" "$HOME/.zshrc"
+  copy-dotfile "shells/dist/zsh/zshrc.local" "$HOME/.zshrc.local"
   link-dotfile "atuin" "$HOME/.config/atuin"
 
   link-dotfile "git/gitconfig" "$HOME/.gitconfig"
