@@ -80,6 +80,7 @@ setup-config() {
   link-dotfile "shells/dist/bash/bashrc" "$HOME/.bashrc"
 
   link-dotfile "shells/dist/zsh/" "$HOME/.zsh"
+  link-dotfile "shells/dist/fish/" "$HOME/.config/fish"
   link-dotfile "shells/dist/zsh/zshenv" "$HOME/.zshenv"
   link-dotfile "shells/dist/zsh/zprofile" "$HOME/.zprofile"
   link-dotfile "shells/dist/zsh/zshrc" "$HOME/.zshrc"
