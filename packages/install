@@ -167,7 +167,7 @@ install-requirements() {
       /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd jj
+    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd jj fish
   else
     # we are within an rdev if this file exists
     if [ -f /etc/rdev.conf ]; then
