@@ -5,8 +5,8 @@ return {
     "~/src/malleatus/shared_binutils"
   },
   shell_caching = {
-    source = "~/src/rwjblue/dotfiles/zsh/",
-    destination = "~/src/rwjblue/dotfiles/zsh/dist/"
+    source = "~/src/rwjblue/dotfiles/shells/",
+    destination = "~/src/rwjblue/dotfiles/shells/dist/"
   },
   tmux = {
     sessions = {

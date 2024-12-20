@@ -5,7 +5,7 @@ if [ -f /etc/rdev.conf ]; then
   #
   # doing it here is a bit of a hack (it just makes sourcing the file lazy
   # enough that the `rdev create` command can finish)
-  if tmux ls > /dev/null 2>&1; then
+  if tmux ls >/dev/null 2>&1; then
     tmux source-file ~/.tmux.conf
   fi
 
