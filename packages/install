@@ -105,6 +105,9 @@ setup-config() {
     link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
     link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
     link-dotfile "tealdeer/config.toml" "$HOME/Library/Application Support/tealdeer/config.toml"
+    link-dotfile "jj/" "$HOME/Library/Application Support/jj"
+  else
+    link-dotfile "jj/" "$HOME/.config/jj"
   fi
 
   if [ ! -d ~/.ssh ]; then
@@ -164,7 +167,7 @@ install-requirements() {
       /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
     fi
 
-    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd
+    brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd jj
   else
     # we are within an rdev if this file exists
     if [ -f /etc/rdev.conf ]; then
