@@ -98,6 +98,7 @@ setup-config() {
 
   link-dotfile "binutils/config/" "$HOME/.config/binutils"
   link-dotfile "wezterm/" "$HOME/.config/wezterm"
+  link-dotfile "ghostty/" "$HOME/.config/ghostty"
 
   if [[ "$OSTYPE" == darwin* ]]; then
     link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
