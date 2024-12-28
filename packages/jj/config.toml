@@ -3,3 +3,6 @@
 # https://github.com/jj-vcs/jj/commit/f5d450d7c3a8f8a49e30aef0fd18d8295ffc8cb6
 name = "Robert Jackson"
 email = "me@rwjblue.com"
+
+[git]
+private-commits = 'description(glob:"private:*")'
