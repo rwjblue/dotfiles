@@ -7,3 +7,5 @@ email = "me@rwjblue.com"
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
+# https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
+push-bookmark-prefix = "rwjblue/push-"
