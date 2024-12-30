@@ -57,3 +57,7 @@ Thumbs.db
 ################################
 .ackignore
 .agignore
+
+# Other version control systems #
+# ###############################
+.jj/
