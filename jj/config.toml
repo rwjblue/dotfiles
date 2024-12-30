@@ -5,4 +5,5 @@ name = "Robert Jackson"
 email = "me@rwjblue.com"
 
 [git]
+# https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
