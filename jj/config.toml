@@ -9,3 +9,26 @@ email = "me@rwjblue.com"
 private-commits = 'description(glob:"private:*")'
 # https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
 push-bookmark-prefix = "rwjblue/push-"
+
+[templates]
+# https://github.com/jj-vcs/jj/blob/v0.24.0/docs/config.md?plain=1#L166
+draft_commit_description = '''
+concat(
+  description,
+  surround(
+    "\nJJ: This commit contains the following changes:\nJJ: \n", "",
+    indent("JJ:     ", diff.git(72)),
+  ),
+)
+'''
+# NOTE: In jj@0.25.0+ this can be done without prefixing `JJ:` by using `JJ: ignore-rest`:
+# draft_commit_description = '''
+# concat(
+#   description,
+#   "\n",
+#   "JJ: This commit contains the following changes:\n",
+#   "JJ: ",
+#   indent("JJ:    ", diff.stat(72)),
+#   "JJ: ignore-rest\n",
+#   diff.git(),
+# )
