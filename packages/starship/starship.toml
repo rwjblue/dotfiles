@@ -18,3 +18,39 @@ zsh_indicator = '🚀 '
 unknown_indicator = 'mystery shell'
 style = 'cyan bold'
 disabled = false
+
+[custom.jj]
+command = '''
+jj log --ignore-working-copy --no-graph --color always --revisions @ --template '
+  surround(
+    "(",
+    ")",
+    separate(
+      " ",
+      change_id.shortest(8),
+      commit_id.shortest(8),
+      if(empty, "(empty)"),
+      coalesce(
+          surround(
+              "\"",
+              "\"",
+              if(
+                  description.first_line().substr(0, 50).starts_with(description.first_line()),
+                  description.first_line().substr(0, 50),
+                  description.first_line().substr(0, 49) ++ "…"
+              )
+          ),
+          "(no description set)"
+      ),
+      bookmarks.join(", "),
+      branches.join(", "),
+      if(conflict, "💥"),
+      if(divergent, "🚧"),
+      if(hidden, "👻"),
+      if(immutable, "🔒"),
+    )
+  )
+'
+'''
+when = "jj root --ignore-working-copy"
+symbol = "🍐"
