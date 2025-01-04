@@ -1,9 +1,20 @@
-[[battery.display]]  # "bold red" style when capacity is between 0% and 10%
+[[battery.display]]
+# "bold red" style when capacity is between 0% and 10%
 threshold = 10
 style = "bold red"
 
-[[battery.display]]  # "bold yellow" style when capacity is between 10% and 30%
+[[battery.display]]
+# "bold yellow" style when capacity is between 10% and 30%
 threshold = 30
 style = "bold yellow"
 
 # when capacity is over 30%, the battery indicator will not be displayed
+
+[shell]
+# While I'm working to learn `fish` and swap as my default shell it's really nice to know
+# which shell I'm currently using. This is a nice way to do that.
+fish_indicator = '🐟 '
+zsh_indicator = '🚀 '
+unknown_indicator = 'mystery shell'
+style = 'cyan bold'
+disabled = false
