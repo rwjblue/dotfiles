@@ -1,3 +1,6 @@
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
 [[battery.display]]
 # "bold red" style when capacity is between 0% and 10%
 threshold = 10
