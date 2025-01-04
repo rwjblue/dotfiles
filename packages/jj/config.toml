@@ -4,6 +4,14 @@
 name = "Robert Jackson"
 email = "me@rwjblue.com"
 
+[ui]
+# https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#processing-contents-to-be-paged
+pager = "delta"
+
+[ui.diff]
+# NOTE: this is required when using `delta` as a pager
+format = "git"
+
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
