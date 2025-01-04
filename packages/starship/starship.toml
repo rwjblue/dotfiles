@@ -32,18 +32,10 @@ jj log --ignore-working-copy --no-graph --color always --revisions @ --template 
       " ",
       change_id.shortest(8),
       commit_id.shortest(8),
-      if(empty, "(empty)"),
-      coalesce(
-          surround(
-              "\"",
-              "\"",
-              if(
-                  description.first_line().substr(0, 50).starts_with(description.first_line()),
-                  description.first_line().substr(0, 50),
-                  description.first_line().substr(0, 49) ++ "…"
-              )
-          ),
-          "(no description set)"
+      if(empty, label("empty", "(empty)")),
+      if(description,
+        concat("\"", description.first_line(), "\""),
+        label(if(empty, "empty"), description_placeholder),
       ),
       bookmarks.join(", "),
       branches.join(", "),
