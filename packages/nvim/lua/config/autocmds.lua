@@ -14,6 +14,16 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+-- TODO: Remove this (and the corresponding `after/syntax/jj.vim`) when NeoVim
+-- is released including this: https://github.com/neovim/neovim/pull/31840
+vim.api.nvim_create_autocmd("FileType", {
+  group = augroup("JJCustomSyntax"),
+  pattern = { "jj" },
+  callback = function()
+    vim.cmd("runtime! after/syntax/jj.vim")
+  end,
+})
+
 local terminal_setup = augroup("terminal_setup")
 
 vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
