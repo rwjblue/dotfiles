@@ -52,6 +52,19 @@ return {
           }
         }
       },
+      {
+        name = "🍐Jujutsu",
+        windows = {
+          {
+            name = "jj",
+            path = "~/src/jj-vcs/jj/",
+          },
+          {
+            name = "jj-gpc",
+            path = "~/src/chriskrycho/jj-gpc/",
+          }
+        }
+      },
     }
   }
 }
