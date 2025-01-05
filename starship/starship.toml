@@ -27,27 +27,29 @@ disabled = false
 # this brings the total timings for `custom.jj` from 63ms down to 25ms
 command = '''
 jj root --ignore-working-copy > /dev/null 2>&1 && jj log --no-graph --color always --revisions @ --template '
-  surround(
-    "(",
-    ")",
-    separate(
-      " ",
-      change_id.shortest(8),
-      commit_id.shortest(8),
-      if(empty, label("empty", "(empty)")),
-      if(description,
-        concat("\"", description.first_line(), "\""),
-        label(if(empty, "empty"), description_placeholder),
-      ),
-      bookmarks.join(", "),
-      branches.join(", "),
-      if(conflict, "💥"),
-      if(divergent, "🚧"),
-      if(hidden, "👻"),
-      if(immutable, "🔒"),
+  concat(
+    "🍐",
+    surround(
+      "(",
+      ")",
+      separate(
+        " ",
+        change_id.shortest(8),
+        commit_id.shortest(8),
+        if(empty, label("empty", "(empty)")),
+        if(description,
+          concat("\"", description.first_line(), "\""),
+          label(if(empty, "empty"), description_placeholder),
+        ),
+        bookmarks.join(", "),
+        branches.join(", "),
+        if(conflict, "💥"),
+        if(divergent, "🚧"),
+        if(hidden, "👻"),
+        if(immutable, "🔒"),
+      )
     )
   )
 '
 '''
 when = true
-symbol = "🍐"
