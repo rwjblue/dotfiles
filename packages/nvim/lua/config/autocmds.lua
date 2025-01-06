@@ -62,12 +62,13 @@ local function updatePluginLockFile()
 end
 
 -- Create autocommands for LazyInstall and LazyUpdate events
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyInstall",
-  callback = updatePluginLockFile,
-})
-
-vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyUpdate",
-  callback = updatePluginLockFile,
-})
+-- TODO: bring this back if/when we have a better idea of what to do in Jujutsu
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "LazyInstall",
+--   callback = updatePluginLockFile,
+-- })
+--
+-- vim.api.nvim_create_autocmd("User", {
+--   pattern = "LazyUpdate",
+--   callback = updatePluginLockFile,
+-- })
