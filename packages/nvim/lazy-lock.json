@@ -53,7 +53,6 @@
   "render-markdown.nvim": { "branch": "main", "commit": "bab0663ecdb06b0ff846969764d6c67719ab0fcb" },
   "rustaceanvim": { "branch": "master", "commit": "10efd4d48fb241b2530062090dd84fd4f9717584" },
   "snacks.nvim": { "branch": "main", "commit": "14e89401da348f5d14509fca164fb7bcec83e597" },
-  "telescope-tmux.nvim": { "branch": "master", "commit": "cf857c1d28f6a5b0fd78ecb9d7c03fe95aa8eb3e" },
   "telescope.nvim": { "branch": "master", "commit": "2eca9ba22002184ac05eddbe47a7fe2d5a384dfc" },
   "todo-comments.nvim": { "branch": "main", "commit": "ae0a2afb47cf7395dc400e5dc4e05274bf4fb9e0" },
   "tokyonight.nvim": { "branch": "main", "commit": "7bb270adaa7692c2c33befc35f5567fc596a2504" },

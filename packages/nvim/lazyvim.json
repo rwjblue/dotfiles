@@ -21,8 +21,7 @@
     "lazyvim.plugins.extras.test.core",
     "lazyvim.plugins.extras.util.dot",
     "lazyvim.plugins.extras.util.mini-hipatterns",
-    "lazyvim.plugins.extras.util.octo",
-    "plugins.extras.tmux"
+    "lazyvim.plugins.extras.util.octo"
   ],
   "news": {
     "NEWS.md": "10960"
