@@ -1,3 +1,15 @@
+local function jujutsu_project(config)
+  return {
+    name = config.name,
+    path = config.path,
+    command = {
+      -- this looks odd, but $PWD always results in a trailing slash, so no
+      -- need to include a second one
+      'export GIT_DIR="$PWD.jj/repo/store/git"',
+    },
+  }
+end
+
 ---@type Config
 return {
   crate_locations = {
@@ -55,14 +67,18 @@ return {
       {
         name = "🍐Jujutsu",
         windows = {
-          {
+          jujutsu_project({
             name = "jj",
             path = "~/src/jj-vcs/jj/",
-          },
-          {
+          }),
+          jujutsu_project({
             name = "jj-gpc",
             path = "~/src/chriskrycho/jj-gpc/",
-          }
+          }),
+          jujutsu_project({
+            name = "jj-notes",
+            path = "~/src/rwjblue/jj-notes/",
+          }),
         }
       },
     }
