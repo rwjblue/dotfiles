@@ -2,10 +2,9 @@ return {
   {
     "saghen/blink.cmp",
     opts = {
-      -- experimental signature help support
-      trigger = {
-        signature_help = { enabled = true }
-      }
+      -- TODO: this enables experimental signature help support, but seems like
+      -- that duplicates signature help (at least with rustacean)
+      -- signature = { enabled = true }
     }
   },
 }
