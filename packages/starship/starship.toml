@@ -53,3 +53,4 @@ jj root --ignore-working-copy > /dev/null 2>&1 && jj log --no-graph --color alwa
 '
 '''
 when = true
+ignore_timeout = true
