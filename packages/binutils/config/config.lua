@@ -1,13 +1,30 @@
 local function jujutsu_project(config)
-  return {
-    name = config.name,
-    path = config.path,
-    command = {
-      -- this looks odd, but $PWD always results in a trailing slash, so no
-      -- need to include a second one
+  local result = {}
+  -- Copy all existing properties
+  for k, v in pairs(config) do
+    result[k] = v
+  end
+
+  -- Handle command property specially
+  if not config.command then
+    result.command = 'export GIT_DIR="$PWD.jj/repo/store/git"'
+  else
+    local commands = {
       'export GIT_DIR="$PWD.jj/repo/store/git"',
-    },
-  }
+    }
+
+    if type(config.command) == "string" then
+      table.insert(commands, config.command)
+    else
+      for _, cmd in ipairs(config.command) do
+        table.insert(commands, cmd)
+      end
+    end
+
+    result.command = commands
+  end
+
+  return result
 end
 
 ---@type Config
@@ -78,6 +95,7 @@ return {
           jujutsu_project({
             name = "jj-notes",
             path = "~/src/rwjblue/jj-notes/",
+            command = "nvim README.md"
           }),
         }
       },
