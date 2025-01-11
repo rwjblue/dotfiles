@@ -1,31 +1,4 @@
-local function jujutsu_project(config)
-  local result = {}
-  -- Copy all existing properties
-  for k, v in pairs(config) do
-    result[k] = v
-  end
-
-  -- Handle command property specially
-  if not config.command then
-    result.command = 'export GIT_DIR="$PWD.jj/repo/store/git"'
-  else
-    local commands = {
-      'export GIT_DIR="$PWD.jj/repo/store/git"',
-    }
-
-    if type(config.command) == "string" then
-      table.insert(commands, config.command)
-    else
-      for _, cmd in ipairs(config.command) do
-        table.insert(commands, cmd)
-      end
-    end
-
-    result.command = commands
-  end
-
-  return result
-end
+local utils = require("utils")
 
 ---@type Config
 return {
@@ -84,15 +57,15 @@ return {
       {
         name = "🍐Jujutsu",
         windows = {
-          jujutsu_project({
+          utils.jujutsu_project({
             name = "jj",
             path = "~/src/jj-vcs/jj/",
           }),
-          jujutsu_project({
+          utils.jujutsu_project({
             name = "jj-gpc",
             path = "~/src/chriskrycho/jj-gpc/",
           }),
-          jujutsu_project({
+          utils.jujutsu_project({
             name = "jj-notes",
             path = "~/src/rwjblue/jj-notes/",
             command = "nvim README.md"
