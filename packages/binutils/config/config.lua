@@ -59,15 +59,15 @@ return {
         windows = {
           utils.jujutsu_project({
             name = "jj",
-            path = "~/src/jj-vcs/jj/",
+            path = "~/src/jj-vcs/jj",
           }),
           utils.jujutsu_project({
             name = "jj-gpc",
-            path = "~/src/chriskrycho/jj-gpc/",
+            path = "~/src/chriskrycho/jj-gpc",
           }),
           utils.jujutsu_project({
             name = "jj-notes",
-            path = "~/src/rwjblue/jj-notes/",
+            path = "~/src/rwjblue/jj-notes",
             command = "nvim README.md"
           }),
         }
