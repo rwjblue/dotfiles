@@ -11,10 +11,10 @@ function M.jujutsu_project(config)
 
   -- Handle command property specially
   if not config.command then
-    result.command = 'export GIT_DIR="$PWD.jj/repo/store/git"'
+    result.command = 'export GIT_DIR="$PWD/.jj/repo/store/git"'
   else
     local commands = {
-      'export GIT_DIR="$PWD.jj/repo/store/git"',
+      'export GIT_DIR="$PWD/.jj/repo/store/git"',
     }
 
     if type(config.command) == "string" then
