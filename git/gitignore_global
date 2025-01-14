@@ -58,6 +58,9 @@ Thumbs.db
 .ackignore
 .agignore
 
+# LazyVim Local Config Overrides #
+.lazy.lua
+
 # Other version control systems #
 # ###############################
 .jj/
