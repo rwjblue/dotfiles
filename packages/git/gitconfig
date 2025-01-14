@@ -1,6 +1,6 @@
 [core]
   autocrlf = input
-  excludesfile = .gitignore_global
+  excludesfile = ~/.gitignore_global
   pager = delta
 [checkout]
   defaultRemote=origin
