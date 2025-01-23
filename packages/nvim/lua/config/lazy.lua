@@ -34,8 +34,7 @@ require("lazy").setup({
     non_rdev and { import = "lazyvim.plugins.extras.ai.copilot" } or nil,
 
     -- NOTE: some of the below plugins are mutually exclusive, you can only have one of them enabled at a time
-    -- non_rdev and { import = "plugins.extras.ai.avante" } or nil,
-    non_rdev and { import = "plugins.extras.ai.codecompanion" } or nil,
+    -- non_rdev and { import = "plugins.extras.ai.codecompanion" } or nil,
     -- non_rdev and { import = "lazyvim.plugins.extras.ai.copilot-chat" } or nil,
 
     -- import/override with your plugins

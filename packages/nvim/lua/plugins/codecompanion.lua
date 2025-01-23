@@ -1,15 +1,20 @@
--- this is meant to be the userland config for the codecompanion extra
--- that is still in PR stage:
---    https://github.com/LazyVim/LazyVim/pull/4268
---
 -- This will remain even after that PR lands
 return {
   {
     "olimorris/codecompanion.nvim",
-    optional = true,
-    opts = function()
+    cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
+
+    keys = {
+      { "<leader>a",  "",                                  desc = "+ai",        mode = { "n", "v" } },
+      { "<leader>aA", "<cmd>CodeCompanionActions<cr>",     mode = { "n", "v" }, desc = "Prompt Actions (CodeCompanion)" },
+      { "<leader>aa", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v" }, desc = "Toggle (CodeCompanion)" },
+      { "<leader>ac", "<cmd>CodeCompanionChat Add<cr>",    mode = "v",          desc = "Add code to CodeCompanion" },
+      { "<leader>ap", "<cmd>CodeCompanion<cr>",            mode = "n",          desc = "Inline prompt (CodeCompanion)" },
+    },
+
+    opts = {
       -- Adapter configurations
-      local adapters = {
+      adapters = {
         anthropic = function()
           return require("codecompanion.adapters").extend("anthropic", {
             env = { api_key = "AI_CLAUDE_API_KEY" },
@@ -27,17 +32,17 @@ return {
         copilot = {
           model = "claude-3.5-sonnet"
         },
-      }
+      },
 
       -- Strategy configurations
-      local strategies = {
+      strategies = {
         chat = { adapter = "anthropic" },
-        inline = { adapter = "copilot" },
+        inline = { adapter = "anthropic" },
         agent = { adapter = "anthropic" },
-      }
+      },
 
       -- Display configurations
-      local display = {
+      display = {
         chat = {
           -- window = {
           --   layout = "float",
@@ -46,13 +51,19 @@ return {
           --   height = 0.6,
           -- }
         }
-      }
+      },
+    },
+  },
 
-      return {
-        adapters = adapters,
-        strategies = strategies,
-        display = display,
-      }
-    end,
-  }
+  {
+    "saghen/blink.cmp",
+    optional = true,
+    opts = {
+      sources = {
+        per_filetype = {
+          codecompanion = { "codecompanion" },
+        }
+      },
+    }
+  },
 }
