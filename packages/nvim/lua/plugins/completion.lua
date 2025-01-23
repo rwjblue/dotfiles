@@ -5,6 +5,19 @@ return {
       -- TODO: this enables experimental signature help support, but seems like
       -- that duplicates signature help (at least with rustacean)
       -- signature = { enabled = true }
+      completion = {
+        list = {
+          selection = {
+            -- When navigating items with <c-n>, <c-p>, just show the ghost
+            -- text, don't actually insert changes until the selectdion is
+            -- accepted
+            auto_insert = false,
+          },
+        },
+        menu = { border = "single" },
+        documentation = { window = { border = "single" } },
+      },
+      signature = { window = { border = "single" } },
       sources = {
         providers = {
           snippets = {
