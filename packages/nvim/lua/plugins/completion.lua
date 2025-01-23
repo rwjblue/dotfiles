@@ -20,6 +20,10 @@ return {
       signature = { window = { border = "single" } },
       sources = {
         providers = {
+          lsp = {
+            score_offset = 50,
+          },
+
           snippets = {
             -- snippets should be a higher priority by default
             score_offset = 10,
