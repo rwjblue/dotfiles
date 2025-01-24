@@ -1,4 +1,3 @@
--- This will remain even after that PR lands
 return {
   {
     "olimorris/codecompanion.nvim",
