@@ -56,6 +56,7 @@ return {
       },
 
       prompt_library = {
+        -- Copied from https://github.com/olimorris/codecompanion.nvim/blob/v11.13.1/lua/codecompanion/config.lua#L782-L811 originally and modified to support jujutsu
         ["Generate a Commit Message"] = {
           strategy = "chat",
           description = "Generate a commit message",
