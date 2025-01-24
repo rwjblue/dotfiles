@@ -8,7 +8,7 @@ end
 
 vim.api.nvim_create_autocmd("FileType", {
   group = augroup("disable_session_persistence"),
-  pattern = { "gitcommit" },
+  pattern = { "gitcommit", "jj", "jjdescription" },
   callback = function()
     require("persistence").stop()
   end,
