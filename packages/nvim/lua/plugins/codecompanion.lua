@@ -185,14 +185,14 @@ return {
         end
       end
 
-      local default_opts = require("lualine").get_config()
       opts.sections = opts.sections or {}
       opts.sections.lualine_y = vim.list_extend(
-        default_opts.sections.lualine_y or {},
+        opts.sections.lualine_y or {},
         {
           { LualineCodeCompanionSpinner },
         }
       )
+
       return opts
     end,
   },
