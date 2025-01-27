@@ -5,3 +5,4 @@ shells/dist/
 binutils/config/local.config.lua
 local-dotfiles/
 wezterm/local_config_overrides.lua
+!.lazy.lua
