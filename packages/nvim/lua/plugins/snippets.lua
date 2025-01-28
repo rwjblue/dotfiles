@@ -77,7 +77,8 @@ return {
     "L3MON4D3/LuaSnip",
 
     -- ensure that the plugin is loaded if we open any `.snippets` files (enables syntax hihglighting)
-    event = { "BufRead *.snippets" },
+    ft = "snippets",
+
     config = function(_, opts)
       require("luasnip").setup(opts)
 
