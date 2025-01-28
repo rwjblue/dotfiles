@@ -82,9 +82,15 @@ return {
     config = function(_, opts)
       require("luasnip").setup(opts)
 
+      local snippet_paths = {
+        -- TODO: add support for "local-packages" snippets (e.g. snippets that
+        -- are not suitable for my public rwjblue/dotvim repo)
+        vim.fn.stdpath("config") .. "/snippets",
+      }
+
       -- automatically loads *.snippets files from the top level /snippets directory
-      require("luasnip.loaders.from_snipmate").lazy_load()
-      require("luasnip.loaders.from_lua").lazy_load()
+      require("luasnip.loaders.from_snipmate").lazy_load({ paths = snippet_paths })
+      require("luasnip.loaders.from_lua").lazy_load({ paths = snippet_paths })
     end,
   },
 }
