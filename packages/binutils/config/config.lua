@@ -26,22 +26,22 @@ return {
           {
             name = "dotvim",
             path = "~/src/rwjblue/dotvim",
-            command = "nvim"
+            -- command = "nvim"
           },
           {
             name = "dotfiles",
             path = "~/src/rwjblue/dotfiles",
-            command = "nvim"
+            -- command = "nvim"
           },
           {
             name = "binutils",
             path = "~/src/rwjblue/dotfiles/binutils",
-            command = "nvim"
+            -- command = "nvim"
           },
           {
             name = "shared_binutils",
             path = "~/src/malleatus/shared_binutils",
-            command = "nvim"
+            -- command = "nvim"
           },
         }
       },
@@ -68,7 +68,7 @@ return {
           utils.jujutsu_project({
             name = "jj-notes",
             path = "~/src/rwjblue/jj-notes",
-            command = "nvim README.md"
+            -- command = "nvim README.md"
           }),
         }
       },
