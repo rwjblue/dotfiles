@@ -3,7 +3,7 @@ local utils = require("utils")
 ---@type Config
 return {
   crate_locations = {
-    "~/src/rwjblue/dotfiles/binutils/crates/",
+    "~/src/rwjblue/dotfiles/binutils/",
     "~/src/malleatus/shared_binutils"
   },
   shell_caching = {
