@@ -14,11 +14,10 @@ fi
 echo "Building malleatus/shared_binutils"
 (cd "$HOME/src/malleatus/shared_binutils/" && cargo build)
 
-# Create local-dotfiles directory if it doesn't exist
-if [ ! -d "$DOTFILES/local-dotfiles/crates" ]; then
-  echo "Creating local-dotfiles directory"
-  mkdir -p "$DOTFILES/local-dotfiles/crates/"
-fi
+
+"$HOME/src/malleatus/shared_binutils/target/debug/setup-local-dotfiles" \
+  --local-dotfiles-path ~/src/workstuff/local-dotfiles \
+  --local-crates-target-path ~/src/rwjblue/dotfiles/binutils/local-crates
 
 echo "Building binutils"
 (cd "$DOTFILES/binutils" && cargo build)
