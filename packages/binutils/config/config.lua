@@ -34,6 +34,11 @@ return {
             -- command = "nvim"
           },
           {
+            name = "local-dotfiles",
+            path = "~/src/workstuff/local-dotfiles",
+            -- command = "nvim"
+          },
+          {
             name = "binutils",
             path = "~/src/rwjblue/dotfiles/binutils",
             -- command = "nvim"
