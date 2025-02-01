@@ -1,5 +1,26 @@
 local M = {}
 
+--- Determines the appropriate path for the lazy.nvim lockfile
+---
+--- If local config plugins exist (in local_config.plugins), the lockfile will
+--- be stored in local_config/lazy-lock.json Otherwise, it will be stored in
+--- the default location (lazy-lock.json).
+---
+--- @return string The full path to the lazy-lock.json file
+function M.get_lockfile_path()
+  local Util = require("lazy.util")
+  local mods = {}
+  Util.lsmod("local_config.plugins", function(modname, modpath)
+    mods[#mods + 1] = modname
+  end)
+
+  if #mods > 0 then
+    return vim.fn.stdpath("config") .. "/local_config/lazy-lock.json"
+  else
+    return vim.fn.stdpath("config") .. "/lazy-lock.json"
+  end
+end
+
 function M.get_diff()
   -- Check if we're in a jj repo by running `jj root`
   local jj_root = vim.fn.system("jj root 2>/dev/null")

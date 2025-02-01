@@ -26,7 +26,7 @@ local should_run_lazy_plugin_checks = not is_buffer_in_git_subdir()
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    { "LazyVim/LazyVim",              import = "lazyvim.plugins" },
     -- import any extras modules here
 
     -- disable AI related features when using rdev
@@ -39,6 +39,10 @@ require("lazy").setup({
 
     -- import/override with your plugins
     { import = "plugins" },
+
+    -- local_config.plugins is ilnked in from ~/src/workstuff/local-dotfiles/
+    -- for machine local plugin overrides
+    { import = "local_config.plugins" }
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -49,6 +53,13 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
+
+  -- By default lazy.nvim will write a lockfile to
+  -- ~/.config/nvim/lazy-lock.json, but if we have `local_config.plugins` we
+  -- want to write the lockfile to `~/.config/nvim/local_config/lazy-lock.json`
+  -- instead (so we don't fight with the "public" vs "private" lockfile).
+  lockfile = require('rwjblue').get_lockfile_path(),
+
   install = {
     missing = should_run_lazy_plugin_checks,
     colorscheme = { "tokyonight", "habamax" }

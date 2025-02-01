@@ -8,3 +8,8 @@ vim.opt.relativenumber = false
 -- :trust <file> to trust
 -- :trust ++deny/++remove <file>
 vim.opt.exrc = true
+
+-- NOTE: local_config is symlinked in from local-dotfiles to allow for local
+-- system specific customizations
+-- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
+require("local_config.config.options")
