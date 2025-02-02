@@ -24,8 +24,18 @@ return {
         openai = function()
           return require("codecompanion.adapters").extend("openai", {
             env = {
-              api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential' --reveal",
+              -- I'd rather use this, but it prompt's SOO MUCH
+              -- api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential' --reveal",
+              api_key = "AI_OPEN_AI_API_KEY",
             },
+            schema = {
+              model = {
+                -- NOTE: I don't have access to o3-mini in the API just yet,
+                -- keep checking status here (I'm current Tier 2):
+                -- https://help.openai.com/en/articles/10362446-api-access-to-o1-and-o3-mini
+                -- default = "o3-mini-2025-01-31"
+              }
+            }
           })
         end,
 
