@@ -16,7 +16,6 @@ end
 ---@return boolean
 local function is_git_related_filetype()
   local ft = vim.bo.filetype
-  return ft == 'gitcommit' or ft == 'jj' or ft == 'jjdescribe'
 end
 
 --- Don't attempt to install missing plugins or check for updates when making a commit
