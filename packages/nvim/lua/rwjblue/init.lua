@@ -1,5 +1,28 @@
 local M = {}
 
+---Check if the current buffer path is within a specific subdirectory
+---@param subdir string The subdirectory name to check for (e.g. ".git", "node_modules")
+---@return boolean True if the buffer path starts with or contains the subdirectory
+function M.is_buffer_in_subdir(subdir)
+  local buf_path = vim.fn.bufname('%')
+  -- Escape special pattern characters
+  local escaped_subdir = subdir:gsub('%.', '%%.')
+  -- Check if path starts with subdir/ or contains /subdir/
+  return (buf_path:match('^' .. escaped_subdir .. '/') ~= nil) or
+      (buf_path:match('/' .. escaped_subdir .. '/') ~= nil)
+end
+
+--- Checks if the current buffer has a commit related filetype
+---@return boolean
+local function is_git_related_filetype()
+  local ft = vim.bo.filetype
+  return ft == 'gitcommit' or ft == 'jj' or ft == 'jjdescribe'
+end
+
+--- Don't attempt to install missing plugins or check for updates when making a commit
+---@type boolean whether to run lazy plugin checks for the current buffer
+M.should_run_lazy_plugin_checks = not is_git_related_filetype()
+
 --- Determines the appropriate path for the lazy.nvim lockfile
 ---
 --- If local config plugins exist (in local_config.plugins), the lockfile will

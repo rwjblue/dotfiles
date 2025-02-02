@@ -14,14 +14,7 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 local non_rdev = not file_exists("/etc/rdev.conf")
 
-local function is_buffer_in_git_subdir()
-  local buf_path = vim.fn.bufname('%')
-  return (buf_path:match('^%.git/') ~= nil) or (buf_path:match('/%.git/') ~= nil)
-end
-
--- Don't attempt to install missing plugins or check for updates when editing a .git/ file, i.e.
--- when we're probably launched by git as part of a rebase or commit
-local should_run_lazy_plugin_checks = not is_buffer_in_git_subdir()
+local rwjblue = require('rwjblue')
 
 require("lazy").setup({
   spec = {
@@ -61,12 +54,12 @@ require("lazy").setup({
   lockfile = require('rwjblue').get_lockfile_path(),
 
   install = {
-    missing = should_run_lazy_plugin_checks,
+    missing = rwjblue.should_run_lazy_plugin_checks,
     colorscheme = { "tokyonight", "habamax" }
   },
   checker = {
-    enabled = should_run_lazy_plugin_checks, -- automatically check for plugin updates
-    frequency = 86400,                       -- check for updates once a day
+    enabled = rwjblue.should_run_lazy_plugin_checks, -- automatically check for plugin updates
+    frequency = 86400,                               -- check for updates once a day
   },
   performance = {
     rtp = {
