@@ -16,11 +16,27 @@ end
 ---@return boolean
 local function is_git_related_filetype()
   local ft = vim.bo.filetype
+  return ft == 'gitcommit' or ft == 'jj' or ft == 'jjdescription'
 end
 
 --- Don't attempt to install missing plugins or check for updates when making a commit
 ---@type boolean whether to run lazy plugin checks for the current buffer
 M.should_run_lazy_plugin_checks = not is_git_related_filetype()
+
+--- Check if modules exist in the specified path
+--- @param path string The module path to check
+--- @return boolean True if modules exist, false otherwise
+function M.has_modules(path)
+  local Util = require("lazy.util")
+  local mods = {}
+  Util.lsmod(path, function(modname)
+    mods[#mods + 1] = modname
+  end)
+  return #mods > 0
+end
+
+--- Cached check for local config plugins
+M.has_local_plugins = M.has_modules("local_config.plugins")
 
 --- Determines the appropriate path for the lazy.nvim lockfile
 ---
@@ -30,16 +46,12 @@ M.should_run_lazy_plugin_checks = not is_git_related_filetype()
 ---
 --- @return string The full path to the lazy-lock.json file
 function M.get_lockfile_path()
-  local Util = require("lazy.util")
-  local mods = {}
-  Util.lsmod("local_config.plugins", function(modname, modpath)
-    mods[#mods + 1] = modname
-  end)
+  local config_path = vim.fn.stdpath("config")
 
-  if #mods > 0 then
-    return vim.fn.stdpath("config") .. "/local_config/lazy-lock.json"
+  if M.has_local_plugins then
+    return config_path .. "/local_config/lazy-lock.json"
   else
-    return vim.fn.stdpath("config") .. "/lazy-lock.json"
+    return config_path .. "/lazy-lock.json"
   end
 end
 
@@ -83,6 +95,14 @@ function M.setup_auto_commit_for_lockfile()
     pattern = "LazyUpdate",
     callback = M.commit_lockfile,
   })
+end
+
+function M.maybe_add_plugin(bool, spec)
+  if bool then
+    return spec
+  else
+    return nil
+  end
 end
 
 return M

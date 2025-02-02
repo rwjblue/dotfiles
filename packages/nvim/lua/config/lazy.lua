@@ -19,23 +19,18 @@ local rwjblue = require('rwjblue')
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
-    { "LazyVim/LazyVim",              import = "lazyvim.plugins" },
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
 
     -- disable AI related features when using rdev
-    --
-    non_rdev and { import = "lazyvim.plugins.extras.ai.copilot" } or nil,
-
-    -- NOTE: some of the below plugins are mutually exclusive, you can only have one of them enabled at a time
-    -- non_rdev and { import = "plugins.extras.ai.codecompanion" } or nil,
-    -- non_rdev and { import = "lazyvim.plugins.extras.ai.copilot-chat" } or nil,
+    rwjblue.maybe_add_plugin(non_rdev, { import = "lazyvim.plugins.extras.ai.copilot" }),
 
     -- import/override with your plugins
     { import = "plugins" },
 
     -- local_config.plugins is ilnked in from ~/src/workstuff/local-dotfiles/
     -- for machine local plugin overrides
-    { import = "local_config.plugins" }
+    rwjblue.maybe_add_plugin(rwjblue.has_local_plugins, { import = "local_config.plugins" }),
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
