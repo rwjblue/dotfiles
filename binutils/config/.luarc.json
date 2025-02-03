@@ -1,0 +1,14 @@
+{
+  "runtime.path": [
+    ".",
+    "?.lua",
+    "?/init.lua"
+  ],
+  "workspace.library": [
+    ".",
+    "~/src/malleatus/shared_binutils/config"
+  ],
+  "diagnostics.globals": [
+    "vim"
+  ]
+}
