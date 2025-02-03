@@ -1,14 +1,6 @@
 {
-  "runtime.path": [
-    ".",
-    "?.lua",
-    "?/init.lua"
-  ],
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "workspace.library": [
-    ".",
     "~/src/malleatus/shared_binutils/config"
-  ],
-  "diagnostics.globals": [
-    "vim"
   ]
 }
