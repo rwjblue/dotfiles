@@ -12,10 +12,13 @@ function M.is_buffer_in_subdir(subdir)
       (buf_path:match('/' .. escaped_subdir .. '/') ~= nil)
 end
 
---- Checks if the current buffer has a commit related filetype
+--- Checks if the given buffer has a commit related filetype
+---@param bufnr? number the buffer number to check (defaults to current buffer)
 ---@return boolean
-local function is_git_related_filetype()
-  local ft = vim.bo.filetype
+local function is_git_related_filetype(bufnr)
+  bufnr = bufnr or 0
+  local ft = vim.bo[bufnr].filetype
+
   return ft == 'gitcommit' or ft == 'jj' or ft == 'jjdescription'
 end
 
@@ -56,8 +59,28 @@ function M.get_lockfile_path()
 end
 
 function M.get_diff()
+  -- Check if initial buffer is a commit-related buffer and try to extract diff from it
+  local initial_buffer = vim.fn.bufnr(1)
+  if initial_buffer ~= -1 and is_git_related_filetype(initial_buffer) then
+    local lines = vim.api.nvim_buf_get_lines(initial_buffer, 0, -1, false)
+    local filtered_lines = {}
+
+    for _, line in ipairs(lines) do
+      if not line:match("^JJ: ") then
+        table.insert(filtered_lines, line)
+      end
+    end
+    local buffer_content = table.concat(filtered_lines, '\n')
+
+    -- Look for the diff section which typically starts with "diff --git"
+    local diff_start = buffer_content:find("diff %-%-git")
+    if diff_start then
+      return buffer_content:sub(diff_start)
+    end
+  end
+
   -- Check if we're in a jj repo by running `jj root`
-  local jj_root = vim.fn.system("jj root 2>/dev/null")
+  vim.fn.system("jj root 2>/dev/null")
   local is_jj_repo = vim.v.shell_error == 0
 
   if is_jj_repo then
