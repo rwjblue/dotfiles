@@ -24,28 +24,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-local terminal_setup = augroup("terminal_setup")
-
-vim.api.nvim_create_autocmd({ "WinEnter", "BufWinEnter", "TermOpen" }, {
-  group = terminal_setup,
-  callback = function(args)
-    if vim.startswith(vim.api.nvim_buf_get_name(args.buf), "term://") then
-      vim.cmd("startinsert")
-    end
-  end,
-})
-
-vim.api.nvim_create_autocmd("TermOpen", {
-  group = terminal_setup,
-  callback = function()
-    local win_id = vim.api.nvim_get_current_win()
-    local win = vim.wo[win_id]
-
-    win.number = false
-    win.relativenumber = false
-  end,
-})
-
 -- NOTE: local_config is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
