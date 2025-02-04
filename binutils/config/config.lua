@@ -29,6 +29,11 @@ return {
             command = "nvim"
           },
           {
+            name = "dotvim",
+            path = "~/src/malleatus/common.nvim",
+            command = "nvim"
+          },
+          {
             name = "dotfiles",
             path = "~/src/rwjblue/dotfiles",
             command = "nvim"
