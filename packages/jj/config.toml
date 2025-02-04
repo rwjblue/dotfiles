@@ -24,6 +24,42 @@ private-commits = 'description(glob:"private:*")'
 # https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
 push-bookmark-prefix = "rwjblue/push-"
 
+[revset-aliases]
+
+# View the entire branch being worked on
+'slice()' = 'slice(@)'
+'slice(from)' = 'ancestors(reachable(from, mutable()), 2)'
+
+# All my commits that haven't landed yet. This is the workhorse.
+'open()' = 'open(mine())'
+'open(domain)' = 'domain ~ ::immutable_heads()'
+
+# All open remote branches
+'ropen()' = 'ancestors(::remote_bookmarks() ~ immutable(), 2)'
+
+# history leading up to the working copy, like git log
+'last()' = 'last(20)'
+'last(n)' = 'ancestors(@, n)'
+
+# view a revision's ancestry back to where it diverged from trunk()
+'stack()' = 'stack(@)'
+'stack(from)' = 'ancestors((immutable()..from) | from::, 2)'
+
+[aliases]
+
+# abbreviations
+b = ["bookmark"]
+sq = ["squash"]
+ws = ["workspace"]
+
+# viewing history
+open = ["log", "-r", "open(mine())"]
+ropen = ["log", "-r", "ropen()"]
+
+# bring a branch up to date with trunk()
+# works with `jj update` alone or with `-b REV`
+up = ["rebase", "--skip-emptied", "-d", "trunk()"]
+
 [templates]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#default-description
 draft_commit_description = '''
