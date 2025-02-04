@@ -10,6 +10,11 @@ email = "me@rwjblue.com"
 [--scope.user]
 email = "rjackson@linkedin.com"
 
+[core]
+# https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
+fsmonitor = "watchman"
+watchman.register_snapshot_trigger = true
+
 [ui]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#processing-contents-to-be-paged
 pager = "delta"
