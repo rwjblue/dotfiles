@@ -29,7 +29,7 @@ return {
             command = "nvim"
           },
           {
-            name = "dotvim",
+            name = "common.nvim",
             path = "~/src/malleatus/common.nvim",
             command = "nvim"
           },
