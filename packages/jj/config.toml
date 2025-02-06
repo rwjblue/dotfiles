@@ -12,6 +12,14 @@ email = "me@rwjblue.com"
 [--scope.user]
 email = "rjackson@linkedin.com"
 
+# Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
+[[--scope]]
+--when.repositories = ["~/src/rwjblue/dotfiles/", "~/src/rwjblue/dotvim"]
+
+[--scope.aliases]
+update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
+
+
 [core]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
 fsmonitor = "watchman"
