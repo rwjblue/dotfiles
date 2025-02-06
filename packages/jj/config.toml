@@ -1,3 +1,5 @@
+"$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
+
 [user]
 # Update to use conditional variables when this is released:
 # https://github.com/jj-vcs/jj/commit/f5d450d7c3a8f8a49e30aef0fd18d8295ffc8cb6
