@@ -38,6 +38,9 @@ format = "git"
 private-commits = 'description(glob:"private:*")'
 # https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
 push-bookmark-prefix = "rwjblue/push-"
+# This will become the default in a future version (it also fixes issues with using git@github.com remotes)
+# per https://github.com/jj-vcs/jj/releases/tag/v0.26.0
+subprocess = true
 
 [revset-aliases]
 
