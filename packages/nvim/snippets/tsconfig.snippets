@@ -1,0 +1,17 @@
+snippet tsconfig-node-stripping-types "tsconfig.json settings for Node 22+ leveraging stripped types"
+	{
+	  "compilerOptions": {
+	    "target": "ES2023",
+	    "module": "nodenext",
+	    "strict": true,
+	    "esModuleInterop": true,
+	    "erasableSyntaxOnly": true,
+	    "verbatimModuleSyntax": true,
+	    "isolatedDeclarations": true,
+	    "allowImportingTsExtensions": true,
+	    "rewriteRelativeImportExtensions": true,
+	    "declaration": true,
+	    "declarationMap": true,
+	    "noEmit": true,
+	  }
+	}
