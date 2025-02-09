@@ -14,7 +14,11 @@ email = "rjackson@linkedin.com"
 
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
---when.repositories = ["~/src/rwjblue/dotfiles/", "~/src/rwjblue/dotvim"]
+--when.repositories = [
+  "~/src/rwjblue/turbo-repo-example",
+  "~/src/rwjblue/dotfiles/",
+  "~/src/rwjblue/dotvim",
+]
 
 [--scope.aliases]
 update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
@@ -63,6 +67,8 @@ subprocess = true
 'stack()' = 'stack(@)'
 'stack(from)' = 'ancestors((immutable()..from) | from::, 2)'
 
+'private()' = 'description(glob:"private:*")'
+
 [aliases]
 
 # abbreviations
@@ -77,6 +83,9 @@ ropen = ["log", "-r", "ropen()"]
 # bring a branch up to date with trunk()
 # works with `jj update` alone or with `-b REV`
 up = ["rebase", "--skip-emptied", "-d", "trunk()"]
+
+# rebase any private commits onto trunk()
+rebase-private = ["rebase", "--skip-emptied", "-r", "private()", "-d", "@"]
 
 [templates]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#default-description
