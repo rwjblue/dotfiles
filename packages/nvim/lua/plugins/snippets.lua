@@ -48,7 +48,6 @@ vim.api.nvim_create_autocmd("FileType", {
 -- `extended_configs` table.
 local extended_configs = {
   { pattern = "Cargo.toml",                extend = "toml",          with = "cargo" },
-  { pattern = "*/tsconfig*.json",          extend = "json",          with = "tsconfig" },
   { pattern = "*/.github/workflows/*.yml", extend = "yaml",          with = "github-workflow" },
 
   -- Ensure `jj describe` also has access to `gitcommit.snippets`

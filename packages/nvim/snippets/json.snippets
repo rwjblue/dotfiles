@@ -1,6 +1,114 @@
-snippet schema:package.json "schema for package.json"
-	"$$schema": "https://json.schemastore.org/package.json",
+snippet schema:graphql-config "schema for .graphqlrc.json"
+	"$$schema": "https://unpkg.com/graphql-config@4.3.0/config-schema.json",
+
+snippet schema:prettier.json "schema for .prettierrc.json"
+	"$$schema": "https://json.schemastore.org/prettierrc.json",
 
 snippet schema:tsconfig "schema for tsconfig.json"
 	"$$schema": "https://json.schemastore.org/tsconfig.json",
+
+snippet tsconfig-node-stripping-types "tsconfig.json settings for Node 22+ leveraging stripped types"
+	{
+	  "compilerOptions": {
+	    "target": "ES2023",
+	    "module": "nodenext",
+	    "strict": true,
+	    "esModuleInterop": true,
+	    "erasableSyntaxOnly": true,
+	    "verbatimModuleSyntax": true,
+	    "isolatedDeclarations": true,
+	    "allowImportingTsExtensions": true,
+	    "rewriteRelativeImportExtensions": true,
+	    "declaration": true,
+	    "declarationMap": true,
+	    "noEmit": true,
+	  }
+	}
+
+snippet tsconfig-extends "tsconfig.json that extends a shared tsconfig.base.json"
+	{
+	  "extends": "../../tsconfig.base.json"
+	}
+
+snippet schema:package.json "schema for package.json"
+	"$$schema": "https://json.schemastore.org/package.json",
+
+snippet package.json:workspaces "setup workspaces"
+	  "workspaces": [
+	    "apps/*"
+	    "packages/*"
+	  ]
+
+snippet package.json:volta-extends "Creates a "volta" property with extends"
+	  "volta": {
+	    "extends": "../../package.json"
+	  }
+	
+snippet package.json:import "Setup an import map"
+	"imports": {
+	  "#root/*": "./*"
+ 	},
+
+snippet package.json:turbo-scripts "Setup `turbo` scripts section in monorepo root"
+	"scripts": {
+	  "build": "turbo run build",
+	  "dev": "turbo run dev",
+	  "lint": "turbo run lint",
+	  "test": "turbo run test"
+	  "test:watch": "turbo run test:watch"
+	},
+
+snippet package.json:turbo-repo-basic-root "Emit a package.json that is good as a turbo repo monorepo root"
+	{
+	  "$schema": "https://json.schemastore.org/package.json",
+	  "name": "my-turborepo",
+	  "private": true,
+	  "workspaces": [
+	    "apps/*",
+	    "packages/*"
+	  ],
+	  "scripts": {
+	    "build": "turbo build",
+	    "dev": "turbo dev",
+	    "format": "prettier . --cache --write",
+	    "lint": "turbo lint"
+	  },
+	  "devDependencies": {
+	    "@turbo/gen": "^2.4.0",
+	    "prettier": "^3.4.2",
+	    "turbo": "^2.4.0"
+	  },
+	  "packageManager": "npm@11.1.0",
+	  "volta": {
+	    "node": "23.7.0",
+	    "npm": "11.1.0"
+	  }
+	}
+
+snippet turbo.json:basic "Emit a basic turbo.json file"
+	{
+	  "$schema": "https://turbo.build/schema.json",
+	  "ui": "tui",
+	  "tasks": {
+	    "build": {
+	      "dependsOn": [
+	        "^build"
+	      ]
+	    },
+	    "lint": {
+	      "dependsOn": [
+	        "^lint"
+	      ]
+	    },
+	    "check-types": {
+	      "dependsOn": [
+	        "^check-types"
+	      ]
+	    },
+	    "dev": {
+	      "cache": false,
+	      "persistent": true
+	    }
+	  }
+	}
 
