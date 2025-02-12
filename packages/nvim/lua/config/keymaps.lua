@@ -32,13 +32,6 @@ map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 -- Enable exiting terminal mode with Esc
 map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
 
--- slightly modified https://github.com/LazyVim/LazyVim/blob/v14.8.0/lua/lazyvim/config/keymaps.lua#L174-L178
--- in order to use `c-/` to open terminal in cwd (the default is
--- `LazyVim.root()` which doesn't always behave how I expect)
-vim.keymap.set("n", "<c-/>", function() Snacks.terminal() end, { desc = "Terminal (cwd)" })
--- in certain terminal `<c-/>` is actually received by the terminal as `<c-_>`
-vim.keymap.set("n", "<c-_>", function() Snacks.terminal() end, { desc = "which_key_ignore" })
-
 -- remove the "move up" and "move down" keymaps added by LazyVim
 -- https://github.com/LazyVim/LazyVim/blob/879e29504d43e9f178d967ecc34d482f902e5a91/lua/lazyvim/config/keymaps.lua#L26-L32
 vim.keymap.del({ "n", "v", "i" }, "<a-j>")
