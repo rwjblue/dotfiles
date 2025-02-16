@@ -14,11 +14,7 @@ email = "rjackson@linkedin.com"
 
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
---when.repositories = [
-  "~/src/rwjblue/turbo-repo-example",
-  "~/src/rwjblue/dotfiles/",
-  "~/src/rwjblue/dotvim",
-]
+--when.repositories = ["~/src/rwjblue/"]
 
 [--scope.aliases]
 update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
