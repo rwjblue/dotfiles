@@ -63,7 +63,38 @@ return {
 
       -- Strategy configurations
       strategies = {
-        chat = { adapter = "anthropic" },
+        chat = {
+          adapter = "anthropic",
+
+          slash_commands = {
+            ["buffer"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["help"] = {
+              opts = {
+                provider = "snacks",
+                max_lines = 1000,
+              },
+            },
+            ["file"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["symbols"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+            ["workspace"] = {
+              opts = {
+                provider = "snacks",
+              },
+            },
+          },
+        },
         inline = { adapter = "anthropic" },
         agent = { adapter = "anthropic" },
       },
