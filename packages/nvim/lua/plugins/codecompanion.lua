@@ -1,4 +1,4 @@
-local prompt_library = require('rwjblue.codecompanion.prompts')
+local prompt_library = require("rwjblue.codecompanion.prompts")
 
 return {
   {
@@ -6,10 +6,15 @@ return {
     cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
 
     keys = {
-      { "<leader>a",  "",                                  desc = "+ai",        mode = { "n", "v" } },
-      { "<leader>aa", "<cmd>CodeCompanionActions<cr>",     mode = { "n", "v" }, desc = "Prompt Actions (CodeCompanion)" },
+      { "<leader>a", "", desc = "+ai", mode = { "n", "v" } },
+      {
+        "<leader>aa",
+        "<cmd>CodeCompanionActions<cr>",
+        mode = { "n", "v" },
+        desc = "Prompt Actions (CodeCompanion)",
+      },
       { "<leader>af", "<cmd>CodeCompanionChat Toggle<cr>", mode = { "n", "v" }, desc = "Toggle (CodeCompanion)" },
-      { "<leader>ac", "<cmd>CodeCompanionChat Add<cr>",    mode = "v",          desc = "Add code to CodeCompanion" },
+      { "<leader>ac", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add code to CodeCompanion" },
     },
 
     opts = {
@@ -34,8 +39,8 @@ return {
                 -- keep checking status here (I'm current Tier 2):
                 -- https://help.openai.com/en/articles/10362446-api-access-to-o1-and-o3-mini
                 -- default = "o3-mini-2025-01-31"
-              }
-            }
+              },
+            },
           })
         end,
 
@@ -60,11 +65,11 @@ return {
           --   width = 0.6,
           --   height = 0.6,
           -- }
-        }
+        },
       },
 
       prompt_library = prompt_library,
-    }
+    },
   },
 
   {
@@ -74,9 +79,9 @@ return {
       sources = {
         per_filetype = {
           codecompanion = { "codecompanion" },
-        }
+        },
       },
-    }
+    },
   },
 
   {
@@ -126,12 +131,9 @@ return {
       end
 
       opts.sections = opts.sections or {}
-      opts.sections.lualine_y = vim.list_extend(
-        opts.sections.lualine_y or {},
-        {
-          { LualineCodeCompanionSpinner },
-        }
-      )
+      opts.sections.lualine_y = vim.list_extend(opts.sections.lualine_y or {}, {
+        { LualineCodeCompanionSpinner },
+      })
 
       return opts
     end,
