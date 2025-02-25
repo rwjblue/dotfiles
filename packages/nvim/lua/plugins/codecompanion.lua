@@ -26,6 +26,12 @@ return {
           })
         end,
 
+        xai = function()
+          return require("codecompanion.adapters").extend("xai", {
+            env = { api_key = "AI_GROK_API_KEY" },
+          })
+        end,
+
         openai = function()
           return require("codecompanion.adapters").extend("openai", {
             env = {
