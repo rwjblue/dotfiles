@@ -18,8 +18,14 @@ return {
     },
 
     opts = {
+
       -- Adapter configurations
       adapters = {
+        opts = {
+          -- only show adapters that I've configured
+          show_defaults = false,
+        },
+
         anthropic = function()
           return require("codecompanion.adapters").extend("anthropic", {
             env = { api_key = "AI_CLAUDE_API_KEY" },
