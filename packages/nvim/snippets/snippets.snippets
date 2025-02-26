@@ -1,0 +1,10 @@
+# see https://github.com/honza/vim-snippets/tree/master/snippets
+# see https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#snipmate
+# see https://github.com/garbas/vim-snipmate/blob/525f331320427bf7aeb07651e2536b1f8a23df03/doc/SnipMate.txt#L310-L513
+snippet snip
+	snippet ${1:trigger} "${2:description}"
+		${0:${VISUAL}}
+snippet v
+	{VISUAL}
+snippet $
+	${${1:1}:${0:text}}

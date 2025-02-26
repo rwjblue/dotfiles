@@ -1,0 +1,13 @@
+snippet tests "tests module for unit tests"
+	#[cfg(test)]
+	mod tests {
+			use super::*;
+
+			#[test]
+			fn it_works() {
+					assert_eq!(1, 1, "Pretty sure 1==1")
+			}
+	}
+
+snippet tracing-init "Setup `tracing` and `tracing_subscriber` crates"
+	tracing_subscriber::fmt::init();
