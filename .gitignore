@@ -1,0 +1,8 @@
+.cargo/
+target/
+packages/shells/dist/
+packages/binutils/config/local.config.lua
+packages/binutils/local-crates
+local-dotfiles/
+packages/wezterm/local_config_overrides.lua
+!.lazy.lua

@@ -73,49 +73,50 @@ copy-dotfile() {
 }
 
 setup-config() {
-  link-dotfile "starship/starship.toml" "$HOME/.config/starship.toml"
+  link-dotfile "packages/nvim" "$HOME/.config/nvim"
+  link-dotfile "packages/starship/starship.toml" "$HOME/.config/starship.toml"
 
   mkdir -p ~/bin
 
-  link-dotfile "shells/dist/bash/bashrc" "$HOME/.bashrc"
+  link-dotfile "packages/shells/dist/bash/bashrc" "$HOME/.bashrc"
 
-  link-dotfile "shells/dist/zsh/" "$HOME/.zsh"
-  link-dotfile "shells/dist/fish/" "$HOME/.config/fish"
-  link-dotfile "shells/dist/zsh/zshenv" "$HOME/.zshenv"
-  link-dotfile "shells/dist/zsh/zprofile" "$HOME/.zprofile"
-  link-dotfile "shells/dist/zsh/zshrc" "$HOME/.zshrc"
-  copy-dotfile "shells/dist/zsh/zshrc.local" "$HOME/.zshrc.local"
-  link-dotfile "atuin" "$HOME/.config/atuin"
+  link-dotfile "packages/shells/dist/zsh/" "$HOME/.zsh"
+  link-dotfile "packages/shells/dist/fish/" "$HOME/.config/fish"
+  link-dotfile "packages/shells/dist/zsh/zshenv" "$HOME/.zshenv"
+  link-dotfile "packages/shells/dist/zsh/zprofile" "$HOME/.zprofile"
+  link-dotfile "packages/shells/dist/zsh/zshrc" "$HOME/.zshrc"
+  copy-dotfile "packages/shells/dist/zsh/zshrc.local" "$HOME/.zshrc.local"
+  link-dotfile "packages/atuin" "$HOME/.config/atuin"
 
-  link-dotfile "git/gitconfig" "$HOME/.gitconfig"
-  link-dotfile "git/gitignore_global" "$HOME/.gitignore_global"
-  copy-dotfile "git/gitconfig.local" "$HOME/.gitconfig.local"
-  link-dotfile "gh/config.yml" "$HOME/.config/gh/config.yml"
+  link-dotfile "packages/git/gitconfig" "$HOME/.gitconfig"
+  link-dotfile "packages/git/gitignore_global" "$HOME/.gitignore_global"
+  copy-dotfile "packages/git/gitconfig.local" "$HOME/.gitconfig.local"
+  link-dotfile "packages/gh/config.yml" "$HOME/.config/gh/config.yml"
 
-  link-dotfile "tmux/tmux.conf" "$HOME/.tmux.conf"
-  copy-dotfile "tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
+  link-dotfile "packages/tmux/tmux.conf" "$HOME/.tmux.conf"
+  copy-dotfile "packages/tmux/tmux.local.conf" "$HOME/.tmux.local.conf"
 
-  link-dotfile "cargo/config.toml" "$HOME/.cargo/config.toml"
+  link-dotfile "packages/cargo/config.toml" "$HOME/.cargo/config.toml"
 
-  link-dotfile "binutils/config/" "$HOME/.config/binutils"
-  link-dotfile "wezterm/" "$HOME/.config/wezterm"
-  link-dotfile "ghostty/" "$HOME/.config/ghostty"
+  link-dotfile "packages/binutils/config/" "$HOME/.config/binutils"
+  link-dotfile "packages/wezterm/" "$HOME/.config/wezterm"
+  link-dotfile "packages/ghostty/" "$HOME/.config/ghostty"
 
   if [[ "$OSTYPE" == darwin* ]]; then
-    link-dotfile "vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
-    link-dotfile "vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
-    link-dotfile "vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
-    link-dotfile "tealdeer/config.toml" "$HOME/Library/Application Support/tealdeer/config.toml"
-    link-dotfile "jj/" "$HOME/Library/Application Support/jj"
+    link-dotfile "packages/vscode/settings.json" "$HOME/Library/Application Support/Code/User/settings.json"
+    link-dotfile "packages/vscode/keybindings.json" "$HOME/Library/Application Support/Code/User/keybindings.json"
+    link-dotfile "packages/vscode/snippets" "$HOME/Library/Application Support/Code/User/snippets"
+    link-dotfile "packages/tealdeer/config.toml" "$HOME/Library/Application Support/tealdeer/config.toml"
+    link-dotfile "packages/jj/" "$HOME/Library/Application Support/jj"
   else
-    link-dotfile "jj/" "$HOME/.config/jj"
+    link-dotfile "packages/jj/" "$HOME/.config/jj"
   fi
 
   if [ ! -d ~/.ssh ]; then
     echo "Creating .ssh dir"
     mkdir $HOME/.ssh
   fi
-  link-dotfile "ssh/rc" "$HOME/.ssh/rc"
+  link-dotfile "packages/ssh/rc" "$HOME/.ssh/rc"
 }
 
 install-requirements() {
@@ -139,9 +140,11 @@ install-requirements() {
   fi
 
   echo "Updating rustup"
+  # TODO: add some sort of caching, we only really want to run this at most once a week
   rustup self update
 
   echo "Updating rust stable"
+  # TODO: add some sort of caching, we only really want to run this at most once a week
   rustup update stable
 
   if ! which cargo-binstall > /dev/null 2>&1; then
