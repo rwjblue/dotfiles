@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+tasks:
+  install:
+    desc: Install dotfiles
+    summary: |
+      Install dotfiles
+
+      This task will install and configure all dotfiles.
+    cmds:
+      - echo "Whoops, dotfiles installation not implemented yet!"
+      - task: print:done
+
+  sync:
+    desc: Synchronize dotfiles
+    summary: |
+      Synchronize dotfiles
+
+      Use this task to update your dotfiles configuration.
+    cmds:
+      - echo "Whoops, dotfiles synchronization not implemented yet!"
+      - task: print:done
+
+  print:done:
+    desc: Prints done with a cool font and some nice gradients (animated)
+    internal: true
+    cmd: echo DONE | figlet | lolcrab -a --speed 1 --duration 1 --gradient warm
+    silent: true
