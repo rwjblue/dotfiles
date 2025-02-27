@@ -5,6 +5,9 @@ includes:
   dot:
     taskfile: ./taskfiles/dotfiles.yml
 
+  nvim:
+    taskfile: ./taskfiles/nvim.yml
+
 tasks:
   default:
     cmd: task -l

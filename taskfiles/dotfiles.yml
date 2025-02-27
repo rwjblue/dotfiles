@@ -8,6 +8,9 @@ vars:
   FORCE:
     sh: if [ "${FORCE:-false}" = "true" ] || [ -f /etc/rdev.conf ]; then echo "true"; else echo "false"; fi
 
+includes:
+  nvim:
+    taskfile: ./nvim.yml
 tasks:
   link_dotfile:
     internal: true
@@ -80,6 +83,7 @@ tasks:
       - task: install:requirements
       - task: build:binutils
       - task: setup:config
+      - task: nvim:restore
       - task: print:done
 
   sync:
@@ -99,7 +103,6 @@ tasks:
       - task: utils:ensure_dirs
       - task: utils:link_dotfiles
       - task: utils:copy_dotfiles
-      - task: setup:dotvim
 
   utils:ensure_dirs:
     internal: true
@@ -354,21 +357,6 @@ tasks:
       - echo "Installing fzf"
       - git clone https://github.com/junegunn/fzf.git $HOME/.fzf
       - $HOME/.fzf/install --bin
-
-  setup:dotvim:
-    internal: true
-    vars:
-      DOTVIM_PATH: $HOME/src/rwjblue/dotvim
-    status:
-      - test -L $HOME/.config/nvim && test "$(readlink $HOME/.config/nvim)" = "{{.DOTVIM_PATH}}"
-    cmds:
-      - echo "Setting up dotvim"
-      - rm -rf $HOME/.config/nvim
-      - mkdir -p $(dirname {{.DOTVIM_PATH}})
-      - git clone https://github.com/rwjblue/dotvim.git {{.DOTVIM_PATH}}
-      - ln -s {{.DOTVIM_PATH}} $HOME/.config/nvim
-      - echo "Installing deps"
-      - nvim --headless '+Lazy! restore' '+TSUpdate' '+qa'
 
   build:binutils:
     desc: Build binutils
