@@ -7,6 +7,11 @@ vars:
   # Get FORCE from environment or default to false
   FORCE: '{{env "FORCE"}}'
 
+includes:
+  binutils:
+    taskfile: ./binutils.yml
+    internal: true
+
 tasks:
   link_dotfile:
     internal: true
@@ -94,9 +99,9 @@ tasks:
     internal: true
     cmds:
       - task: utils:ensure_dirs
-      - task: cache-shell-startup
       - task: utils:link_dotfiles
       - task: utils:copy_dotfiles
+      - task: binutils:cache-shell-startup
 
   utils:ensure_dirs:
     internal: true
@@ -191,10 +196,3 @@ tasks:
           SRC: '{{splitList "|" .DOTFILE | first}}'
           DEST: '{{splitList "|" .DOTFILE | last}}'
           FORCE: "false"
-
-  cache-shell-startup:
-    desc: Run `cache-shell-startup`
-    internal: true
-    cmds:
-      - echo "Cache shell setup"
-      - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"

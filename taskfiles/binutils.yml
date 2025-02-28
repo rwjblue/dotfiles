@@ -74,3 +74,9 @@ tasks:
     cmds:
       - echo "setting up binutils symlinks"
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
+
+  cache-shell-startup:
+    desc: Run `cache-shell-startup`
+    cmds:
+      - echo "Cache shell setup"
+      - "{{.SHARED_BINUTILS_PATH}}/target/debug/cache-shell-startup --config-file='{{.DOTFILES}}/packages/binutils/config/config.lua'"
