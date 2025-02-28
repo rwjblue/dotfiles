@@ -24,28 +24,13 @@ return {
 				name = "dotfiles",
 				windows = {
 					{
-						name = "dotvim",
-						path = "~/src/rwjblue/dotvim",
-						command = "nvim",
-					},
-					{
-						name = "common nvim",
-						path = "~/src/malleatus/common.nvim",
-						command = "nvim",
-					},
-					{
 						name = "dotfiles",
 						path = "~/src/rwjblue/dotfiles",
 						command = "nvim",
 					},
 					{
-						name = "local-dotfiles",
-						path = "~/src/workstuff/local-dotfiles",
-						command = "nvim",
-					},
-					{
-						name = "binutils",
-						path = "~/src/rwjblue/dotfiles/binutils",
+						name = "common nvim",
+						path = "~/src/malleatus/common.nvim",
 						command = "nvim",
 					},
 					{
