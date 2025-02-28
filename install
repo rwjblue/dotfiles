@@ -7,3 +7,5 @@ if [[ ! -f ~/.local/bin/task ]]; then
 fi
 
 export PATH="$PATH:$HOME/.local/bin"
+
+task install
