@@ -15,6 +15,7 @@ tasks:
     summary: |
       Restores Neovim plugins to the state specified in lazy-lock.json
     cmds:
+      # TODO: bring back `+MasonUpdateAll` once we can add https://github.com/Zeioth/mason-extra-cmds to nvim
       - |
         nvim --headless \
           +verbose \
@@ -22,7 +23,6 @@ tasks:
           +'Lazy! clean' \
           +'Lazy! clear' \
           +'TSUpdateSync' \
-          +'MasonUpdateAll' \
           +'qall!'
 
   update:
