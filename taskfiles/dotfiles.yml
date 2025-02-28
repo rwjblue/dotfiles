@@ -12,6 +12,9 @@ includes:
   nvim:
     taskfile: ./nvim.yml
 
+  binutils:
+    taskfile: ./binutils.yml
+
 tasks:
   link_dotfile:
     internal: true
@@ -345,7 +348,7 @@ tasks:
     desc: Build binutils
     internal: true
     cmds:
-      - "{{.DOTFILES_DIR}}/scripts/build-binutils.zsh"
+      - task: binutils:install
       - echo "Cache shell setup"
       - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"
 

@@ -1,0 +1,69 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+vars:
+  DOTFILES: "{{.ROOT_DIR}}"
+  SHARED_BINUTILS_PATH: "{{.HOME}}/src/malleatus/shared_binutils"
+  LOCAL_DOTFILES_PATH: "{{.DOTFILES}}/local-packages"
+  LOCAL_CRATES_TARGET_PATH: "{{.DOTFILES}}/binutils/local-crates"
+
+tasks:
+  install:
+    desc: Build binutils and set up symlinks
+    cmds:
+      - task: clone-shared-binutils
+      - task: build-shared-binutils
+      - task: setup-local-dotfiles
+      - task: build-binutils
+      - task: setup-symlinks
+
+  clone-shared-binutils:
+    desc: Clone the shared_binutils repository if it doesn't exist
+    status:
+      - test -d "{{.SHARED_BINUTILS_PATH}}"
+    cmds:
+      - echo "Cloning malleatus/shared_binutils repository"
+      - git clone https://github.com/malleatus/shared_binutils.git "{{.SHARED_BINUTILS_PATH}}"
+
+  build-shared-binutils:
+    desc: Build the shared_binutils project
+    dir: "{{.SHARED_BINUTILS_PATH}}"
+    sources:
+      - "{{.SHARED_BINUTILS_PATH}}/src/**/*.rs"
+      - "{{.SHARED_BINUTILS_PATH}}/Cargo.toml"
+      - "{{.SHARED_BINUTILS_PATH}}/Cargo.lock"
+    generates:
+      - "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles"
+      - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
+    cmds:
+      - echo "Building malleatus/shared_binutils"
+      - cargo build
+
+  setup-local-dotfiles:
+    desc: Set up local dotfiles using shared_binutils
+    deps: [build-shared-binutils]
+    cmds:
+      - |
+        "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles" \
+          --local-dotfiles-path "{{.LOCAL_DOTFILES_PATH}}" \
+          --local-crates-target-path "{{.LOCAL_CRATES_TARGET_PATH}}"
+
+  build-binutils:
+    desc: Build the binutils project
+    dir: "{{.DOTFILES}}/binutils"
+    sources:
+      - "{{.DOTFILES}}/binutils/src/**/*.rs"
+      - "{{.DOTFILES}}/binutils/Cargo.toml"
+      - "{{.DOTFILES}}/binutils/Cargo.lock"
+    generates:
+      - "{{.DOTFILES}}/binutils/target/debug/*"
+    cmds:
+      - echo "Building binutils"
+      - cargo build
+
+  setup-symlinks:
+    desc: Set up binutils symlinks
+    deps: [build-shared-binutils]
+    cmds:
+      - echo "setting up binutils symlinks"
+      - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
