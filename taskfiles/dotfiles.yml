@@ -8,13 +8,6 @@ vars:
   FORCE:
     sh: if [ "${FORCE:-false}" = "true" ] || [ -f /etc/rdev.conf ]; then echo "true"; else echo "false"; fi
 
-includes:
-  nvim:
-    taskfile: ./nvim.yml
-
-  binutils:
-    taskfile: ./binutils.yml
-
 tasks:
   link_dotfile:
     internal: true
@@ -84,10 +77,7 @@ tasks:
 
       This task will install and configure all dotfiles.
     cmds:
-      - task: install:requirements
-      - task: build:binutils
       - task: setup:config
-      - task: nvim:restore
       - task: print:done
 
   sync:
@@ -205,150 +195,10 @@ tasks:
           DEST: '{{splitList "|" .DOTFILE | last}}'
           FORCE: "{{.FORCE_LOCAL}}"
 
-  install:requirements:
-    desc: Install required tools and dependencies
+  cache-shell-startup:
+    desc: Run `cache-shell-startup`
     internal: true
     cmds:
-      - task: install:volta
-      - task: install:rust
-      - task: install:cargo_tools
-      - task: install:platform_tools
-
-  install:volta:
-    internal: true
-    status:
-      - which volta
-    cmds:
-      - echo "Installing volta"
-      - curl https://get.volta.sh | bash
-      - $HOME/.volta/volta install node
-      - $HOME/.volta/volta install yarn
-
-  install:rust:
-    internal: true
-    status:
-      - which rustup
-    cmds:
-      - echo "Installing rustup"
-      - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - source $HOME/.cargo/env
-      - rustup self update
-      - rustup update stable
-
-  install:cargo_tools:
-    internal: true
-    deps: [install:cargo_binstall]
-    cmds:
-      - for: [cargo-nextest, cargo-insta]
-        task: install:cargo_tool
-        vars: { TOOL: "{{.ITEM}}" }
-
-  install:cargo_tool:
-    internal: true
-    vars:
-      TOOL: "{{.TOOL}}"
-    status:
-      - which {{.TOOL}}
-    cmds:
-      - echo "Installing {{.TOOL}}"
-      - cargo binstall --locked --no-confirm {{.TOOL}}
-
-  install:cargo_binstall:
-    internal: true
-    status:
-      - which cargo-binstall
-    cmds:
-      - echo "Installing cargo-binstall"
-      - curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-
-  install:platform_tools:
-    internal: true
-    cmds:
-      - task: install:macos_tools
-      - task: install:linux_tools
-
-  install:macos_tools:
-    internal: true
-    platforms: [darwin]
-    cmds:
-      - task: install:homebrew
-      - brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd jj fish ast-grep zig go
-      - brew install --cask wezterm ghostty
-
-  install:homebrew:
-    internal: true
-    status:
-      - which brew
-    cmds:
-      - echo "Installing Homebrew"
-      - /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-
-  install:linux_tools:
-    internal: true
-    platforms: [linux]
-    cmds:
-      - task: install:rdev_specific
-      - task: install:linux_starship
-      - task: install:linux_binstall_tools
-      - task: install:linux_fzf
-
-  install:rdev_specific:
-    status:
-      - test -f /etc/rdev.conf
-    internal: true
-    cmds:
-      - "{{.DOTFILES_DIR}}/scripts/handle-older-git.zsh"
-      - "{{.DOTFILES_DIR}}/scripts/setup-rdev-nvim.zsh"
-
-  install:linux_starship:
-    internal: true
-    status:
-      - which starship
-    cmds:
-      - echo "Installing starship"
-      - curl -sS https://starship.rs/install.sh | sh -s -- --force
-
-  install:linux_zoxide:
-    internal: true
-    status:
-      - which zoxide
-    cmds:
-      - echo "Installing zoxide"
-      - curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
-
-  install:linux_binstall_tools:
-    internal: true
-    cmds:
-      - for: [eza, bat, git-delta, sd]
-        task: install:linux_binstall_tool
-        vars: { TOOL: "{{.ITEM}}" }
-
-  install:linux_binstall_tool:
-    internal: true
-    vars:
-      TOOL: "{{.TOOL}}"
-      BINARY: '{{if eq .TOOL "git-delta"}}delta{{else}}{{.TOOL}}{{end}}'
-    status:
-      - which {{.BINARY}}
-    cmds:
-      - echo "Installing {{.TOOL}}"
-      - cargo binstall --locked --no-confirm {{.TOOL}}
-
-  install:linux_fzf:
-    internal: true
-    dir: $HOME
-    status:
-      - test -d $HOME/.fzf
-    cmds:
-      - echo "Installing fzf"
-      - git clone https://github.com/junegunn/fzf.git $HOME/.fzf
-      - $HOME/.fzf/install --bin
-
-  build:binutils:
-    desc: Build binutils
-    internal: true
-    cmds:
-      - task: binutils:install
       - echo "Cache shell setup"
       - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"
 
