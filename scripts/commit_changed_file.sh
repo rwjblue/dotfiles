@@ -49,7 +49,7 @@ commit_changes() {
 }
 
 # Determine which VCS to use
-if jj root &>/dev/null; then
+if command -v jj &>/dev/null && jj root &>/dev/null; then
   VCS="jj"
 else
   VCS="git"
