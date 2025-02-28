@@ -5,16 +5,15 @@ vars:
   DOTFILES_DIR:
     sh: pwd
   # Get FORCE from environment or default to false
-  FORCE:
-    sh: if [ "${FORCE:-false}" = "true" ] || [ -f /etc/rdev.conf ]; then echo "true"; else echo "false"; fi
+  FORCE: '{{env "FORCE"}}'
 
 tasks:
   link_dotfile:
     internal: true
+    silent: true
     vars:
       SRC: "{{.SRC}}"
       DEST: "{{.DEST}}"
-      FORCE: '{{.FORCE | default .FORCE | default "false"}}'
     cmds:
       - |
         SRC_PATH="{{.DOTFILES_DIR}}/{{.SRC}}"
@@ -45,10 +44,10 @@ tasks:
 
   copy_dotfile:
     internal: true
+    silent: true
     vars:
       SRC: "{{.SRC}}"
       DEST: "{{.DEST}}"
-      FORCE: '{{.FORCE | default .FORCE | default "false"}}'
     cmds:
       - |
         SRC_PATH="{{.DOTFILES_DIR}}/{{.SRC}}"
@@ -78,7 +77,7 @@ tasks:
       This task will install and configure all dotfiles.
     cmds:
       - task: setup:config
-      - task: print:done
+      - echo 'DONE'
 
   sync:
     desc: Synchronize dotfiles
@@ -88,13 +87,14 @@ tasks:
       Use this task to update your dotfiles configuration.
     cmds:
       - task: setup:config
-      - task: print:done
+      - echo 'DONE'
 
   setup:config:
     desc: Setup configuration files
     internal: true
     cmds:
       - task: utils:ensure_dirs
+      - task: cache-shell-startup
       - task: utils:link_dotfiles
       - task: utils:copy_dotfiles
 
@@ -159,7 +159,6 @@ tasks:
         vars:
           SRC: '{{splitList "|" .DOTFILE | first}}'
           DEST: '{{splitList "|" .DOTFILE | last}}'
-          FORCE: "{{.FORCE}}"
 
   utils:link_linux_dotfiles:
     internal: true
@@ -175,12 +174,10 @@ tasks:
         vars:
           SRC: '{{splitList "|" .DOTFILE | first}}'
           DEST: '{{splitList "|" .DOTFILE | last}}'
-          FORCE: "{{.FORCE}}"
 
   utils:copy_dotfiles:
     internal: true
     vars:
-      FORCE_LOCAL: "false"
       COPY_DOTFILES:
         - "packages/shells/dist/zsh/zshrc.local|$HOME/.zshrc.local"
         - "packages/git/gitconfig.local|$HOME/.gitconfig.local"
@@ -193,7 +190,7 @@ tasks:
         vars:
           SRC: '{{splitList "|" .DOTFILE | first}}'
           DEST: '{{splitList "|" .DOTFILE | last}}'
-          FORCE: "{{.FORCE_LOCAL}}"
+          FORCE: "false"
 
   cache-shell-startup:
     desc: Run `cache-shell-startup`
@@ -201,9 +198,3 @@ tasks:
     cmds:
       - echo "Cache shell setup"
       - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"
-
-  print:done:
-    desc: Prints done with a cool font and some nice gradients (animated)
-    internal: true
-    cmd: echo DONE | figlet | lolcrab -a --speed 1 --duration 1 --gradient warm
-    silent: true
