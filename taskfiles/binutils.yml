@@ -3,9 +3,9 @@ version: 3
 
 vars:
   DOTFILES: "{{.ROOT_DIR}}"
-  SHARED_BINUTILS_PATH: "{{.HOME}}/src/malleatus/shared_binutils"
+  SHARED_BINUTILS_PATH: '{{env "HOME"}}/src/malleatus/shared_binutils'
   LOCAL_DOTFILES_PATH: "{{.DOTFILES}}/local-packages"
-  LOCAL_CRATES_TARGET_PATH: "{{.DOTFILES}}/binutils/local-crates"
+  LOCAL_CRATES_TARGET_PATH: "{{.DOTFILES}}/packages/binutils/local-crates"
 
 tasks:
   install:
@@ -29,7 +29,9 @@ tasks:
   build-shared-binutils:
     internal: true
     desc: Build the shared_binutils project
-    dir: "{{.SHARED_BINUTILS_PATH}}"
+    # NOTE: the leading slash here is a bit annoying, but required due to a bug
+    # in go-task see https://github.com/go-task/task/issues/828
+    dir: "/{{.SHARED_BINUTILS_PATH}}"
     sources:
       - "{{.SHARED_BINUTILS_PATH}}/src/**/*.rs"
       - "{{.SHARED_BINUTILS_PATH}}/Cargo.toml"
@@ -54,7 +56,7 @@ tasks:
   build-binutils:
     internal: true
     desc: Build the binutils project
-    dir: "{{.DOTFILES}}/binutils"
+    dir: "packages/binutils"
     sources:
       - "{{.DOTFILES}}/binutils/src/**/*.rs"
       - "{{.DOTFILES}}/binutils/Cargo.toml"

@@ -11,6 +11,9 @@ includes:
   system:
     taskfile: ./taskfiles/system.yml
 
+  binutils:
+    taskfile: ./taskfiles/binutils.yml
+
 tasks:
   default:
     cmd: task -l
@@ -26,6 +29,6 @@ tasks:
       4. Restoring Neovim plugins to the state specified in lazy-lock.json
     cmds:
       - task: system:install
-      - task: build:binutils
+      - task: binutils:install
       - task: dot:install
       - task: nvim:restore

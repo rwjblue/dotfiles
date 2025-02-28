@@ -15,9 +15,9 @@ toml = "0.8.19"
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
 walkdir = "2.5.0"
-latest_bin = { path = "../../../malleatus/shared_binutils/latest_bin" }
-test_utils = { path = "../../../malleatus/shared_binutils/test_utils" }
-fixturify = { path = "../../../malleatus/shared_binutils/fixturify" }
+latest_bin = { path = "../../../../malleatus/shared_binutils/latest_bin" }
+test_utils = { path = "../../../../malleatus/shared_binutils/test_utils" }
+fixturify = { path = "../../../../malleatus/shared_binutils/fixturify" }
 
 [profile.dev.package]
 insta.opt-level = 3
