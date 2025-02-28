@@ -1,0 +1,200 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+vars:
+  DOTFILES_DIR:
+    sh: pwd
+  # Get FORCE from environment or default to false
+  FORCE: '{{env "FORCE"}}'
+
+tasks:
+  link_dotfile:
+    internal: true
+    silent: true
+    vars:
+      SRC: "{{.SRC}}"
+      DEST: "{{.DEST}}"
+    cmds:
+      - |
+        SRC_PATH="{{.DOTFILES_DIR}}/{{.SRC}}"
+        DEST_PATH="{{.DEST}}"
+
+        # Create parent directory if it doesn't exist
+        mkdir -p "$(dirname "$DEST_PATH")"
+
+        # If FORCE is true, remove the target
+        if [ "{{.FORCE}}" = "true" ]; then
+          rm -rf "$DEST_PATH"
+        fi
+
+        # Check if target already exists
+        if [ -e "$DEST_PATH" ]; then
+          if [ -L "$DEST_PATH" ]; then
+            current=$(readlink "$DEST_PATH")
+            if [ "$current" != "$SRC_PATH" ]; then
+              echo "$DEST_PATH already exists and is symlinked to $current"
+            fi
+          else
+            echo "$DEST_PATH already exists"
+          fi
+        else
+          echo "creating link for $DEST_PATH"
+          ln -s "$SRC_PATH" "$DEST_PATH"
+        fi
+
+  copy_dotfile:
+    internal: true
+    silent: true
+    vars:
+      SRC: "{{.SRC}}"
+      DEST: "{{.DEST}}"
+    cmds:
+      - |
+        SRC_PATH="{{.DOTFILES_DIR}}/{{.SRC}}"
+        DEST_PATH="{{.DEST}}"
+
+        # Create parent directory if it doesn't exist
+        mkdir -p "$(dirname "$DEST_PATH")"
+
+        # If FORCE is true, remove the target
+        if [ "{{.FORCE}}" = "true" ]; then
+          rm -rf "$DEST_PATH"
+        fi
+
+        # Check if target already exists
+        if [ -e "$DEST_PATH" ]; then
+          echo "$DEST_PATH already exists"
+        else
+          echo "creating $DEST_PATH"
+          cp "$SRC_PATH" "$DEST_PATH"
+        fi
+
+  install:
+    desc: Install dotfiles
+    summary: |
+      Install dotfiles
+
+      This task will install and configure all dotfiles.
+    cmds:
+      - task: setup:config
+      - echo 'DONE'
+
+  sync:
+    desc: Synchronize dotfiles
+    summary: |
+      Synchronize dotfiles
+
+      Use this task to update your dotfiles configuration.
+    cmds:
+      - task: setup:config
+      - echo 'DONE'
+
+  setup:config:
+    desc: Setup configuration files
+    internal: true
+    cmds:
+      - task: utils:ensure_dirs
+      - task: cache-shell-startup
+      - task: utils:link_dotfiles
+      - task: utils:copy_dotfiles
+
+  utils:ensure_dirs:
+    internal: true
+    cmds:
+      - mkdir -p ~/bin
+      - mkdir -p ~/.ssh
+      - mkdir -p ~/.cargo
+
+  utils:link_dotfiles:
+    internal: true
+    deps:
+      - task: utils:link_macos_dotfiles
+      - task: utils:link_linux_dotfiles
+
+    vars:
+      DOTFILES:
+        - "packages/nvim|$HOME/.config/nvim"
+        - "packages/starship/starship.toml|$HOME/.config/starship.toml"
+        - "packages/shells/dist/bash/bashrc|$HOME/.bashrc"
+        - "packages/shells/dist/zsh/|$HOME/.zsh"
+        - "packages/shells/dist/fish/|$HOME/.config/fish"
+        - "packages/shells/dist/zsh/zshenv|$HOME/.zshenv"
+        - "packages/shells/dist/zsh/zprofile|$HOME/.zprofile"
+        - "packages/shells/dist/zsh/zshrc|$HOME/.zshrc"
+        - "packages/atuin|$HOME/.config/atuin"
+        - "packages/git/gitconfig|$HOME/.gitconfig"
+        - "packages/git/gitignore_global|$HOME/.gitignore_global"
+        - "packages/gh/config.yml|$HOME/.config/gh/config.yml"
+        - "packages/tmux/tmux.conf|$HOME/.tmux.conf"
+        - "packages/cargo/config.toml|$HOME/.cargo/config.toml"
+        - "packages/binutils/config/|$HOME/.config/binutils"
+        - "packages/wezterm/|$HOME/.config/wezterm"
+        - "packages/ghostty/|$HOME/.config/ghostty"
+        - "packages/ssh/rc|$HOME/.ssh/rc"
+
+    cmds:
+      - for:
+          var: DOTFILES
+          as: DOTFILE
+        task: link_dotfile
+        vars:
+          SRC: '{{splitList "|" .DOTFILE | first}}'
+          DEST: '{{splitList "|" .DOTFILE | last}}'
+
+  utils:link_macos_dotfiles:
+    internal: true
+    platforms: [darwin]
+    vars:
+      MACOS_DOTFILES:
+        - "packages/vscode/settings.json|$HOME/Library/Application Support/Code/User/settings.json"
+        - "packages/vscode/keybindings.json|$HOME/Library/Application Support/Code/User/keybindings.json"
+        - "packages/vscode/snippets|$HOME/Library/Application Support/Code/User/snippets"
+        - "packages/tealdeer/config.toml|$HOME/Library/Application Support/tealdeer/config.toml"
+        - "packages/jj/|$HOME/Library/Application Support/jj"
+    cmds:
+      - for:
+          var: MACOS_DOTFILES
+          as: DOTFILE
+        task: link_dotfile
+        vars:
+          SRC: '{{splitList "|" .DOTFILE | first}}'
+          DEST: '{{splitList "|" .DOTFILE | last}}'
+
+  utils:link_linux_dotfiles:
+    internal: true
+    platforms: [linux]
+    vars:
+      LINUX_DOTFILES:
+        - "packages/jj/|$HOME/.config/jj"
+    cmds:
+      - for:
+          var: LINUX_DOTFILES
+          as: DOTFILE
+        task: link_dotfile
+        vars:
+          SRC: '{{splitList "|" .DOTFILE | first}}'
+          DEST: '{{splitList "|" .DOTFILE | last}}'
+
+  utils:copy_dotfiles:
+    internal: true
+    vars:
+      COPY_DOTFILES:
+        - "packages/shells/dist/zsh/zshrc.local|$HOME/.zshrc.local"
+        - "packages/git/gitconfig.local|$HOME/.gitconfig.local"
+        - "packages/tmux/tmux.local.conf|$HOME/.tmux.local.conf"
+    cmds:
+      - for:
+          var: COPY_DOTFILES
+          as: DOTFILE
+        task: copy_dotfile
+        vars:
+          SRC: '{{splitList "|" .DOTFILE | first}}'
+          DEST: '{{splitList "|" .DOTFILE | last}}'
+          FORCE: "false"
+
+  cache-shell-startup:
+    desc: Run `cache-shell-startup`
+    internal: true
+    cmds:
+      - echo "Cache shell setup"
+      - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"

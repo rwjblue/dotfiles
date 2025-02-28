@@ -3,6 +3,7 @@ target/
 packages/shells/dist/
 packages/binutils/config/local.config.lua
 packages/binutils/local-crates
-local-dotfiles/
+local-packages/
 packages/wezterm/local_config_overrides.lua
 !.lazy.lua
+/.task/

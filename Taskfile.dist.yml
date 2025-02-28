@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+includes:
+  dot:
+    taskfile: ./taskfiles/dotfiles.yml
+
+  nvim:
+    taskfile: ./taskfiles/nvim.yml
+
+  system:
+    taskfile: ./taskfiles/system.yml
+
+  binutils:
+    taskfile: ./taskfiles/binutils.yml
+
+tasks:
+  default:
+    cmd: task -l
+    silent: true
+
+  install:
+    desc: Complete system setup - installs dependencies, builds utilities, configures dotfiles, and sets up Neovim
+    summary: |
+      Performs a full system setup by:
+      1. Installing all system dependencies (tools, languages, and utilities)
+      2. Building binutils and setting up symlinks
+      3. Installing and configuring all dotfiles
+      4. Restoring Neovim plugins to the state specified in lazy-lock.json
+    cmds:
+      - task: system:install
+      - task: binutils:install
+      - task: dot:install
+      - task: nvim:restore
