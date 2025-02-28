@@ -294,8 +294,8 @@ tasks:
       - test -f /etc/rdev.conf
     internal: true
     cmds:
-      - "{{.DOTFILES_DIR}}/utils/handle-older-git.zsh"
-      - "{{.DOTFILES_DIR}}/utils/setup-rdev-nvim.zsh"
+      - "{{.DOTFILES_DIR}}/scripts/handle-older-git.zsh"
+      - "{{.DOTFILES_DIR}}/scripts/setup-rdev-nvim.zsh"
 
   install:linux_starship:
     internal: true
@@ -345,7 +345,7 @@ tasks:
     desc: Build binutils
     internal: true
     cmds:
-      - "{{.DOTFILES_DIR}}/utils/build-binutils.zsh"
+      - "{{.DOTFILES_DIR}}/scripts/build-binutils.zsh"
       - echo "Cache shell setup"
       - "$HOME/src/malleatus/shared_binutils/target/debug/cache-shell-startup"
 
