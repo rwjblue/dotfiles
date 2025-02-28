@@ -11,6 +11,7 @@ vars:
 includes:
   nvim:
     taskfile: ./nvim.yml
+
 tasks:
   link_dotfile:
     internal: true
@@ -285,11 +286,7 @@ tasks:
     cmds:
       - task: install:rdev_specific
       - task: install:linux_starship
-      - task: install:linux_zoxide
-      - task: install:linux_eza
-      - task: install:linux_bat
-      - task: install:linux_delta
-      - task: install:linux_sd
+      - task: install:linux_binstall_tools
       - task: install:linux_fzf
 
   install:rdev_specific:
@@ -316,37 +313,23 @@ tasks:
       - echo "Installing zoxide"
       - curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
-  install:linux_eza:
+  install:linux_binstall_tools:
     internal: true
-    status:
-      - which eza
     cmds:
-      - echo "Installing eza"
-      - cargo binstall --locked --no-confirm eza
+      - for: [eza, bat, git-delta, sd]
+        task: install:linux_binstall_tool
+        vars: { TOOL: "{{.ITEM}}" }
 
-  install:linux_bat:
+  install:linux_binstall_tool:
     internal: true
+    vars:
+      TOOL: "{{.TOOL}}"
+      BINARY: '{{if eq .TOOL "git-delta"}}delta{{else}}{{.TOOL}}{{end}}'
     status:
-      - which bat
+      - which {{.BINARY}}
     cmds:
-      - echo "Installing bat"
-      - cargo binstall --locked --no-confirm bat
-
-  install:linux_delta:
-    internal: true
-    status:
-      - which delta
-    cmds:
-      - echo "Installing delta"
-      - cargo binstall --locked --no-confirm git-delta
-
-  install:linux_sd:
-    internal: true
-    status:
-      - which sd
-    cmds:
-      - echo "Installing sd"
-      - cargo binstall --locked --no-confirm sd
+      - echo "Installing {{.TOOL}}"
+      - cargo binstall --locked --no-confirm {{.TOOL}}
 
   install:linux_fzf:
     internal: true
