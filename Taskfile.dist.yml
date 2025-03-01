@@ -17,6 +17,9 @@ includes:
   brew:
     taskfile: ./taskfiles/brew.yml
 
+  shell:
+    taskfile: ./taskfiles/shell.yml
+
 tasks:
   default:
     cmd: task -l

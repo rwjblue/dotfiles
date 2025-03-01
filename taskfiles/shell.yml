@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+includes:
+  binutils:
+    taskfile: ./binutils.yml
+    internal: true
+
+tasks:
+  update:
+    desc: Refreshes shell environment by updating startup cache and clearing completion cache
+    cmds:
+      - task: binutils:cache-shell-startup
+      - task: clear-completion-cache
+
+  clear-completion-cache:
+    internal: true
+    cmds:
+      # clear completion cache
+      - rm -f ~/.cache/prezto/zcompdump

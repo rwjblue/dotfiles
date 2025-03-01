@@ -8,8 +8,8 @@ vars:
   FORCE: '{{env "FORCE"}}'
 
 includes:
-  binutils:
-    taskfile: ./binutils.yml
+  shell:
+    taskfile: ./shell.yml
     internal: true
 
 tasks:
@@ -101,7 +101,7 @@ tasks:
       - task: utils:ensure_dirs
       - task: utils:link_dotfiles
       - task: utils:copy_dotfiles
-      - task: binutils:cache-shell-startup
+      - task: shell:update
 
   utils:ensure_dirs:
     internal: true
