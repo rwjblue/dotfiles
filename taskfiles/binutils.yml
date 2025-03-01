@@ -72,7 +72,18 @@ tasks:
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
 
   cache-shell-startup:
-    desc: Run `cache-shell-startup`
+    desc: Run `cache-shell-startup` for each shell
     internal: true
+    vars:
+      SHELLS:
+        - zsh
+        - fish
+        - bash
+
     cmds:
-      - "{{.SHARED_BINUTILS_PATH}}/target/debug/cache-shell-startup --config-file='{{.DOTFILES}}/packages/binutils/config/config.lua'"
+      - for: { var: SHELLS }
+        cmd: |
+          {{.SHARED_BINUTILS_PATH}}/target/debug/cache-shell-startup \
+            --config-file='{{.DOTFILES}}/packages/binutils/config/config.lua' \
+            --source='{{.DOTFILES}}/packages/{{.ITEM}}' \
+            --destination='{{.DOTFILES}}/packages-dist/{{.ITEM}}'

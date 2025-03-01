@@ -6,10 +6,6 @@ return {
 		"~/src/rwjblue/dotfiles/packages/binutils/",
 		"~/src/malleatus/shared_binutils",
 	},
-	shell_caching = {
-		source = "~/src/rwjblue/dotfiles/packages/shells/",
-		destination = "~/src/rwjblue/dotfiles/packages/shells/dist/",
-	},
 	tmux = {
 		sessions = {
 			{

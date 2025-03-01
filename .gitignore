@@ -1,6 +1,7 @@
 .cargo/
 target/
 packages/shells/dist/
+packages-dist/
 packages/binutils/config/local.config.lua
 packages/binutils/local-crates
 local-packages/
