@@ -1,3 +1,5 @@
+# vim: filetype=zsh
+
 function _path_add() {
   case ":$PATH:" in
     *:"$1":*) ;;
@@ -42,12 +44,11 @@ _ensure_first_path "/opt/homebrew/sbin"
 
 # TODO: should we use a perma here?
 
-# FETCH: https://raw.githubusercontent.com/sorin-ionescu/prezto/master/modules/completion/init.zsh
-
+# NOTE: all fpath manipulation needs to be done before inlining the prezto completion  module
 fpath=( "/opt/homebrew/share/zsh/site-functions/" $fpath )
-fpath=( "/Users/rjackson/.zsh/completions" $fpath )
-autoload -Uz compinit
-compinit
+fpath=( "$HOME/.zsh/completions" $fpath )
+
+# FETCH: https://raw.githubusercontent.com/sorin-ionescu/prezto/master/modules/completion/init.zsh
 
 # load 1Password configured plugins if 1Password is installed and configured
 # see https://developer.1password.com/docs/cli/shell-plugins
