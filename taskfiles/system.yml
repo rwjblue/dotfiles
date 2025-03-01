@@ -1,6 +1,11 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
 
+includes:
+  brew:
+    taskfile: ./brew.yml
+    internal: true
+
 tasks:
   install:
     desc: Install all system dependencies
@@ -70,24 +75,8 @@ tasks:
   install:platform_tools:
     internal: true
     cmds:
-      - task: install:macos_tools
+      - task: brew:install
       - task: install:linux_tools
-
-  install:macos_tools:
-    internal: true
-    platforms: [darwin]
-    cmds:
-      - task: install:homebrew
-      - brew install fzf tmux rbenv starship zoxide gh ripgrep nvim tealdeer eza git git-delta gnu-sed bat atuin sd jj fish ast-grep zig go
-      - brew install --cask wezterm ghostty
-
-  install:homebrew:
-    internal: true
-    status:
-      - which brew
-    cmds:
-      - echo "Installing Homebrew"
-      - /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
   install:linux_tools:
     internal: true

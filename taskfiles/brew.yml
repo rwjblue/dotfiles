@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: 3
+
+tasks:
+  install:
+    platforms: [darwin]
+    desc: Install Homebrew and tools defined in Brewfile
+    cmds:
+      - task: install:homebrew
+      - task: install:tools
+
+  install:homebrew:
+    internal: true
+    platforms: [darwin]
+    status:
+      - which brew
+    cmds:
+      - echo "Installing Homebrew"
+      - /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  commit:
+    desc: Commits the Brewfile file if changed
+    internal: true
+    silent: true
+    cmd: |
+      ./scripts/commit_changed_file.sh \
+        'Brewfile' \
+        'chore(brew): update packages'
+
+  upgrade:
+    platforms: [darwin]
+    desc: Update Homebrew and upgrade all installed packages
+    cmds:
+      - brew update
+      - brew upgrade
+      - task: update
+
+  update:
+    platforms: [darwin]
+    desc: Update Brewfile with current brew packages and commit changes
+    cmds:
+      - brew bundle dump --force --describe
+      - task: commit
+
+  install:tools:
+    internal: true
+    platforms: [darwin]
+    deps:
+      - install:homebrew
+    cmds:
+      - brew bundle
+
+  cleanup:
+    desc: Remove unused brew dependencies
+    platforms: [darwin]
+    cmds:
+      - brew cleanup
+      - brew autoremove
