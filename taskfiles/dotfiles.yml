@@ -82,17 +82,6 @@ tasks:
       This task will install and configure all dotfiles.
     cmds:
       - task: setup:config
-      - echo 'DONE'
-
-  sync:
-    desc: Synchronize dotfiles
-    summary: |
-      Synchronize dotfiles
-
-      Use this task to update your dotfiles configuration.
-    cmds:
-      - task: setup:config
-      - echo 'DONE'
 
   setup:config:
     desc: Setup configuration files
