@@ -23,7 +23,6 @@ tasks:
     status:
       - test -d "{{.SHARED_BINUTILS_PATH}}"
     cmds:
-      - echo "Cloning malleatus/shared_binutils repository"
       - git clone https://github.com/malleatus/shared_binutils.git "{{.SHARED_BINUTILS_PATH}}"
 
   build-shared-binutils:
@@ -40,7 +39,6 @@ tasks:
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles"
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
     cmds:
-      - echo "Building malleatus/shared_binutils"
       - cargo build
 
   setup-local-dotfiles:
@@ -64,7 +62,6 @@ tasks:
     generates:
       - "{{.DOTFILES}}/binutils/target/debug/*"
     cmds:
-      - echo "Building binutils"
       - cargo build
 
   setup-symlinks:
@@ -72,11 +69,10 @@ tasks:
     desc: Set up binutils symlinks
     deps: [build-shared-binutils]
     cmds:
-      - echo "setting up binutils symlinks"
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
 
   cache-shell-startup:
     desc: Run `cache-shell-startup`
+    internal: true
     cmds:
-      - echo "Cache shell setup"
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/cache-shell-startup --config-file='{{.DOTFILES}}/packages/binutils/config/config.lua'"

@@ -30,7 +30,6 @@ tasks:
     status:
       - which volta
     cmds:
-      - echo "Installing volta"
       - curl https://get.volta.sh | bash
       - $HOME/.volta/volta install node
       - $HOME/.volta/volta install yarn
@@ -40,7 +39,6 @@ tasks:
     status:
       - which rustup
     cmds:
-      - echo "Installing rustup"
       - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
       - source $HOME/.cargo/env
       - rustup self update
@@ -61,7 +59,6 @@ tasks:
     status:
       - which {{.TOOL}}
     cmds:
-      - echo "Installing {{.TOOL}}"
       - cargo binstall --locked --no-confirm {{.TOOL}}
 
   install:cargo_binstall:
@@ -69,7 +66,6 @@ tasks:
     status:
       - which cargo-binstall
     cmds:
-      - echo "Installing cargo-binstall"
       - curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
   install:platform_tools:
@@ -100,7 +96,6 @@ tasks:
     status:
       - which starship
     cmds:
-      - echo "Installing starship"
       - curl -sS https://starship.rs/install.sh | sh -s -- --force
 
   install:linux_zoxide:
@@ -108,7 +103,6 @@ tasks:
     status:
       - which zoxide
     cmds:
-      - echo "Installing zoxide"
       - curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 
   install:linux_binstall_tools:
@@ -126,7 +120,6 @@ tasks:
     status:
       - which {{.BINARY}}
     cmds:
-      - echo "Installing {{.TOOL}}"
       - cargo binstall --locked --no-confirm {{.TOOL}}
 
   install:linux_fzf:
@@ -135,6 +128,5 @@ tasks:
     status:
       - test -d $HOME/.fzf
     cmds:
-      - echo "Installing fzf"
       - git clone https://github.com/junegunn/fzf.git $HOME/.fzf
       - $HOME/.fzf/install --bin

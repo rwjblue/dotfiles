@@ -2,7 +2,9 @@
 version: 3
 
 includes:
-  dot:
+  dotfiles:
+    aliases:
+      - dot
     taskfile: ./taskfiles/dotfiles.yml
 
   nvim:
