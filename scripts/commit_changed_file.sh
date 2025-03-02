@@ -28,7 +28,7 @@ commit_changes() {
   local vcs=$1
 
   if [[ "$vcs" == "jj" ]]; then
-    jj commit "$FILE_PATH" -m "$COMMIT_MSG" || {
+    jj commit --quiet "$FILE_PATH" -m "$COMMIT_MSG" || {
       echo "Failed to commit changes in $FILE_PATH" >&2
       return 1
     }
