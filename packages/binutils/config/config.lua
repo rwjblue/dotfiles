@@ -19,21 +19,21 @@ return {
       {
         name = "dotfiles",
         windows = {
-          {
+          utils.jj_project({
             name = "dotfiles",
             path = "~/src/rwjblue/dotfiles",
             command = "nvim",
-          },
-          {
+          }),
+          utils.jj_project({
             name = "common nvim",
             path = "~/src/malleatus/common.nvim",
             command = "nvim",
-          },
-          {
+          }),
+          utils.jj_project({
             name = "shared_binutils",
             path = "~/src/malleatus/shared_binutils",
             command = "nvim",
-          },
+          }),
         },
       },
       {
@@ -48,15 +48,15 @@ return {
       {
         name = "🍐Jujutsu",
         windows = {
-          utils.jujutsu_project({
+          utils.jj_project({
             name = "jj",
             path = "~/src/jj-vcs/jj",
           }),
-          utils.jujutsu_project({
+          utils.jj_project({
             name = "jj-gpc",
             path = "~/src/chriskrycho/jj-gpc",
           }),
-          utils.jujutsu_project({
+          utils.jj_project({
             name = "jj-notes",
             path = "~/src/rwjblue/jj-notes",
             command = "nvim README.md",

@@ -2,7 +2,7 @@ local M = {}
 
 ---@param config Window
 ---@return Window
-function M.jujutsu_project(config)
+function M.jj_project(config)
   local result = {}
   -- Copy all existing properties
   for k, v in pairs(config) do
