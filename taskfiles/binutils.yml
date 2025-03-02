@@ -73,15 +73,18 @@ tasks:
 
   cache-shell-startup:
     desc: Run `cache-shell-startup` for each shell
-    internal: true
+    # NOTE: the leading slash here is a bit annoying, but required due to a bug
+    # in go-task see https://github.com/go-task/task/issues/828
+    dir: "/{{.DOTFILES}}"
     vars:
-      SHELLS:
+      PACKAGES:
         - zsh
         - fish
         - bash
+        - starship
 
     cmds:
-      - for: { var: SHELLS }
+      - for: { var: PACKAGES }
         cmd: |
           {{.SHARED_BINUTILS_PATH}}/target/debug/cache-shell-startup \
             --config-file='{{.DOTFILES}}/packages/binutils/config/config.lua' \

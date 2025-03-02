@@ -109,6 +109,7 @@ tasks:
       DOTFILES:
         - "packages/nvim|$HOME/.config/nvim"
         - "packages/starship/starship.toml|$HOME/.config/starship.toml"
+        - "packages/starship/|$HOME/.config/starship"
         - "packages-dist/bash/bashrc|$HOME/.bashrc"
         - "packages-dist/zsh/|$HOME/.zsh"
         - "packages-dist/fish/|$HOME/.config/fish"

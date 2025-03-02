@@ -9,28 +9,40 @@ function M.jujutsu_project(config)
     result[k] = v
   end
 
-  -- Handle command property specially
-  if not config.command then
-    result.command = 'export GIT_DIR="$PWD/.jj/repo/store/git"'
-  else
-    local commands = {
-      'export GIT_DIR="$PWD/.jj/repo/store/git"',
-    }
+  local commands = {}
 
+  local path = assert(config.path, "path is required for jujutsu_project")
+  if path:sub(1, 1) == "~" then
+    local home = assert(os.getenv("HOME"), "HOME environment variable not set")
+    path = home .. path:sub(2)
+  end
+  local git_path = path .. "/.git"
+  local git_dir_exists = io.open(git_path, "r") ~= nil
+
+  -- When `jj` is in `--colocate` mode there is still a top level `.git`
+  -- directory so we only need to add GIT_DIR if .git doesn't exist (which
+  -- means we are **not** colocated)
+  if not git_dir_exists then
+    table.insert(commands, 'export GIT_DIR="$PWD/.jj/repo/store/git"')
+  end
+
+  -- Add JJ specific STARSHIP_CONFIG
+  table.insert(commands, 'export STARSHIP_CONFIG="$HOME/.config/starship/jujutsu.toml"')
+
+  -- Add existing commands
+  if config.command then
     if type(config.command) == "string" then
       table.insert(commands, config.command)
     else
       local commands_list = config.command
-      -- SAFETY: this is required because apparently the type checking via `if
-      -- type(...) == "string"` doesn't narrow in the LSP
       ---@cast commands_list string[]
       for _, cmd in ipairs(commands_list) do
         table.insert(commands, cmd)
       end
     end
-
-    result.command = commands
   end
+
+  result.command = #commands > 1 and commands or commands[1]
 
   return result
 end
