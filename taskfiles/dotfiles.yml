@@ -108,7 +108,7 @@ tasks:
     vars:
       DOTFILES:
         - "packages/nvim|$HOME/.config/nvim"
-        - "packages/starship/starship.toml|$HOME/.config/starship.toml"
+        - "packages-dist/starship/default.toml|$HOME/.config/starship.toml"
         - "packages/starship/|$HOME/.config/starship"
         - "packages-dist/bash/bashrc|$HOME/.bashrc"
         - "packages-dist/zsh/|$HOME/.zsh"

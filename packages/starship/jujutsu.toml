@@ -1,4 +1,8 @@
-# CMD: cat ./packages/starship/starship.toml
+# Starship configuration optimized for jj version control. This configuration
+# disables all standard Git modules and replaces them with a custom jj module
+# that shows repository information.
+
+# CMD: cat ./packages/starship/base.toml
 
 [git_branch]
 disabled = true

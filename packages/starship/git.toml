@@ -1,0 +1,7 @@
+# Starship configuration for Git repositories. This file is used as an
+# alternative to the default jj configuration and should be activated
+# manually in Git repositories with:
+#
+# export STARSHIP_CONFIG="$HOME/.config/starship/git.toml"
+
+# CMD: cat ./packages/starship/base.toml

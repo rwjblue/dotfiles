@@ -1,3 +1,7 @@
+# Shared configuration settings for Starship prompt across all version control
+# modes. This file contains common configuration elements that apply regardless
+# of which VCS system is in use.
+
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
