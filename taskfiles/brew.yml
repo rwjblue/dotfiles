@@ -1,6 +1,9 @@
 # yaml-language-server: $schema=https://taskfile.dev/schema.json
 version: 3
 
+vars:
+  DOTFILES: "{{.ROOT_DIR}}"
+
 tasks:
   install:
     platforms: [darwin]
@@ -36,6 +39,9 @@ tasks:
 
   update:
     platforms: [darwin]
+    # NOTE: the leading slash here is a bit annoying, but required due to a bug
+    # in go-task see https://github.com/go-task/task/issues/828
+    dir: "/{{.DOTFILES}}"
     desc: Update Brewfile with current brew packages and commit changes
     cmds:
       - brew bundle dump --force --describe
@@ -44,6 +50,9 @@ tasks:
   install:tools:
     internal: true
     platforms: [darwin]
+    # NOTE: the leading slash here is a bit annoying, but required due to a bug
+    # in go-task see https://github.com/go-task/task/issues/828
+    dir: "/{{.DOTFILES}}"
     deps:
       - install:homebrew
     cmds:
