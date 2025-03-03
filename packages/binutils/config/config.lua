@@ -19,21 +19,21 @@ return {
       {
         name = "dotfiles",
         windows = {
-          utils.jj_project({
+          {
             name = "dotfiles",
             path = "~/src/rwjblue/dotfiles",
             command = "nvim",
-          }),
-          utils.jj_project({
+          },
+          {
             name = "common nvim",
             path = "~/src/malleatus/common.nvim",
             command = "nvim",
-          }),
-          utils.jj_project({
+          },
+          {
             name = "shared_binutils",
             path = "~/src/malleatus/shared_binutils",
             command = "nvim",
-          }),
+          },
         },
       },
       {
