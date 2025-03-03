@@ -27,7 +27,7 @@ tasks:
     cmd: |
       ./scripts/commit_changed_file.sh \
         'Brewfile' \
-        'chore(brew): update packages'
+        "chore(brew): update packages $(date '+%Y-%m-%d %H:%M:%S')"
 
   upgrade:
     platforms: [darwin]
