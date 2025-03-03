@@ -1,6 +1,6 @@
-local rwjblue = require('rwjblue')
+local rwjblue = require("rwjblue")
 
---- Copied from https://github.com/olimorris/codecompanion.nvim/blob/v11.13.1/lua/codecompanion/config.lua#L782-L811 originally and modified to support jujutsu
+--- Copied from https://github.com/olimorris/codecompanion.nvim/blob/v11.13.1/lua/codecompanion/config.lua#L782-L811 originally and modified to support jj
 ---
 --- @module "rwjblue.codecompanion.types"
 --- @type CodeCompanion.PromptEntry

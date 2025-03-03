@@ -4,12 +4,11 @@ local M = {}
 ---@param subdir string The subdirectory name to check for (e.g. ".git", "node_modules")
 ---@return boolean True if the buffer path starts with or contains the subdirectory
 function M.is_buffer_in_subdir(subdir)
-  local buf_path = vim.fn.bufname('%')
+  local buf_path = vim.fn.bufname("%")
   -- Escape special pattern characters
-  local escaped_subdir = subdir:gsub('%.', '%%.')
+  local escaped_subdir = subdir:gsub("%.", "%%.")
   -- Check if path starts with subdir/ or contains /subdir/
-  return (buf_path:match('^' .. escaped_subdir .. '/') ~= nil) or
-      (buf_path:match('/' .. escaped_subdir .. '/') ~= nil)
+  return (buf_path:match("^" .. escaped_subdir .. "/") ~= nil) or (buf_path:match("/" .. escaped_subdir .. "/") ~= nil)
 end
 
 --- Checks if the given buffer has a commit related filetype
@@ -19,7 +18,7 @@ local function is_git_related_filetype(bufnr)
   bufnr = bufnr or 0
   local ft = vim.bo[bufnr].filetype
 
-  return ft == 'gitcommit' or ft == 'jj' or ft == 'jjdescription'
+  return ft == "gitcommit" or ft == "jj" or ft == "jjdescription"
 end
 
 --- Don't attempt to install missing plugins or check for updates when making a commit
@@ -70,7 +69,7 @@ function M.get_diff()
         table.insert(filtered_lines, line)
       end
     end
-    local buffer_content = table.concat(filtered_lines, '\n')
+    local buffer_content = table.concat(filtered_lines, "\n")
 
     -- Look for the diff section which typically starts with "diff --git"
     local diff_start = buffer_content:find("diff %-%-git")
@@ -91,7 +90,7 @@ function M.get_diff()
 end
 
 function M.commit_lockfile()
-  -- TODO: this needs to be updated to work for jujutsu
+  -- TODO: this needs to be updated to work for jj
   -- Check if lazy-lock.json has changes
   local hasChanges = os.execute("git diff --exit-code --quiet lazy-lock.json")
 

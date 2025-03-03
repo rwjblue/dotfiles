@@ -11,7 +11,7 @@ function M.jj_project(config)
 
   local commands = {}
 
-  local path = assert(config.path, "path is required for jujutsu_project")
+  local path = assert(config.path, "path is required for jj_project")
   if path:sub(1, 1) == "~" then
     local home = assert(os.getenv("HOME"), "HOME environment variable not set")
     path = home .. path:sub(2)
@@ -27,7 +27,7 @@ function M.jj_project(config)
   end
 
   -- Add JJ specific STARSHIP_CONFIG
-  table.insert(commands, 'export STARSHIP_CONFIG="$HOME/.config/starship/jujutsu.toml"')
+  table.insert(commands, 'export STARSHIP_CONFIG="$HOME/.config/starship/jj.toml"')
 
   -- Add existing commands
   if config.command then
