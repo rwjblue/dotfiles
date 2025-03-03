@@ -1,4 +1,5 @@
 tap "homebrew/bundle"
+tap "jesseduffield/lazygit"
 tap "rwjblue/tap"
 # Record and share terminal sessions
 brew "asciinema"
@@ -12,10 +13,14 @@ brew "automake"
 brew "bat"
 # User-friendly launcher for Bazel
 brew "bazelisk"
+# GNU internationalization (i18n) and localization (l10n) library
+brew "gettext"
 # Cross-platform make
 brew "cmake"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
+# Modern diagram scripting language that turns text to diagrams
+brew "d2"
 # Modern, maintained replacement for ls
 brew "eza"
 # Simple, fast and user-friendly alternative to find
@@ -24,34 +29,44 @@ brew "fd"
 brew "fish"
 # Command-line fuzzy finder written in Go
 brew "fzf"
-# GNU internationalization (i18n) and localization (l10n) library
-brew "gettext"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
 brew "git"
 # Syntax-highlighting pager for git and diff output
 brew "git-delta"
+# Quickly rewrite git repository history
+brew "git-filter-repo"
+# Git extension for versioning large files
+brew "git-lfs"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
 # Open source programming language to build simple/reliable/efficient software
 brew "go"
+# Like cURL, but for gRPC
+brew "grpcurl"
+# OpenType text shaping engine
+brew "harfbuzz"
 # Post-modern modal text editor
 brew "helix"
 # Command-line benchmarking tool
 brew "hyperfine"
 # Git-compatible distributed version control system
 brew "jj"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
 # Generic library support script
 brew "libtool"
 # Language Server for the Lua language
 brew "lua-language-server"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Small build system for use with gyp or CMake
-brew "ninja"
-# Package compiler and linker metadata toolkit
-brew "pkgconf"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
+# Python version management
+brew "pyenv"
+# Pyenv plugin to manage virtualenv
+brew "pyenv-virtualenv"
 # Ruby version manager
 brew "rbenv"
 # Search tool like grep and The Silver Searcher
@@ -62,20 +77,28 @@ brew "sd"
 brew "starship"
 # Very fast implementation of tldr in Rust
 brew "tealdeer"
+# Command-line interface for running and interacting with Temporal Server and UI
+brew "temporal"
 # Terminal multiplexer
 brew "tmux"
+# Program that allows you to count code, quickly
+brew "tokei"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
 # Execute commands when watched files change
 brew "watchexec"
 # Watch files and take action when they change
 brew "watchman"
+# Pluggable terminal workspace, with terminal multiplexer as the base feature
+brew "zellij"
 # Programming language designed for robustness, optimality, and clarity
 brew "zig"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
+# A simple terminal UI for git commands, written in Go
+brew "jesseduffield/lazygit/lazygit"
 # Simple command line calendar, written in Rust
 brew "rwjblue/tap/cal"
 # Command-line interface for 1Password
@@ -90,5 +113,22 @@ cask "visual-studio-code"
 cask "wezterm"
 # Multiplayer code editor
 cask "zed"
+vscode "charliermarsh.ruff"
+vscode "davidanson.vscode-markdownlint"
+vscode "dbaeumer.vscode-eslint"
+vscode "eamodio.gitlens"
+vscode "editorconfig.editorconfig"
+vscode "esbenp.prettier-vscode"
 vscode "github.copilot"
 vscode "github.copilot-chat"
+vscode "graphql.vscode-graphql"
+vscode "graphql.vscode-graphql-syntax"
+vscode "ms-python.debugpy"
+vscode "ms-python.python"
+vscode "ms-python.vscode-pylance"
+vscode "ms-toolsai.jupyter"
+vscode "ms-toolsai.jupyter-keymap"
+vscode "ms-toolsai.jupyter-renderers"
+vscode "ms-toolsai.vscode-jupyter-cell-tags"
+vscode "ms-toolsai.vscode-jupyter-slideshow"
+vscode "ms-vscode-remote.remote-containers"
