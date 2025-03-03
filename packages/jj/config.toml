@@ -75,6 +75,7 @@ ws = ["workspace"]
 # viewing history
 open = ["log", "-r", "open(mine())"]
 ropen = ["log", "-r", "ropen()"]
+recent = ["log", "-r", "last()"]
 
 # bring a branch up to date with trunk()
 # works with `jj update` alone or with `-b REV`
