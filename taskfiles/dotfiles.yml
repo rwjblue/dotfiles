@@ -32,16 +32,19 @@ tasks:
           rm -rf "$DEST_PATH"
         fi
 
-        # Check if target already exists
-        if [ -e "$DEST_PATH" ]; then
-          if [ -L "$DEST_PATH" ]; then
-            current=$(readlink "$DEST_PATH")
-            if [ "$current" != "$SRC_PATH" ]; then
-              echo "$DEST_PATH already exists and is symlinked to $current"
-            fi
-          else
-            echo "$DEST_PATH already exists"
+        if [ -L "$DEST_PATH" ]; then
+          current=$(readlink "$DEST_PATH")
+
+          # Check if it's a broken symlink
+          if [ ! -e "$current" ]; then
+            echo "$DEST_PATH is a broken symlink, replacing it"
+            rm "$DEST_PATH"
+            ln -s "$SRC_PATH" "$DEST_PATH"
+          elif [ "$current" != "$SRC_PATH" ]; then
+            echo "$DEST_PATH already exists and is symlinked to $current"
           fi
+        elif [ -e "$DEST_PATH" ]; then
+          echo "$DEST_PATH already exists and is not a symlink"
         else
           echo "creating link for $DEST_PATH"
           ln -s "$SRC_PATH" "$DEST_PATH"
@@ -60,11 +63,6 @@ tasks:
 
         # Create parent directory if it doesn't exist
         mkdir -p "$(dirname "$DEST_PATH")"
-
-        # If FORCE is true, remove the target
-        if [ "{{.FORCE}}" = "true" ]; then
-          rm -rf "$DEST_PATH"
-        fi
 
         # Check if target already exists
         if [ -e "$DEST_PATH" ]; then
