@@ -68,6 +68,8 @@ brew "tmux"
 brew "uv"
 # Execute commands when watched files change
 brew "watchexec"
+# Watch files and take action when they change
+brew "watchman"
 # Programming language designed for robustness, optimality, and clarity
 brew "zig"
 # Shell extension to navigate your filesystem faster
