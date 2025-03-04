@@ -17,102 +17,104 @@ return {
       { "<leader>ac", "<cmd>CodeCompanionChat Add<cr>", mode = "v", desc = "Add code to CodeCompanion" },
     },
 
-    opts = {
+    opts = function()
+      return {
 
-      -- Adapter configurations
-      adapters = {
-        opts = {
-          -- only show adapters that I've configured
-          show_defaults = false,
+        -- Adapter configurations
+        adapters = {
+          opts = {
+            -- only show adapters that I've configured
+            show_defaults = false,
+          },
+
+          anthropic = function()
+            return require("codecompanion.adapters").extend("anthropic", {
+              env = { api_key = "AI_CLAUDE_API_KEY" },
+            })
+          end,
+
+          xai = function()
+            return require("codecompanion.adapters").extend("xai", {
+              env = { api_key = "AI_GROK_API_KEY" },
+            })
+          end,
+
+          openai = function()
+            return require("codecompanion.adapters").extend("openai", {
+              env = {
+                -- I'd rather use this, but it prompt's SOO MUCH
+                -- api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential' --reveal",
+                api_key = "AI_OPEN_AI_API_KEY",
+              },
+              schema = {
+                model = {
+                  -- NOTE: I don't have access to o3-mini in the API just yet,
+                  -- keep checking status here (I'm current Tier 2):
+                  -- https://help.openai.com/en/articles/10362446-api-access-to-o1-and-o3-mini
+                  -- default = "o3-mini-2025-01-31"
+                },
+              },
+            })
+          end,
+
+          copilot = {
+            model = "claude-3.7-sonnet",
+          },
         },
 
-        anthropic = function()
-          return require("codecompanion.adapters").extend("anthropic", {
-            env = { api_key = "AI_CLAUDE_API_KEY" },
-          })
-        end,
+        -- Strategy configurations
+        strategies = {
+          chat = {
+            adapter = "anthropic",
 
-        xai = function()
-          return require("codecompanion.adapters").extend("xai", {
-            env = { api_key = "AI_GROK_API_KEY" },
-          })
-        end,
-
-        openai = function()
-          return require("codecompanion.adapters").extend("openai", {
-            env = {
-              -- I'd rather use this, but it prompt's SOO MUCH
-              -- api_key = "cmd:op item get 'OpenAI - nvim Token' --vault 'Rob (Work)' --fields label='credential' --reveal",
-              api_key = "AI_OPEN_AI_API_KEY",
-            },
-            schema = {
-              model = {
-                -- NOTE: I don't have access to o3-mini in the API just yet,
-                -- keep checking status here (I'm current Tier 2):
-                -- https://help.openai.com/en/articles/10362446-api-access-to-o1-and-o3-mini
-                -- default = "o3-mini-2025-01-31"
+            slash_commands = {
+              ["buffer"] = {
+                opts = {
+                  provider = "snacks",
+                },
               },
-            },
-          })
-        end,
-
-        copilot = {
-          model = "claude-3.7-sonnet",
-        },
-      },
-
-      -- Strategy configurations
-      strategies = {
-        chat = {
-          adapter = "anthropic",
-
-          slash_commands = {
-            ["buffer"] = {
-              opts = {
-                provider = "snacks",
+              ["help"] = {
+                opts = {
+                  provider = "snacks",
+                  max_lines = 1000,
+                },
               },
-            },
-            ["help"] = {
-              opts = {
-                provider = "snacks",
-                max_lines = 1000,
+              ["file"] = {
+                opts = {
+                  provider = "snacks",
+                },
               },
-            },
-            ["file"] = {
-              opts = {
-                provider = "snacks",
+              ["symbols"] = {
+                opts = {
+                  provider = "snacks",
+                },
               },
-            },
-            ["symbols"] = {
-              opts = {
-                provider = "snacks",
-              },
-            },
-            ["workspace"] = {
-              opts = {
-                provider = "snacks",
+              ["workspace"] = {
+                opts = {
+                  provider = "snacks",
+                },
               },
             },
           },
+          inline = { adapter = "anthropic" },
+          agent = { adapter = "anthropic" },
         },
-        inline = { adapter = "anthropic" },
-        agent = { adapter = "anthropic" },
-      },
 
-      -- Display configurations
-      display = {
-        chat = {
-          -- window = {
-          --   layout = "float",
-          --   border = "rounded",
-          --   width = 0.6,
-          --   height = 0.6,
-          -- }
+        -- Display configurations
+        display = {
+          chat = {
+            -- window = {
+            --   layout = "float",
+            --   border = "rounded",
+            --   width = 0.6,
+            --   height = 0.6,
+            -- }
+          },
         },
-      },
 
-      prompt_library = prompt_library,
-    },
+        prompt_library = prompt_library,
+      }
+    end,
   },
 
   {
