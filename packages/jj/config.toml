@@ -19,19 +19,25 @@ email = "rjackson@linkedin.com"
 [--scope.aliases]
 update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
 
+[[--scope]]
+--when.commands = ["diff"]
+
+[--scope.ui]
+# NOTE: When using `delta` as the pager globally (e.g. for commands other than
+# `jj diff`) forces the terminal output to be cleared when the pager is closed
+# (because delta doesn't invoke `less` with `-X` option). This changes to only
+# use `delta` for `jj diff`.
+# See:
+#  - https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#processing-contents-to-be-paged
+#  - https://github.com/jj-vcs/jj/issues/4142
+#  - https://github.com/jj-vcs/jj/discussions/4690
+pager = "delta"
+diff.format = "git"
 
 [core]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
 fsmonitor = "watchman"
 watchman.register_snapshot_trigger = true
-
-[ui]
-# https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#processing-contents-to-be-paged
-pager = "delta"
-
-[ui.diff]
-# NOTE: this is required when using `delta` as a pager
-format = "git"
 
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
