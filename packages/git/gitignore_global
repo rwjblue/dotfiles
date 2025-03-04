@@ -64,3 +64,6 @@ Thumbs.db
 # Other version control systems #
 # ###############################
 .jj/
+
+# Local repo context
+/.vectorcode/
