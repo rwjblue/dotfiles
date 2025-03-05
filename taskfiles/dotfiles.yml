@@ -124,6 +124,7 @@ tasks:
         - "packages/wezterm/|$HOME/.config/wezterm"
         - "packages/ghostty/|$HOME/.config/ghostty"
         - "packages/ssh/rc|$HOME/.ssh/rc"
+        - "packages/mise/|$HOME/.config/mise"
 
     cmds:
       - for:

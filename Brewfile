@@ -17,6 +17,8 @@ brew "bazelisk"
 brew "gettext"
 # Cross-platform make
 brew "cmake"
+# Cryptographic recipes and primitives for Python
+brew "cryptography", link: false
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
 # Modern diagram scripting language that turns text to diagrams
@@ -59,16 +61,12 @@ brew "jq"
 brew "libtool"
 # Language Server for the Lua language
 brew "lua-language-server"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
 # Execute binaries from Python packages in isolated environments
 brew "pipx"
-# Python version management
-brew "pyenv"
-# Pyenv plugin to manage virtualenv
-brew "pyenv-virtualenv"
-# Ruby version manager
-brew "rbenv"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Intuitive find & replace CLI

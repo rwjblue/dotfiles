@@ -64,3 +64,9 @@ Thumbs.db
 # Other version control systems #
 # ###############################
 .jj/
+
+# Mise Local Config Overrides #
+# ########################### #
+.mise/config.local.toml
+.mise.local.toml
+mise.local.toml
