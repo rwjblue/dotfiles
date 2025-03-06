@@ -24,20 +24,10 @@ tasks:
   install:requirements:
     internal: true
     cmds:
-      - task: install:volta
       - task: install:rust
       - task: install:platform_tools
       - task: install:cargo_tools
       - task: mise:install
-
-  install:volta:
-    internal: true
-    status:
-      - which volta
-    cmds:
-      - curl https://get.volta.sh | bash
-      - $HOME/.volta/volta install node
-      - $HOME/.volta/volta install yarn
 
   install:rust:
     internal: true
