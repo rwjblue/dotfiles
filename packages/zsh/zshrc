@@ -38,6 +38,13 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 _ensure_first_path "/opt/homebrew/bin"
 _ensure_first_path "/opt/homebrew/sbin"
 
+# NOTE: ideally this would actually use `# CMD: mise activate --shims`, but
+# that doesn't work because if `mise activate` detects that the `$PATH` is
+# already setup it returns nothing. This is actually a nice thing, buut it
+# means that if we run the command within a shell that's already activated the
+# shims it just doesn't work.
+export PATH="/Users/rjackson/.local/share/mise/shims:$PATH"
+
 # CMD: mise activate --shims
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
