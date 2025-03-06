@@ -43,8 +43,6 @@ brew "git-filter-repo"
 brew "git-lfs"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
-# Open source programming language to build simple/reliable/efficient software
-brew "go"
 # Like cURL, but for gRPC
 brew "grpcurl"
 # OpenType text shaping engine
@@ -81,16 +79,12 @@ brew "temporal"
 brew "tmux"
 # Program that allows you to count code, quickly
 brew "tokei"
-# Extremely fast Python package installer and resolver, written in Rust
-brew "uv"
 # Execute commands when watched files change
 brew "watchexec"
 # Watch files and take action when they change
 brew "watchman"
 # Pluggable terminal workspace, with terminal multiplexer as the base feature
 brew "zellij"
-# Programming language designed for robustness, optimality, and clarity
-brew "zig"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # UNIX shell (command interpreter)
