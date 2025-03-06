@@ -8,3 +8,4 @@ local-packages/
 packages/wezterm/local_config_overrides.lua
 !.lazy.lua
 /.task/
+/packages/mise/config.local.toml

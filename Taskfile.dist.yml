@@ -19,6 +19,9 @@ includes:
   brew:
     taskfile: ./taskfiles/brew.yml
 
+  mise:
+    taskfile: ./taskfiles/mise.yml
+
   shell:
     taskfile: ./taskfiles/shell.yml
 

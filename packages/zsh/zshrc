@@ -38,6 +38,7 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 _ensure_first_path "/opt/homebrew/bin"
 _ensure_first_path "/opt/homebrew/sbin"
 
+# CMD: mise activate --shims
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
 # CMD: starship init zsh
@@ -102,10 +103,6 @@ else
   # ------------
   source "$HOME/.fzf/shell/key-bindings.zsh"
 fi
-
-# These two setup a function to lazy load rbenv and pyenv on demand
-source "$HOME/.zsh/plugins/pyenv.zsh"
-source "$HOME/.zsh/plugins/rbenv.zsh"
 
 # helpful unixy aliases
 alias lsof-tcp-listen='lsof -iTCP -sTCP:LISTEN -P'

@@ -6,6 +6,10 @@ includes:
     taskfile: ./brew.yml
     internal: true
 
+  mise:
+    taskfile: ./mise.yml
+    internal: true
+
 tasks:
   install:
     desc: Install all system dependencies
@@ -22,8 +26,9 @@ tasks:
     cmds:
       - task: install:volta
       - task: install:rust
-      - task: install:cargo_tools
       - task: install:platform_tools
+      - task: install:cargo_tools
+      - task: mise:install
 
   install:volta:
     internal: true

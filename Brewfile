@@ -17,6 +17,8 @@ brew "bazelisk"
 brew "gettext"
 # Cross-platform make
 brew "cmake"
+# Cryptographic recipes and primitives for Python
+brew "cryptography", link: false
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
 # Modern diagram scripting language that turns text to diagrams
@@ -41,8 +43,6 @@ brew "git-filter-repo"
 brew "git-lfs"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
-# Open source programming language to build simple/reliable/efficient software
-brew "go"
 # Like cURL, but for gRPC
 brew "grpcurl"
 # OpenType text shaping engine
@@ -57,18 +57,14 @@ brew "jj"
 brew "jq"
 # Generic library support script
 brew "libtool"
+# YAML Parser
+brew "libyaml"
 # Language Server for the Lua language
 brew "lua-language-server"
+# Polyglot runtime manager (asdf rust clone)
+brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Execute binaries from Python packages in isolated environments
-brew "pipx"
-# Python version management
-brew "pyenv"
-# Pyenv plugin to manage virtualenv
-brew "pyenv-virtualenv"
-# Ruby version manager
-brew "rbenv"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Intuitive find & replace CLI
@@ -83,16 +79,12 @@ brew "temporal"
 brew "tmux"
 # Program that allows you to count code, quickly
 brew "tokei"
-# Extremely fast Python package installer and resolver, written in Rust
-brew "uv"
 # Execute commands when watched files change
 brew "watchexec"
 # Watch files and take action when they change
 brew "watchman"
 # Pluggable terminal workspace, with terminal multiplexer as the base feature
 brew "zellij"
-# Programming language designed for robustness, optimality, and clarity
-brew "zig"
 # Shell extension to navigate your filesystem faster
 brew "zoxide"
 # UNIX shell (command interpreter)

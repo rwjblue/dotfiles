@@ -1,0 +1,9 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
+[tools]
+go = "latest"
+node = "latest"
+python = "latest"
+ruby = "latest"
+uv = "latest"
+zig = "latest"
