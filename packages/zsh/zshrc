@@ -172,7 +172,14 @@ alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
 
-_ensure_first_path "$VOLTA_HOME/bin"
+if command -v volta >/dev/null 2>&1; then
+  # Configure Volta environment
+  export VOLTA_HOME="$HOME/.volta"
+
+  # Ensure Volta's bin directory is first in the PATH (if volta is present, it "should win")
+  _ensure_first_path "$VOLTA_HOME/bin"
+fi
+
 _ensure_first_path "/opt/homebrew/opt/fzf/bin"
 _ensure_first_path "$HOME/src/rwjblue/dotfiles/binutils/crates/global/target/debug"
 _ensure_first_path "$HOME/src/malleatus/shared_binutils/global/target/debug"
