@@ -57,14 +57,14 @@ brew "jj"
 brew "jq"
 # Generic library support script
 brew "libtool"
+# YAML Parser
+brew "libyaml"
 # Language Server for the Lua language
 brew "lua-language-server"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
 brew "neovim"
-# Execute binaries from Python packages in isolated environments
-brew "pipx"
 # Search tool like grep and The Silver Searcher
 brew "ripgrep"
 # Intuitive find & replace CLI
