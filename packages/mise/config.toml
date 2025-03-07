@@ -5,8 +5,14 @@ go = "latest"
 node = "latest"
 python = "latest"
 ruby = "latest"
+rust = "latest"
 uv = "latest"
 zig = "latest"
+
+# cargo augmenting tools
+cargo-binstall = "latest"
+cargo-insta = "latest"
+"cargo:cargo-nextest" = "latest"
 
 [settings]
 experimental = true

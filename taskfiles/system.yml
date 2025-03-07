@@ -24,44 +24,8 @@ tasks:
   install:requirements:
     internal: true
     cmds:
-      - task: install:rust
       - task: install:platform_tools
-      - task: install:cargo_tools
       - task: mise:install
-
-  install:rust:
-    internal: true
-    status:
-      - which rustup
-    cmds:
-      - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-      - source $HOME/.cargo/env
-      - rustup self update
-      - rustup update stable
-
-  install:cargo_tools:
-    internal: true
-    deps: [install:cargo_binstall]
-    cmds:
-      - for: [cargo-nextest, cargo-insta]
-        task: install:cargo_tool
-        vars: { TOOL: "{{.ITEM}}" }
-
-  install:cargo_tool:
-    internal: true
-    vars:
-      TOOL: "{{.TOOL}}"
-    status:
-      - which {{.TOOL}}
-    cmds:
-      - cargo binstall --locked --no-confirm {{.TOOL}}
-
-  install:cargo_binstall:
-    internal: true
-    status:
-      - which cargo-binstall
-    cmds:
-      - curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 
   install:platform_tools:
     internal: true
