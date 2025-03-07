@@ -9,5 +9,6 @@ uv = "latest"
 zig = "latest"
 
 [settings]
+experimental = true
 python.uv_venv_auto = true
 pipx.uvx = true
