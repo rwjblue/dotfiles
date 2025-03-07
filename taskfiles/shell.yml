@@ -11,10 +11,11 @@ tasks:
     desc: Refreshes shell environment by updating startup cache and clearing completion cache
     cmds:
       - task: binutils:cache-shell-startup
-      - task: clear-completion-cache
+      - task: rebuild-completion-cache
 
-  clear-completion-cache:
+  rebuild-completion-cache:
     internal: true
+    desc: Clears zsh completion cache and rebuilds it using any updated config
     cmds:
-      # clear completion cache
       - rm -f ~/.cache/prezto/zcompdump
+      - zsh -c 'autoload -Uz compinit && compinit'
