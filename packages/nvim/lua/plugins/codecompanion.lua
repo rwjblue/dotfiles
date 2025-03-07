@@ -48,10 +48,7 @@ return {
               },
               schema = {
                 model = {
-                  -- NOTE: I don't have access to o3-mini in the API just yet,
-                  -- keep checking status here (I'm current Tier 2):
-                  -- https://help.openai.com/en/articles/10362446-api-access-to-o1-and-o3-mini
-                  -- default = "o3-mini-2025-01-31"
+                  default = "o3-mini-2025-01-31",
                 },
               },
             })
