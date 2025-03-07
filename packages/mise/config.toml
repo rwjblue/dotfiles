@@ -8,8 +8,6 @@ ruby = "latest"
 uv = "latest"
 zig = "latest"
 
-[settings.python]
-uv_venv_auto = true
-
-[settings.pipx]
-uvx = true
+[settings]
+python.uv_venv_auto = true
+pipx.uvx = true
