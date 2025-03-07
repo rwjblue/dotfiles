@@ -10,3 +10,6 @@ zig = "latest"
 
 [settings.python]
 uv_venv_auto = true
+
+[settings.pipx]
+uvx = true
