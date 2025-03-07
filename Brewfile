@@ -43,6 +43,8 @@ brew "git-filter-repo"
 brew "git-lfs"
 # GNU implementation of the famous stream editor
 brew "gnu-sed"
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
 # Like cURL, but for gRPC
 brew "grpcurl"
 # OpenType text shaping engine

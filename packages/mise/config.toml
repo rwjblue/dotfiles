@@ -1,6 +1,16 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 [tools]
+# cargo augmenting tools
+cargo-binstall = "latest"
+cargo-insta = "latest"
+"cargo:cargo-nextest" = "latest"
+
+# software verification (see https://mise.jdx.dev/tips-and-tricks.html#software-verification)
+slsa-verifier = "latest"
+cosign = "latest"
+
+# core tools
 go = "latest"
 node = "latest"
 python = "latest"
@@ -8,11 +18,6 @@ ruby = "latest"
 rust = "latest"
 uv = "latest"
 zig = "latest"
-
-# cargo augmenting tools
-cargo-binstall = "latest"
-cargo-insta = "latest"
-"cargo:cargo-nextest" = "latest"
 
 [settings]
 experimental = true
