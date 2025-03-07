@@ -10,6 +10,10 @@ cargo-insta = "latest"
 slsa-verifier = "latest"
 cosign = "latest"
 
+# provides completion and parsing support for tasks see:
+# https://mise.jdx.dev/tasks/file-tasks.html#arguments
+usage = "latest"
+
 # core tools
 go = "latest"
 node = "latest"
