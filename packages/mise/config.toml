@@ -1,5 +1,8 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
+# this version added experimental support for rust
+min_version = "2025.3.1"
+
 [tools]
 # cargo augmenting tools
 cargo-binstall = "latest"
