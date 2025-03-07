@@ -8,8 +8,5 @@ ruby = "latest"
 uv = "latest"
 zig = "latest"
 
-[env]
-_.python.venv = { path = ".venv" }
-
 [settings.python]
 uv_venv_auto = true
