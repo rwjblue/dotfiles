@@ -23,7 +23,7 @@ go = "latest"
 node = "latest"
 python = "latest"
 ruby = "latest"
-rust = "latest"
+rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
 
