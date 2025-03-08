@@ -20,6 +20,7 @@ tasks:
       for both macOS and Linux platforms.
     cmds:
       - task: install:requirements
+      - task: setup:gh
 
   install:requirements:
     internal: true
@@ -32,6 +33,15 @@ tasks:
     cmds:
       - task: brew:install
       - task: install:linux_tools
+
+  setup:gh:
+    internal: true
+    status:
+      - gh auth status
+    cmds:
+      - gh auth login
+
+  ####### Linux Tools #######
 
   install:linux_tools:
     internal: true
