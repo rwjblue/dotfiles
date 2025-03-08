@@ -10,6 +10,9 @@ includes:
     taskfile: ./mise.yml
     internal: true
 
+vars:
+  HOME: '{{env "HOME"}}'
+
 tasks:
   install:
     desc: Install all system dependencies
@@ -21,6 +24,7 @@ tasks:
     cmds:
       - task: install:requirements
       - task: setup:gh
+      - task: clone-repos
 
   install:requirements:
     internal: true
@@ -41,8 +45,25 @@ tasks:
     cmds:
       - gh auth login
 
-  ####### Linux Tools #######
+  clone-repos:
+    internal: true
+    cmds:
+      - for: ["rwjblue/vadnu"]
+        task: clone-repo
+        vars: { REPO: "{{.ITEM}}" }
 
+  clone-repo:
+    internal: true
+    dir: "/{{.HOME}}"
+    desc: Clone a repository if it doesn't exist
+    vars:
+      REPO_PATH: "{{.HOME}}/src/{{.REPO}}"
+    status:
+      - test -d "{{.REPO_PATH}}"
+    cmds:
+      - gh repo clone rwjblue/vadnu "{{.REPO_PATH}}"
+
+  ####### Linux Tools #######
   install:linux_tools:
     internal: true
     platforms: [linux]
