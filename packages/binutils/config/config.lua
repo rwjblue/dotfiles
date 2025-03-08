@@ -11,10 +11,12 @@ return {
 
     sessions = {
       {
-        name = "✅ todos",
+        name = "✅ vadnu",
         windows = {
           {
-            name = "todos",
+            name = "vadnu",
+            path = "~/src/rwjblue/vadnu",
+            command = "nvim TODO.md",
           },
         },
       },
