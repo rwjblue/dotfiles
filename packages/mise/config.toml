@@ -8,6 +8,7 @@ min_version = "2025.3.1"
 cargo-binstall = "latest"
 cargo-insta = "latest"
 "cargo:cargo-nextest" = "latest"
+"cargo:cargo-edit" = "latest"
 
 # software verification (see https://mise.jdx.dev/tips-and-tricks.html#software-verification)
 slsa-verifier = "latest"
