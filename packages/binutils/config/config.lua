@@ -7,6 +7,8 @@ return {
     "~/src/malleatus/shared_binutils",
   },
   tmux = {
+    default_session = "dotfiles",
+
     sessions = {
       {
         name = "✅ todos",
