@@ -2,6 +2,31 @@ local prompt_library = require("rwjblue.codecompanion.prompts")
 
 return {
   {
+    desc = "Snacks Explorer -> CodeCompanion Integration",
+    "folke/snacks.nvim",
+    optional = true,
+    opts = {
+      explorer = {
+        win = {
+          list = {
+            keys = {
+              ["<C-e>"] = "codecompanion_add",
+            },
+          },
+        },
+        actions = {
+          codecompanion_add = function(_picker, item)
+            vim.notify("CodeCompanion add action executed", vim.log.levels.INFO)
+
+            if item and item.file then
+              vim.notify("Selected: " .. item.file, vim.log.levels.INFO)
+            end
+          end,
+        },
+      },
+    },
+  },
+  {
     "olimorris/codecompanion.nvim",
     cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
 
