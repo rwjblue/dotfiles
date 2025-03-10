@@ -12,9 +12,9 @@ tasks:
     desc: Build binutils and set up symlinks
     cmds:
       - task: clone-shared-binutils
-      - task: build-shared-binutils
+      - task: build:shared-binutils
       - task: setup-local-dotfiles
-      - task: build-binutils
+      - task: build:binutils
       - task: setup-symlinks
 
   clone-shared-binutils:
@@ -25,7 +25,13 @@ tasks:
     cmds:
       - git clone https://github.com/malleatus/shared_binutils.git "{{.SHARED_BINUTILS_PATH}}"
 
-  build-shared-binutils:
+  build:
+    desc: "Build shared_binutils and local binutils"
+    deps:
+      - build:binutils
+      - build:shared-binutils
+
+  build:shared-binutils:
     internal: true
     desc: Build the shared_binutils project
     # NOTE: the leading slash here is a bit annoying, but required due to a bug
@@ -51,11 +57,12 @@ tasks:
           --local-dotfiles-path "{{.LOCAL_DOTFILES_PATH}}" \
           --local-crates-target-path "{{.LOCAL_CRATES_TARGET_PATH}}"
 
-  build-binutils:
+  build:binutils:
     internal: true
     desc: Build the binutils project
     dir: "packages/binutils"
     sources:
+      - "{{.SHARED_BINUTILS_PATH}}/*/src/**/*.rs"
       - "{{.DOTFILES}}/binutils/src/**/*.rs"
       - "{{.DOTFILES}}/binutils/Cargo.toml"
       - "{{.DOTFILES}}/binutils/Cargo.lock"
