@@ -50,7 +50,7 @@ tasks:
   setup-local-dotfiles:
     internal: true
     desc: Set up local dotfiles using shared_binutils
-    deps: [build-shared-binutils]
+    deps: [build:shared-binutils]
     cmds:
       - |
         "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles" \
@@ -74,7 +74,7 @@ tasks:
   setup-symlinks:
     internal: true
     desc: Set up binutils symlinks
-    deps: [build-shared-binutils]
+    deps: [build:shared-binutils]
     cmds:
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
 
