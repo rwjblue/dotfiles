@@ -31,6 +31,7 @@ tasks:
     cmds:
       - task: install:platform_tools
       - task: mise:install
+      - task: mise:update
 
   install:platform_tools:
     internal: true
