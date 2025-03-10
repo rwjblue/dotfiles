@@ -3,6 +3,11 @@ local prompt_library = require("rwjblue.codecompanion.prompts")
 return {
   {
     "olimorris/codecompanion.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim",
+      "nvim-treesitter/nvim-treesitter",
+      "ravitemer/mcphub.nvim",
+    },
     cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
 
     keys = {
@@ -90,6 +95,15 @@ return {
                 opts = {
                   provider = "snacks",
                 },
+              },
+            },
+
+            tools = {
+              mcp = {
+                description = "Call tools and resources from the MCP Servers",
+                callback = function()
+                  return require("mcphub.extensions.codecompanion")
+                end,
               },
             },
           },
