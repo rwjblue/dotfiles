@@ -126,6 +126,7 @@ tasks:
         - "packages/ssh/rc|$HOME/.ssh/rc"
         - "packages/mise/|$HOME/.config/mise"
         - "packages/mcp/|$HOME/.config/mcp"
+        - "packages/hammerspoon/|$HOME/.hammerspoon"
 
     cmds:
       - for:

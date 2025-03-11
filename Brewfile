@@ -97,6 +97,8 @@ brew "rwjblue/tap/cal"
 cask "1password-cli"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Desktop automation application
+cask "hammerspoon"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Open-source code editor
