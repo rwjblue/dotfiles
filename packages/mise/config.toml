@@ -18,6 +18,9 @@ cosign = "latest"
 # https://mise.jdx.dev/tasks/file-tasks.html#arguments
 usage = "latest"
 
+# useful global tools
+"npm:mcp-hub" = "latest"
+
 # core tools
 go = "latest"
 node = "latest"
@@ -29,5 +32,9 @@ zig = "latest"
 
 [settings]
 experimental = true
-python.uv_venv_auto = true
+
+# NOTE: I'd like this feature, but it breaks `npm` backend
+# see: https://github.com/jdx/mise/issues/4600
+# python.uv_venv_auto = true
+
 pipx.uvx = true

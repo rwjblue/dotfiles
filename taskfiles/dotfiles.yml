@@ -125,6 +125,7 @@ tasks:
         - "packages/ghostty/|$HOME/.config/ghostty"
         - "packages/ssh/rc|$HOME/.ssh/rc"
         - "packages/mise/|$HOME/.config/mise"
+        - "packages/mcp/|$HOME/.config/mcp"
 
     cmds:
       - for:

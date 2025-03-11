@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch",
+        "--ignore-robots-txt"
+      ]
+    },
+    "package-version": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-package-version"
+      ]
+    }
+  }
+}
