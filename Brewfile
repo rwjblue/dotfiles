@@ -61,8 +61,6 @@ brew "jq"
 brew "libtool"
 # YAML Parser
 brew "libyaml"
-# Language Server for the Lua language
-brew "lua-language-server"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
