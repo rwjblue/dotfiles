@@ -107,6 +107,8 @@ cask "ollama"
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
+# Agentic IDE powered by AI Flow paradigm
+cask "windsurf"
 # Multiplayer code editor
 cask "zed"
 vscode "charliermarsh.ruff"
