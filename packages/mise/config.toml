@@ -32,9 +32,5 @@ zig = "latest"
 
 [settings]
 experimental = true
-
-# NOTE: I'd like this feature, but it breaks `npm` backend
-# see: https://github.com/jdx/mise/issues/4600
-# python.uv_venv_auto = true
-
+python.uv_venv_auto = true
 pipx.uvx = true
