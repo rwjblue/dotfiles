@@ -101,6 +101,8 @@ cask "ghostty"
 cask "hammerspoon"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
+# Noise cancelling application
+cask "krisp"
 # Get up and running with large language models locally
 cask "ollama"
 # Open-source code editor
