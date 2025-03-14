@@ -62,7 +62,7 @@ tasks:
     status:
       - test -d "{{.REPO_PATH}}"
     cmds:
-      - gh repo clone rwjblue/vadnu "{{.REPO_PATH}}"
+      - gh repo clone "{{.REPO}}" "{{.REPO_PATH}}"
 
   ####### Linux Tools #######
   install:linux_tools:
