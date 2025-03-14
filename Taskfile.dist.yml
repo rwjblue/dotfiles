@@ -2,28 +2,28 @@
 version: 3
 
 includes:
-  dotfiles:
-    aliases:
-      - dot
-    taskfile: ./taskfiles/dotfiles.yml
-
-  nvim:
-    taskfile: ./taskfiles/nvim.yml
-
-  system:
-    taskfile: ./taskfiles/system.yml
-
   binutils:
     taskfile: ./taskfiles/binutils.yml
 
   brew:
     taskfile: ./taskfiles/brew.yml
 
+  dotfiles:
+    aliases:
+      - dot
+    taskfile: ./taskfiles/dotfiles.yml
+
   mise:
     taskfile: ./taskfiles/mise.yml
 
+  nvim:
+    taskfile: ./taskfiles/nvim.yml
+
   shell:
     taskfile: ./taskfiles/shell.yml
+
+  system:
+    taskfile: ./taskfiles/system.yml
 
 tasks:
   default:
