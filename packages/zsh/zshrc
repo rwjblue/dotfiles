@@ -38,7 +38,6 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 _ensure_first_path "/opt/homebrew/bin"
 _ensure_first_path "/opt/homebrew/sbin"
 
-# CMD: mise activate
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
 # CMD: starship init zsh
@@ -177,5 +176,10 @@ _ensure_first_path "/opt/homebrew/opt/fzf/bin"
 _ensure_first_path "$HOME/src/rwjblue/dotfiles/packages/binutils/crates/global/target/debug"
 _ensure_first_path "$HOME/src/malleatus/shared_binutils/global/target/debug"
 _ensure_first_path "$HOME/.local/bin"
+
+# this is not using the `# CMD:` system because it captures `$PATH` at the time
+# it is ran, and we don't want to do that (it needs to be capturing `$PATH` at
+# shell startup time not when we build packages-dist)
+eval "$(mise activate zsh)"
 
 source "$HOME/.zshrc.local"
