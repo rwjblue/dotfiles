@@ -1,9 +1,20 @@
+local group = vim.api.nvim_create_augroup("CodeCompanionHooks_MCPHub", {})
+
+vim.api.nvim_create_autocmd({ "User" }, {
+  pattern = "CodeCompanionChatCreated",
+  group = group,
+  callback = function(request)
+    require("mcphub")
+  end,
+})
+
 return {
   {
     "ravitemer/mcphub.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
     },
+    cmd = "MCPHub",
     build = "mise up mcp-hub@latest",
     config = function()
       require("mcphub").setup({
