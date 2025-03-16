@@ -4,6 +4,9 @@ packages/shells/dist/
 packages-dist/
 packages/binutils/config/local.config.lua
 packages/binutils/local-crates
+# we have to ignore `Cargo.lock` because we would otherwise be unstable when
+# local crates exist and when they don't
+packages/binutils/Cargo.lock
 local-packages/
 packages/wezterm/local_config_overrides.lua
 !.lazy.lua
