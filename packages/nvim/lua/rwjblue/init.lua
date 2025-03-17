@@ -48,6 +48,9 @@ M.has_local_plugins = M.has_modules("local_config.plugins")
 ---
 --- @return string The full path to the lazy-lock.json file
 function M.get_lockfile_path()
+  -- TODO: Check the working directory for a `.lazy.lua`, and possibly try to
+  -- see if it adds plugins? if it does, write the lockfile to the current
+  -- working directory
   local config_path = vim.fn.stdpath("config")
 
   if M.has_local_plugins then
