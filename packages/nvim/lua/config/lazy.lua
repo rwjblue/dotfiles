@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
 local non_rdev = not file_exists("/etc/rdev.conf")
 
-local rwjblue = require('rwjblue')
+local rwjblue = require("rwjblue")
 
 require("lazy").setup({
   spec = {
@@ -28,9 +28,9 @@ require("lazy").setup({
     -- import/override with your plugins
     { import = "plugins" },
 
-    -- local_config.plugins is ilnked in from ~/src/workstuff/local-dotfiles/
+    -- local_nvim.plugins is ilnked in from ~/src/workstuff/local-dotfiles/
     -- for machine local plugin overrides
-    rwjblue.maybe_add_plugin(rwjblue.has_local_plugins, { import = "local_config.plugins" }),
+    rwjblue.maybe_add_plugin(rwjblue.has_local_plugins, { import = "local_nvim.plugins" }),
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -43,18 +43,18 @@ require("lazy").setup({
   },
 
   -- By default lazy.nvim will write a lockfile to
-  -- ~/.config/nvim/lazy-lock.json, but if we have `local_config.plugins` we
-  -- want to write the lockfile to `~/.config/nvim/local_config/lazy-lock.json`
+  -- ~/.config/nvim/lazy-lock.json, but if we have `local_nvim.plugins` we
+  -- want to write the lockfile to `~/.config/nvim/local_nvim/lazy-lock.json`
   -- instead (so we don't fight with the "public" vs "private" lockfile).
-  lockfile = require('rwjblue').get_lockfile_path(),
+  lockfile = require("rwjblue").get_lockfile_path(),
 
   install = {
     missing = rwjblue.should_run_lazy_plugin_checks,
-    colorscheme = { "tokyonight", "habamax" }
+    colorscheme = { "tokyonight", "habamax" },
   },
   checker = {
     enabled = rwjblue.should_run_lazy_plugin_checks, -- automatically check for plugin updates
-    frequency = 86400,                               -- check for updates once a day
+    frequency = 86400, -- check for updates once a day
   },
   performance = {
     rtp = {

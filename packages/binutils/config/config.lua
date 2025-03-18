@@ -4,6 +4,7 @@ local utils = require("utils")
 return {
   crate_locations = {
     "~/src/rwjblue/dotfiles/packages/binutils/",
+    "~/src/rwjblue/dotfiles/local-packages/binutils/",
     "~/src/malleatus/shared_binutils",
   },
   tmux = {

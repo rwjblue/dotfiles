@@ -55,7 +55,6 @@ tasks:
       - |
         "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles" \
           --local-dotfiles-path "{{.LOCAL_DOTFILES_PATH}}" \
-          --local-crates-target-path "{{.LOCAL_CRATES_TARGET_PATH}}"
 
   build:binutils:
     internal: true

@@ -38,12 +38,12 @@ function M.has_modules(path)
 end
 
 --- Cached check for local config plugins
-M.has_local_plugins = M.has_modules("local_config.plugins")
+M.has_local_plugins = M.has_modules("local_nvim.plugins")
 
 --- Determines the appropriate path for the lazy.nvim lockfile
 ---
---- If local config plugins exist (in local_config.plugins), the lockfile will
---- be stored in local_config/lazy-lock.json Otherwise, it will be stored in
+--- If local config plugins exist (in local_nvim.plugins), the lockfile will
+--- be stored in local_nvim/lazy-lock.json Otherwise, it will be stored in
 --- the default location (lazy-lock.json).
 ---
 --- @return string The full path to the lazy-lock.json file
@@ -54,7 +54,7 @@ function M.get_lockfile_path()
   local config_path = vim.fn.stdpath("config")
 
   if M.has_local_plugins then
-    return config_path .. "/local_config/lazy-lock.json"
+    return config_path .. "/local_nvim/lazy-lock.json"
   else
     return config_path .. "/lazy-lock.json"
   end

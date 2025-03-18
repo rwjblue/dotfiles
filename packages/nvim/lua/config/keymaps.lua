@@ -39,26 +39,62 @@ vim.keymap.del({ "n", "v", "i" }, "<a-k>")
 
 -- CMD+1, CMD+2, &c are all mapped to F1, F2, &c in wezterm config
 -- this allows using CMD+<NUMBER> to change to the specific tab
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F1>', '<Cmd>tabnext 1<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 1" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F2>', '<Cmd>tabnext 2<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 2" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F3>', '<Cmd>tabnext 3<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 3" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F4>', '<Cmd>tabnext 4<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 4" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F5>', '<Cmd>tabnext 5<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 5" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F6>', '<Cmd>tabnext 6<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 6" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F7>', '<Cmd>tabnext 7<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 7" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F8>', '<Cmd>tabnext 8<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 8" })
-vim.keymap.set({ 'n', 'i', 'v', 't' }, '<F9>', '<Cmd>tabnext 9<cr>',
-  { noremap = true, silent = true, desc = "Go to tab 9" })
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F1>",
+  "<Cmd>tabnext 1<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 1" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F2>",
+  "<Cmd>tabnext 2<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 2" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F3>",
+  "<Cmd>tabnext 3<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 3" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F4>",
+  "<Cmd>tabnext 4<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 4" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F5>",
+  "<Cmd>tabnext 5<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 5" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F6>",
+  "<Cmd>tabnext 6<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 6" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F7>",
+  "<Cmd>tabnext 7<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 7" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F8>",
+  "<Cmd>tabnext 8<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 8" }
+)
+vim.keymap.set(
+  { "n", "i", "v", "t" },
+  "<F9>",
+  "<Cmd>tabnext 9<cr>",
+  { noremap = true, silent = true, desc = "Go to tab 9" }
+)
 
--- NOTE: local_config is symlinked in from local-dotfiles to allow for local
+-- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
-require("local_config.config.keymaps")
+require("local_nvim.config.keymaps")

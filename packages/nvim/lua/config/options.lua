@@ -18,7 +18,7 @@ vim.opt.exrc = true
 -- just cwd as root.
 vim.g.root_spec = { "cwd" }
 
--- NOTE: local_config is symlinked in from local-dotfiles to allow for local
+-- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
-require("local_config.config.options")
+require("local_nvim.config.options")
