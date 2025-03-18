@@ -21,6 +21,9 @@ return {
         -- json
         "jq",
         "fixjson",
+
+        --markdown
+        "markdown-oxide",
       })
     end,
   },
