@@ -15,6 +15,7 @@ tasks:
       - task: build:shared-binutils
       - task: setup-local-dotfiles
       - task: build:binutils
+      - task: build:local-packages-binutils
       - task: setup-symlinks
 
   clone-shared-binutils:
@@ -67,6 +68,21 @@ tasks:
       - "{{.DOTFILES}}/packages/binutils/Cargo.lock"
     generates:
       - "{{.DOTFILES}}/packages/binutils/target/debug/*"
+    cmds:
+      - cargo build
+
+  build:local-packages-binutils:
+    desc: Build the local-packages/binutils project (if it has crates)
+    dir: "local-packages/binutils"
+    status:
+      - |
+        # If find returns at least one directory inside `crates`, exit 1 => run the task
+        # Otherwise, exit 0 => skip the task
+        if [ "$(find crates -mindepth 1 -maxdepth 1 -type d | wc -l)" -gt 0 ]; then
+          exit 1
+        else
+          exit 0
+        fi
     cmds:
       - cargo build
 
