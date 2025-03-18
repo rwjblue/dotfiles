@@ -63,11 +63,11 @@ tasks:
     dir: "packages/binutils"
     sources:
       - "{{.SHARED_BINUTILS_PATH}}/*/src/**/*.rs"
-      - "{{.DOTFILES}}/binutils/src/**/*.rs"
-      - "{{.DOTFILES}}/binutils/Cargo.toml"
-      - "{{.DOTFILES}}/binutils/Cargo.lock"
+      - "{{.DOTFILES}}/packages/binutils/crates/src/**/*.rs"
+      - "{{.DOTFILES}}/packages/binutils/Cargo.toml"
+      - "{{.DOTFILES}}/packages/binutils/Cargo.lock"
     generates:
-      - "{{.DOTFILES}}/binutils/target/debug/*"
+      - "{{.DOTFILES}}/packages/binutils/target/debug/*"
     cmds:
       - cargo build
 
