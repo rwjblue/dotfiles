@@ -1,6 +1,13 @@
 [workspace]
-resolver = "2"
+resolver = "3"
 members = ["crates/*"]
+
+[workspace.package]
+edition = "2024"
+rust-version = "1.85"
+license = "MIT"
+version = "0.1.0"
+authors = ["Robert Jackson <me@rwjblue.com>"]
 
 [workspace.dependencies]
 anyhow = "1.0.97"
