@@ -95,14 +95,20 @@ brew "jesseduffield/lazygit/lazygit"
 brew "rwjblue/tap/cal"
 # Command-line interface for 1Password
 cask "1password-cli"
+# Application launcher and productivity software
+cask "alfred"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Desktop automation application
 cask "hammerspoon"
+# System monitoring app
+cask "istat-menus"
 # Terminal emulator as alternative to Apple's Terminal app
 cask "iterm2"
 # Noise cancelling application
 cask "krisp"
+# Knowledge base that works on top of a local folder of plain text Markdown files
+cask "obsidian"
 # Get up and running with large language models locally
 cask "ollama"
 # Open-source code editor
