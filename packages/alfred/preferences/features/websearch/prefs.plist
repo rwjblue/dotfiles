@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>customSites</key>
+	<dict>
+		<key>15D080FC-3EF5-4AAD-BCCE-170C0AE220D8</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>gs</string>
+			<key>text</key>
+			<string>GitHub Stars</string>
+			<key>url</key>
+			<string>https://github.com/rwjblue?page=1&amp;tab=stars&amp;utf8=✓&amp;q={query}</string>
+		</dict>
+		<key>E2A2BBEB-3C1F-440D-B4A0-63EFC79640FE</key>
+		<dict>
+			<key>enabled</key>
+			<true/>
+			<key>keyword</key>
+			<string>kagi</string>
+			<key>text</key>
+			<string>Search Kagi for '{query}'</string>
+			<key>url</key>
+			<string>https://kagi.com/search?token=CgJAWj4C8QQ.Bi5nFZX0LSOrCnbbVj7PGRmQ2WIAP6G7d6RqCnTZd3A&amp;q={query}</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
