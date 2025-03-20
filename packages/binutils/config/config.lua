@@ -16,8 +16,8 @@ return {
         windows = {
           {
             name = "vadnu",
-            path = "~/src/github/rwjblue/vadnu",
-            command = "nvim TODO.md",
+            path = "~/src/vadnu",
+            command = "nvim",
           },
         },
       },
