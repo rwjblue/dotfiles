@@ -32,11 +32,38 @@ task: Available tasks for this project:
 
 ## Troubleshooting
 
+Test for undercurl with this command:
+
+```sh
+echo -e "\e[4:3mThis text has an undercurl\e[0m"
+```
+
 To ensure Neovim supports strikethrough and undercurl support, follow [these instructions](https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines).
 
 ## Inspiration
 
-This dotfiles repository was inspired by:
+This repository was inspired by:
 
 - [hjdivad/dotfiles](https://github.com/hjdivad/dotfiles)
 - [dkarter/dotfiles](https://github.com/dkarter/dotfiles)
+
+## New Machine Setup
+
+1. Clone this repo - `git clone https://github.com/rwjblue/dotfiles.git ~/src/rwjblue/dotfiles`
+2. Run `./install`
+3. Alfred
+   - Open
+   - Register
+   - Configure clipboard history
+4. Install 1Password
+   - Open
+   - Register
+   - Configure browser extension
+5. Hammerspoon
+   - Open
+   - Open preferences
+   - Enable accessibility
+   - Enable "launch at startup"
+6. Obsidian
+   - Open
+   - Configure sync
