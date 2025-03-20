@@ -16,7 +16,7 @@ return {
           if not configs.lsp_playground then
             configs.lsp_playground = {
               default_config = {
-                cmd = { "/Users/rwjblue/src/rwjblue/lsp-playground/target/debug/lsp-playground" },
+                cmd = { "/Users/rwjblue/src/github/rwjblue/lsp-playground/target/debug/lsp-playground" },
                 filetypes = { "lsp_playground" },
                 root_dir = function(fname)
                   return util.find_git_ancestor(fname)

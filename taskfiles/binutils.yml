@@ -3,7 +3,7 @@ version: 3
 
 vars:
   DOTFILES: "{{.ROOT_DIR}}"
-  SHARED_BINUTILS_PATH: '{{env "HOME"}}/src/malleatus/shared_binutils'
+  SHARED_BINUTILS_PATH: "{{.ROOT_DIR}}/../../malleatus/shared_binutils"
   LOCAL_DOTFILES_PATH: "{{.DOTFILES}}/local-packages"
   LOCAL_CRATES_TARGET_PATH: "{{.DOTFILES}}/packages/binutils/local-crates"
 

@@ -3,9 +3,9 @@ local utils = require("utils")
 ---@type Config
 return {
   crate_locations = {
-    "~/src/rwjblue/dotfiles/packages/binutils/",
-    "~/src/rwjblue/dotfiles/local-packages/binutils/",
-    "~/src/malleatus/shared_binutils",
+    "~/src/github/rwjblue/dotfiles/packages/binutils/",
+    "~/src/github/rwjblue/dotfiles/local-packages/binutils/",
+    "~/src/github/malleatus/shared_binutils",
   },
   tmux = {
     default_session = "dotfiles",
@@ -16,7 +16,7 @@ return {
         windows = {
           {
             name = "vadnu",
-            path = "~/src/rwjblue/vadnu",
+            path = "~/src/github/rwjblue/vadnu",
             command = "nvim TODO.md",
           },
         },
@@ -26,17 +26,17 @@ return {
         windows = {
           {
             name = "dotfiles",
-            path = "~/src/rwjblue/dotfiles",
+            path = "~/src/github/rwjblue/dotfiles",
             command = "nvim",
           },
           {
             name = "common nvim",
-            path = "~/src/malleatus/common.nvim",
+            path = "~/src/github/malleatus/common.nvim",
             command = "nvim",
           },
           {
             name = "shared_binutils",
-            path = "~/src/malleatus/shared_binutils",
+            path = "~/src/github/malleatus/shared_binutils",
             command = "nvim",
           },
         },
@@ -46,7 +46,7 @@ return {
         windows = {
           {
             name = "sniff-gh-copilot-usage",
-            path = "~/src/rwjblue/sniff-gh-copilot-usage",
+            path = "~/src/github/rwjblue/sniff-gh-copilot-usage",
           },
         },
       },
@@ -55,15 +55,15 @@ return {
         windows = {
           utils.jj_project({
             name = "jj",
-            path = "~/src/jj-vcs/jj",
+            path = "~/src/github/jj-vcs/jj",
           }),
           utils.jj_project({
             name = "jj-gpc",
-            path = "~/src/chriskrycho/jj-gpc",
+            path = "~/src/github/chriskrycho/jj-gpc",
           }),
           utils.jj_project({
             name = "jj-notes",
-            path = "~/src/rwjblue/jj-notes",
+            path = "~/src/github/rwjblue/jj-notes",
             command = "nvim README.md",
           }),
         },

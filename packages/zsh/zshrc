@@ -173,8 +173,8 @@ if command -v volta >/dev/null 2>&1; then
 fi
 
 _ensure_first_path "/opt/homebrew/opt/fzf/bin"
-_ensure_first_path "$HOME/src/rwjblue/dotfiles/packages/binutils/crates/global/target/debug"
-_ensure_first_path "$HOME/src/malleatus/shared_binutils/global/target/debug"
+_ensure_first_path "$HOME/src/github/rwjblue/dotfiles/packages/binutils/crates/global/target/debug"
+_ensure_first_path "$HOME/src/github/malleatus/shared_binutils/global/target/debug"
 _ensure_first_path "$HOME/.local/bin"
 
 # this is not using the `# CMD:` system because it captures `$PATH` at the time

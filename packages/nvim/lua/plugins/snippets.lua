@@ -47,14 +47,14 @@ vim.api.nvim_create_autocmd("FileType", {
 -- To add or modify the auto-commands, simply adjust the entries in the
 -- `extended_configs` table.
 local extended_configs = {
-  { pattern = "Cargo.toml",                extend = "toml",          with = "cargo" },
-  { pattern = "*/.github/workflows/*.yml", extend = "yaml",          with = "github-workflow" },
+  { pattern = "Cargo.toml", extend = "toml", with = "cargo" },
+  { pattern = "*/.github/workflows/*.yml", extend = "yaml", with = "github-workflow" },
 
   -- Ensure `jj describe` also has access to `gitcommit.snippets`
   -- NOTE: `jj` filetype was renamed to `jjdescription` as of https://github.com/neovim/neovim/commit/b365036ab3f5e91439a5397ed0f32b651d60f08c
   -- so the `jj` mapping here can be removed once I've updated to a new enough version of NeoVim (probably 0.11?)
-  { pattern = "*",                         extend = "jj",            with = "gitcommit" },
-  { pattern = "*",                         extend = "jjdescription", with = "gitcommit" },
+  { pattern = "*", extend = "jj", with = "gitcommit" },
+  { pattern = "*", extend = "jjdescription", with = "gitcommit" },
 }
 
 for _, config in ipairs(extended_configs) do
@@ -84,7 +84,7 @@ return {
 
       local snippet_paths = {
         vim.fn.stdpath("config") .. "/snippets",
-        os.getenv("HOME") .. "/src/workstuff/local-dotfiles/nvim/config/snippets",
+        os.getenv("HOME") .. "/src/github/rwjblue/dotfiles/local-packages/nvim/snippets",
       }
 
       -- automatically loads *.snippets files from the top level /snippets directory

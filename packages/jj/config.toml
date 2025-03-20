@@ -7,14 +7,14 @@ name = "Robert Jackson"
 email = "me@rwjblue.com"
 
 [[--scope]]
---when.repositories = ["~/src/linkedin/"]
+--when.repositories = ["~/src/github/linkedin/"]
 
 [--scope.user]
 email = "rjackson@linkedin.com"
 
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
---when.repositories = ["~/src/rwjblue/"]
+--when.repositories = ["~/src/github/rwjblue/"]
 
 [--scope.aliases]
 update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]

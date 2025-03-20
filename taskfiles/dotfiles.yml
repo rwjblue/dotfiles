@@ -148,7 +148,7 @@ tasks:
         - "packages/tealdeer/config.toml|$HOME/Library/Application Support/tealdeer/config.toml"
         - "packages/jj/|$HOME/Library/Application Support/jj"
         - "packages/alfred/snippets|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/snippets"
-        - "packages/alfred/preferences/features|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/preferences/features"
+        #- "packages/alfred/preferences/features|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/preferences/features"
     cmds:
       - for:
           var: MACOS_DOTFILES
