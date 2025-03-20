@@ -13,7 +13,6 @@ tasks:
     cmds:
       - task: clone-shared-binutils
       - task: build:shared-binutils
-      - task: setup-local-dotfiles
       - task: build:binutils
       - task: build:local-packages-binutils
       - task: setup-symlinks
@@ -34,6 +33,7 @@ tasks:
 
   build:shared-binutils:
     internal: true
+    run: once
     desc: Build the shared_binutils project
     # NOTE: the leading slash here is a bit annoying, but required due to a bug
     # in go-task see https://github.com/go-task/task/issues/828
@@ -47,15 +47,6 @@ tasks:
       - "{{.SHARED_BINUTILS_PATH}}/target/debug/generate-binutils-symlinks"
     cmds:
       - cargo build
-
-  setup-local-dotfiles:
-    internal: true
-    desc: Set up local dotfiles using shared_binutils
-    deps: [build:shared-binutils]
-    cmds:
-      - |
-        "{{.SHARED_BINUTILS_PATH}}/target/debug/setup-local-dotfiles" \
-          --local-dotfiles-path "{{.LOCAL_DOTFILES_PATH}}" \
 
   build:binutils:
     internal: true
