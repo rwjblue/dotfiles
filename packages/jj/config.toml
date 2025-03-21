@@ -71,6 +71,9 @@ subprocess = true
 
 'private()' = 'description(glob:"private:*")'
 
+# find all the bookmarks on my current set of revisions, excluding trunk()
+'local_bookmarks()' = 'heads(::@- & (bookmarks() ~ trunk()))'
+
 [aliases]
 
 # abbreviations
@@ -86,6 +89,16 @@ recent = ["log", "-r", "last()"]
 # bring a branch up to date with trunk()
 # works with `jj update` alone or with `-b REV`
 up = ["rebase", "--skip-emptied", "-d", "trunk()"]
+
+# move any local bookmarks forward to the latest commit on trunk()
+update-bookmark = [
+  'bookmark',
+  'move',
+  '--from',
+  'local_bookmarks()',
+  '--to',
+  '@-',
+]
 
 # rebase any private commits onto trunk()
 rebase-private = ["rebase", "--skip-emptied", "-r", "private()", "-d", "@"]
