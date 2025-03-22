@@ -4,7 +4,7 @@ packages/shells/dist/
 packages-dist/
 packages/binutils/config/local.config.lua
 local-packages/
-packages/nvim/lua/local_nvim/
+packages/nvim/lua/local_nvim
 packages/wezterm/local_config_overrides.lua
 !.lazy.lua
 /.task/
