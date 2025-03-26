@@ -27,6 +27,9 @@ return {
         indicator = {
           style = "underline",
         },
+        name_formatter = function(buf)
+          return require("rwjblue.tabs").format_tab_name(buf.tabnr)
+        end,
       },
     },
   },
