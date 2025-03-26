@@ -20,6 +20,13 @@ return {
         "sql",
       })
     end,
+    config = function(_, opts)
+      require("nvim-treesitter.configs").setup(opts)
+
+      -- Load custom query overrides
+      local overrides = require("rwjblue.overrides")
+      overrides.load_ts_query_overrides()
+    end,
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
