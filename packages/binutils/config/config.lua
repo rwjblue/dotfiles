@@ -19,6 +19,11 @@ return {
             path = "~/src/vadnu",
             command = "nvim",
           },
+          {
+            name = "malleatus/vadnu",
+            path = "~/src/github/malleatus/vadnu",
+            command = "nvim",
+          },
         },
       },
       {
