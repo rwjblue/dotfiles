@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "workspace.library": [
-    "~/src/malleatus/shared_binutils/config"
+    "~/src/github/malleatus/shared_binutils/config"
   ]
 }
