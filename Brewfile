@@ -59,8 +59,6 @@ brew "jj"
 brew "jq"
 # Generic library support script
 brew "libtool"
-# YAML Parser
-brew "libyaml"
 # Polyglot runtime manager (asdf rust clone)
 brew "mise"
 # Ambitious Vim-fork focused on extensibility and agility
