@@ -33,4 +33,16 @@ return {
       },
     },
   },
+  {
+    -- TODO: Remove this once https://github.com/folke/noice.nvim/issues/1082
+    -- is resolved
+    "folke/noice.nvim",
+    opts = {
+      views = {
+        cmdline_popup = {
+          border = { style = "none" },
+        },
+      },
+    },
+  },
 }
