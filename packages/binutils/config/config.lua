@@ -47,11 +47,12 @@ return {
         },
       },
       {
-        name = "🦨work",
+        name = "🪓hacks",
         windows = {
           {
-            name = "sniff-gh-copilot-usage",
-            path = "~/src/github/rwjblue/sniff-gh-copilot-usage",
+            name = "tamjaweb",
+            path = "~/src/github/malleatus/tamjaweb",
+            command = "nvim",
           },
         },
       },
