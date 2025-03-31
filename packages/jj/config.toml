@@ -12,6 +12,12 @@ email = "me@rwjblue.com"
 [--scope.user]
 email = "rjackson@linkedin.com"
 
+[[--scope]]
+--when.repositories = ["~/src/github/gleanwork/", "~/src/github/askscio/"]
+
+[--scope.user]
+email = "robert.jackson@glean.com"
+
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
 --when.repositories = ["~/src/github/rwjblue/"]
