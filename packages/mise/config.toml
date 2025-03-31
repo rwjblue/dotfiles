@@ -32,5 +32,6 @@ zig = "latest"
 
 [settings]
 experimental = true
-python.uv_venv_auto = true
+# disabled until https://github.com/jdx/mise/issues/4600 is resolved
+#python.uv_venv_auto = true
 pipx.uvx = true
