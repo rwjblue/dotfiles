@@ -20,6 +20,7 @@ usage = "latest"
 
 # useful global tools
 "npm:mcp-hub" = "latest"
+"npm:@mermaid-js/mermaid-cli" = "latest"
 
 # core tools
 go = "latest"
