@@ -23,8 +23,6 @@
 	ff = only
 [init]
 	defaultBranch = main
-[include]
-	path = ./.gitconfig.local
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
@@ -33,13 +31,13 @@
 [rerere]
 	enabled = true
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [credential "https://linkedin.ghe.com"]
-	helper = 
+	helper =
 	helper = !/opt/homebrew/bin/gh auth git-credential
 [merge]
 	conflictStyle = zdiff3
@@ -103,3 +101,6 @@
   auto = false
   # https://git-scm.com/docs/git-config#Documentation/git-config.txt-maintenancestrategy
   strategy = incremental
+
+[include]
+	path = ./.gitconfig.local
