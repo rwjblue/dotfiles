@@ -98,6 +98,8 @@ cask "1password-cli"
 cask "alfred"
 # Web browser focusing on privacy
 cask "brave-browser"
+# Voice and text chat software
+cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Desktop automation application
