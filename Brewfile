@@ -32,6 +32,8 @@ brew "fish"
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
+# OpenType text shaping engine
+brew "harfbuzz"
 # Distributed revision control system
 brew "git"
 # Syntax-highlighting pager for git and diff output
@@ -46,18 +48,18 @@ brew "gnu-sed"
 brew "gnupg"
 # Like cURL, but for gRPC
 brew "grpcurl"
-# OpenType text shaping engine
-brew "harfbuzz"
 # Post-modern modal text editor
 brew "helix"
 # Command-line benchmarking tool
 brew "hyperfine"
+# Generic library support script
+brew "libtool"
+# Tools and libraries to manipulate images in many formats
+brew "imagemagick"
 # Git-compatible distributed version control system
 brew "jj"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
-# Generic library support script
-brew "libtool"
 # YAML Parser
 brew "libyaml"
 # Polyglot runtime manager (asdf rust clone)
@@ -102,6 +104,8 @@ cask "brave-browser"
 cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
+# Set of tools to manage resources and applications hosted on Google Cloud
+cask "google-cloud-sdk"
 # Desktop automation application
 cask "hammerspoon"
 # System monitoring app
