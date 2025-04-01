@@ -6,6 +6,30 @@
 name = "Robert Jackson"
 email = "me@rwjblue.com"
 
+
+[core]
+# https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
+fsmonitor = "watchman"
+watchman.register_snapshot_trigger = true
+
+[git]
+# https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
+private-commits = 'description(glob:"private:*")'
+# https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
+push-bookmark-prefix = "rwjblue/push-"
+# This will become the default in a future version (it also fixes issues with using git@github.com remotes)
+# per https://github.com/jj-vcs/jj/releases/tag/v0.26.0
+subprocess = true
+sign-on-push = true
+
+[signing]
+behavior = "drop"
+backend = "ssh"
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG90UNRupC9GKqqXL8/5TZ3mQAE6lzN4517Isklyxk8a"
+
+[signing.backends.ssh]
+program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
 [[--scope]]
 --when.repositories = ["~/src/github/linkedin/"]
 
@@ -13,10 +37,17 @@ email = "me@rwjblue.com"
 email = "rjackson@linkedin.com"
 
 [[--scope]]
---when.repositories = ["~/src/github/gleanwork/", "~/src/github/askscio/"]
+--when.repositories = [
+  "~/src/github/gleanwork/",
+  "~/src/github/askscio/",
+  "~/src/github/rwjblue/dotfiles/local-packages/",
+]
 
 [--scope.user]
 email = "robert.jackson@glean.com"
+
+[--scope.signing]
+key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnJAefwOOhSTp/bxJjFJXVluHPG7hMjgLCVqBZ/YlAW"
 
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
@@ -39,20 +70,6 @@ update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
 #  - https://github.com/jj-vcs/jj/discussions/4690
 pager = "delta"
 diff.format = "git"
-
-[core]
-# https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
-fsmonitor = "watchman"
-watchman.register_snapshot_trigger = true
-
-[git]
-# https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
-private-commits = 'description(glob:"private:*")'
-# https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
-push-bookmark-prefix = "rwjblue/push-"
-# This will become the default in a future version (it also fixes issues with using git@github.com remotes)
-# per https://github.com/jj-vcs/jj/releases/tag/v0.26.0
-subprocess = true
 
 [revset-aliases]
 
