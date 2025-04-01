@@ -96,6 +96,8 @@ brew "rwjblue/tap/cal"
 cask "1password-cli"
 # Application launcher and productivity software
 cask "alfred"
+# Web browser focusing on privacy
+cask "brave-browser"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Desktop automation application
@@ -110,6 +112,8 @@ cask "krisp"
 cask "obsidian"
 # Get up and running with large language models locally
 cask "ollama"
+# WebKit based web browser
+cask "orion"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
