@@ -22,6 +22,7 @@ push-bookmark-prefix = "rwjblue/push-"
 subprocess = true
 sign-on-push = true
 
+# See https://github.com/jj-vcs/jj/discussions/3750
 [signing]
 behavior = "drop"
 backend = "ssh"
