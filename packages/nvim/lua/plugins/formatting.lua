@@ -9,7 +9,7 @@ return {
         -- disable python formatter, which will force conform.nvim to fallback to ruff instead
         python = {},
         json = { "fixjson" },
-        javascript = { { "prettierd", "prettier" } },
+        javascript = { "prettierd", "prettier", stop_after_first = true },
       },
       -- Customize formatters
       formatters = {
@@ -18,5 +18,5 @@ return {
         },
       },
     },
-  }
+  },
 }
