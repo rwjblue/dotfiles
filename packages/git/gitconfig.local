@@ -5,5 +5,5 @@
 # repo, it is referenced from the main `.gitconfig`
 
 [user]
-  email = rjackson@linkedin.com
+  email = your.work.email@here.com
   name = Robert Jackson
