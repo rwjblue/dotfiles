@@ -56,24 +56,6 @@ return {
           },
         },
       },
-      {
-        name = "🍐Jujutsu",
-        windows = {
-          utils.jj_project({
-            name = "jj",
-            path = "~/src/github/jj-vcs/jj",
-          }),
-          utils.jj_project({
-            name = "jj-gpc",
-            path = "~/src/github/chriskrycho/jj-gpc",
-          }),
-          utils.jj_project({
-            name = "jj-notes",
-            path = "~/src/github/rwjblue/jj-notes",
-            command = "nvim README.md",
-          }),
-        },
-      },
     },
   },
 }
