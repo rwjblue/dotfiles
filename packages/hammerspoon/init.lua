@@ -4,19 +4,21 @@ hs.loadSpoon("EmmyLua")
 
 local currentHotkeys = nil
 
-local orionFilter = hs.window.filter.new("Orion")
+local braveFilter = hs.window.filter.new("Brave Browser")
 
-orionFilter:subscribe(hs.window.filter.windowFocused, function()
+braveFilter:subscribe(hs.window.filter.windowFocused, function()
   local hotkey = hs.hotkey.bind({ "cmd", "shift" }, "C", function()
     local script = [[
       function run() {
-        const orion = Application('Orion');
-        // TODO: fix this, it's not quite right (we should only operate on the foremost window not windows[0])
-        if (orion.windows.length > 0 && orion.windows[0].currentTab) {
-          return orion.windows[0].currentTab.url();
-        } else {
-          return null;
+        const brave = Application('Brave Browser');
+        if (brave.windows.length > 0) {
+          const win = brave.windows[0];
+          const activeTab = win.activeTab;
+          if (activeTab) {
+            return activeTab.url();
+          }
         }
+        return null;
       }
     ]]
 
@@ -30,13 +32,13 @@ orionFilter:subscribe(hs.window.filter.windowFocused, function()
   end)
 
   currentHotkeys = currentHotkeys or {}
-  currentHotkeys["orionCopyUrl"] = hotkey
+  currentHotkeys["braveCopyUrl"] = hotkey
 end)
 
 -- Unbind the hotkey when leaving Orion
-orionFilter:subscribe(hs.window.filter.windowUnfocused, function()
-  if currentHotkeys and currentHotkeys["orionCopyUrl"] then
-    currentHotkeys["orionCopyUrl"]:delete()
-    currentHotkeys["orionCopyUrl"] = nil
+braveFilter:subscribe(hs.window.filter.windowUnfocused, function()
+  if currentHotkeys and currentHotkeys["braveCopyUrl"] then
+    currentHotkeys["braveCopyUrl"]:delete()
+    currentHotkeys["braveCopyUrl"] = nil
   end
 end)
