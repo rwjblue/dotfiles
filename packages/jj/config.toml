@@ -32,12 +32,6 @@ key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG90UNRupC9GKqqXL8/5TZ3mQAE6lzN4517Is
 program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 
 [[--scope]]
---when.repositories = ["~/src/github/linkedin/"]
-
-[--scope.user]
-email = "rjackson@linkedin.com"
-
-[[--scope]]
 --when.repositories = [
   "~/src/github/gleanwork/",
   "~/src/github/askscio/",
