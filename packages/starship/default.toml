@@ -1,4 +1,0 @@
-# Default Starship configuration, symlinked to ~/.config/starship.toml. By
-# default, this uses a Starship config that uses `jj` and not `git`.
-
-# CMD: cat ./packages/starship/jj.toml

@@ -25,3 +25,6 @@ zsh_indicator = '🚀 '
 unknown_indicator = 'mystery shell'
 style = 'cyan bold'
 disabled = false
+
+[gcloud]
+disabled = true
