@@ -35,6 +35,7 @@ program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 --when.repositories = [
   "~/src/github/gleanwork/",
   "~/src/github/askscio/",
+  "~/src/github/robert-jackson-glean/",
   "~/src/github/rwjblue/dotfiles/local-packages/",
 ]
 
@@ -46,7 +47,10 @@ key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnJAefwOOhSTp/bxJjFJXVluHPG7hMjgLCVq
 
 # Configuration for repositories where I push directly to trunk() (e.g. personal dotfiles)
 [[--scope]]
---when.repositories = ["~/src/github/rwjblue/"]
+--when.repositories = [
+  "~/src/github/rwjblue/",
+  "~/src/github/robert-jackson-glean/",
+]
 
 [--scope.aliases]
 update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
