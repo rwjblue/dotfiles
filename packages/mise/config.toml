@@ -30,6 +30,7 @@ ruby = "latest"
 rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
+"go:github.com/spf13/cobra-cli" = "latest"
 
 [settings]
 experimental = true
