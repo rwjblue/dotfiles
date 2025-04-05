@@ -35,6 +35,11 @@ return {
             command = "nvim",
           },
           {
+            name = "local-dotfiles",
+            path = "~/src/github/rwjblue/dotfiles/local-packages",
+            command = "nvim",
+          },
+          {
             name = "common nvim",
             path = "~/src/github/malleatus/common.nvim",
             command = "nvim",
