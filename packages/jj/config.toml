@@ -10,7 +10,7 @@ email = "me@rwjblue.com"
 [core]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
 fsmonitor = "watchman"
-watchman.register_snapshot_trigger = true
+watchman.register-snapshot-trigger = true
 
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits

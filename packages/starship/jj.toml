@@ -42,7 +42,6 @@ jj root --ignore-working-copy > /dev/null 2>&1 && jj log --ignore-working-copy -
           label(if(empty, "empty"), description_placeholder),
         ),
         bookmarks.join(", "),
-        branches.join(", "),
         if(conflict, "💥"),
         if(divergent, "🚧"),
         if(hidden, "👻"),
