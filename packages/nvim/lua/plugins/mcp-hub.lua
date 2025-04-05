@@ -15,7 +15,7 @@ return {
       "nvim-lua/plenary.nvim",
     },
     cmd = "MCPHub",
-    build = "mise up mcp-hub@latest",
+    build = "mise up npm:mcp-hub@latest",
     config = function()
       require("mcphub").setup({
         port = 9090, -- Port for MCP Hub server
