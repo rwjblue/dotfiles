@@ -26,6 +26,21 @@ vim.api.nvim_create_autocmd("FileType", {
 
 require("rwjblue.tabs").setup_commands()
 
+vim.api.nvim_create_user_command("CopyRelativePath", function()
+  -- Get path relative to current working directory
+  local relative_path = vim.fn.expand("%:.")
+
+  -- Copy to clipboard
+  vim.fn.setreg("+", relative_path)
+  vim.fn.setreg("*", relative_path)
+
+  vim.notify("Copied relative path: " .. relative_path)
+end, {
+  desc = "Copy the relative path of the current buffer to the clipboard (relative to cwd)",
+  bang = false,
+  nargs = 0,
+})
+
 -- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
