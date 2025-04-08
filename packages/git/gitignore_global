@@ -65,6 +65,9 @@ Thumbs.db
 # ###############################
 .jj/
 
+# Cursor specific files
+.cursorignore
+
 # Mise Local Config Overrides #
 # ########################### #
 .mise/config.local.toml
