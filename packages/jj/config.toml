@@ -1,17 +1,17 @@
 "$schema" = "https://jj-vcs.github.io/jj/latest/config-schema.json"
 
 [user]
-# Update to use conditional variables when this is released:
-# https://github.com/jj-vcs/jj/commit/f5d450d7c3a8f8a49e30aef0fd18d8295ffc8cb6
 name = "Robert Jackson"
 email = "me@rwjblue.com"
 
 
 [core]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
-fsmonitor = "watchman"
-watchman.register-snapshot-trigger = true
-
+# NOTE: disabled due to issues with larger repos missing/losing filesystem events on macos
+# not sure exactly what is wrong and don't have time to debug :/
+# fsmonitor = "watchman"
+# watchman.register-snapshot-trigger = true
+#
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'

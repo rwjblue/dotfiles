@@ -22,11 +22,8 @@ disabled = true
 [custom.jj]
 # combining `jj root` here to avoid having to execute `jj` multiple times
 # this brings the total timings for `custom.jj` from 63ms down to 25ms
-#
-# also using `--ignore-working-copy` because we use watchman for automatic file
-# snapshotting
 command = '''
-jj root --ignore-working-copy > /dev/null 2>&1 && jj log --ignore-working-copy --no-graph --color always --revisions @ --template '
+jj root --ignore-working-copy > /dev/null 2>&1 && jj log --no-graph --color always --revisions @ --template '
   concat(
     "🍐",
     surround(
