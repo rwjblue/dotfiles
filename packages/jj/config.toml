@@ -9,9 +9,11 @@ email = "me@rwjblue.com"
 
 [core]
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#watchman
-fsmonitor = "watchman"
-watchman.register-snapshot-trigger = true
-
+# NOTE: disabled due to issues with larger repos missing/losing filesystem events on macos
+# not sure exactly what is wrong and don't have time to debug :/
+# fsmonitor = "watchman"
+# watchman.register-snapshot-trigger = true
+#
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
