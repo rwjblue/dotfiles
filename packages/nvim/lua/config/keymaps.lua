@@ -23,6 +23,16 @@ map("t", "<C-j>", [[<C-\><C-n><C-w>j]], { desc = "Go to lower window" })
 map("t", "<C-k>", [[<C-\><C-n><C-w>k]], { desc = "Go to upper window" })
 map("t", "<C-l>", [[<C-\><C-n><C-w>l]], { desc = "Go to right window" })
 
+-- Move to window using C-w + hjkl keys
+map("t", "<C-w>h", [[<c-\><c-n><c-w>h]], { desc = "win-left (terminal)" })
+map("t", "<C-w><c-h>", [[<c-\><c-n><c-w>h]], { desc = "win-left (terminal)" })
+map("t", "<C-w>j", [[<c-\><c-n><c-w>j]], { desc = "win-down (terminal)" })
+map("t", "<C-w><c-j>", [[<c-\><c-n><c-w>j]], { desc = "win-down (terminal)" })
+map("t", "<C-w>k", [[<c-\><c-n><c-w>k]], { desc = "win-up (terminal)" })
+map("t", "<C-w><c-k>", [[<c-\><c-n><c-w>k]], { desc = "win-up (terminal)" })
+map("t", "<C-w>l", [[<c-\><c-n><c-w>l]], { desc = "win-right (terminal)" })
+map("t", "<C-w><c-l>", [[<c-\><c-n><c-w>l]], { desc = "win-right (terminal)" })
+
 -- Resize window using <ctrl> arrow keys
 map("t", "<C-Up>", "<cmd>resize +2<cr>", { desc = "Increase window height" })
 map("t", "<C-Down>", "<cmd>resize -2<cr>", { desc = "Decrease window height" })
@@ -31,6 +41,13 @@ map("t", "<C-Right>", "<cmd>vertical resize +2<cr>", { desc = "Increase window w
 
 -- Enable exiting terminal mode with Esc
 map("t", [[<C-\><C-\>]], [[<C-\><C-n>]])
+
+-- Make creating more terminal splits easier
+map("t", "<C-w>n>", [[<c-\><c-n><c-w>n<Cmd>terminal<cr>]], { desc = "win new (terminal)" })
+map("t", "<C-w><c-n>", [[<c-\><c-n><c-w>n<Cmd>terminal<cr>]], { desc = "win new (terminal)" })
+map("t", "<C-w>v>", [[<c-\><c-n><c-w>v<Cmd>terminal<cr>]], { desc = "win new (vertical terminal)" })
+map("t", "<C-w><c-v>", [[<c-\><c-n><c-w>v<Cmd>terminal<cr>]], { desc = "win new (vertical terminal)" })
+map("t", "<C-w>c", [[<c-\><c-n><c-w>c]], { desc = "close win (terminal)" })
 
 -- remove the "move up" and "move down" keymaps added by LazyVim
 -- https://github.com/LazyVim/LazyVim/blob/879e29504d43e9f178d967ecc34d482f902e5a91/lua/lazyvim/config/keymaps.lua#L26-L32
