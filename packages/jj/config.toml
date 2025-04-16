@@ -52,9 +52,6 @@ key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnJAefwOOhSTp/bxJjFJXVluHPG7hMjgLCVq
   "~/src/github/robert-jackson-glean/",
 ]
 
-[--scope.aliases]
-update-trunk = ["bookmark", "move", "--from", "trunk()", "--to", "@-"]
-
 [[--scope]]
 --when.commands = ["diff"]
 
@@ -93,13 +90,15 @@ diff.format = "git"
 
 'private()' = 'description(glob:"private:*")'
 
-# find all the bookmarks on my current set of revisions, excluding trunk()
-'local_bookmarks()' = 'heads(::@- & (bookmarks() ~ trunk()))'
+# find the nearest bookmark to the given revision
+'closest_bookmark(to)' = 'heads(::to & bookmarks())'
+
+# find the nearest revision that has a description, is not empty, and is not a merge
+'closest_pushable(to)' = 'heads(::to & ~description(exact:"") & (~empty() | merges()))'
 
 [aliases]
 
 # abbreviations
-b = ["bookmark"]
 sq = ["squash"]
 ws = ["workspace"]
 
@@ -108,18 +107,17 @@ open = ["log", "-r", "open(mine())"]
 ropen = ["log", "-r", "ropen()"]
 recent = ["log", "-r", "last()"]
 
-# bring a branch up to date with trunk()
-# works with `jj update` alone or with `-b REV`
+# bring a branch up to date with trunk() works with `jj update` alone or with `-b REV`
 up = ["rebase", "--skip-emptied", "-d", "trunk()"]
 
-# move any local bookmarks forward to the latest commit on trunk()
-update-bookmark = [
-  'bookmark',
-  'move',
-  '--from',
-  'local_bookmarks()',
-  '--to',
-  '@-',
+# find the nearest bookmark and move it forward to the nearest pushable revision
+tug = [
+  "bookmark",
+  "move",
+  "--from",
+  "closest_bookmark(@)",
+  "--to",
+  "closest_pushable(@)",
 ]
 
 # rebase any private commits onto trunk()
