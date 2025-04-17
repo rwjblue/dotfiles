@@ -9,6 +9,9 @@ return {
     opts = {
       cmd = vim.fn.expand("~/.local/share/mise/shims/mcp-hub"),
       config = vim.fn.expand("~/.config/mcp/servers.json"),
+      native_servers = {
+        ["mcp-go"] = require("mcp_servers.mcp_go"),
+      },
     },
   },
 }
