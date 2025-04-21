@@ -22,6 +22,13 @@ push-bookmark-prefix = "rwjblue/push-"
 subprocess = true
 sign-on-push = true
 
+# by default `jj git fetch` will fetch from `origin` (just like `git`), but
+# when working with `gh` create forks the main upstream is a remote named
+# `upstream` (and my fork is `origin`). if we configure this to be `['origin',
+# 'usptream']` `jj git fetch` will error in repos with only an `origin`, so we
+# just set it to `glob:*`
+fetch = ["glob:*"]
+
 # See https://github.com/jj-vcs/jj/discussions/3750
 [signing]
 behavior = "drop"
