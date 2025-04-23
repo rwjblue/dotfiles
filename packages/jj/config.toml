@@ -45,6 +45,7 @@ program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
   "~/src/github/robert-jackson-glean/",
   "~/src/github/rwjblue/dotfiles/local-packages/",
   "~/src/github/mark3labs/mcp-go",
+  "~/src/github/speakeasy-api/",
 ]
 
 [--scope.user]
