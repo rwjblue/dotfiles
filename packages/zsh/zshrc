@@ -38,6 +38,20 @@ export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
 _ensure_first_path "/opt/homebrew/bin"
 _ensure_first_path "/opt/homebrew/sbin"
 
+HISTSIZE=50000
+SAVEHIST=50000
+HISTFILE=~/.zsh_history
+
+# enabled shared history across zsh shells
+setopt SHARE_HISTORY
+setopt INC_APPEND_HISTORY
+# don't store duplicate entries
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+# don't store command that start with a space
+setopt HIST_IGNORE_SPACE
+
 # CMD: zoxide init zsh
 # CMD: atuin init zsh --disable-up-arrow --disable-ctrl-r
 # CMD: starship init zsh
