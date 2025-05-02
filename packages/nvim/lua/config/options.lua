@@ -25,6 +25,9 @@ vim.diagnostic.config({
   virtual_lines = true,
 })
 
+-- Disable LazyVim format-on-save
+vim.g.autoformat = false
+
 -- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
