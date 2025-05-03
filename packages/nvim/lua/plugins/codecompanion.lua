@@ -5,7 +5,7 @@ return {
     -- See https://github.com/Davidyz/VectorCode/blob/main/docs/neovim.md
     "Davidyz/VectorCode",
     version = "*",
-    build = "pipx install --force vectorcode",
+    build = "mise up pipx:vectorcode@latest",
     dependencies = { "nvim-lua/plenary.nvim" },
     cmd = "VectorCode",
   },
