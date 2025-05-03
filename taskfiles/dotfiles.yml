@@ -4,6 +4,7 @@ version: 3
 vars:
   DOTFILES_DIR: "{{.ROOT_DIR}}"
   SHARED_BINUTILS_PATH: "{{.ROOT_DIR}}/../../malleatus/shared_binutils"
+  LOCAL_DOTFILES_PATH: "{{.DOTFILES_DIR}}/local-packages"
   # Get FORCE from environment or default to false
   FORCE: '{{env "FORCE"}}'
 
