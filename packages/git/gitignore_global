@@ -73,3 +73,6 @@ Thumbs.db
 .mise/config.local.toml
 .mise.local.toml
 mise.local.toml
+
+# Local repo context
+/.vectorcode/

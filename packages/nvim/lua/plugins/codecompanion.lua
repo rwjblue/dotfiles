@@ -2,6 +2,14 @@ local prompt_library = require("rwjblue.codecompanion.prompts")
 
 return {
   {
+    -- See https://github.com/Davidyz/VectorCode/blob/main/docs/neovim.md
+    "Davidyz/VectorCode",
+    version = "*",
+    build = "mise up pipx:vectorcode@latest",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    cmd = "VectorCode",
+  },
+  {
     "olimorris/codecompanion.nvim",
 
     dependencies = {
@@ -102,6 +110,8 @@ return {
                   provider = "snacks",
                 },
               },
+
+              -- Custom slash commands
             },
 
             tools = {
@@ -131,6 +141,11 @@ return {
               make_vars = true,
               make_slash_commands = true,
               show_result_in_chat = true,
+            },
+          },
+          vectorcode = {
+            opts = {
+              add_tool = true,
             },
           },
         },

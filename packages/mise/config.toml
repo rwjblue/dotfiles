@@ -21,6 +21,8 @@ usage = "latest"
 # useful global tools
 "npm:mcp-hub" = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
+"go:github.com/spf13/cobra-cli" = "latest"
+"pipx:vectorcode" = "latest"
 
 # core tools
 go = "latest"
@@ -30,7 +32,6 @@ ruby = "latest"
 rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
-"go:github.com/spf13/cobra-cli" = "latest"
 
 [settings]
 experimental = true
