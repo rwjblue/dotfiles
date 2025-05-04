@@ -10,12 +10,23 @@ return {
     cmd = "VectorCode",
   },
   {
+    "ravitemer/codecompanion-history.nvim",
+    cmd = "CodeCompanionHistory",
+    opts = {}
+  },
+  {
     "olimorris/codecompanion.nvim",
 
     dependencies = {
       "nvim-lua/plenary.nvim",
       "nvim-treesitter/nvim-treesitter",
+      "Davidyz/VectorCode",
       "ravitemer/mcphub.nvim",
+      "ravitemer/codecompanion-history.nvim",
+      -- {
+      --   -- test out local codecompanion-history.nvim (trying ot add snacks support)
+      --   dir = vim.fn.expand("~/src/github/ravitemer/codecompanion-history.nvim"),
+      -- },
     },
     cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
 
@@ -135,6 +146,23 @@ return {
         },
 
         extensions = {
+          history = {
+            enabled = true,
+            opts = {
+              -- Keymap to open history from chat buffer (default: gh)
+              keymap = "gh",
+              -- Automatically generate titles for new chats
+              auto_generate_title = true,
+              ---On exiting and entering neovim, loads the last chat on opening chat
+              continue_last_chat = false,
+              ---When chat is cleared with `gx` delete the chat from history
+              delete_on_clearing_chat = false,
+              -- Picker interface ("telescope" or "default")
+              picker = "snacks",
+              ---Enable detailed logging for history extension
+              enable_logging = false,
+            },
+          },
           mcphub = {
             callback = "mcphub.extensions.codecompanion",
             opts = {
