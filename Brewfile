@@ -1,5 +1,7 @@
 tap "jesseduffield/lazygit"
 tap "rwjblue/tap"
+# Run your GitHub Actions locally
+brew "act"
 # Record and share terminal sessions
 brew "asciinema"
 # Code searching, linting, rewriting
