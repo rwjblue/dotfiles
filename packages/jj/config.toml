@@ -77,7 +77,6 @@ pager = "delta"
 diff.format = "git"
 
 [revset-aliases]
-
 # View the entire branch being worked on
 'slice()' = 'slice(@)'
 'slice(from)' = 'ancestors(reachable(from, mutable()), 2)'
@@ -118,6 +117,25 @@ recent = ["log", "-r", "last()"]
 
 # bring a branch up to date with trunk() works with `jj update` alone or with `-b REV`
 up = ["rebase", "--skip-emptied", "-d", "trunk()"]
+
+pre-commit-last = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+  "jj diff -r @ --name-only --no-pager | xargs pre-commit run --files",
+]
+
+pre-commit-branch = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+
+  "jj diff -r '(trunk()..@)::' --name-only --no-pager | xargs pre-commit run --files",
+]
 
 # find the nearest bookmark and move it forward to the nearest pushable revision
 tug = [
