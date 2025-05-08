@@ -23,10 +23,6 @@ return {
       "Davidyz/VectorCode",
       "ravitemer/mcphub.nvim",
       "ravitemer/codecompanion-history.nvim",
-      -- {
-      --   -- test out local codecompanion-history.nvim (trying ot add snacks support)
-      --   dir = vim.fn.expand("~/src/github/ravitemer/codecompanion-history.nvim"),
-      -- },
     },
     cmd = { "CodeCompanion", "CodeCompanionActions", "CodeCompanionChat", "CodeCompanionCmd" },
 
