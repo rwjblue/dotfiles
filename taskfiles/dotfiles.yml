@@ -132,6 +132,7 @@ tasks:
         - "packages/mise/|$HOME/.config/mise"
         - "packages/mcp/|$HOME/.config/mcp"
         - "packages/hammerspoon/|$HOME/.hammerspoon"
+        - "packages/jj/|$HOME/.config/jj"
 
     cmds:
       - for:
@@ -151,7 +152,6 @@ tasks:
         - "packages/vscode/keybindings.json|$HOME/Library/Application Support/Code/User/keybindings.json"
         - "packages/vscode/snippets|$HOME/Library/Application Support/Code/User/snippets"
         - "packages/tealdeer/config.toml|$HOME/Library/Application Support/tealdeer/config.toml"
-        - "packages/jj/|$HOME/Library/Application Support/jj"
         - "packages/alfred/snippets|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/snippets"
         #- "packages/alfred/preferences/features|$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/preferences/features"
     cmds:
