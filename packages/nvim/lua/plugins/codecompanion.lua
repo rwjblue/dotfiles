@@ -56,7 +56,14 @@ return {
 
           xai = function()
             return require("codecompanion.adapters").extend("xai", {
-              env = { api_key = "AI_GROK_API_KEY" },
+              env = {
+                api_key = "AI_GROK_API_KEY"
+              },
+              schema = {
+                model = {
+                  default = "grok-3-beta",
+                },
+              }
             })
           end,
 
