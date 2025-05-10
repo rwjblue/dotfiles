@@ -11,7 +11,10 @@ email = "me@rwjblue.com"
 # not sure exactly what is wrong and don't have time to debug :/
 # fsmonitor = "watchman"
 # watchman.register-snapshot-trigger = true
-#
+
+[ui]
+bookmark-list-sort-keys = ["author-date-"]
+
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
