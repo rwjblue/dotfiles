@@ -3,12 +3,10 @@ return {
   -- features are updated to support 2.x
   -- https://github.com/LazyVim/LazyVim/issues/6039
   -- https://github.com/LazyVim/LazyVim/pull/6053
-  { "williamboman/mason.nvim", version = "^1.0.0" },
-  { "williamboman/mason-lspconfig.nvim", version = "^1.0.0" },
   { "Zeioth/mason-extra-cmds", version = "^1.0.0" },
 
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     -- adds MasonUpdateAll
     dependencies = { "Zeioth/mason-extra-cmds", opts = {} },
 
