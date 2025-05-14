@@ -68,6 +68,9 @@ Thumbs.db
 # Cursor specific files
 .cursorignore
 
+# Zed rules files
+.rules
+
 # Mise Local Config Overrides #
 # ########################### #
 .mise/config.local.toml
