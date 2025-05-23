@@ -51,11 +51,6 @@ return {
           anthropic = function()
             return require("codecompanion.adapters").extend("anthropic", {
               env = { api_key = "AI_CLAUDE_API_KEY" },
-              schema = {
-                model = {
-                  default = "claude-sonnet-4-20250514",
-                },
-              },
             })
           end,
 
