@@ -32,6 +32,7 @@ ruby = "latest"
 rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
+"npm:@anthropic-ai/claude-code" = "latest"
 
 [settings]
 experimental = true
