@@ -65,17 +65,15 @@ Thumbs.db
 # ###############################
 .jj/
 
-# Cursor specific files
-.cursorignore
-
-# Zed rules files
-.rules
-
 # Mise Local Config Overrides #
 # ########################### #
 .mise/config.local.toml
 .mise.local.toml
 mise.local.toml
 
-# Local repo context
+# Coding assistant related Hint files
 /.vectorcode/
+/.claude/
+/.goosehints
+.cursorignore
+.rules
