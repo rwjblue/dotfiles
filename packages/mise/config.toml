@@ -4,6 +4,15 @@
 min_version = "2025.3.1"
 
 [tools]
+# core tools
+go = "latest"
+node = "latest"
+python = "latest"
+ruby = "latest"
+rust = { version = "latest", components = "rust-analyzer,clippy" }
+uv = "latest"
+zig = "latest"
+
 # cargo augmenting tools
 cargo-binstall = "latest"
 cargo-insta = "latest"
@@ -23,16 +32,8 @@ usage = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "go:github.com/spf13/cobra-cli" = "latest"
 "pipx:vectorcode" = "latest"
-
-# core tools
-go = "latest"
-node = "latest"
-python = "latest"
-ruby = "latest"
-rust = { version = "latest", components = "rust-analyzer,clippy" }
-uv = "latest"
-zig = "latest"
 "npm:@anthropic-ai/claude-code" = "latest"
+"npm:sort-package-json" = "latest"
 
 [settings]
 experimental = true
