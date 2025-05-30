@@ -79,8 +79,6 @@ export LANG='en_US.UTF-8'
 # use nvim as default editor
 export EDITOR="nvim"
 
-export VOLTA_HOME="$HOME/.volta"
-
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
 # ensure we use a stable SSH_AUTH_SOCK (so reconnecting to prior tmux sessions
@@ -177,14 +175,6 @@ alias gds='g diff --staged'   # show staged changes
 alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
-
-if command -v volta >/dev/null 2>&1; then
-  # Configure Volta environment
-  export VOLTA_HOME="$HOME/.volta"
-
-  # Ensure Volta's bin directory is first in the PATH (if volta is present, it "should win")
-  _ensure_first_path "$VOLTA_HOME/bin"
-fi
 
 _ensure_first_path "/opt/homebrew/opt/fzf/bin"
 _ensure_first_path "$HOME/src/github/rwjblue/dotfiles/packages/binutils/crates/global/target/debug"

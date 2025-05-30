@@ -39,11 +39,6 @@ snippet package.json:workspaces "setup workspaces"
 	    "packages/*"
 	  ]
 
-snippet package.json:volta-extends "Creates a "volta" property with extends"
-	  "volta": {
-	    "extends": "../../package.json"
-	  }
-	
 snippet package.json:import "Setup an import map"
 	"imports": {
 	  "#root/*": "./*"
@@ -78,11 +73,7 @@ snippet package.json:turbo-repo-basic-root "Emit a package.json that is good as 
 	    "prettier": "^3.4.2",
 	    "turbo": "^2.4.0"
 	  },
-	  "packageManager": "npm@11.1.0",
-	  "volta": {
-	    "node": "23.7.0",
-	    "npm": "11.1.0"
-	  }
+	  "packageManager": "npm@11.1.0"
 	}
 
 snippet turbo.json:basic "Emit a basic turbo.json file"
