@@ -1,26 +1,9 @@
 # vim: filetype=zsh
 
-function _path_add() {
-  case ":$PATH:" in
-    *:"$1":*) ;;
-    *) PATH="$1${PATH+:$PATH}" ;;
-  esac
-  export PATH
-}
-
-function _path_remove() {
-  case ":$PATH:" in
-    *:"$1":*)
-      PATH=$(echo ":$PATH:" | sd ":$1:" ":" | sd '^:' '' | sd ':$' '')
-      ;;
-  esac
-  export PATH
-}
-
-function _ensure_first_path() {
-  _path_remove $1
-  _path_add $1
-}
+# path sourced in zshenv for agents, cron &c.
+# path is also in zshrc to work around impolite system rc, with
+# /etc/paths.d
+export ZSH_PATHRC="$HOME/.zsh/path.zsh"
 
 # NOTE: specifically avoiding running `CMD: brew shellenv` here because it
 # exports `PATH` but just inlines the contents of `$PATH` at the time it runs
@@ -31,12 +14,6 @@ export HOMEBREW_REPOSITORY="/opt/homebrew";
 
 [ -z "${MANPATH-}" ] || export MANPATH=":${MANPATH#:}";
 export INFOPATH="/opt/homebrew/share/info:${INFOPATH:-}";
-
-# NOTE: LinkedIn machine image puts `/opt/homebrew/bin/` on path via
-# `/etc/paths.d/`, but it is in the wrong location (it ends up having it's
-# binaries like `delta` shadowed), so we remove and prepend it
-_ensure_first_path "/opt/homebrew/bin"
-_ensure_first_path "/opt/homebrew/sbin"
 
 HISTSIZE=50000
 SAVEHIST=50000
@@ -181,9 +158,6 @@ _ensure_first_path "$HOME/src/github/rwjblue/dotfiles/packages/binutils/crates/g
 _ensure_first_path "$HOME/src/github/malleatus/shared_binutils/global/target/debug"
 _ensure_first_path "$HOME/.local/bin"
 
-# this is not using the `# CMD:` system because it captures `$PATH` at the time
-# it is ran, and we don't want to do that (it needs to be capturing `$PATH` at
-# shell startup time not when we build packages-dist)
-eval "$(mise activate zsh)"
+source $ZSH_PATHRC
 
 source "$HOME/.zshrc.local"

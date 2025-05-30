@@ -1,0 +1,5 @@
+# path sourced in zshenv for agents, cron &c.
+# path is also in zshrc to work around impolite system rc, with
+# /etc/paths.d
+export ZSH_PATHRC="$HOME/.zsh/path.zsh"
+source $ZSH_PATHRC
