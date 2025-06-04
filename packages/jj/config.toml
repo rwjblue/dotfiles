@@ -75,7 +75,7 @@ key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINnJAefwOOhSTp/bxJjFJXVluHPG7hMjgLCVq
 #  - https://github.com/jj-vcs/jj/issues/4142
 #  - https://github.com/jj-vcs/jj/discussions/4690
 pager = "delta"
-diff.format = "git"
+diff-formatter = ":git"
 
 [revset-aliases]
 # View the entire branch being worked on
