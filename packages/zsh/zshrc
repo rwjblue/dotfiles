@@ -153,6 +153,8 @@ alias gc='g commit --verbose' # use verbose mode with $EDITOR
 
 alias gah='g commit --amend -CHEAD' # amend the previous commit without prompting for message
 
+alias mr='mise run'
+
 _ensure_first_path "/opt/homebrew/opt/fzf/bin"
 _ensure_first_path "$HOME/src/github/rwjblue/dotfiles/packages/binutils/crates/global/target/debug"
 _ensure_first_path "$HOME/src/github/malleatus/shared_binutils/global/target/debug"
