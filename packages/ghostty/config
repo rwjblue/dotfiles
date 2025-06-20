@@ -4,3 +4,4 @@ font-family = "Berkeley Mono"
 macos-non-native-fullscreen = true
 
 fullscreen = true
+keybind = shift+enter=text:\n
