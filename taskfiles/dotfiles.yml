@@ -129,6 +129,7 @@ tasks:
         - "packages/wezterm/|$HOME/.config/wezterm"
         - "packages/ghostty/|$HOME/.config/ghostty"
         - "packages/ssh/rc|$HOME/.ssh/rc"
+        - "packages/1Password/|$HOME/.config/1Password"
         - "packages/mise/|$HOME/.config/mise"
         - "packages/mcp/|$HOME/.config/mcp"
         - "packages/hammerspoon/|$HOME/.hammerspoon"

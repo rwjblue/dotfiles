@@ -1,0 +1,6 @@
+# See https://developer.1password.com/docs/ssh/agent/config/ for configuration options
+[[ssh-keys]]
+vault = "Private"
+
+[[ssh-keys]]
+vault = "Rob (Work)"
