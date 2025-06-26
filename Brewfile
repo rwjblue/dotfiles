@@ -34,10 +34,6 @@ brew "fish"
 brew "fzf"
 # GitHub command-line tool
 brew "gh"
-# Open source, extensible AI agent that goes beyond code suggestions
-brew "block-goose"
-# Open source, extensible AI agent that goes beyond code suggestions
-brew "block-goose-cli"
 # OpenType text shaping engine
 brew "harfbuzz"
 # Distributed revision control system
