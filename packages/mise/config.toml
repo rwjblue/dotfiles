@@ -32,7 +32,7 @@ usage = "latest"
 "npm:@mermaid-js/mermaid-cli" = "latest"
 "go:github.com/spf13/cobra-cli" = "latest"
 "pipx:vectorcode" = "latest"
-"npm:@anthropic-ai/claude-code" = "latest"
+"claude-code" = "latest"
 "npm:sort-package-json" = "latest"
 
 [settings]
