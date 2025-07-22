@@ -18,8 +18,6 @@ bookmark-list-sort-keys = ["author-date-"]
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
-# https://jj-vcs.github.io/jj/latest/config/#prefix-for-generated-bookmarks-on-push
-push-bookmark-prefix = "rwjblue/push-"
 sign-on-push = true
 
 # by default `jj git fetch` will fetch from `origin` (just like `git`), but
@@ -153,6 +151,9 @@ tug = [
 rebase-private = ["rebase", "--skip-emptied", "-r", "private()", "-d", "@"]
 
 [templates]
+# https://jj-vcs.github.io/jj/latest/config/#generated-bookmark-names-on-push
+git_push_bookmark = '"rwjblue/push-" ++ change_id.short()'
+
 # https://github.com/jj-vcs/jj/blob/v0.25.0/docs/config.md#default-description
 draft_commit_description = '''
   concat(
