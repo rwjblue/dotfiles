@@ -14,6 +14,7 @@ email = "me@rwjblue.com"
 
 [ui]
 bookmark-list-sort-keys = ["author-date-"]
+diff-editor = ":builtin"
 
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
