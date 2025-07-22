@@ -41,4 +41,4 @@ experimental = true
 #python.uv_venv_auto = true
 pipx.uvx = true
 # sqelches a warning RE: changing default behavior in mise 2025.10.0
-idiomatic_version_file_enable_tools = ["rust", "go"]
+idiomatic_version_file_enable_tools = []
