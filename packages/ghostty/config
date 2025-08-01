@@ -5,3 +5,14 @@ macos-non-native-fullscreen = true
 
 fullscreen = true
 keybind = shift+enter=text:\n
+
+# Map CMD+number to F-keys for tab navigation in neovim
+keybind = cmd+one=text:\x1BOP
+keybind = cmd+two=text:\x1BOQ
+keybind = cmd+three=text:\x1BOR
+keybind = cmd+four=text:\x1BOS
+keybind = cmd+five=text:\x1B[15~
+keybind = cmd+six=text:\x1B[17~
+keybind = cmd+seven=text:\x1B[18~
+keybind = cmd+eight=text:\x1B[19~
+keybind = cmd+nine=text:\x1B[20~

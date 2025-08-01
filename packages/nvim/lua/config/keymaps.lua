@@ -107,8 +107,8 @@ vim.keymap.set(
 vim.keymap.set(
   { "n", "i", "v", "t" },
   "<F9>",
-  "<Cmd>tabnext 9<cr>",
-  { noremap = true, silent = true, desc = "Go to tab 9" }
+  "<Cmd>$tabn<cr>",
+  { noremap = true, silent = true, desc = "Go to last tab" }
 )
 
 -- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
