@@ -25,6 +25,7 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 require("rwjblue.tabs").setup_commands()
+require("rwjblue.terminal").setup()
 
 vim.api.nvim_create_user_command("CopyRelativePath", function()
   -- Get path relative to current working directory
