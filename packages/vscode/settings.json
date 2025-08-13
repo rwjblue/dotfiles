@@ -93,5 +93,6 @@
             "rule": "*",
             "severity": "warn"
         }
-    ]
+    ],
+    "workbench.iconTheme": "vscode-icons"
 }
