@@ -12,6 +12,7 @@ ruby = "latest"
 rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
+bun = "latest"
 
 # cargo augmenting tools
 cargo-binstall = "latest"
