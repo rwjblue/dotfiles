@@ -35,6 +35,7 @@ usage = "latest"
 "pipx:vectorcode" = "latest"
 "claude-code" = "latest"
 "npm:sort-package-json" = "latest"
+"npm:ccstatusline" = "latest"
 
 [settings]
 experimental = true

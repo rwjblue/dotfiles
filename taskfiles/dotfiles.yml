@@ -134,6 +134,8 @@ tasks:
         - "packages/mcp/|$HOME/.config/mcp"
         - "packages/hammerspoon/|$HOME/.hammerspoon"
         - "packages/jj/|$HOME/.config/jj"
+        - "packages/ccstatusline/|$HOME/.config/ccstatusline"
+        - "packages/claude/settings.json|$HOME/.claude/settings.json"
 
     cmds:
       - for:
