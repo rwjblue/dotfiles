@@ -95,6 +95,12 @@ function M.rename_tab_prompt()
   end)
 end
 
+--- Creates a new tab with claude terminal
+function M.new_claude_tab()
+  M.new_tab_with_name("claude")
+  vim.cmd("term claude")
+end
+
 --- Sets up Vim commands for tab management
 function M.setup_commands()
   vim.api.nvim_create_user_command("TabNew", function(opts)
@@ -121,6 +127,10 @@ function M.setup_commands()
 
   vim.api.nvim_create_user_command("TabClearName", function()
     M.remove_current_tab_name()
+  end, {})
+
+  vim.api.nvim_create_user_command("TabClaude", function()
+    M.new_claude_tab()
   end, {})
 end
 
