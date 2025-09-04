@@ -98,7 +98,8 @@ end
 --- Creates a new tab with claude terminal
 function M.new_claude_tab()
   M.new_tab_with_name("claude")
-  vim.cmd("term claude")
+  vim.cmd("term")
+  vim.api.nvim_feedkeys("claude\r", "n", false)
 end
 
 --- Sets up Vim commands for tab management
