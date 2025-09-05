@@ -20,6 +20,7 @@ diff-editor = ":builtin"
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
 sign-on-push = true
+colocate = true
 
 # by default `jj git fetch` will fetch from `origin` (just like `git`), but
 # when working with `gh` create forks the main upstream is a remote named
