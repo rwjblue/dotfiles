@@ -95,11 +95,21 @@ function M.rename_tab_prompt()
   end)
 end
 
---- Creates a new tab with claude terminal
-function M.new_claude_tab()
-  M.new_tab_with_name("claude")
+--- Creates a new tab with an agent terminal
+--- @param agent_type string The type of agent ('claude' or 'cursor')
+function M.new_agent_tab(agent_type)
+  local command
+  if agent_type == "cursor" then
+    command = "cursor-agent"
+  elseif agent_type == "claude" then
+    command = "claude"
+  else
+    error("Invalid agent type. Use 'claude' or 'cursor'.")
+  end
+  
+  M.new_tab_with_name(agent_type)
   vim.cmd("term")
-  vim.api.nvim_feedkeys("claude\r", "n", false)
+  vim.api.nvim_feedkeys(command .. "\r", "n", false)
 end
 
 --- Sets up Vim commands for tab management
@@ -130,9 +140,25 @@ function M.setup_commands()
     M.remove_current_tab_name()
   end, {})
 
-  vim.api.nvim_create_user_command("TabClaude", function()
-    M.new_claude_tab()
-  end, {})
+  vim.api.nvim_create_user_command("AgentTab", function(opts)
+    if opts.args and opts.args ~= "" then
+      M.new_agent_tab(opts.args)
+    else
+      error("Agent type required. Use 'claude' or 'cursor'.")
+    end
+  end, {
+    nargs = 1,
+    complete = function(ArgLead, CmdLine, CursorPos)
+      local candidates = {"claude", "cursor"}
+      local filtered = {}
+      for _, candidate in ipairs(candidates) do
+        if candidate:find("^" .. ArgLead) then
+          table.insert(filtered, candidate)
+        end
+      end
+      return filtered
+    end
+  })
 end
 
 return M
