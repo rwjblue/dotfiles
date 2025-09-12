@@ -37,6 +37,7 @@ usage = "latest"
 "npm:@zed-industries/claude-code-acp" = "latest"
 "npm:sort-package-json" = "latest"
 "npm:ccstatusline" = "latest"
+"cargo:foundry-mcp" = "latest"
 
 [settings]
 experimental = true
