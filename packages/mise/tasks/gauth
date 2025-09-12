@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Authenticate gcloud"
+#MISE arg="<project-id>"
+
+set -euo pipefail
+
+PROJECT_ID="${1:-$GCLOUD_PROJECT_ID}"
+
+if [[ -z "$PROJECT_ID" ]]; then
+    echo "Error: No project ID provided."
+    echo ""
+    echo "Usage:"
+    echo "  mise run gauth <project-id>"
+    echo ""
+    echo "  GCLOUD_PROJECT_ID=my-project gauth"
+    echo "  mise run gauth"
+    echo ""
+    echo "Or set GCLOUD_PROJECT_ID in your mise config.local.toml"
+    exit 1
+fi
+
+echo "Authenticating with gcloud for project: $PROJECT_ID"
+
+gcloud auth login --update-adc
+gcloud config set project "$PROJECT_ID"
+gcloud auth application-default set-quota-project "$PROJECT_ID"
+
+echo "Authentication complete for project: $PROJECT_ID"
