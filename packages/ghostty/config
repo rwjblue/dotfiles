@@ -7,12 +7,12 @@ fullscreen = true
 keybind = shift+enter=text:\n
 
 # Map CMD+number to F-keys for tab navigation in neovim
-keybind = cmd+one=text:\x1BOP
-keybind = cmd+two=text:\x1BOQ
-keybind = cmd+three=text:\x1BOR
-keybind = cmd+four=text:\x1BOS
-keybind = cmd+five=text:\x1B[15~
-keybind = cmd+six=text:\x1B[17~
-keybind = cmd+seven=text:\x1B[18~
-keybind = cmd+eight=text:\x1B[19~
-keybind = cmd+nine=text:\x1B[20~
+keybind = cmd+Digit1=text:\x1BOP
+keybind = cmd+Digit2=text:\x1BOQ
+keybind = cmd+Digit3=text:\x1BOR
+keybind = cmd+Digit4=text:\x1BOS
+keybind = cmd+Digit5=text:\x1B[15~
+keybind = cmd+Digit6=text:\x1B[17~
+keybind = cmd+Digit7=text:\x1B[18~
+keybind = cmd+Digit8=text:\x1B[19~
+keybind = cmd+Digit9=text:\x1B[20~
