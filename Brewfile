@@ -56,6 +56,8 @@ brew "helix"
 brew "hyperfine"
 # Generic library support script
 brew "libtool"
+# Package manager for the Lua programming language
+brew "luarocks"
 # Tools and libraries to manipulate images in many formats
 brew "imagemagick"
 # Git-compatible distributed version control system
@@ -78,6 +80,8 @@ brew "starship"
 brew "tealdeer"
 # Command-line interface for running and interacting with Temporal Server and UI
 brew "temporal"
+# Parser generator tool
+brew "tree-sitter-cli"
 # Terminal multiplexer
 brew "tmux"
 # Program that allows you to count code, quickly
