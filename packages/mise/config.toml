@@ -38,6 +38,7 @@ usage = "latest"
 "npm:sort-package-json" = "latest"
 "npm:ccstatusline" = "latest"
 "cargo:foundry-mcp" = "latest"
+"cargo:worktree" = "latest"
 
 [settings]
 experimental = true
