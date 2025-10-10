@@ -11,6 +11,17 @@ return {
     settings = {
       save_on_toggle = true,
       sync_on_ui_close = true,
+      key = function()
+        -- Use git remote URL to share marks across worktrees
+        local git_remote = vim.fn.systemlist("git config --get remote.origin.url")[1]
+        
+        if git_remote and vim.v.shell_error == 0 then
+          return git_remote
+        end
+        
+        -- Fall back to cwd if not in a git repo
+        return vim.uv.cwd()
+      end,
     },
   },
   keys = {
