@@ -128,6 +128,7 @@ tasks:
         - "packages/binutils/config/|$HOME/.config/binutils"
         - "packages/wezterm/|$HOME/.config/wezterm"
         - "packages/ghostty/|$HOME/.config/ghostty"
+        - "packages/zellij/|$HOME/.config/zellij"
         - "packages/ssh/rc|$HOME/.ssh/rc"
         - "packages/1Password/|$HOME/.config/1Password"
         - "packages/mise/|$HOME/.config/mise"
