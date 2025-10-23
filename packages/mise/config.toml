@@ -1,7 +1,7 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
 # this version added experimental support for rust
-min_version = "2025.3.1"
+min_version = "2025.10.0"
 
 [tools]
 # core tools
@@ -45,5 +45,3 @@ experimental = true
 # disabled until https://github.com/jdx/mise/issues/4600 is resolved
 #python.uv_venv_auto = true
 pipx.uvx = true
-# sqelches a warning RE: changing default behavior in mise 2025.10.0
-idiomatic_version_file_enable_tools = []
