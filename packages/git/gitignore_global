@@ -72,6 +72,7 @@ mise.local.toml
 
 # Coding assistant related Hint files
 /.vectorcode/
+/.codanna/
 /.claude/
 /CLAUDE.local.md
 /.goosehints

@@ -10,6 +10,7 @@ packages/wezterm/local_config_overrides.lua
 !.lazy.lua
 /.task/
 /packages/mise/config.local.toml
+/.fastembed_cache
 
 # this is unstable across machines
 /packages/hammerspoon/Spoons/EmmyLua.spoon/annotations/timestamps.json
