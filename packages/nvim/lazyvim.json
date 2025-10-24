@@ -24,7 +24,8 @@
     "lazyvim.plugins.extras.util.dot",
     "lazyvim.plugins.extras.util.mini-hipatterns",
     "lazyvim.plugins.extras.util.octo",
-    "plugins.extras.lang.markdown"
+    "plugins.extras.lang.markdown",
+    "plugins.extras.zellij"
   ],
   "install_version": 7,
   "news": {
