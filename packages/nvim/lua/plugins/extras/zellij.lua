@@ -85,8 +85,7 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
   if is_exited then
     table.insert(lines, "**Status:** ⚠️  EXITED - Attach to resurrect")
     table.insert(lines, "")
-    table.insert(lines, "_This session has exited. Attaching will resurrect it with the previous layout._")
-    return table.concat(lines, "\n")
+    table.insert(lines, "_This session has exited. Attaching will resurrect it with the previous layout shown below._")
   elseif is_current then
     table.insert(lines, "**Status:** Currently active session")
   else
@@ -95,12 +94,37 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
   table.insert(lines, "")
 
   -- Get the layout for this specific session
-  local cmd = is_current
-    and "zellij action dump-layout 2>/dev/null"
-    or string.format("zellij --session %s action dump-layout 2>/dev/null", vim.fn.shellescape(session_name))
-
-  local layout_output = vim.fn.systemlist(cmd)
-  if vim.v.shell_error == 0 and #layout_output > 0 then
+  local layout_output
+  if is_exited then
+    -- For exited sessions, try to read the cached layout file
+    -- Zellij stores session layouts in: ~/.cache/<zellij-version>/session_info/<session-name>/session-layout.kdl
+    -- On macOS: ~/Library/Caches/org.Zellij-Contributors.Zellij/<version>/session_info/<session-name>/session-layout.kdl
+    local cache_dir = vim.fn.has("mac") == 1
+      and vim.fn.expand("~/Library/Caches/org.Zellij-Contributors.Zellij")
+      or vim.fn.expand("~/.cache/zellij")
+    
+    -- Get zellij version
+    local version_output = vim.fn.systemlist("zellij --version 2>/dev/null")
+    local version = version_output[1] and version_output[1]:match("zellij (%S+)") or "0.43.1"
+    
+    local layout_file = string.format("%s/%s/session_info/%s/session-layout.kdl", cache_dir, version, session_name)
+    local file = io.open(layout_file, "r")
+    if file then
+      layout_output = {}
+      for line in file:lines() do
+        table.insert(layout_output, line)
+      end
+      file:close()
+    else
+      layout_output = {}
+    end
+  else
+    local cmd = is_current
+      and "zellij action dump-layout 2>/dev/null"
+      or string.format("zellij --session %s action dump-layout 2>/dev/null", vim.fn.shellescape(session_name))
+    layout_output = vim.fn.systemlist(cmd)
+  end
+  if #layout_output > 0 and (is_exited or vim.v.shell_error == 0) then
     table.insert(lines, "## Tabs & Panes")
     table.insert(lines, "")
 
