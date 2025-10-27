@@ -14,10 +14,15 @@
 ---@field tabs ZellijTab[] Array of tabs with pane details
 ---@field cwd string|nil Working directory
 
-local zellij = {}
+---@class ZellijTabItem
+---@field session_name string Name of the session containing this tab
+---@field tab_name string Name of the tab
+---@field is_current_session boolean Whether this tab is in the current session
+---@field is_focused_tab boolean Whether this tab is currently focused
+---@field pane_count number Number of panes in the tab
+---@field panes ZellijPaneInfo[]|nil Pane details for preview
 
--- Cache for the zellij cache directory (only needs to be computed once)
-local cached_cache_directory = nil
+local zellij = {}
 
 --- Check if Zellij is installed and available
 ---@return boolean
@@ -108,6 +113,9 @@ end
 ---@field cwd string|nil Working directory of the pane
 ---@field is_focused boolean Whether this pane is focused
 
+-- Cache for the zellij cache directory (only needs to be computed once)
+local cached_cache_directory = nil
+
 --- Get base cache directory from zellij setup output
 ---@return string|nil base_cache_dir The base cache directory or nil if not found
 local function get_cache_from_setup()
@@ -177,7 +185,21 @@ local function get_cache_directory()
   return cached_cache_directory
 end
 
---- Read the session layout file
+--- Get the current session layout using zellij action dump-layout (real-time)
+---@return string[] layout_lines Array of lines from the dumped layout
+local function dump_current_layout()
+  local output = vim.fn.systemlist("zellij action dump-layout")
+
+  -- Check if the command failed
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Failed to dump Zellij layout", vim.log.levels.WARN)
+    return {}
+  end
+
+  return output
+end
+
+--- Read the session layout file from cache (may have stale focus state)
 ---@param session_name string Name of the session
 ---@return string[] layout_lines Array of lines from the layout file
 local function read_session_layout(session_name)
@@ -334,46 +356,6 @@ local function extract_pane_details(layout_lines, tabs, tab_idx)
   return panes
 end
 
---- Format tabs and panes into markdown lines
----@param tabs ZellijTab[] Array of tabs
----@param layout_lines string[] Layout file lines
----@return string[] lines Formatted markdown lines
-local function format_tabs_and_panes(tabs, layout_lines)
-  local lines = {}
-
-  if #tabs == 0 then
-    table.insert(lines, "_No tabs found_")
-    return lines
-  end
-
-  for tab_idx, tab in ipairs(tabs) do
-    local focus_indicator = tab.is_focused and " ←" or ""
-    local pane_text = tab.pane_count == 1 and "1 pane" or string.format("%d panes", tab.pane_count)
-    table.insert(lines, string.format("- **%s** (%s)%s", tab.name, pane_text, focus_indicator))
-
-    -- Extract pane details for this tab
-    if tab.pane_count > 0 then
-      local panes = extract_pane_details(layout_lines, tabs, tab_idx)
-      for pane_num, pane in ipairs(panes) do
-        local pane_info = {}
-        if pane.cmd then
-          table.insert(pane_info, string.format("cmd: `%s`", pane.cmd))
-        end
-        if pane.cwd then
-          table.insert(pane_info, string.format("dir: `%s`", pane.cwd))
-        end
-
-        if #pane_info > 0 then
-          local focus_mark = pane.is_focused and " [focused]" or ""
-          table.insert(lines, string.format("  - Pane %d: %s%s", pane_num, table.concat(pane_info, ", "), focus_mark))
-        end
-      end
-    end
-  end
-
-  return lines
-end
-
 --- Generate preview header with session name and status
 ---@param session_name string The name of the session
 ---@param is_current boolean Whether this is the current session
@@ -399,42 +381,38 @@ local function generate_preview_header(session_name, is_current, is_exited)
   return lines
 end
 
---- Generate tabs and panes section of preview
----@param layout_lines string[] Layout file lines
----@return string[] lines Tabs section lines
-local function generate_tabs_section(layout_lines)
-  local lines = {}
-
-  if #layout_lines == 0 then
-    table.insert(lines, "_Unable to retrieve session layout_")
-    return lines
-  end
-
-  table.insert(lines, "## Tabs & Panes")
-  table.insert(lines, "")
-
-  local tabs, cwd = parse_tabs_from_layout(layout_lines)
-  local tab_lines = format_tabs_and_panes(tabs, layout_lines)
-
-  for _, line in ipairs(tab_lines) do
-    table.insert(lines, line)
-  end
-
-  if cwd and cwd ~= "" then
-    table.insert(lines, "")
-    table.insert(lines, "**Working Directory:** `" .. cwd .. "`")
-  end
-
-  return lines
-end
-
 --- Get structured session data including tabs and panes
 ---@param session_name string The name of the session
 ---@param is_current boolean Whether this is the current session
 ---@param is_exited boolean Whether this session has exited
 ---@return ZellijSessionData Session data with tabs and panes
 function zellij.get_session_data(session_name, is_current, is_exited)
-  local layout_lines = read_session_layout(session_name)
+  local layout_lines
+
+  -- IMPORTANT: We use different data sources depending on whether this is the current session:
+  --
+  -- For CURRENT session:
+  --   - Use `zellij action dump-layout` to get real-time, accurate state
+  --   - This ensures tab focus indicators are correct (they reflect runtime state)
+  --   - Critical for tab switching functionality where we need to know which tab is actually focused
+  --
+  -- For BACKGROUND/EXITED sessions:
+  --   - Use cached layout files from ~/.cache/zellij/{version}/session_info/{session}/session-layout.kdl
+  --   - Cached files preserve the layout from when the session was created/last saved
+  --   - Focus indicators may be stale (show initial state, not current runtime state)
+  --   - This is acceptable because we mainly need this for session resurrection
+  --   - Resurrection restores the layout structure; runtime focus state isn't needed for exited sessions
+  --
+  -- This hybrid approach gives us:
+  --   1. Accurate focus state for tab picker (always uses current session with dump-layout)
+  --   2. Ability to resurrect exited sessions (uses cached layout files)
+  --   3. Preview of background sessions without switching to them (uses cached layout files)
+  if is_current then
+    layout_lines = dump_current_layout()
+  else
+    layout_lines = read_session_layout(session_name)
+  end
+
   local tabs, cwd = parse_tabs_from_layout(layout_lines)
 
   -- Enrich each tab with pane details
@@ -449,6 +427,32 @@ function zellij.get_session_data(session_name, is_current, is_exited)
     tabs = tabs,
     cwd = cwd,
   }
+end
+
+--- Get tabs from current session only
+---@return ZellijTabItem[] Array of tab items from current session
+function zellij.get_current_session_tabs()
+  -- Get current session name from environment
+  local session_name = vim.env.ZELLIJ_SESSION_NAME
+  if not session_name then
+    return {}
+  end
+
+  local session_data = zellij.get_session_data(session_name, true, false)
+  local tabs = {}
+
+  for _, tab in ipairs(session_data.tabs) do
+    table.insert(tabs, {
+      session_name = session_data.name,
+      tab_name = tab.name,
+      is_current_session = true,
+      is_focused_tab = tab.is_focused,
+      pane_count = tab.pane_count,
+      panes = tab.panes,
+    })
+  end
+
+  return tabs
 end
 
 --- Format session data into preview markdown text
@@ -514,6 +518,60 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
   return format_session_preview(session_data)
 end
 
+--- Format tab item into preview markdown text
+---@param tab_item ZellijTabItem The tab item to format
+---@return string Preview text in markdown format
+local function format_tab_preview(tab_item)
+  local lines = {}
+
+  -- Header
+  table.insert(lines, "# Tab: " .. tab_item.tab_name)
+  table.insert(lines, "")
+
+  if tab_item.is_focused_tab then
+    table.insert(lines, "**Status:** Currently focused tab")
+  else
+    table.insert(lines, "**Status:** Background tab")
+  end
+  table.insert(lines, "")
+
+  -- Panes section
+  table.insert(lines, "## Panes")
+  table.insert(lines, "")
+
+  if tab_item.panes and #tab_item.panes > 0 then
+    local pane_text = tab_item.pane_count == 1 and "1 pane" or string.format("%d panes", tab_item.pane_count)
+    table.insert(lines, string.format("**Pane count:** %s", pane_text))
+    table.insert(lines, "")
+
+    for pane_num, pane in ipairs(tab_item.panes) do
+      local pane_info = {}
+      if pane.cmd then
+        table.insert(pane_info, string.format("cmd: `%s`", pane.cmd))
+      end
+      if pane.cwd then
+        table.insert(pane_info, string.format("dir: `%s`", pane.cwd))
+      end
+
+      if #pane_info > 0 then
+        local focus_mark = pane.is_focused and " [focused]" or ""
+        table.insert(lines, string.format("- Pane %d: %s%s", pane_num, table.concat(pane_info, ", "), focus_mark))
+      end
+    end
+  else
+    table.insert(lines, "_No pane information available_")
+  end
+
+  return table.concat(lines, "\n")
+end
+
+--- Generate preview text for a Zellij tab
+---@param tab_item ZellijTabItem The tab item to preview
+---@return string Preview text
+function zellij.get_tab_preview(tab_item)
+  return format_tab_preview(tab_item)
+end
+
 --- Switch to a specific Zellij session
 ---@param session_name string The name of the session to switch to
 function zellij.switch_to_session(session_name)
@@ -537,6 +595,24 @@ function zellij.switch_to_session(session_name)
   else
     vim.notify(
       string.format("Failed to switch to session '%s'. Error: %s", session_name, vim.trim(result)),
+      vim.log.levels.ERROR
+    )
+  end
+end
+
+--- Switch to a specific tab in the current session
+---@param tab_name string The name of the tab to switch to
+function zellij.switch_to_tab(tab_name)
+  if not validate_zellij_environment() then
+    return
+  end
+
+  local result = vim.fn.system({ "zellij", "action", "go-to-tab-name", tab_name })
+  if vim.v.shell_error == 0 then
+    vim.notify(string.format("Switched to tab: %s", tab_name), vim.log.levels.INFO)
+  else
+    vim.notify(
+      string.format("Failed to switch to tab '%s'. Error: %s", tab_name, vim.trim(result)),
       vim.log.levels.ERROR
     )
   end
@@ -625,6 +701,79 @@ function zellij.session_picker()
   })
 end
 
+--- Open snacks picker to select and switch to a tab in current session
+function zellij.tab_picker()
+  if not validate_zellij_environment() then
+    return
+  end
+
+  local current_tabs = zellij.get_current_session_tabs()
+
+  if #current_tabs == 0 then
+    vim.notify("No Zellij tabs found in current session", vim.log.levels.INFO)
+    return
+  end
+
+  -- Open snacks picker with a custom finder
+  require("snacks").picker.pick({
+    finder = function()
+      ---@type snacks.picker.finder.Item[]
+      local items = {}
+
+      -- Convert tabs to picker items
+      for idx, tab in ipairs(current_tabs) do
+        -- Format: "● tab [focused]" or "  tab"
+        -- Using dump-layout gives us real-time focus state
+        local prefix = tab.is_focused_tab and "● " or "  "
+        local suffix = tab.is_focused_tab and " [focused]" or ""
+        local display_text = string.format("%s%s%s", prefix, tab.tab_name, suffix)
+
+        items[#items + 1] = {
+          text = display_text,
+          session_name = tab.session_name,
+          tab_name = tab.tab_name,
+          pane_count = tab.pane_count,
+          panes = tab.panes,
+          is_current_session = tab.is_current_session,
+          is_focused_tab = tab.is_focused_tab,
+          idx = idx,
+        }
+      end
+
+      return items
+    end,
+    title = "Zellij Tabs (Current Session)",
+    show_empty = true,
+    -- Custom previewer function for lazy loading tab previews
+    preview = function(ctx)
+      if not ctx.item or not ctx.item.tab_name then
+        ctx.preview:notify("No tab selected", "warn")
+        return
+      end
+
+      ctx.preview:reset()
+      local preview_text = zellij.get_tab_preview(ctx.item)
+      local lines = vim.split(preview_text, "\n")
+      ctx.preview:set_lines(lines)
+      ctx.preview:highlight({ ft = "markdown" })
+    end,
+    format = function(item)
+      return { { item.text } }
+    end,
+    actions = {
+      confirm = function(picker, item)
+        if item and item.tab_name then
+          picker:close()
+          -- Small delay to ensure picker is fully closed before switching
+          vim.defer_fn(function()
+            zellij.switch_to_tab(item.tab_name)
+          end, 50)
+        end
+      end,
+    },
+  })
+end
+
 -- Return LazyVim plugin spec
 return {
   {
@@ -641,12 +790,18 @@ return {
     name = "extras.zellij",
     dir = vim.fn.stdpath("config") .. "/lua/plugins/extras",
     init = function()
-      -- Setup user command
+      -- Setup user commands
       vim.api.nvim_create_user_command("ZellijSwitch", function()
         zellij.session_picker()
       end, {
-      desc = "Switch Zellij session",
-    })
+        desc = "Switch Zellij session",
+      })
+
+      vim.api.nvim_create_user_command("ZellijTab", function()
+        zellij.tab_picker()
+      end, {
+        desc = "Switch Zellij tab",
+      })
     end,
     keys = {
       {
@@ -655,6 +810,13 @@ return {
           zellij.session_picker()
         end,
         desc = "Zellij: Switch session",
+      },
+      {
+        "<leader>zt",
+        function()
+          zellij.tab_picker()
+        end,
+        desc = "Zellij: Switch tab",
       },
     },
   },
