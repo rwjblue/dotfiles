@@ -110,6 +110,19 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
     local in_real_tab = false
     local current_tab_start = 0
 
+    -- Helper function to check if a pane is a plugin container
+    -- Plugin panes have a child line with "plugin location="
+    local function is_plugin_pane(line_index)
+      if line_index + 1 <= #layout_output then
+        local next_line = layout_output[line_index + 1]
+        -- Check if the next line is indented more and contains plugin location
+        if next_line:match("^            plugin location=") then
+          return true
+        end
+      end
+      return false
+    end
+
     for i, line in ipairs(layout_output) do
       -- Get the first CWD we find
       if cwd == "" then
@@ -134,8 +147,8 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
           for j = current_tab_start, i - 1 do
             local pane_line = layout_output[j]
             -- Match lines that start with exactly 8 spaces followed by "pane"
-            -- and don't have "plugin location="
-            if pane_line:match("^        pane[^%w]") and not pane_line:match("plugin location=") then
+            -- Exclude plugin panes (those with a plugin location child)
+            if pane_line:match("^        pane") and not is_plugin_pane(j) then
               pane_count = pane_count + 1
             end
           end
@@ -162,7 +175,7 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
         if pane_line:match("swap_tiled_layout") or pane_line:match("swap_floating_layout") or pane_line:match("new_tab_template") then
           break
         end
-        if pane_line:match("^        pane[^%w]") and not pane_line:match("plugin location=") then
+        if pane_line:match("^        pane") and not is_plugin_pane(j) then
           pane_count = pane_count + 1
         end
       end
@@ -177,11 +190,13 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
         table.insert(lines, string.format("- **%s** (%s)%s", tab.name, pane_text, focus_indicator))
 
         -- Extract pane details for this tab
-        if tab.pane_count > 0 and current_tab_start > 0 then
+        if tab.pane_count > 0 then
+          -- Calculate the range for this specific tab
+          local tab_start = tab.line_start + 1  -- Start after the tab line itself
           local tab_end = tab_idx < #tabs and tabs[tab_idx + 1].line_start - 1 or #layout_output
           local pane_num = 0
 
-          for j = current_tab_start, tab_end do
+          for j = tab_start, tab_end do
             if j > #layout_output then break end
             local pane_line = layout_output[j]
 
@@ -189,7 +204,7 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
               break
             end
 
-            if pane_line:match("^        pane[^%w]") and not pane_line:match("plugin location=") then
+            if pane_line:match("^        pane") and not is_plugin_pane(j) then
               pane_num = pane_num + 1
 
               -- Extract pane info
@@ -210,11 +225,6 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
                 table.insert(lines, string.format("  - Pane %d: %s%s", pane_num, table.concat(pane_info, ", "), focus_mark))
               end
             end
-          end
-
-          -- Update current_tab_start for next tab
-          if tab_idx < #tabs then
-            current_tab_start = tabs[tab_idx + 1].line_start + 1
           end
         end
       end
