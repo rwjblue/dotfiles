@@ -95,18 +95,40 @@ function zellij.get_session_preview(session_name, is_current, is_exited)
 
   -- Get the layout for this specific session
   -- Read from cached session-layout.kdl file that zellij maintains
-  -- Zellij stores session layouts in: ~/.cache/<zellij-version>/session_info/<session-name>/session-layout.kdl
-  -- On macOS: ~/Library/Caches/org.Zellij-Contributors.Zellij/<version>/session_info/<session-name>/session-layout.kdl
   -- Note: If zellij changes this in future versions, we could fall back to: zellij action dump-layout
-  local cache_dir = vim.fn.has("mac") == 1
-    and vim.fn.expand("~/Library/Caches/org.Zellij-Contributors.Zellij")
-    or vim.fn.expand("~/.cache/zellij")
   
-  -- Get zellij version
-  local version_output = vim.fn.systemlist("zellij --version 2>/dev/null")
-  local version = version_output[1] and version_output[1]:match("zellij (%S+)") or "0.43.1"
+  -- Get cache directory from zellij setup
+  local setup_output = vim.fn.systemlist("zellij setup --check 2>&1")
+  local base_cache_dir = ""
   
-  local layout_file = string.format("%s/%s/session_info/%s/session-layout.kdl", cache_dir, version, session_name)
+  for _, line in ipairs(setup_output) do
+    local cache_match = line:match("%[CACHE DIR%]: (.+)")
+    if cache_match then
+      base_cache_dir = cache_match
+      break
+    end
+  end
+  
+  -- Find the versioned cache directory (e.g., 0.43.1)
+  local cache_dir = ""
+  if base_cache_dir ~= "" then
+    local version_dirs = vim.fn.systemlist(string.format("ls -d %s/*/session_info 2>/dev/null | head -1 | sed 's|/session_info||'", vim.fn.shellescape(base_cache_dir)))
+    if #version_dirs > 0 then
+      cache_dir = version_dirs[1]
+    end
+  end
+  
+  -- Fallback if cache dir detection fails
+  if cache_dir == "" then
+    local version_output = vim.fn.systemlist("zellij --version 2>/dev/null")
+    local version = version_output[1] and version_output[1]:match("zellij (%S+)") or "0.43.1"
+    base_cache_dir = vim.fn.has("mac") == 1
+      and vim.fn.expand("~/Library/Caches/org.Zellij-Contributors.Zellij")
+      or vim.fn.expand("~/.cache/zellij")
+    cache_dir = string.format("%s/%s", base_cache_dir, version)
+  end
+  
+  local layout_file = string.format("%s/session_info/%s/session-layout.kdl", cache_dir, session_name)
   local layout_output = {}
   local file = io.open(layout_file, "r")
   if file then
