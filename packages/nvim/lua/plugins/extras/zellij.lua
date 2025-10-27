@@ -752,7 +752,9 @@ function zellij.tab_picker()
       end
 
       ctx.preview:reset()
-      local preview_text = zellij.get_tab_preview(ctx.item)
+      ---@type ZellijTabItem
+      local tab_item = ctx.item --[[@as ZellijTabItem]]
+      local preview_text = zellij.get_tab_preview(tab_item)
       local lines = vim.split(preview_text, "\n")
       ctx.preview:set_lines(lines)
       ctx.preview:highlight({ ft = "markdown" })
