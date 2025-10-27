@@ -7,6 +7,13 @@
 ---@field is_current boolean Whether this is the currently active session
 ---@field is_exited boolean Whether this session has exited (needs resurrection)
 
+---@class ZellijSessionData
+---@field name string Session name
+---@field is_current boolean Whether this is the current session
+---@field is_exited boolean Whether this session has exited
+---@field tabs ZellijTab[] Array of tabs with pane details
+---@field cwd string|nil Working directory
+
 local zellij = {}
 
 -- Cache for the zellij cache directory (only needs to be computed once)
@@ -94,6 +101,7 @@ end
 ---@field pane_count number Number of panes in the tab
 ---@field is_focused boolean Whether this tab is focused
 ---@field line_start number Starting line in layout output
+---@field panes ZellijPaneInfo[]|nil Optional array of pane details
 
 ---@class ZellijPaneInfo
 ---@field cmd string|nil Command running in the pane
@@ -420,28 +428,90 @@ local function generate_tabs_section(layout_lines)
   return lines
 end
 
+--- Get structured session data including tabs and panes
+---@param session_name string The name of the session
+---@param is_current boolean Whether this is the current session
+---@param is_exited boolean Whether this session has exited
+---@return ZellijSessionData Session data with tabs and panes
+function zellij.get_session_data(session_name, is_current, is_exited)
+  local layout_lines = read_session_layout(session_name)
+  local tabs, cwd = parse_tabs_from_layout(layout_lines)
+
+  -- Enrich each tab with pane details
+  for i, tab in ipairs(tabs) do
+    tab.panes = extract_pane_details(layout_lines, tabs, i)
+  end
+
+  return {
+    name = session_name,
+    is_current = is_current,
+    is_exited = is_exited,
+    tabs = tabs,
+    cwd = cwd,
+  }
+end
+
+--- Format session data into preview markdown text
+---@param session_data ZellijSessionData The session data to format
+---@return string Preview text in markdown format
+local function format_session_preview(session_data)
+  local lines = {}
+
+  -- Add header
+  local header_lines = generate_preview_header(session_data.name, session_data.is_current, session_data.is_exited)
+  for _, line in ipairs(header_lines) do
+    table.insert(lines, line)
+  end
+
+  -- Add tabs section
+  if #session_data.tabs == 0 then
+    table.insert(lines, "_Unable to retrieve session layout_")
+  else
+    table.insert(lines, "## Tabs & Panes")
+    table.insert(lines, "")
+
+    -- Format each tab with its panes
+    for _, tab in ipairs(session_data.tabs) do
+      local focus_indicator = tab.is_focused and " ←" or ""
+      local pane_text = tab.pane_count == 1 and "1 pane" or string.format("%d panes", tab.pane_count)
+      table.insert(lines, string.format("- **%s** (%s)%s", tab.name, pane_text, focus_indicator))
+
+      -- Add pane details if available
+      if tab.panes and #tab.panes > 0 then
+        for pane_num, pane in ipairs(tab.panes) do
+          local pane_info = {}
+          if pane.cmd then
+            table.insert(pane_info, string.format("cmd: `%s`", pane.cmd))
+          end
+          if pane.cwd then
+            table.insert(pane_info, string.format("dir: `%s`", pane.cwd))
+          end
+
+          if #pane_info > 0 then
+            local focus_mark = pane.is_focused and " [focused]" or ""
+            table.insert(lines, string.format("  - Pane %d: %s%s", pane_num, table.concat(pane_info, ", "), focus_mark))
+          end
+        end
+      end
+    end
+
+    if session_data.cwd and session_data.cwd ~= "" then
+      table.insert(lines, "")
+      table.insert(lines, "**Working Directory:** `" .. session_data.cwd .. "`")
+    end
+  end
+
+  return table.concat(lines, "\n")
+end
+
 --- Generate preview text for a Zellij session
 ---@param session_name string The name of the session
 ---@param is_current boolean Whether this is the current session
 ---@param is_exited boolean Whether this session has exited
 ---@return string Preview text
 function zellij.get_session_preview(session_name, is_current, is_exited)
-  local lines = {}
-
-  -- Add header
-  local header_lines = generate_preview_header(session_name, is_current, is_exited)
-  for _, line in ipairs(header_lines) do
-    table.insert(lines, line)
-  end
-
-  -- Add tabs section
-  local layout_lines = read_session_layout(session_name)
-  local tabs_lines = generate_tabs_section(layout_lines)
-  for _, line in ipairs(tabs_lines) do
-    table.insert(lines, line)
-  end
-
-  return table.concat(lines, "\n")
+  local session_data = zellij.get_session_data(session_name, is_current, is_exited)
+  return format_session_preview(session_data)
 end
 
 --- Switch to a specific Zellij session
