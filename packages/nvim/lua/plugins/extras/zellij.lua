@@ -9,6 +9,9 @@
 
 local zellij = {}
 
+-- Cache for the zellij cache directory (only needs to be computed once)
+local cached_cache_directory = nil
+
 --- Check if Zellij is installed and available
 ---@return boolean
 function zellij.is_zellij_available()
@@ -146,16 +149,24 @@ end
 --- Get the zellij cache directory
 ---@return string cache_dir Path to the versioned cache directory
 local function get_cache_directory()
+  -- Return cached value if available
+  if cached_cache_directory then
+    return cached_cache_directory
+  end
+
+  -- Compute and cache the directory
   local base_cache_dir = get_cache_from_setup()
 
   if base_cache_dir then
     local cache_dir = find_version_dir(base_cache_dir)
     if cache_dir and cache_dir ~= "" then
+      cached_cache_directory = cache_dir
       return cache_dir
     end
   end
 
-  return get_fallback_cache_dir()
+  cached_cache_directory = get_fallback_cache_dir()
+  return cached_cache_directory
 end
 
 --- Read the session layout file
