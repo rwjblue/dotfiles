@@ -129,6 +129,10 @@ pre-commit-last = [
   "jj diff -r @ --name-only --no-pager | xargs pre-commit run --files",
 ]
 
+# Get files changed in the current branch from trunk
+branch-diff = ["diff", "-r", "(trunk()..@)::"]
+branch-diff-files = ["diff", "-r", "(trunk()..@)::", "--name-only", "--no-pager"]
+
 pre-commit-branch = [
   "util",
   "exec",
@@ -136,7 +140,7 @@ pre-commit-branch = [
   "bash",
   "-c",
 
-  "jj diff -r '(trunk()..@)::' --name-only --no-pager | xargs pre-commit run --files",
+  "jj branch-diff-files | xargs pre-commit run --files",
 ]
 
 # find the nearest bookmark and move it forward to the nearest pushable revision
