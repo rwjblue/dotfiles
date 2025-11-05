@@ -17,7 +17,6 @@ return {
         "jq",
         "make",
         "mermaid",
-        "sql",
       })
     end,
     config = function(_, opts)
