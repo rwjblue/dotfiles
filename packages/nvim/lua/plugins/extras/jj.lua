@@ -45,48 +45,48 @@ local function validate_jj_environment()
   return true
 end
 
---- Get list of changed files on current branch
----@return string[] Array of file paths
-function jj.get_branch_diff_files()
+--- Parse branch diff output into file list and per-file diffs
+---@return table<string, string[]> files Map of file paths to their diff lines
+function jj.parse_branch_diff()
   if not validate_jj_environment() then
     return {}
   end
 
-  local output = vim.fn.systemlist("jj branch-diff-files")
+  local output = vim.fn.systemlist("jj branch-diff")
 
   -- Check if the command failed
   if vim.v.shell_error ~= 0 then
-    vim.notify("Failed to get branch diff files", vim.log.levels.WARN)
+    vim.notify("Failed to get branch diff", vim.log.levels.WARN)
     return {}
   end
 
-  -- Filter out empty lines
   local files = {}
+  local current_file = nil
+  local current_diff = {}
+
   for _, line in ipairs(output) do
-    if line and line ~= "" then
-      table.insert(files, line)
+    -- Look for diff headers like: diff --git a/path/to/file b/path/to/file
+    local file_path = line:match("^diff %-%-git a/(.*) b/")
+    if file_path then
+      -- Save previous file's diff if exists
+      if current_file then
+        files[current_file] = current_diff
+      end
+      -- Start new file
+      current_file = file_path
+      current_diff = { line }
+    elseif current_file then
+      -- Accumulate lines for current file's diff
+      table.insert(current_diff, line)
     end
   end
 
+  -- Save the last file's diff
+  if current_file then
+    files[current_file] = current_diff
+  end
+
   return files
-end
-
---- Get diff for a specific file
----@param file_path string The file to get diff for
----@return string[] Lines of the diff
-function jj.get_file_diff(file_path)
-  if not validate_jj_environment() then
-    return {}
-  end
-
-  local output = vim.fn.systemlist({ "jj", "diff", file_path })
-
-  -- Check if the command failed
-  if vim.v.shell_error ~= 0 then
-    return { "Failed to get diff for " .. file_path }
-  end
-
-  return output
 end
 
 --- Open snacks picker to select and open a changed file from the branch
@@ -95,12 +95,19 @@ function jj.branch_diff_picker()
     return
   end
 
-  local files = jj.get_branch_diff_files()
+  -- Parse all diffs in a single call
+  local diff_cache = jj.parse_branch_diff()
+
+  -- Extract file list from the cache keys
+  local files = vim.tbl_keys(diff_cache)
 
   if #files == 0 then
     vim.notify("No changed files on current branch", vim.log.levels.INFO)
     return
   end
+
+  -- Sort files for consistent ordering
+  table.sort(files)
 
   -- Open snacks picker
   require("snacks").picker.pick({
@@ -128,7 +135,8 @@ function jj.branch_diff_picker()
       end
 
       ctx.preview:reset()
-      local diff_lines = jj.get_file_diff(ctx.item.file_path)
+      -- Use cached diff for instant preview
+      local diff_lines = diff_cache[ctx.item.file_path] or {}
       ctx.preview:set_lines(diff_lines)
       ctx.preview:highlight({ ft = "diff" })
     end,
