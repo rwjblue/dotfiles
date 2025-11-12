@@ -23,6 +23,7 @@
     "lazyvim.plugins.extras.test.core",
     "lazyvim.plugins.extras.util.dot",
     "lazyvim.plugins.extras.util.mini-hipatterns",
+    "plugins.extras.jj",
     "plugins.extras.lang.markdown",
     "plugins.extras.zellij"
   ],
