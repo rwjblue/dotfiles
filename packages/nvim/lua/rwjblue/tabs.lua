@@ -144,10 +144,10 @@ function M.setup_commands()
     if opts.args and opts.args ~= "" then
       M.new_agent_tab(opts.args)
     else
-      error("Agent type required. Use 'claude' or 'cursor'.")
+      M.new_agent_tab("claude")
     end
   end, {
-    nargs = 1,
+    nargs = "?",
     complete = function(ArgLead, CmdLine, CursorPos)
       local candidates = {"claude", "cursor"}
       local filtered = {}
