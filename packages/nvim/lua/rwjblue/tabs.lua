@@ -102,7 +102,7 @@ function M.new_agent_tab(agent_type)
   if agent_type == "cursor" then
     command = "cursor-agent"
   elseif agent_type == "claude" then
-    command = "claude"
+    command = "claude --dangerously-skip-permissions"
   else
     error("Invalid agent type. Use 'claude' or 'cursor'.")
   end
