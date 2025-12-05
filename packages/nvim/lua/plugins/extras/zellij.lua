@@ -691,6 +691,11 @@ function zellij.session_picker()
       confirm = function(picker, item)
         if item and item.session_name then
           picker:close()
+          -- Check if this is the current session
+          if item.is_current then
+            vim.notify("Already in session: " .. item.session_name, vim.log.levels.WARN)
+            return
+          end
           -- Small delay to ensure picker is fully closed before switching
           vim.defer_fn(function()
             zellij.switch_to_session(item.session_name)
