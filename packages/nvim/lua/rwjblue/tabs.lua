@@ -96,17 +96,19 @@ function M.rename_tab_prompt()
 end
 
 --- Creates a new tab with an agent terminal
---- @param agent_type string The type of agent ('claude' or 'cursor')
+--- @param agent_type string The type of agent ('claude', 'cursor', or 'codex')
 function M.new_agent_tab(agent_type)
-  local command
-  if agent_type == "cursor" then
-    command = "cursor-agent"
-  elseif agent_type == "claude" then
-    command = "claude --dangerously-skip-permissions"
-  else
-    error("Invalid agent type. Use 'claude' or 'cursor'.")
+  local command_map = {
+    cursor = "cursor-agent",
+    claude = "claude --dangerously-skip-permissions",
+    codex = "codex",
+  }
+  local command = command_map[agent_type]
+
+  if not command then
+    error("Invalid agent type. Use 'claude', 'cursor', or 'codex'.")
   end
-  
+
   M.new_tab_with_name(agent_type)
   vim.cmd("term")
   vim.api.nvim_feedkeys(command .. "\r", "n", false)
@@ -149,7 +151,7 @@ function M.setup_commands()
   end, {
     nargs = "?",
     complete = function(ArgLead, CmdLine, CursorPos)
-      local candidates = {"claude", "cursor"}
+      local candidates = { "claude", "cursor", "codex" }
       local filtered = {}
       for _, candidate in ipairs(candidates) do
         if candidate:find("^" .. ArgLead) then
