@@ -94,9 +94,15 @@ diff-formatter = ":git"
 'last()' = 'last(20)'
 'last(n)' = 'ancestors(@, n)'
 
-# view a revision's ancestry back to where it diverged from trunk()
-'stack()' = 'stack(@)'
-'stack(from)' = 'ancestors((immutable()..from) | from::, 2)'
+# current branch: linear path from trunk to @
+'branch()' = 'trunk()..@'
+
+# full stack: all commits diverging from trunk (includes descendant and sibling branches)
+'stack()' = 'roots(trunk()..@)::'
+
+# view a revision's ancestry back to where it diverged from trunk() (for display)
+'stack_context()' = 'stack_context(@)'
+'stack_context(from)' = 'ancestors((immutable()..from) | from::, 2)'
 
 'private()' = 'description(glob:"private:*")'
 
@@ -129,9 +135,9 @@ pre-commit-last = [
   "jj diff -r @ --name-only --no-pager | xargs pre-commit run --files",
 ]
 
-# Get files changed in the current branch from trunk
-branch-diff = ["diff", "-r", "(trunk()..@)::"]
-branch-diff-files = ["diff", "-r", "(trunk()..@)::", "--name-only", "--no-pager"]
+# Get files changed in the current branch (linear path from trunk to @)
+branch-diff = ["diff", "-r", "branch()"]
+branch-diff-files = ["diff", "-r", "branch()", "--name-only", "--no-pager"]
 
 pre-commit-branch = [
   "util",
@@ -139,8 +145,20 @@ pre-commit-branch = [
   "--",
   "bash",
   "-c",
-
   "jj branch-diff-files | xargs pre-commit run --files",
+]
+
+# Get files changed in the full stack (includes sibling branches)
+stack-diff = ["diff", "-r", "stack()"]
+stack-diff-files = ["diff", "-r", "stack()", "--name-only", "--no-pager"]
+
+pre-commit-stack = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+  "jj stack-diff-files | xargs pre-commit run --files",
 ]
 
 # find the nearest bookmark and move it forward to the nearest pushable revision
