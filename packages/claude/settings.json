@@ -6,6 +6,9 @@
     "command": "~/.local/share/mise/shims/ccstatusline",
     "padding": 0
   },
+  "enabledPlugins": {
+    "glean@glean-plugins": true
+  },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754345057625
