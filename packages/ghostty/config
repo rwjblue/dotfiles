@@ -6,7 +6,7 @@ macos-non-native-fullscreen = true
 fullscreen = true
 keybind = shift+enter=text:\n
 
-# Map CMD+number to F-keys for tab navigation in neovim
+# Map CMD+number to F-keys for tab navigation in zellij
 keybind = cmd+Digit1=text:\x1BOP
 keybind = cmd+Digit2=text:\x1BOQ
 keybind = cmd+Digit3=text:\x1BOR

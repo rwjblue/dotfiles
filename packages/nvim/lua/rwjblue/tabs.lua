@@ -95,7 +95,7 @@ function M.rename_tab_prompt()
   end)
 end
 
---- Creates a new tab with an agent terminal
+--- Creates a new zellij pane with an agent
 --- @param agent_type string The type of agent ('claude', 'cursor', or 'codex')
 function M.new_agent_tab(agent_type)
   local command_map = {
@@ -109,9 +109,9 @@ function M.new_agent_tab(agent_type)
     error("Invalid agent type. Use 'claude', 'cursor', or 'codex'.")
   end
 
-  M.new_tab_with_name(agent_type)
-  vim.cmd("term")
-  vim.api.nvim_feedkeys(command .. "\r", "n", false)
+  vim.fn.system(
+    "zellij action new-tab --name " .. agent_type .. " && zellij action write-chars " .. vim.fn.shellescape(command .. "\r")
+  )
 end
 
 --- Sets up Vim commands for tab management
