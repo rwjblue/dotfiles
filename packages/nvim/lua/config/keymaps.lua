@@ -54,6 +54,11 @@ map("t", "<C-w>c", [[<c-\><c-n><c-w>c]], { desc = "close win (terminal)" })
 vim.keymap.del({ "n", "v", "i" }, "<a-j>")
 vim.keymap.del({ "n", "v", "i" }, "<a-k>")
 
+-- Cmd-S to save (macOS style)
+map("n", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
+map("i", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
+map("v", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
+
 -- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
 -- system specific customizations
 -- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
