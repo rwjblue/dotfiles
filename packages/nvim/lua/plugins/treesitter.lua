@@ -19,13 +19,7 @@ return {
         "mermaid",
       })
     end,
-    config = function(plugin, opts)
-      -- Call LazyVim's treesitter config first
-      require("lazyvim.plugins.treesitter")[1].config(plugin, opts)
-      -- Then load our custom query overrides
-      local overrides = require("rwjblue.overrides")
-      overrides.load_ts_query_overrides()
-    end,
+    -- Query overrides are now in ~/.config/nvim/after/queries/
   },
   {
     "nvim-treesitter/nvim-treesitter-textobjects",
