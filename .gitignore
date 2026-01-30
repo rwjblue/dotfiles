@@ -15,3 +15,9 @@ packages/wezterm/local_config_overrides.lua
 # this is unstable across machines
 /packages/hammerspoon/Spoons/EmmyLua.spoon/annotations/timestamps.json
 
+# Override global gitignore to track local claude skills
+# These rules work in order, each overriding the previous:
+!/.claude/           # 1. Un-ignore .claude/ dir (overrides global gitignore)
+/.claude/*           # 2. Re-ignore everything inside it
+!/.claude/skills/    # 3. Except the skills/ subdirectory
+
