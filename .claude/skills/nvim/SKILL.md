@@ -1,6 +1,10 @@
-# Neovim Configuration
+---
+name: nvim
+description: Neovim/LazyVim configuration. Use when working with Neovim config, plugins, keymaps, or TreeSitter queries.
+user-invocable: false
+---
 
-This skill helps with rwjblue's Neovim setup.
+# Neovim Configuration
 
 ## Overview
 

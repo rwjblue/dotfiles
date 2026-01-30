@@ -1,8 +1,10 @@
+---
+name: task
+description: go-task automation patterns. Use when adding tasks, running commands, or understanding Taskfile structure.
+user-invocable: false
+---
+
 # go-task Automation
-
-This skill helps with go-task usage in this repository.
-
-## Overview
 
 All automation uses **go-task** (https://taskfile.dev). Tasks are defined in YAML files.
 

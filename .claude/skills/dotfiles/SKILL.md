@@ -1,6 +1,10 @@
-# Dotfiles Management
+---
+name: dotfiles
+description: Dotfiles repository structure and patterns. Use when adding configs, managing symlinks, or understanding the packages/ layout.
+user-invocable: false
+---
 
-This skill helps with managing rwjblue's dotfiles repository.
+# Dotfiles Management
 
 ## Repository Structure
 
