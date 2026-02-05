@@ -4,16 +4,6 @@
 min_version = "2025.10.0"
 
 [tools]
-# core tools
-go = "latest"
-node = "latest"
-python = "latest"
-ruby = "latest"
-rust = { version = "latest", components = "rust-analyzer,clippy" }
-uv = "latest"
-zig = "latest"
-bun = "latest"
-
 # cargo augmenting tools
 cargo-binstall = "latest"
 cargo-insta = "latest"
@@ -42,6 +32,16 @@ usage = "latest"
 "cargo:worktree" = "latest"
 "cargo:codanna" = "latest"
 "npm:@openai/codex" = "latest"
+
+# core tools
+go = "latest"
+node = "latest"
+python = "latest"
+ruby = "latest"
+rust = { version = "latest", components = "rust-analyzer,clippy" }
+uv = "latest"
+zig = "latest"
+bun = "latest"
 
 [settings]
 experimental = true
