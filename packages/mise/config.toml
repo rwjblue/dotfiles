@@ -43,6 +43,11 @@ uv = "latest"
 zig = "latest"
 bun = "latest"
 
+[env]
+# Disable Claude Code's native auto-updater since claude-code is managed by mise.
+# See https://code.claude.com/docs/en/setup#disable-auto-updates
+DISABLE_AUTOUPDATER = "1"
+
 [settings]
 experimental = true
 # disabled until https://github.com/jdx/mise/issues/4600 is resolved
