@@ -15,8 +15,13 @@ Create or update a GitHub pull request from the current jj branch.
 ### 1. Gather Current State
 
 Run these to understand the current situation:
-- `scripts/diff.sh` - check if `@` has uncommitted changes
-- `scripts/bookmark-status.sh` - see bookmark positions
+- `jj diff` - check if `@` has uncommitted changes
+- Bookmark status - run all three of these commands:
+  ```bash
+  echo "=== @- (parent commit) ===" && jj log --no-pager -r "@-" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  echo "=== closest_bookmark(@) ===" && jj log --no-pager -r "closest_bookmark(@)" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  echo "=== trunk() ===" && jj log --no-pager -r "trunk()" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  ```
 
 Determine the mode:
 
@@ -29,9 +34,9 @@ Determine the mode:
 
 ### U1. Check for Existing PR
 
-Get the bookmark name from `@-` using `scripts/parent-bookmarks.sh`.
+Get the bookmark name from `@-` using `jj log --no-pager -r "@-" -T 'bookmarks'`.
 
-Run `scripts/check-pr.sh <bookmark-name>` to see if a PR exists.
+Run `gh pr view <bookmark-name> --json url,state,title 2>/dev/null` to see if a PR exists.
 
 ### U2. Handle Changes
 
@@ -40,7 +45,7 @@ Ask the user using AskUserQuestion:
 - **Squash into last commit** (Recommended) - amend the previous commit
 - **Create new commit** - add as a separate commit
 
-If squash: run `scripts/squash.sh`
+If squash: run `jj squash`
 If new commit: invoke `/jj-commit`, then run `jj tug` to move the bookmark forward
 
 **If `@` is empty:**
@@ -48,7 +53,7 @@ The changes are already committed. Proceed to push.
 
 ### U3. Push Updates
 
-Run `scripts/push-tracked.sh` to push the bookmark.
+Run `jj git push --tracked` to push the bookmark.
 
 ### U4. Report Result
 
@@ -65,7 +70,7 @@ If `@` has changes, invoke `/jj-commit` first.
 
 ### C2. Create Bookmark
 
-Run `scripts/parent-message.sh` to get the commit message at `@-`.
+Run `jj log --no-pager -r "@-" -T 'description.first_line()'` to get the commit message at `@-`.
 
 Generate a branch name:
 - Prefix with `rwjblue/`
@@ -75,7 +80,7 @@ Generate a branch name:
 
 Present the proposed branch name to the user for confirmation using AskUserQuestion.
 
-Once confirmed, run `scripts/push-named.sh <bookmark-name>`.
+Once confirmed, run `jj git push --named "<bookmark-name>=@-"`.
 
 ### C3. Handle Stacked Branches (optional)
 
@@ -83,7 +88,7 @@ If closest bookmark exists but isn't on `@-`, ask the user:
 - **Use `jj tug`** (Recommended) - move bookmark forward
 - **Create new bookmark** - for a new branch
 
-If tug: run `scripts/tug-and-push.sh`
+If tug: run `jj tug && jj git push --tracked`
 
 ### C4. Create Pull Request
 
@@ -93,8 +98,8 @@ cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null || cat .github/pull_request_tem
 ```
 
 Gather information for the PR:
-- Run `scripts/branch-commits.sh` to get commit messages in the branch
-- Run `scripts/branch-stat.sh` to get the diff summary
+- Run `jj log --no-pager -r "trunk()..@-" -T 'description ++ "\n---\n"'` to get commit messages in the branch
+- Run `jj diff --stat -r "trunk()..@-"` to get the diff summary
 
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
@@ -109,9 +114,9 @@ Draft the PR:
 
 Present the draft to the user for approval using AskUserQuestion.
 
-Create the PR by piping the body to `scripts/create-pr.sh`:
+Create the PR:
 ```bash
-scripts/create-pr.sh "<bookmark-name>" "<title>" <<'EOF'
+gh pr create --draft --head "<bookmark-name>" --title "<title>" --body-file - <<'EOF'
 <body content>
 EOF
 ```

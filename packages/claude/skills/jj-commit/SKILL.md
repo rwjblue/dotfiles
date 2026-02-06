@@ -14,13 +14,13 @@ Create a commit for current changes with a commit message matching your style in
 
 ### 1. Review Current Changes
 
-Run `scripts/diff.sh` to see what changes are in the working copy (`@`).
+Run `jj diff` to see what changes are in the working copy (`@`).
 
 If there are no changes (empty diff), inform the user there's nothing to commit.
 
 ### 2. Analyze Commit Style
 
-Run `scripts/my-commits.sh` to see the user's recent commit messages for style reference.
+Run `jj log --no-pager -r "mine() & ~empty()" --limit 15 -T 'description.first_line() ++ "\n"'` to see the user's recent commit messages for style reference.
 
 Analyze the commit messages to identify the style used in this repo:
 - Do they use conventional commits (`type(scope): description`)?
@@ -44,6 +44,8 @@ Draft a concise commit message that matches the style used in this repo. Conside
 - What area/component does it affect?
 - What does it accomplish?
 
+The first line MUST be 72 characters or fewer. If the message needs more detail, use a blank line followed by a body paragraph. Show the character count next to the first line when presenting to the user.
+
 The message should look like it belongs with the other commits in the repo.
 
 ### 4. Confirm with User
@@ -56,7 +58,7 @@ Present the proposed commit message using AskUserQuestion:
 
 ### 5. Create the Commit
 
-Once approved, run `scripts/commit.sh "<approved message>"`.
+Once approved, run `jj commit -m "<approved message>"`.
 
 This will:
 - Describe the current working copy with the message
