@@ -57,7 +57,7 @@ jj rebase -r <rev> -d trunk()           # Move single commit onto trunk
 jj rebase -s <rev> -d trunk()           # Move commit and descendants onto trunk
 jj rebase -r <rev> --insert-after <x>   # Insert commit after x
 jj rebase -r <rev> --insert-before <x>  # Insert commit before x
-jj up                 # (alias) Rebase @ onto trunk()
+jj up                 # (alias) Rebase @ onto trunk(), dropping commits that become empty
 ```
 
 ### Restoring & Undoing
@@ -73,7 +73,7 @@ jj op log             # View operation history (for undo)
 
 ### Git Integration
 ```bash
-jj git fetch          # Fetch from all remotes (configured: glob:*)
+jj git fetch          # Fetch from all remotes (configured: glob:*, handles fork workflows)
 jj git push           # Push current bookmark
 jj git push --named <branch>=<rev>  # Create bookmark and push (e.g., --named my-feature=@)
 jj git push -b <name> # Push specific bookmark
@@ -104,10 +104,12 @@ jj recent             # Show last 20 commits
 
 ### Branch Operations
 ```bash
-jj up                 # Rebase onto trunk()
+jj up                 # Rebase onto trunk(), dropping commits that become empty
 jj tug                # Move bookmark to nearest pushable commit
 jj branch-diff        # Diff for entire branch (trunk..@)
 jj branch-diff-files  # List files changed in branch
+jj stack-diff         # Diff for full stack (includes sibling branches)
+jj stack-diff-files   # List files changed in stack
 ```
 
 ### Pre-commit Integration
@@ -117,13 +119,33 @@ jj pre-commit-branch  # Run pre-commit on branch files
 jj pre-commit-stack   # Run pre-commit on stack files
 ```
 
+### Private Commit Operations
+```bash
+jj rebase-private     # Rebase private commits onto @, dropping empties
+```
+
 ## Custom Revset Aliases
 
 ```bash
-branch()              # Linear path from trunk() to @
-stack()               # All commits diverging from trunk (includes siblings)
-open()                # All user's commits not yet landed
-private()             # Commits with "private:" prefix
+branch()              # Linear path from trunk() to @ (trunk()..@)
+stack()               # All commits diverging from trunk, including sibling branches (roots(trunk()..@)::)
+open()                # All user's commits not yet landed on immutable heads
+private()             # Commits with "private:" description prefix
+
+# Ancestry/context helpers
+slice()               # Ancestors of reachable mutable commits from @, depth 2
+slice(from)           # Same but from a specific revision
+stack_context()       # Ancestry back to trunk divergence point, depth 2
+stack_context(from)   # Same but from a specific revision
+
+# Bookmark/push helpers
+closest_bookmark(to)  # Nearest bookmark ancestor of a revision
+closest_pushable(to)  # Nearest ancestor with a description that is non-empty or a merge
+
+# History
+last()                # Last 20 ancestors of @ (like git log)
+last(n)               # Last n ancestors of @
+ropen()               # Open remote branches (remote bookmarks minus immutable, depth 2)
 ```
 
 ## Private Commits
@@ -136,8 +158,9 @@ jj rebase-private     # Later, rebase private commits onto @
 
 ## Configuration Notes
 
-- **Colocated repos**: `git.colocate = true` - works with git commands too
-- **SSH signing**: Uses 1Password for commit signing
-- **Auto push bookmark**: Creates `rwjblue/push-<change_id>` on push
-- **Delta pager**: Used only for `jj diff`
-- **Scoped config**: Different email/key for work vs personal repos
+- **Colocated repos**: `git.colocate = true` -- all repos are colocated, git commands work alongside jj
+- **Signing**: `behavior = "drop"` locally (commits are unsigned), but `sign-on-push = true` signs commits when pushed via 1Password SSH agent
+- **Auto push bookmark**: Creates `rwjblue/push-<change_id>` on push when no bookmark exists
+- **Fetch from all remotes**: `git.fetch = ["glob:*"]` -- handles fork workflows where `origin` and `upstream` both exist
+- **Delta pager**: Used only for `jj diff` (scoped config), not for other commands to avoid terminal clearing
+- **Scoped config**: Different email/signing key for work repos vs personal repos

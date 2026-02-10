@@ -50,11 +50,12 @@ The message should look like it belongs with the other commits in the repo.
 
 ### 4. Confirm with User
 
-Present the proposed commit message using AskUserQuestion:
-- Show the message you've drafted
-- Offer options: "Use this message", "Edit message", "See diff again"
-- If user wants to edit, ask for their preferred message
-- Loop until the user approves
+Present the proposed commit message and ask the user to choose:
+- **Use this message** -- proceed with the drafted message
+- **Edit message** -- ask for their preferred message
+- **See diff again** -- re-show the diff
+
+If the user wants to edit, ask for their preferred message. Loop until the user approves.
 
 ### 5. Create the Commit
 

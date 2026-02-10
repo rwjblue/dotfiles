@@ -34,14 +34,14 @@ Determine the mode:
 
 ### U1. Check for Existing PR
 
-Get the bookmark name from `@-` using `jj log --no-pager -r "@-" -T 'bookmarks'`.
+Get the bookmark name from `closest_bookmark(@)` using `jj log --no-pager -r "closest_bookmark(@)" -T 'bookmarks'`.
 
 Run `gh pr view <bookmark-name> --json url,state,title 2>/dev/null` to see if a PR exists.
 
 ### U2. Handle Changes
 
 **If `@` has changes:**
-Ask the user using AskUserQuestion:
+Ask the user to choose:
 - **Squash into last commit** (Recommended) - amend the previous commit
 - **Create new commit** - add as a separate commit
 
@@ -55,7 +55,13 @@ The changes are already committed. Proceed to push.
 
 Run `jj git push --tracked` to push the bookmark.
 
-### U4. Report Result
+### U4. Optionally Update PR Title/Body
+
+If the PR exists, ask the user if they want to update the PR title or description.
+
+If yes, use `gh pr edit <bookmark-name> --title "<new title>" --body "<new body>"` to update it.
+
+### U5. Report Result
 
 If PR exists: Show the PR URL and confirm updates were pushed.
 If no PR exists: Proceed to CREATE mode step C4 to create the PR.
@@ -78,13 +84,13 @@ Generate a branch name:
 - Use kebab-case (lowercase with hyphens)
 - Example: `chore(nvim): add plugin support` -> `rwjblue/add-plugin-support`
 
-Present the proposed branch name to the user for confirmation using AskUserQuestion.
+Present the proposed branch name to the user for confirmation.
 
 Once confirmed, run `jj git push --named "<bookmark-name>=@-"`.
 
 ### C3. Handle Stacked Branches (optional)
 
-If closest bookmark exists but isn't on `@-`, ask the user:
+If closest bookmark exists but isn't on `@-`, ask the user to choose:
 - **Use `jj tug`** (Recommended) - move bookmark forward
 - **Create new bookmark** - for a new branch
 
@@ -112,13 +118,14 @@ Draft the PR:
   [How to verify the changes work]
   ```
 
-Present the draft to the user for approval using AskUserQuestion.
+Present the draft to the user for approval.
 
 Create the PR:
 ```bash
-gh pr create --draft --head "<bookmark-name>" --title "<title>" --body-file - <<'EOF'
+gh pr create --draft --head "<bookmark-name>" --title "<title>" --body "$(cat <<'EOF'
 <body content>
 EOF
+)"
 ```
 
 ### C5. Report Success
