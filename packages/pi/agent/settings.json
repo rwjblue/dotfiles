@@ -2,5 +2,6 @@
   "theme": "dark",
   "compaction": {
     "enabled": true
-  }
+  },
+  "skills": ["~/.claude/skills"]
 }
