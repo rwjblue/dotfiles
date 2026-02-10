@@ -1,0 +1,26 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "tui": {
+    "theme": "catppuccin"
+  },
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      ".jj/**",
+      "node_modules/**",
+      ".bazel/**",
+      "bazel-out/**",
+      "target/**",
+      ".cache/**",
+      ".ruff_cache/**",
+      ".swc/**",
+      ".pnpm-store/**",
+      "dist/**",
+      "build/**",
+      ".terraform/**",
+      "storybook-static/**",
+      ".opensearch/**",
+      ".elasticsearch/**"
+    ]
+  }
+}
