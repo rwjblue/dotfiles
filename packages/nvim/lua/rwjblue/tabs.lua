@@ -103,11 +103,12 @@ function M.new_agent_tab(agent_type)
     claude = "claude --dangerously-skip-permissions",
     codex = "codex",
     opencode = "opencode",
+    pi = "pi",
   }
   local command = command_map[agent_type]
 
   if not command then
-    error("Invalid agent type. Use 'claude', 'cursor', 'codex', or 'opencode'.")
+    error("Invalid agent type. Use 'claude', 'cursor', 'codex', 'opencode', or 'pi'.")
   end
 
   vim.fn.system(
@@ -152,7 +153,7 @@ function M.setup_commands()
   end, {
     nargs = "?",
     complete = function(ArgLead, CmdLine, CursorPos)
-      local candidates = { "claude", "cursor", "codex", "opencode" }
+      local candidates = { "claude", "cursor", "codex", "opencode", "pi" }
       local filtered = {}
       for _, candidate in ipairs(candidates) do
         if candidate:find("^" .. ArgLead) then

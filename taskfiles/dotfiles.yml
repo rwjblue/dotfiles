@@ -139,6 +139,7 @@ tasks:
         - "packages/claude/settings.json|$HOME/.claude/settings.json"
         - "packages/claude/skills/|$HOME/.claude/skills"
         - "packages/opencode/.opencode.json|$HOME/.config/opencode/.opencode.json"
+        - "packages/pi/agent/settings.json|$HOME/.pi/agent/settings.json"
 
     cmds:
       - for:
