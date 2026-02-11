@@ -7,8 +7,8 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "glean@glean-plugins": true,
-    "gopls-lsp@claude-plugins-official": true
+    "gopls-lsp@claude-plugins-official": true,
+    "glean-core@glean-plugins": true
   },
   "alwaysThinkingEnabled": true,
   "feedbackSurveyState": {
