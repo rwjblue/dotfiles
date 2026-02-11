@@ -38,7 +38,18 @@ Get the bookmark name from `closest_bookmark(@)` using `jj log --no-pager -r "cl
 
 Run `gh pr view <bookmark-name> --json url,state,title 2>/dev/null` to see if a PR exists.
 
-### U2. Handle Changes
+### U2. Detect Stacked PR vs Update
+
+Compare `closest_bookmark(@)` with `@-`. If the bookmark is already on `@-`, skip to U3.
+
+If the bookmark is **behind** `@-` (new commits exist beyond the bookmark), ask the user:
+- **Update existing PR** (Recommended) - move the bookmark forward to include new commits
+- **Create stacked PR** - keep the bookmark where it is and create a new PR targeting it
+
+If **Update existing PR**: continue to U3.
+If **Create stacked PR**: jump to CREATE mode (C1), passing the existing bookmark name as the stacked base branch.
+
+### U3. Handle Changes
 
 **If `@` has changes:**
 Ask the user to choose:
@@ -51,24 +62,24 @@ If new commit: invoke `/jj-commit`, then run `jj tug` to move the bookmark forwa
 **If `@` is empty:**
 The changes are already committed. Proceed to push.
 
-### U3. Push Updates
+### U4. Push Updates
 
 Run `jj git push --tracked` to push the bookmark.
 
-### U4. Optionally Update PR Title/Body
+### U5. Optionally Update PR Title/Body
 
 If the PR exists, ask the user if they want to update the PR title or description.
 
 If yes, use `gh pr edit <bookmark-name> --title "<new title>" --body "<new body>"` to update it.
 
-### U5. Report Result
+### U6. Report Result
 
 If PR exists: Show the PR URL and confirm updates were pushed.
 If no PR exists: Proceed to CREATE mode step C4 to create the PR.
 
 ---
 
-## CREATE Mode (new branch from trunk)
+## CREATE Mode (new branch from trunk or stacked base)
 
 ### C1. Handle Uncommitted Changes
 
@@ -104,8 +115,8 @@ cat .github/PULL_REQUEST_TEMPLATE.md 2>/dev/null || cat .github/pull_request_tem
 ```
 
 Gather information for the PR:
-- Run `jj log --no-pager -r "trunk()..@-" -T 'description ++ "\n---\n"'` to get commit messages in the branch
-- Run `jj diff --stat -r "trunk()..@-"` to get the diff summary
+- If stacked: use `jj log --no-pager -r "<stacked-base-bookmark>..@-" -T 'description ++ "\n---\n"'` and `jj diff --stat -r "<stacked-base-bookmark>..@-"`
+- Otherwise: use `jj log --no-pager -r "trunk()..@-" -T 'description ++ "\n---\n"'` and `jj diff --stat -r "trunk()..@-"`
 
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
@@ -122,6 +133,7 @@ Present the draft to the user for approval.
 
 Create the PR:
 ```bash
+# If stacked, add --base "<stacked-base-bookmark>" to target the parent PR's branch
 gh pr create --draft --head "<bookmark-name>" --title "<title>" --body "$(cat <<'EOF'
 <body content>
 EOF
