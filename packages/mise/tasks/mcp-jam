@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Launch MCPJam Inspector"
+#MISE alias="mcpjam"
+
+exec inspector "$@"

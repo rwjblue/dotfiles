@@ -32,6 +32,7 @@ usage = "latest"
 "cargo:foundry-mcp" = "latest"
 "cargo:worktree" = "latest"
 "cargo:codanna" = "latest"
+"npm:@mcpjam/inspector" = "latest"
 "npm:@openai/codex" = "latest"
 
 # core tools
