@@ -124,6 +124,11 @@ Gather information for the PR:
 - If stacked: use `jj log --no-pager -r "<stacked-base-bookmark>..@-" -T 'description ++ "\n---\n"'` and `jj diff --stat -r "<stacked-base-bookmark>..@-"`
 - Otherwise: use `jj log --no-pager -r "trunk()..@-" -T 'description ++ "\n---\n"'` and `jj diff --stat -r "trunk()..@-"`
 
+If this is a stacked PR, gather the full stack for the PR body:
+- Run `jj log --no-pager -r "bookmarks() & trunk()..@-" --reversed -T 'bookmarks ++ "\n"'` to find all bookmarks in the stack (bottom-up order, base first)
+- For each bookmark, run `gh pr view <bookmark> --json url,title 2>/dev/null` to get its PR info
+- Include the current PR (being created now) as the last entry
+
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
 - **Body**: If template exists, fill it out. Otherwise use:
@@ -134,6 +139,14 @@ Draft the PR:
   ## Test plan
   [How to verify the changes work]
   ```
+  If stacked, append a **Stack** section (bottom-up order, base PR is #1):
+  ```markdown
+  ## Stack
+  1. [Base PR title](PR_URL)
+  2. [Middle PR title](PR_URL)
+  3. **Current PR title** (this PR)
+  ```
+  Link each PR to its GitHub URL. Bold the current PR and mark it with "(this PR)".
 
 Present the draft to the user for approval.
 
@@ -146,6 +159,14 @@ EOF
 )"
 ```
 
-### C5. Report Success
+### C5. Update Stack in Other PRs (stacked PRs only)
+
+After creating the PR, update all other open PRs in the stack so they have the complete stack list:
+- For each other PR in the stack, read its current body via `gh pr view <bookmark> --json body`
+- Replace or append the `## Stack` section with the updated list
+- Each PR's stack list should bold its own entry and mark it with "(this PR)"
+- Update via `gh pr edit <bookmark> --body "..."`
+
+### C6. Report Success
 
 Show the PR URL and confirm the pull request was created.
