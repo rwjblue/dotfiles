@@ -139,14 +139,13 @@ Draft the PR:
   ## Test plan
   [How to verify the changes work]
   ```
-  If stacked, append a **Stack** section (bottom-up order, base PR is #1):
+  If stacked, include a **Stack** section at the end of the author-written description, before any template boilerplate (checklists, release notes, metadata sections). Use bottom-up order where the base PR is #1:
   ```markdown
   ## Stack
-  1. [Base PR title](PR_URL)
-  2. [Middle PR title](PR_URL)
-  3. **Current PR title** (this PR)
+  1. https://github.com/askscio/scio/pull/NNNNN
+  2. **Current PR title** (this PR)
   ```
-  Link each PR to its GitHub URL. Bold the current PR and mark it with "(this PR)".
+  Use bare GitHub PR URLs for other PRs in the stack (GitHub renders these as rich links with title and status). Bold the current PR's own entry with its title and mark it with "(this PR)".
 
 Present the draft to the user for approval.
 
@@ -163,8 +162,8 @@ EOF
 
 After creating the PR, update all other open PRs in the stack so they have the complete stack list:
 - For each other PR in the stack, read its current body via `gh pr view <bookmark> --json body`
-- Replace or append the `## Stack` section with the updated list
-- Each PR's stack list should bold its own entry and mark it with "(this PR)"
+- Replace or insert the `## Stack` section at the end of the author-written description, before any template boilerplate
+- Use bare GitHub PR URLs for other entries; bold the PR's own entry with its title and "(this PR)"
 - Update via `gh pr edit <bookmark> --body "..."`
 
 ### C6. Report Success
