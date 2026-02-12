@@ -91,9 +91,15 @@ Run `jj log --no-pager -r "@-" -T 'description.first_line()'` to get the commit 
 
 Generate a branch name:
 - Prefix with `rwjblue/`
-- Use 2-4 words from the commit message
+- If the commit message has a category prefix, include it as a kebab-case prefix in the branch name:
+  - `[Category Name] ...` format: extract the bracketed text
+  - `type(scope): ...` format: extract the scope
+- Follow with 2-4 descriptive words from the rest of the message
 - Use kebab-case (lowercase with hyphens)
-- Example: `chore(nvim): add plugin support` -> `rwjblue/add-plugin-support`
+- Examples:
+  - `[MCP Server] Enable JSON response` -> `rwjblue/mcp-server-enable-json-response`
+  - `feat(skills): Add stacked PR support` -> `rwjblue/skills-add-stacked-pr-support`
+  - `Add dark mode toggle` -> `rwjblue/add-dark-mode-toggle`
 
 Present the proposed branch name to the user for confirmation.
 
