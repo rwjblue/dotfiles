@@ -131,7 +131,8 @@ If this is a stacked PR, gather the full stack for the PR body:
 
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
-- **Body**: If template exists, fill it out. Otherwise use:
+- **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
+  If template exists, fill it out. Otherwise use:
   ```markdown
   ## Summary
   [1-3 bullet points describing the changes]
