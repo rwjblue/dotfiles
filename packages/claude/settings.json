@@ -11,6 +11,7 @@
     "glean-core@glean-plugins": true
   },
   "alwaysThinkingEnabled": true,
+  "skipDangerousModePermissionPrompt": true,
   "feedbackSurveyState": {
     "lastShownTime": 1754345057625
   }
