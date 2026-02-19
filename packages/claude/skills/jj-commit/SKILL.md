@@ -39,12 +39,20 @@ Based on:
 - The user's hint (if provided via $ARGUMENTS)
 - The commit style observed in step 2
 
-Draft a concise commit message that matches the style used in this repo. Consider:
-- What kind of change is this? (new feature, bug fix, refactor, etc.)
-- What area/component does it affect?
-- What does it accomplish?
+Draft a commit message that matches the style used in this repo.
 
-The first line MUST be 72 characters or fewer. If the message needs more detail, use a blank line followed by a body paragraph. Show the character count next to the first line when presenting to the user.
+**Subject line** (first line):
+- MUST be 72 characters or fewer
+- Concise summary of the change
+- Show the character count next to the subject when presenting to the user
+
+**Body** (after a blank line):
+- Always include a body for non-trivial changes (most changes are non-trivial)
+- Explain **why** this change is being made (the motivation/problem)
+- Explain **what** the change accomplishes at a high level
+- Do NOT explain **how** unless the approach is non-obvious from the diff
+- Wrap lines at 72 characters
+- Only skip the body for truly trivial changes (typo fixes, single-line config tweaks)
 
 The message should look like it belongs with the other commits in the repo.
 
