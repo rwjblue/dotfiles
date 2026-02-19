@@ -16,8 +16,5 @@
   },
   "teammateMode": "auto",
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "feedbackSurveyState": {
-    "lastShownTime": 1754345057625
-  }
+  "skipDangerousModePermissionPrompt": true
 }

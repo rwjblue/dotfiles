@@ -2,6 +2,7 @@
 name: jj-commit
 description: Create a jujutsu commit with a well-crafted commit message based on the current diff and your commit style.
 argument-hint: "[optional: brief description of changes]"
+disable-model-invocation: true
 ---
 
 # JJ Commit

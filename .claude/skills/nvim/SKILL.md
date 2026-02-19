@@ -43,5 +43,6 @@ Query overrides go in `after/queries/<language>/` following standard Neovim patt
 
 ## References
 
-- LazyVim docs: https://lazy.folke.io
+- LazyVim docs (distribution): https://www.lazyvim.org/
+- lazy.nvim docs (plugin manager): https://lazy.folke.io
 - Plugin specs live in `lua/plugins/`

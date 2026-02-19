@@ -8,7 +8,7 @@ user-invocable: false
 
 ## Repository Structure
 
-- `packages/` - Source configs organized by tool (nvim, git, zsh, etc.)
+- `packages/` - Source configs organized by tool (nvim, git, zsh, claude, etc.)
 - `packages-dist/` - Generated outputs (shell configs)
 - `local-packages/` - Separate private repo for work-specific overrides (symlinked)
 - `taskfiles/*.yml` - go-task automation definitions
