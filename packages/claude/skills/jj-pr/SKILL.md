@@ -23,6 +23,12 @@ Run these to understand the current situation:
   echo "=== closest_bookmark(@) ===" && jj log --no-pager -r "closest_bookmark(@)" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
   echo "=== trunk() ===" && jj log --no-pager -r "trunk()" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
   ```
+- Determine PR target remote:
+  - Run `jj git remote list`
+  - If `upstream` is present, target `upstream` for PR operations
+  - Otherwise, target `origin`
+  - Derive `<target-repo>` (owner/name) from that remote URL and use it in `gh pr ... --repo "<target-repo>"`
+  - Derive `<origin-owner>` from the `origin` remote URL for head refs (`<origin-owner>:<bookmark-name>`)
 
 Determine the mode:
 
@@ -37,7 +43,7 @@ Determine the mode:
 
 Get the bookmark name from `closest_bookmark(@)` using `jj log --no-pager -r "closest_bookmark(@)" -T 'bookmarks'`.
 
-Run `gh pr view <bookmark-name> --json url,state,title 2>/dev/null` to see if a PR exists.
+Run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark-name>" --json url,state,title,number --limit 1` to see if a PR exists.
 
 ### U2. Detect Stacked PR vs Update
 
@@ -71,7 +77,7 @@ Run `jj git push --tracked` to push the bookmark.
 
 If the PR exists, ask the user if they want to update the PR title or description.
 
-If yes, use `gh pr edit <bookmark-name> --title "<new title>" --body "<new body>"` to update it.
+If yes, use `gh pr edit <pr-number> --repo "<target-repo>" --title "<new title>" --body "<new body>"` to update it.
 
 ### U6. Report Result
 
@@ -127,7 +133,7 @@ Gather information for the PR:
 
 If this is a stacked PR, gather the full stack for the PR body:
 - Run `jj log --no-pager -r "bookmarks() & trunk()..@-" --reversed -T 'bookmarks ++ "\n"'` to find all bookmarks in the stack (bottom-up order, base first)
-- For each bookmark, run `gh pr view <bookmark> --json url,title 2>/dev/null` to get its PR info
+- For each bookmark, run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark>" --json url,title,number --limit 1` to get its PR info
 - Include the current PR (being created now) as the last entry
 
 Draft the PR:
@@ -154,7 +160,7 @@ Present the draft to the user for approval.
 Create the PR:
 ```bash
 # If stacked, add --base "<stacked-base-bookmark>" to target the parent PR's branch
-gh pr create --draft --head "<bookmark-name>" --title "<title>" --body "$(cat <<'EOF'
+gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --title "<title>" --body "$(cat <<'EOF'
 <body content>
 EOF
 )"
@@ -163,10 +169,10 @@ EOF
 ### C5. Update Stack in Other PRs (stacked PRs only)
 
 After creating the PR, update all other open PRs in the stack so they have the complete stack list:
-- For each other PR in the stack, read its current body via `gh pr view <bookmark> --json body`
+- For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
 - Replace or insert the `## Stack` section at the end of the author-written description, before any template boilerplate
 - Use bare GitHub PR URLs for other entries; bold the PR's own entry with its title and "(this PR)"
-- Update via `gh pr edit <bookmark> --body "..."`
+- Update via `gh pr edit <pr-number> --repo "<target-repo>" --body "..."`
 
 ### C6. Report Success
 
