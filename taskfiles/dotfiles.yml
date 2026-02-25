@@ -138,6 +138,7 @@ tasks:
         - "packages/ccstatusline/|$HOME/.config/ccstatusline"
         - "packages/claude/settings.json|$HOME/.claude/settings.json"
         - "packages/claude/skills/|$HOME/.claude/skills"
+        - "packages/claude/skills/|$HOME/.agents/skills"
         - "packages/opencode/opencode.json|$HOME/.config/opencode/opencode.json"
         - "packages/pi/agent/settings.json|$HOME/.pi/agent/settings.json"
 
