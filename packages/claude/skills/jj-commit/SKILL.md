@@ -11,6 +11,12 @@ Create a commit for current changes with a commit message matching your style in
 
 **User hint:** $ARGUMENTS
 
+## Signing Policy (Mandatory)
+
+- Commit signing for pushed changes is required in this environment.
+- Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
+- If this workflow includes pushing and signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
+
 ## Process
 
 ### 1. Review Current Changes

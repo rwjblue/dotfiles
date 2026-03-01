@@ -139,14 +139,12 @@ If this is a stacked PR, gather the full stack for the PR body:
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
 - **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
-  If template exists, fill it out. Otherwise use:
-  ```markdown
-  ## Summary
-  [1-3 bullet points describing the changes]
-
-  ## Test plan
-  [How to verify the changes work]
-  ```
+  If template exists, fill it out. Otherwise write a short conversational description that prioritizes reviewer context:
+  - Explain **why** the change is being made (motivation, constraint, or problem being solved).
+  - Call out only the **non-obvious** parts of the implementation or behavior; do not restate what is already obvious from the diff.
+  - Include any useful maintainer/reviewer "color" (tradeoffs considered, follow-up work, rollout notes, edge cases, risks, or context from prior discussion).
+  - Keep it concise but complete enough that a maintainer can understand intent without reconstructing it from commit history.
+  - Add an explicit test/verification note only when there is meaningful test context to share (for example manual verification steps, known gaps, or why tests were/weren't added).
   If stacked, include a **Stack** section at the end of the author-written description, before any template boilerplate (checklists, release notes, metadata sections). Use bottom-up order where the base PR is #1:
   ```markdown
   ## Stack
