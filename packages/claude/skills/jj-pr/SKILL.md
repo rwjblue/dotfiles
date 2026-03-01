@@ -28,7 +28,9 @@ Run these to understand the current situation:
   - If `upstream` is present, target `upstream` for PR operations
   - Otherwise, target `origin`
   - Derive `<target-repo>` (owner/name) from that remote URL and use it in `gh pr ... --repo "<target-repo>"`
+  - Derive `<target-owner>` from `<target-repo>`
   - Derive `<origin-owner>` from the `origin` remote URL for head refs (`<origin-owner>:<bookmark-name>`)
+  - Treat this as a fork flow when `<target-owner> != <origin-owner>`
 
 Determine the mode:
 
@@ -136,6 +138,18 @@ If this is a stacked PR, gather the full stack for the PR body:
 - For each bookmark, run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark>" --json url,title,number --limit 1` to get its PR info
 - Include the current PR (being created now) as the last entry
 
+Determine stacked PR creation mode:
+- **True stacked mode**: only when `<stacked-base-bookmark>` exists as a branch in `<target-repo>`
+  - Check with: `gh api repos/<target-repo>/branches/<stacked-base-bookmark>`
+  - If this succeeds, create with `--base "<stacked-base-bookmark>"`
+- **Upstream fallback mode**: when stacked base branch is missing from `<target-repo>` (common fork flow)
+  - Do **not** create the follow-up PR in your fork unless the user explicitly asks
+  - Create the PR in `<target-repo>` against `trunk()` instead
+  - Include explicit stack context in the body explaining:
+    - Which prior PR this depends on (URL)
+    - That this PR temporarily includes commits from earlier PR(s)
+    - That after earlier PR(s) merge, the branch will be rebased and merged commits removed, leaving only incremental changes
+
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
 - **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
@@ -145,7 +159,7 @@ Draft the PR:
   - Include any useful maintainer/reviewer "color" (tradeoffs considered, follow-up work, rollout notes, edge cases, risks, or context from prior discussion).
   - Keep it concise but complete enough that a maintainer can understand intent without reconstructing it from commit history.
   - Add an explicit test/verification note only when there is meaningful test context to share (for example manual verification steps, known gaps, or why tests were/weren't added).
-  If stacked, include a **Stack** section at the end of the author-written description, before any template boilerplate (checklists, release notes, metadata sections). Use bottom-up order where the base PR is #1:
+  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section at the end of the author-written description, before any template boilerplate (checklists, release notes, metadata sections). Use bottom-up order where the base PR is #1:
   ```markdown
   ## Stack
   1. https://github.com/askscio/scio/pull/NNNNN
@@ -157,16 +171,24 @@ Present the draft to the user for approval.
 
 Create the PR:
 ```bash
-# If stacked, add --base "<stacked-base-bookmark>" to target the parent PR's branch
-gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --title "<title>" --body "$(cat <<'EOF'
+# Prefer --body-file to avoid shell interpolation issues with markdown/backticks
+cat > /tmp/pr-body.md <<'EOF'
 <body content>
 EOF
-)"
+
+# True stacked mode:
+gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<stacked-base-bookmark>" --title "<title>" --body-file /tmp/pr-body.md
+
+# Upstream fallback mode:
+gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<trunk-bookmark-or-branch>" --title "<title>" --body-file /tmp/pr-body.md
 ```
 
 ### C5. Update Stack in Other PRs (stacked PRs only)
 
-After creating the PR, update all other open PRs in the stack so they have the complete stack list:
+After creating the PR, update all other open PRs in the stack so they have the complete stack list.
+
+Only do this in **true stacked mode** where the PRs live in the same `<target-repo>`. Skip this step in upstream fallback mode.
+
 - For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
 - Replace or insert the `## Stack` section at the end of the author-written description, before any template boilerplate
 - Use bare GitHub PR URLs for other entries; bold the PR's own entry with its title and "(this PR)"
