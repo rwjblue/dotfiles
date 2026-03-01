@@ -17,6 +17,19 @@ Create a commit for current changes with a commit message matching your style in
 - Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
 - If this workflow includes pushing and signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
 
+## Commit Mode Resolution
+
+Determine commit mode in this order:
+
+1. If `$ARGUMENTS` contains `--auto` or `--yes`, mode is `auto`.
+2. Else if `$ARGUMENTS` contains `--confirm`, mode is `confirm`.
+3. Else check `AGENTS.md` at repo root for a line formatted as:
+   `jj-commit-default: auto|confirm`
+4. Else default to `confirm`.
+
+Remove mode flags from `$ARGUMENTS` before using the remaining text as the
+user hint.
+
 ## Process
 
 ### 1. Review Current Changes
@@ -63,18 +76,23 @@ Draft a commit message that matches the style used in this repo.
 
 The message should look like it belongs with the other commits in the repo.
 
-### 4. Confirm with User
+### 4. Confirm with User (Conditional)
 
-Present the proposed commit message and ask the user to choose:
+If mode is `confirm`, present the proposed commit message and ask the user
+to choose:
 - **Use this message** -- proceed with the drafted message
 - **Edit message** -- ask for their preferred message
 - **See diff again** -- re-show the diff
 
-If the user wants to edit, ask for their preferred message. Loop until the user approves.
+If the user wants to edit, ask for their preferred message. Loop until the
+user approves.
+
+If mode is `auto`, skip confirmation. Still show the final message before
+committing.
 
 ### 5. Create the Commit
 
-Once approved, run `jj commit -m "<approved message>"`.
+Run `jj commit -m "<approved or auto-selected message>"`.
 
 This will:
 - Describe the current working copy with the message
