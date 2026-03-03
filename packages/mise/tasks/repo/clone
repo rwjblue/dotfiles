@@ -1,0 +1,142 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Clone/fork a GitHub repo into ~/src/github and initialize jj + zellij"
+#USAGE arg "[owner_repo]" help="GitHub repository in OWNER/REPO format"
+
+set -euo pipefail
+
+OWNER_REPO="${usage_owner_repo:-}"
+
+if [[ -z "${OWNER_REPO}" ]]; then
+  printf "Repository (owner/repo): "
+  read -r OWNER_REPO
+fi
+
+if [[ ! "${OWNER_REPO}" =~ ^[^/]+/[^/]+$ ]]; then
+  echo "Error: repository must be in OWNER/REPO format"
+  exit 1
+fi
+
+OWNER="${OWNER_REPO%%/*}"
+REPO="${OWNER_REPO#*/}"
+ROOT_DIR="${HOME}/src/github/${OWNER}"
+TARGET_DIR="${ROOT_DIR}/${REPO}"
+
+mkdir -p "${ROOT_DIR}"
+
+clone_repo() {
+  echo "Cloning ${OWNER_REPO} into ${TARGET_DIR}"
+  if command -v gh-repo-clone >/dev/null 2>&1 && [[ ! -e "${TARGET_DIR}" ]]; then
+    (
+      cd "${ROOT_DIR}"
+      gh-repo-clone "${OWNER_REPO}"
+    )
+  else
+    gh repo clone "${OWNER_REPO}" "${TARGET_DIR}"
+  fi
+}
+
+if [[ -e "${TARGET_DIR}" ]]; then
+  if [[ ! -d "${TARGET_DIR}" ]]; then
+    echo "Error: target exists but is not a directory: ${TARGET_DIR}"
+    exit 1
+  fi
+
+  if [[ -d "${TARGET_DIR}/.git" ]]; then
+    ORIGIN_URL="$(git -C "${TARGET_DIR}" remote get-url origin 2>/dev/null || true)"
+    if [[ -n "${ORIGIN_URL}" ]] && [[ ! "${ORIGIN_URL}" =~ [:/]${OWNER}/${REPO}(\.git)?$ ]]; then
+      echo "Error: existing repo at ${TARGET_DIR} has a different origin: ${ORIGIN_URL}"
+      exit 1
+    fi
+    echo "Directory already contains a git repo; reusing ${TARGET_DIR}"
+  elif [[ -z "$(ls -A "${TARGET_DIR}")" ]]; then
+    clone_repo
+  else
+    echo "Error: target directory already exists and is not an empty directory or git repo: ${TARGET_DIR}"
+    exit 1
+  fi
+else
+  clone_repo
+fi
+
+cd "${TARGET_DIR}"
+
+PERMISSION="$(gh repo view "${OWNER_REPO}" --json viewerPermission --jq '.viewerPermission')"
+TRACK_REMOTE="origin"
+
+case "${PERMISSION}" in
+  ADMIN|MAINTAIN|WRITE)
+    echo "Commit access detected (${PERMISSION}); using origin"
+    ;;
+  *)
+    if git remote get-url upstream >/dev/null 2>&1; then
+      echo "No commit access detected (${PERMISSION}); upstream remote already exists"
+    else
+      echo "No commit access detected (${PERMISSION}); forking repository"
+      gh repo fork --remote
+    fi
+    TRACK_REMOTE="upstream"
+    ;;
+esac
+
+if [[ ! -d .jj ]]; then
+  jj git init --colocate
+fi
+
+detect_default_branch() {
+  local remote="$1"
+  local branch
+
+  branch="$(git symbolic-ref --quiet --short "refs/remotes/${remote}/HEAD" 2>/dev/null || true)"
+  branch="${branch#${remote}/}"
+  if [[ -n "${branch}" ]]; then
+    printf "%s\n" "${branch}"
+    return 0
+  fi
+
+  for candidate in main master; do
+    if git show-ref --verify --quiet "refs/remotes/${remote}/${candidate}"; then
+      printf "%s\n" "${candidate}"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+if ! DEFAULT_BRANCH="$(detect_default_branch "${TRACK_REMOTE}")"; then
+  echo "Error: could not determine default branch for remote '${TRACK_REMOTE}'"
+  exit 1
+fi
+
+echo "Tracking ${DEFAULT_BRANCH}@${TRACK_REMOTE} in jj"
+set +e
+TRACK_OUTPUT="$(jj bookmark track "${DEFAULT_BRANCH}" --remote="${TRACK_REMOTE}" 2>&1)"
+TRACK_STATUS=$?
+set -e
+
+if [[ ${TRACK_STATUS} -ne 0 ]]; then
+  if [[ "${TRACK_OUTPUT}" == *"already tracked"* || "${TRACK_OUTPUT}" == *"already tracking"* ]]; then
+    echo "Bookmark already tracked: ${DEFAULT_BRANCH}@${TRACK_REMOTE}"
+  else
+    echo "${TRACK_OUTPUT}" >&2
+    exit "${TRACK_STATUS}"
+  fi
+fi
+
+SESSION_NAME="${OWNER}-${REPO}"
+SESSION_SWITCH_PLUGIN="https://github.com/mostafaqanbaryan/zellij-switch/releases/download/0.2.1/zellij-switch.wasm"
+echo "Opening zellij session: ${SESSION_NAME}"
+
+if [[ -n "${ZELLIJ:-}" ]]; then
+  if ! zellij list-sessions --short 2>/dev/null | grep -Fxq "${SESSION_NAME}"; then
+    zellij attach --create-background "${SESSION_NAME}" >/dev/null
+  fi
+  exec zellij pipe --plugin "${SESSION_SWITCH_PLUGIN}" -- "--session ${SESSION_NAME}"
+fi
+
+if zellij list-sessions --short 2>/dev/null | grep -Fxq "${SESSION_NAME}"; then
+  exec zellij attach "${SESSION_NAME}"
+else
+  exec zellij attach --create "${SESSION_NAME}"
+fi
