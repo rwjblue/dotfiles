@@ -24,6 +24,11 @@ TARGET_DIR="${ROOT_DIR}/${REPO}"
 
 mkdir -p "${ROOT_DIR}"
 
+remote_matches_target() {
+  local remote_url="$1"
+  [[ -n "${remote_url}" ]] && [[ "${remote_url}" =~ [:/]${OWNER}/${REPO}(\.git)?$ ]]
+}
+
 clone_repo() {
   echo "Cloning ${OWNER_REPO} into ${TARGET_DIR}"
   if command -v gh-repo-clone >/dev/null 2>&1 && [[ ! -e "${TARGET_DIR}" ]]; then
@@ -44,11 +49,16 @@ if [[ -e "${TARGET_DIR}" ]]; then
 
   if [[ -d "${TARGET_DIR}/.git" ]]; then
     ORIGIN_URL="$(git -C "${TARGET_DIR}" remote get-url origin 2>/dev/null || true)"
-    if [[ -n "${ORIGIN_URL}" ]] && [[ ! "${ORIGIN_URL}" =~ [:/]${OWNER}/${REPO}(\.git)?$ ]]; then
-      echo "Error: existing repo at ${TARGET_DIR} has a different origin: ${ORIGIN_URL}"
+    UPSTREAM_URL="$(git -C "${TARGET_DIR}" remote get-url upstream 2>/dev/null || true)"
+
+    if remote_matches_target "${ORIGIN_URL}" || remote_matches_target "${UPSTREAM_URL}"; then
+      echo "Directory already contains a matching git repo; reusing ${TARGET_DIR}"
+    else
+      echo "Error: existing repo at ${TARGET_DIR} does not match ${OWNER_REPO}"
+      echo "origin: ${ORIGIN_URL:-<missing>}"
+      echo "upstream: ${UPSTREAM_URL:-<missing>}"
       exit 1
     fi
-    echo "Directory already contains a git repo; reusing ${TARGET_DIR}"
   elif [[ -z "$(ls -A "${TARGET_DIR}")" ]]; then
     clone_repo
   else
