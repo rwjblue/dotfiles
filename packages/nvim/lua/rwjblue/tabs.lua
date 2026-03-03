@@ -101,7 +101,7 @@ function M.new_agent_tab(agent_type)
   local command_map = {
     cursor = "cursor-agent",
     claude = "claude --dangerously-skip-permissions",
-    codex = "codex",
+    codex = "codex --sandbox danger-full-access",
     opencode = "opencode",
     pi = "pi",
   }
