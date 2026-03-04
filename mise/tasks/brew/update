@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#MISE description="Update Brewfile with current packages and commit"
+set -euo pipefail
+
+# macOS only
+if [[ "$OSTYPE" != darwin* ]]; then
+  exit 0
+fi
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+
+(cd "$DOTFILES_DIR" && brew bundle dump --force --describe)
+
+"$DOTFILES_DIR/scripts/commit_changed_file.sh" \
+  'Brewfile' \
+  "chore(brew): update packages $(date '+%Y-%m-%d %H:%M:%S')"

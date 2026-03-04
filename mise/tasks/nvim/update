@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Update Neovim plugins and commit lock file"
+set -euo pipefail
+
+nvim --headless \
+  +verbose \
+  +'Lazy! sync' \
+  +'Lazy! clean' \
+  +'Lazy! clear' \
+  +'TSUpdateSync' \
+  +'autocmd User MasonUpdateAllCompleted qall!' \
+  +'MasonUpdateAll'
+
+mise run nvim:commit

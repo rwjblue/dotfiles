@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#MISE description="Run cache-shell-startup for each shell"
+#MISE hide=true
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
+
+for shell in zsh fish bash starship; do
+  "$SHARED_BINUTILS_PATH/target/debug/cache-shell-startup" \
+    --config-file="$DOTFILES_DIR/packages/binutils/config/config.lua" \
+    --source="$DOTFILES_DIR/packages/$shell" \
+    --destination="$DOTFILES_DIR/packages-dist/$shell"
+done

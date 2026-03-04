@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Build shared_binutils and local binutils"
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
+
+(cd "$SHARED_BINUTILS_PATH" && cargo build)
+(cd "$DOTFILES_DIR/packages/binutils" && cargo build)

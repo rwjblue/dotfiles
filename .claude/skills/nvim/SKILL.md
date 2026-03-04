@@ -26,8 +26,8 @@ packages/nvim/
 
 ## Common Tasks
 
-- `task nvim:restore` - Restore plugins to locked versions
-- `task nvim:update` - Update plugins and lock file
+- `mise run nvim:restore` - Restore plugins to locked versions
+- `mise run nvim:update` - Update plugins and lock file
 
 ## Plugin Development
 
@@ -35,7 +35,7 @@ When adding/modifying plugins:
 
 1. Add plugin spec in `lua/plugins/<name>.lua`
 2. Follow lazy.nvim spec format with `opts`, `config`, `dependencies`
-3. After testing, run `task nvim:update` to update lock file
+3. After testing, run `mise run nvim:update` to update lock file
 
 ## TreeSitter Customization
 

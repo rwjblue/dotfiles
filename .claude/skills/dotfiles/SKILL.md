@@ -11,7 +11,7 @@ user-invocable: false
 - `packages/` - Source configs organized by tool (nvim, git, zsh, claude, etc.)
 - `packages-dist/` - Generated outputs (shell configs)
 - `local-packages/` - Separate private repo for work-specific overrides (symlinked)
-- `taskfiles/*.yml` - go-task automation definitions
+- `mise/config.toml` and `mise/tasks/` - Mise taskrunner automation
 - `Brewfile` - Homebrew package manifest
 
 ## Key Patterns
@@ -19,16 +19,16 @@ user-invocable: false
 ### Adding New Tool Config
 
 1. Create `packages/<toolname>/` with config files
-2. Add symlink entry in `taskfiles/dotfiles.yml` under `DOTFILES` list:
-   ```yaml
-   - "packages/<toolname>/|$HOME/.config/<toolname>"
+2. Add a `link_dotfile` call in `mise/tasks/dot/install`:
+   ```bash
+   link_dotfile "packages/<toolname>/"  "$HOME/.config/<toolname>"
    ```
-3. Run `task dotfiles:install` to apply
+3. Run `mise run dot:install` to apply
 
 ### Symlink vs Copy
 
 - **Symlink** (default): Changes in repo immediately apply
-- **Copy**: For files needing local customization (use `copy_dotfile` task, add to `COPY_DOTFILES`)
+- **Copy**: For files needing local customization (use `copy_dotfile` function in `mise/tasks/dot/install`)
 
 ### Local Overrides
 
@@ -38,10 +38,10 @@ Work-specific or private config goes in `local-packages/` (separate repo), not h
 
 - `./install` - Full system setup
 - `FORCE=true ./install` - Reinstall, clobbering existing files
-- `task -l` - List available tasks
-- `task dotfiles:install` - Apply dotfile symlinks/copies
-- `task nvim:restore` - Restore Neovim plugins from lock file
+- `mise tasks` - List available tasks
+- `mise run dot:install` - Apply dotfile symlinks/copies
+- `mise run nvim:restore` - Restore Neovim plugins from lock file
 
 ## Task Naming Convention
 
-Tasks use `namespace:verb` pattern (e.g., `nvim:update`, `brew:install`).
+Tasks use `namespace:verb` pattern (e.g., `nvim:update`, `brew:install`), defined by directory structure under `mise/tasks/`.

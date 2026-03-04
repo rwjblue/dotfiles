@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Install all system dependencies"
+set -euo pipefail
+
+mise run brew:install
+mise run tools:install
+mise run tools:update
+
+if [[ "$OSTYPE" == linux* ]]; then
+  mise run system:install-linux
+fi

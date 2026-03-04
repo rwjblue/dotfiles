@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+#MISE description="Link/copy dotfiles"
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
+LOCAL_DOTFILES_PATH="$DOTFILES_DIR/local-packages"
+FORCE="${FORCE:-false}"
+
+link_dotfile() {
+  local src="$DOTFILES_DIR/$1"
+  local dest="$2"
+
+  # Create parent directory if it doesn't exist
+  mkdir -p "$(dirname "$dest")"
+
+  # If FORCE is true, remove the target
+  if [ "$FORCE" = "true" ]; then
+    rm -rf "$dest"
+  fi
+
+  if [ -L "$dest" ]; then
+    current=$(readlink "$dest")
+
+    # Check if it's a broken symlink
+    if [ ! -e "$current" ]; then
+      echo "$dest is a broken symlink, replacing it"
+      rm "$dest"
+      ln -s "$src" "$dest"
+    elif [ "$current" != "$src" ]; then
+      echo "$dest already exists and is symlinked to $current"
+    fi
+  elif [ -e "$dest" ]; then
+    echo "$dest already exists and is not a symlink"
+  else
+    echo "creating link for $dest"
+    ln -s "$src" "$dest"
+  fi
+}
+
+copy_dotfile() {
+  local src="$DOTFILES_DIR/$1"
+  local dest="$2"
+
+  # Create parent directory if it doesn't exist
+  mkdir -p "$(dirname "$dest")"
+
+  # Check if target already exists
+  if [ -e "$dest" ]; then
+    echo "$dest already exists"
+  else
+    echo "creating $dest"
+    cp "$src" "$dest"
+  fi
+}
+
+# Ensure directories exist
+mkdir -p ~/bin
+mkdir -p ~/.ssh
+mkdir -p ~/.cargo
+
+# Cross-platform dotfiles
+link_dotfile "packages/nvim"                                    "$HOME/.config/nvim"
+link_dotfile "packages-dist/starship/jj.toml"                  "$HOME/.config/starship.toml"
+link_dotfile "packages/starship/"                               "$HOME/.config/starship"
+link_dotfile "packages-dist/bash/bashrc"                        "$HOME/.bashrc"
+link_dotfile "packages-dist/zsh/"                               "$HOME/.zsh"
+link_dotfile "packages-dist/fish/"                              "$HOME/.config/fish"
+link_dotfile "packages-dist/zsh/zshenv"                         "$HOME/.zshenv"
+link_dotfile "packages-dist/zsh/zprofile"                       "$HOME/.zprofile"
+link_dotfile "packages-dist/zsh/zshrc"                          "$HOME/.zshrc"
+link_dotfile "packages/atuin"                                   "$HOME/.config/atuin"
+link_dotfile "packages/git/gitconfig"                           "$HOME/.gitconfig"
+link_dotfile "packages/git/gitignore_global"                    "$HOME/.gitignore_global"
+link_dotfile "packages/gh/config.yml"                           "$HOME/.config/gh/config.yml"
+link_dotfile "packages/tmux/tmux.conf"                          "$HOME/.tmux.conf"
+link_dotfile "packages/cargo/config.toml"                       "$HOME/.cargo/config.toml"
+link_dotfile "packages/binutils/config/"                        "$HOME/.config/binutils"
+link_dotfile "packages/wezterm/"                                "$HOME/.config/wezterm"
+link_dotfile "packages/ghostty/"                                "$HOME/.config/ghostty"
+link_dotfile "packages/zellij/"                                 "$HOME/.config/zellij"
+link_dotfile "packages/ssh/rc"                                  "$HOME/.ssh/rc"
+link_dotfile "packages/1Password/"                              "$HOME/.config/1Password"
+link_dotfile "packages/mise/"                                   "$HOME/.config/mise"
+link_dotfile "packages/mcp/"                                    "$HOME/.config/mcp"
+link_dotfile "packages/hammerspoon/"                            "$HOME/.hammerspoon"
+link_dotfile "packages/jj/"                                     "$HOME/.config/jj"
+link_dotfile "packages/ccstatusline/"                           "$HOME/.config/ccstatusline"
+link_dotfile "packages/claude/settings.json"                    "$HOME/.claude/settings.json"
+link_dotfile "packages/claude/skills/"                          "$HOME/.claude/skills"
+link_dotfile "packages/claude/skills/"                          "$HOME/.agents/skills"
+link_dotfile "packages/opencode/opencode.json"                  "$HOME/.config/opencode/opencode.json"
+link_dotfile "packages/pi/agent/settings.json"                  "$HOME/.pi/agent/settings.json"
+
+# macOS-specific dotfiles
+if [[ "$OSTYPE" == darwin* ]]; then
+  link_dotfile "packages/vscode/settings.json"                  "$HOME/Library/Application Support/Code/User/settings.json"
+  link_dotfile "packages/vscode/keybindings.json"               "$HOME/Library/Application Support/Code/User/keybindings.json"
+  link_dotfile "packages/vscode/snippets"                       "$HOME/Library/Application Support/Code/User/snippets"
+  link_dotfile "packages/tealdeer/config.toml"                  "$HOME/Library/Application Support/tealdeer/config.toml"
+  link_dotfile "packages/alfred/snippets"                       "$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/snippets"
+fi
+
+# Linux-specific dotfiles
+if [[ "$OSTYPE" == linux* ]]; then
+  link_dotfile "packages/jj/"                                   "$HOME/.config/jj"
+fi
+
+# Copy local override files (never overwrite existing)
+copy_dotfile "packages-dist/zsh/zshrc.local"                    "$HOME/.zshrc.local"
+copy_dotfile "packages/git/gitconfig.local"                     "$HOME/.gitconfig.local"
+copy_dotfile "packages/tmux/tmux.local.conf"                    "$HOME/.tmux.local.conf"
+
+# Set up local dotfiles
+"$SHARED_BINUTILS_PATH/target/debug/setup-local-dotfiles" \
+  --local-dotfiles-path "$LOCAL_DOTFILES_PATH"
+
+# Refresh shell environment
+mise run shell:update

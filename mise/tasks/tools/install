@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Install mise-managed tools"
+set -euo pipefail
+
+exec mise install

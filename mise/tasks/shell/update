@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Refresh shell startup cache and completions"
+set -euo pipefail
+
+mise run binutils:cache-shell-startup
+
+# Clear zsh completion cache and rebuild
+rm -f ~/.cache/prezto/zcompdump
+zsh -c 'autoload -Uz compinit && compinit'

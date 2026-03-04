@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#MISE description="Build binutils and set up symlinks"
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
+
+# Clone shared_binutils if it doesn't exist
+if [ ! -d "$SHARED_BINUTILS_PATH" ]; then
+  git clone https://github.com/malleatus/shared_binutils.git "$SHARED_BINUTILS_PATH"
+fi
+
+# Build shared and local binutils
+mise run binutils:build
+
+# Build local-packages/binutils if crates exist
+LOCAL_CRATES_DIR="$DOTFILES_DIR/local-packages/binutils/crates"
+if [ -d "$LOCAL_CRATES_DIR" ] && [ "$(find "$LOCAL_CRATES_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)" -gt 0 ]; then
+  (cd "$DOTFILES_DIR/local-packages/binutils" && cargo build)
+fi
+
+# Set up symlinks
+"$SHARED_BINUTILS_PATH/target/debug/generate-binutils-symlinks"

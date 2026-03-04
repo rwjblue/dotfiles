@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Complete system setup - installs dependencies, builds utilities, configures dotfiles, and sets up Neovim"
+set -euo pipefail
+
+mise run system:install
+mise run binutils:install
+mise run dot:install
+mise run nvim:restore

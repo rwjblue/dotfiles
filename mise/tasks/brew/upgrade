@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Upgrade all Homebrew packages"
+set -euo pipefail
+
+# macOS only
+if [[ "$OSTYPE" != darwin* ]]; then
+  exit 0
+fi
+
+brew update
+brew upgrade
+mise run brew:update

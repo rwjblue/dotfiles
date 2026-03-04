@@ -15,19 +15,22 @@ FORCE=true ./install
 ## Available Tasks
 
 ```console
-task: Available tasks for this project:
-* install:                Complete system setup - installs dependencies, builds utilities, configures dotfiles, and sets up Neovim
-* binutils:install:       Build binutils and set up symlinks
-* brew:cleanup:           Remove unused brew dependencies
-* brew:install:           Install Homebrew and tools defined in Brewfile
-* brew:update:            Update Brewfile with current brew packages and commit changes
-* brew:upgrade:           Update Homebrew and upgrade all installed packages
-* dotfiles:install:       Install dotfiles      (aliases: dot:install)
-* nvim:commit:            Commits the lazy-lock.json file if changed
-* nvim:restore:           Restores Neovim plugins to the state in lazy-lock.json
-* nvim:update:            Updates Neovim plugins, CLI utils, and TreeSitter plugins
-* shell:update:           Refreshes shell environment by updating startup cache and clearing completion cache
-* system:install:         Install all system dependencies
+mise run install              # Complete system setup - installs dependencies, builds utilities, configures dotfiles, and sets up Neovim
+mise run binutils:install     # Build binutils and set up symlinks
+mise run binutils:build       # Build shared_binutils and local binutils
+mise run brew:install         # Install Homebrew and packages
+mise run brew:update          # Update Brewfile with current packages and commit
+mise run brew:upgrade         # Upgrade all Homebrew packages
+mise run brew:cleanup         # Remove unused brew dependencies
+mise run dot:install          # Link/copy dotfiles
+mise run nvim:restore         # Restore Neovim plugins from lazy-lock.json
+mise run nvim:update          # Update Neovim plugins and commit lock file
+mise run nvim:commit          # Commit lazy-lock.json if changed
+mise run shell:update         # Refresh shell startup cache and completions
+mise run system:install       # Install all system dependencies
+mise run tools:install        # Install mise-managed tools
+mise run tools:update         # Update mise-managed tools
+mise run tools:outdated       # List outdated tools
 ```
 
 ## Troubleshooting

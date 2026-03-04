@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Remove unused brew dependencies"
+set -euo pipefail
+
+# macOS only
+if [[ "$OSTYPE" != darwin* ]]; then
+  exit 0
+fi
+
+brew cleanup
+brew autoremove

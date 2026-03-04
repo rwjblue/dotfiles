@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Install Homebrew and packages"
+set -euo pipefail
+
+# macOS only
+if [[ "$OSTYPE" != darwin* ]]; then
+  exit 0
+fi
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+
+# Install Homebrew if not present
+if ! command -v brew &>/dev/null; then
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+
+# Install packages from Brewfile
+(cd "$DOTFILES_DIR" && brew bundle)

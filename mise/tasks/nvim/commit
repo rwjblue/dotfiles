@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Commit lazy-lock.json if changed"
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+
+"$DOTFILES_DIR/scripts/commit_changed_file.sh" \
+  './packages/nvim/lazy-lock.json' \
+  "chore(nvim): update plugins $(date '+%Y-%m-%d %H:%M:%S')"

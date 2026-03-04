@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Restore Neovim plugins from lazy-lock.json"
+set -euo pipefail
+
+nvim --headless \
+  +verbose \
+  +'Lazy! restore' \
+  +'Lazy! clean' \
+  +'Lazy! clear' \
+  +'TSUpdateSync' \
+  +'autocmd User MasonUpdateAllCompleted qall!' \
+  +'MasonUpdateAll'

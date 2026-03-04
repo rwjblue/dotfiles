@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+#MISE description="Install Linux-specific tools"
+#MISE hide=true
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+
+# rdev-specific setup
+if [ -f /etc/rdev.conf ]; then
+  "$DOTFILES_DIR/scripts/handle-older-git.zsh"
+  "$DOTFILES_DIR/scripts/setup-rdev-nvim.zsh"
+fi
+
+# Install starship if not present
+if ! command -v starship &>/dev/null; then
+  curl -sS https://starship.rs/install.sh | sh -s -- --force
+fi
+
+# Install tools via cargo binstall (skip if already installed)
+for tool in eza bat git-delta sd; do
+  binary="$tool"
+  if [ "$tool" = "git-delta" ]; then
+    binary="delta"
+  fi
+
+  if ! command -v "$binary" &>/dev/null; then
+    cargo binstall --locked --no-confirm "$tool"
+  fi
+done
+
+# Install fzf if not present
+if [ ! -d "$HOME/.fzf" ]; then
+  git clone https://github.com/junegunn/fzf.git "$HOME/.fzf"
+  "$HOME/.fzf/install" --bin
+fi
