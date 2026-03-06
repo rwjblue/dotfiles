@@ -12,6 +12,10 @@ packages/wezterm/local_config_overrides.lua
 /packages/mise/config.local.toml
 /.fastembed_cache
 
+# jj secure config auto-generates per-repo config in repos/;
+# these contain machine-specific paths and repo-specific overrides
+/packages/jj/repos/
+
 # this is unstable across machines
 /packages/hammerspoon/Spoons/EmmyLua.spoon/annotations/timestamps.json
 
