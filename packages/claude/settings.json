@@ -17,5 +17,13 @@
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "auto"
+  "teammateMode": "auto",
+  "extraKnownMarketplaces": {
+    "glean-oncall-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "askscio/claude-plugin-oncall-pact"
+      }
+    }
+  }
 }
