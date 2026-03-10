@@ -13,17 +13,18 @@
   "enabledPlugins": {
     "gopls-lsp@claude-plugins-official": true,
     "glean-core@glean-plugins": true,
-    "pyright-lsp@claude-plugins-official": true
+    "pyright-lsp@claude-plugins-official": true,
+    "oncall-pact@pact-plugins": true
+  },
+  "extraKnownMarketplaces": {
+    "pact-plugins": {
+      "source": {
+        "source": "directory",
+        "path": "/Users/rwjblue/src/github/askscio/claude-plugins-pact"
+      }
+    }
   },
   "alwaysThinkingEnabled": true,
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "auto",
-  "extraKnownMarketplaces": {
-    "glean-oncall-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "askscio/claude-plugin-oncall-pact"
-      }
-    }
-  }
+  "teammateMode": "auto"
 }
