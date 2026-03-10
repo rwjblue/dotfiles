@@ -94,8 +94,6 @@ committing.
 
 Run `jj commit -m "<approved or auto-selected message>"`.
 
-This will:
-- Describe the current working copy with the message
-- Create a new empty commit at `@` for the next piece of work
+Use `jj commit` (not `jj describe`) so that `@` advances to a new empty revision, ready for more work.
 
 Confirm success to the user.

@@ -66,7 +66,7 @@ Ask the user to choose:
 - **Create new commit** - add as a separate commit
 
 If squash: run `jj squash`
-If new commit: invoke `/jj-commit`, then run `jj tug` to move the bookmark forward
+If new commit: invoke `/jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward
 
 **If `@` is empty:**
 The changes are already committed. Proceed to push.
@@ -92,7 +92,7 @@ If no PR exists: Proceed to CREATE mode step C4 to create the PR.
 
 ### C1. Handle Uncommitted Changes
 
-If `@` has changes, invoke `/jj-commit` first.
+If `@` has changes, invoke `/jj-commit` first. This uses `jj commit` (not `jj describe`) so that `@` becomes empty and the committed change lands at `@-`.
 
 ### C2. Create Bookmark
 
