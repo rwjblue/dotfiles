@@ -40,6 +40,8 @@
 - If you only change a single file, `scripts/commit_changed_file.sh` can commit it in one step.
 - PRs should include a brief summary, the tasks/commands run, and user-impacting changes.
 
+jj-commit-default: auto
+
 ## Security & Configuration Notes
 - This is a public repo: do not add private keys, secrets, or work-specific settings here.
 - Put private or work-only config in `local-packages/` (a separate private repo) and keep this repo generic.
