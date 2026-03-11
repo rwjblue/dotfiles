@@ -14,7 +14,8 @@
     "gopls-lsp@claude-plugins-official": true,
     "glean-core@glean-plugins": true,
     "pyright-lsp@claude-plugins-official": true,
-    "oncall-pact@pact-plugins": true
+    "oncall-pact@pact-plugins": true,
+    "glean-skills@glean-plugins": true
   },
   "extraKnownMarketplaces": {
     "pact-plugins": {
