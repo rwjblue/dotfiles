@@ -34,6 +34,7 @@ usage = "latest"
 "cargo:codanna" = "latest"
 "npm:@mcpjam/inspector" = "latest"
 "npm:@openai/codex" = "latest"
+"npm:@googleworkspace/cli" = "latest"
 
 # core tools
 go = "latest"
