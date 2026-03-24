@@ -2,7 +2,6 @@
 name: jj-pr
 description: Create a GitHub pull request from the current jj branch, handling bookmarks, pushing, and PR creation.
 argument-hint: "[optional: PR title or description hint]"
-disable-model-invocation: true
 ---
 
 # JJ Pull Request
