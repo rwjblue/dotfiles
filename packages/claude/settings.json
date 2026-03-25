@@ -26,6 +26,10 @@
     }
   },
   "alwaysThinkingEnabled": true,
-  "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "auto"
+  "enableAutoMode": true,
+  "teammateMode": "auto",
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
