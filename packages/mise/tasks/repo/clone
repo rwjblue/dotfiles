@@ -77,6 +77,23 @@ fi
 
 cd "${TARGET_DIR}"
 
+# Derive the correct gh account from jj's scoped user.email config.
+# The jj config uses --when.repositories to set the glean email for work repos;
+# we piggyback on that to decide which GitHub account to fork under.
+JJ_EMAIL="$(jj config get user.email 2>/dev/null || true)"
+if [[ "${JJ_EMAIL}" == "robert.jackson@glean.com" ]]; then
+  GH_ACCOUNT="rwjblue-glean"
+else
+  GH_ACCOUNT="rwjblue"
+fi
+ORIGINAL_ACCOUNT="$(gh auth status --active 2>&1 | sed -n 's/.*account \([^ ]*\).*/\1/p')"
+SWITCHED_GH_ACCOUNT=false
+if [[ "${ORIGINAL_ACCOUNT}" != "${GH_ACCOUNT}" ]]; then
+  echo "Switching gh account to ${GH_ACCOUNT}"
+  gh auth switch --user "${GH_ACCOUNT}"
+  SWITCHED_GH_ACCOUNT=true
+fi
+
 PERMISSION="$(gh repo view "${OWNER_REPO}" --json viewerPermission --jq '.viewerPermission')"
 TRACK_REMOTE="origin"
 
@@ -214,6 +231,11 @@ truncate_session_name() {
     echo "${last:0:$(( max - 3 ))}…"
   fi
 }
+
+if [[ "${SWITCHED_GH_ACCOUNT}" == true ]]; then
+  echo "Restoring gh account to ${ORIGINAL_ACCOUNT}"
+  gh auth switch --user "${ORIGINAL_ACCOUNT}"
+fi
 
 SESSION_NAME="$(choose_session_name)"
 SESSION_NAME="$(truncate_session_name "${SESSION_NAME}" "${MAX_SESSION_LEN}")"
