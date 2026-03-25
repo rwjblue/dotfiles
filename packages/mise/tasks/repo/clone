@@ -8,12 +8,18 @@ set -euo pipefail
 OWNER_REPO="${usage_owner_repo:-}"
 
 if [[ -z "${OWNER_REPO}" ]]; then
-  printf "Repository (owner/repo): "
+  printf "Repository (owner/repo or URL): "
   read -r OWNER_REPO
 fi
 
+# Strip GitHub URL prefix if provided (e.g. https://github.com/owner/repo or https://github.com/owner/repo.git)
+OWNER_REPO="${OWNER_REPO#https://github.com/}"
+OWNER_REPO="${OWNER_REPO%.git}"
+# Also handle trailing slash
+OWNER_REPO="${OWNER_REPO%/}"
+
 if [[ ! "${OWNER_REPO}" =~ ^[^/]+/[^/]+$ ]]; then
-  echo "Error: repository must be in OWNER/REPO format"
+  echo "Error: repository must be in OWNER/REPO format or a GitHub URL"
   exit 1
 fi
 
