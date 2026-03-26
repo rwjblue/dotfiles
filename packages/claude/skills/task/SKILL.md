@@ -31,6 +31,10 @@ Managed in the dotfiles repo at `packages/mise/tasks/`. The entire `packages/mis
 
 The global tasks directory has TypeScript infrastructure already set up — see "TypeScript Tasks" below.
 
+### Local/work-specific global tasks
+
+Work-specific tasks that shouldn't be in the public dotfiles repo go in `local-packages/mise/tasks/`. These are included via `task_config.includes` in `local-packages/mise/config.local.toml` (symlinked as `packages/mise/config.local.toml`) and are available globally alongside the regular global tasks. Use the same conventions (file-based, executable, `#MISE`/`//[MISE]` directives) as regular global tasks.
+
 ### Project-local tasks
 
 Placed in one of these directories relative to the project root:
