@@ -1,10 +1,10 @@
 ---
-name: task
-description: Mise taskrunner automation patterns. Use when adding tasks, running commands, or understanding task structure.
+name: dotfiles-tasks
+description: Dotfiles repo task structure. Use when working with this repo's mise tasks (brew, dot, nvim, system, etc.).
 user-invocable: false
 ---
 
-# Mise Taskrunner Automation
+# Dotfiles Mise Tasks
 
 All automation uses **mise** (https://mise.jdx.dev) file-based tasks. Tasks are executable scripts in the `mise/tasks/` directory.
 
