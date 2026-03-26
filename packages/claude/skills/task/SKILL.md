@@ -1,6 +1,6 @@
 ---
 name: task
-description: Mise taskrunner automation patterns. Use when adding tasks, running commands, or understanding task structure.
+description: Mise taskrunner automation patterns. Use when adding, modifying, migrating, converting, or rewriting tasks, running commands, or understanding task structure.
 user-invocable: false
 ---
 
@@ -92,7 +92,7 @@ console.log(`Syncing config for ${env}${dryRun ? " (dry run)" : ""}`);
 Key points:
 - File extension must be `.ts` — Node only strips types from `.ts` files
 - Use `//[MISE]` and `//[USAGE]` for directives (the `[brackets]` are required)
-- Add `//[MISE] depends=["global-tasks-npm-install"]` when the task uses npm packages (see below)
+- **Always** add `//[MISE] depends=["<npm-install-task>"]` — every TS task needs `node_modules/` for type checking (`@types/node`, `typescript`), even if it only imports Node builtins
 - After creating or modifying a TS task, always run `npx tsc --noEmit` in the tasks directory to verify types
 
 ### Type stripping constraints (`erasableSyntaxOnly`)
@@ -109,7 +109,7 @@ The global tasks directory (`packages/mise/tasks/`) has this infrastructure:
 - **`tsconfig.json`** — strict mode, `erasableSyntaxOnly`, `verbatimModuleSyntax`, `types: ["node"]`
 - **`global-tasks-npm-install`** — hidden mise task that auto-runs `npm install` when `package.json`/`package-lock.json` change (uses `sources`/`outputs` caching to skip when up to date)
 
-When a global TS task depends on npm packages, add `//[MISE] depends=["global-tasks-npm-install"]` so deps are installed automatically before the task runs.
+Every global TS task must add `//[MISE] depends=["global-tasks-npm-install"]` — `node_modules/` must exist for type checking to work (`@types/node`, `typescript`), regardless of whether the task uses npm packages at runtime.
 
 To add a new npm dependency: add it to `packages/mise/tasks/package.json` and run `npm install`. Install `@types/*` packages as dev deps when the runtime package lacks built-in types.
 
@@ -162,7 +162,7 @@ npm install
 
 Note: `sources`/`outputs` paths always resolve from `config_root` (the project root for local config, `$HOME` for global config). For project-local tasks, prefix paths with the task directory relative to the project root (e.g., `mise/tasks/package.json`, not just `package.json`). The global `global-tasks-npm-install` uses `{{config_root}}/.config/mise/tasks/` because global `config_root` is `$HOME`.
 
-Add `node_modules/` to `.gitignore` for the tasks directory. Then any `.ts` task can use `//[MISE] depends=["local-tasks-npm-install"]` for automatic dependency management.
+Add `node_modules/` to `.gitignore` for the tasks directory. Every `.ts` task must use `//[MISE] depends=["local-tasks-npm-install"]` — `node_modules/` must exist for type checking to work, even if the task only imports Node builtins.
 
 After setup, run `npm install` once, then verify with `npx tsc --noEmit`.
 
