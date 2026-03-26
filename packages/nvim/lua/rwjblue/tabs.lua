@@ -100,10 +100,10 @@ end
 function M.new_agent_tab(agent_type)
   local command_map = {
     cursor = "cursor-agent",
-    claude = "claude --dangerously-skip-permissions",
-    codex = "codex --sandbox danger-full-access",
-    opencode = "opencode",
-    pi = "pi",
+    claude = "mise x claude-code -- claude --dangerously-skip-permissions",
+    codex = "mise x npm:@openai/codex -- codex --sandbox danger-full-access",
+    opencode = "mise x opencode -- opencode",
+    pi = "mise x npm:@mariozechner/pi-coding-agent -- pi",
   }
   local command = command_map[agent_type]
 
