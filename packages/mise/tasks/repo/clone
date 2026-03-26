@@ -172,7 +172,7 @@ MAX_SESSION_LEN=$(( SOCK_MAX - ${#ZELLIJ_SOCK_DIR} - 1 - 1 ))
 # and truncate as a last resort to avoid hanging on socket path overflow.
 choose_session_name() {
   local active_sessions
-  active_sessions="$(zellij list-sessions --short --no-formatting 2>/dev/null || true)"
+  active_sessions="$(zellij list-sessions --no-formatting 2>/dev/null | grep -v EXITED | awk '{print $1}' || true)"
 
   # 1. Try repo name only
   if ! echo "${active_sessions}" | grep -Fxq "${REPO}"; then
