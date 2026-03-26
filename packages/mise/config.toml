@@ -46,8 +46,11 @@ uv = "latest"
 zig = "latest"
 bun = "latest"
 
+[vars]
+gh_user = "rwjblue"
+
 [env]
-GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ get_env(name='GH_USER', default='rwjblue'), cache_duration='4h') }}", redact = true }
+GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ vars.gh_user, cache_duration='4h') }}", redact = true }
 
 [settings]
 experimental = true
