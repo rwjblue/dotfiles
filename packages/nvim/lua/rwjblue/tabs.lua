@@ -111,12 +111,14 @@ function M.new_agent_tab(agent_type)
     error("Invalid agent type. Use 'claude', 'cursor', 'codex', 'opencode', or 'pi'.")
   end
 
-  local cwd = vim.fn.getcwd()
+  local cwd = vim.fn.getcwd(0)
   vim.fn.system(
     "zellij action new-tab --name "
       .. agent_type
       .. " --cwd "
       .. vim.fn.shellescape(cwd)
+      .. " && zellij action write-chars "
+      .. vim.fn.shellescape("cd " .. cwd .. "\r")
       .. " && zellij action write-chars "
       .. vim.fn.shellescape(command .. "\r")
   )
