@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Kill the current Zellij session"
+
+set -euo pipefail
+
+if [[ -z "${ZELLIJ_SESSION_NAME:-}" ]]; then
+  echo "Not running inside a Zellij session."
+  exit 1
+fi
+
+zellij kill-session "$ZELLIJ_SESSION_NAME"
