@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#MISE description="Install npm deps for global tasks"
+#MISE hide=true
+#MISE sources=["{{config_root}}/.config/mise/tasks/package.json", "{{config_root}}/.config/mise/tasks/package-lock.json"]
+#MISE outputs=["{{config_root}}/.config/mise/tasks/node_modules/.package-lock.json"]
+
+set -euo pipefail
+
+cd "$(cd "$(dirname "$0")" && pwd -P)"
+
+npm install

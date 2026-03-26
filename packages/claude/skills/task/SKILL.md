@@ -29,6 +29,8 @@ There are two scopes for tasks:
 
 Managed in the dotfiles repo at `packages/mise/tasks/`. The entire `packages/mise/` directory is symlinked to `~/.config/mise/`, so global tasks are available everywhere (e.g., `repo:clone`, `fetch`, `gauth`). When adding a global task, create it in `packages/mise/tasks/` in the dotfiles repo.
 
+The global tasks directory has TypeScript infrastructure already set up — see "TypeScript Tasks" below.
+
 ### Project-local tasks
 
 Placed in one of these directories relative to the project root:
@@ -43,11 +45,12 @@ Check which convention a project already uses and follow it.
 
 ## Task Naming
 
-Subdirectories create namespaced task names automatically:
+Files in the tasks directory become tasks. Subdirectories create namespaced names:
 
 ```
 mise/tasks/
 ├── build              → mise run build
+├── deploy.ts          → mise run deploy
 ├── test/
 │   ├── unit           → mise run test:unit
 │   └── integration    → mise run test:integration
@@ -55,52 +58,111 @@ mise/tasks/
     └── clone          → mise run repo:clone
 ```
 
+Mise strips known extensions (`.ts`, `.sh`, etc.) from the task name. Files must be executable (`chmod +x`).
+
 ## Language Preference
 
-Prefer **TypeScript** for tasks where it's reasonable (complex logic, argument parsing, JSON manipulation, API calls). Use Node's built-in type stripping to avoid a build step:
+Prefer **TypeScript** (`.ts` extension) for tasks with complex logic, argument parsing, JSON manipulation, or API calls. Use **bash** (extensionless) for simple wrappers and glue scripts that mostly shell out.
+
+## TypeScript Tasks
+
+TypeScript tasks use Node's built-in type stripping — no build step needed. The task file has a `.ts` extension and uses `//[MISE]` for directives (mise parses `//[MISE]` in non-bash files, NOT `//#MISE` or `// MISE`).
+
+### How it works
 
 ```typescript
 #!/usr/bin/env -S node --experimental-strip-types
-// @ts-check is unnecessary — this is already .ts-style with type stripping
+//[MISE] description="Sync configuration from API"
+//[MISE] depends=["global-tasks-npm-install"]
+//[USAGE] arg "<env>" help="Target environment"
+//[USAGE] flag "--dry-run" help="Preview changes"
 
-#MISE description="Example TypeScript task"
+import { readFileSync } from "node:fs";
+
+const env: string = process.env.usage_env!;
+const dryRun: boolean = process.env.usage_dry_run === "true";
+
+console.log(`Syncing config for ${env}${dryRun ? " (dry run)" : ""}`);
 ```
 
-**Important constraints** with type stripping:
-- Only type annotations are stripped — no enums, decorators, or other TS-only runtime features
+Key points:
+- File extension must be `.ts` — Node only strips types from `.ts` files
+- Use `//[MISE]` and `//[USAGE]` for directives (the `[brackets]` are required)
+- Add `//[MISE] depends=["global-tasks-npm-install"]` when the task uses npm packages (see below)
+- After creating or modifying a TS task, always run `npx tsc --noEmit` in the tasks directory to verify types
+
+### Type stripping constraints (`erasableSyntaxOnly`)
+
+- Only type annotations are stripped — no `enum`, `namespace`, or parameter properties
 - Imports must use explicit file extensions
-- Use `import type` for type-only imports
+- Use `import type` for type-only imports (`verbatimModuleSyntax` enforces this)
 
-Use **bash** for simple tasks (wrappers, glue scripts, tasks that mostly shell out):
+### Global tasks TypeScript setup
 
-```bash
-#!/usr/bin/env bash
-# -*- mode: sh; sh-shell: bash; -*-
-#MISE description="Simple wrapper task"
+The global tasks directory (`packages/mise/tasks/`) has this infrastructure:
 
-set -euo pipefail
+- **`package.json`** — `"type": "module"`, `@types/node` and `typescript` as dev deps, plus any runtime deps
+- **`tsconfig.json`** — strict mode, `erasableSyntaxOnly`, `verbatimModuleSyntax`, `types: ["node"]`
+- **`global-tasks-npm-install`** — hidden mise task that auto-runs `npm install` when `package.json`/`package-lock.json` change (uses `sources`/`outputs` caching to skip when up to date)
+
+When a global TS task depends on npm packages, add `//[MISE] depends=["global-tasks-npm-install"]` so deps are installed automatically before the task runs.
+
+To add a new npm dependency: add it to `packages/mise/tasks/package.json` and run `npm install`. Install `@types/*` packages as dev deps when the runtime package lacks built-in types.
+
+### Bootstrapping TypeScript for project-local tasks
+
+To set up TS task support in a project, create these files in the project's task directory:
+
+**`package.json`:**
+```json
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.0"
+  }
+}
 ```
 
-## Creating a File-Based Task
-
-Every file-based task must be:
-
-1. **Executable** — run `chmod +x` after creating
-2. **Have a shebang** — determines the interpreter
-3. **Have a description** — `#MISE description="..."`
-
-### Minimal bash example
-
-```bash
-#!/usr/bin/env bash
-#MISE description="Run database migrations"
-
-set -euo pipefail
-
-echo "Running migrations..."
+**`tsconfig.json`:**
+```json
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "types": ["node"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true
+  }
+}
 ```
 
-### Full example with arguments
+**`local-tasks-npm-install`** (hidden task for auto-installing — example assumes `mise/tasks/` directory):
+```bash
+#!/usr/bin/env bash
+#MISE description="Install npm deps for local tasks"
+#MISE hide=true
+#MISE sources=["mise/tasks/package.json", "mise/tasks/package-lock.json"]
+#MISE outputs=["mise/tasks/node_modules/.package-lock.json"]
+
+set -euo pipefail
+cd "$(cd "$(dirname "$0")" && pwd -P)"
+npm install
+```
+
+Note: `sources`/`outputs` paths always resolve from `config_root` (the project root for local config, `$HOME` for global config). For project-local tasks, prefix paths with the task directory relative to the project root (e.g., `mise/tasks/package.json`, not just `package.json`). The global `global-tasks-npm-install` uses `{{config_root}}/.config/mise/tasks/` because global `config_root` is `$HOME`.
+
+Add `node_modules/` to `.gitignore` for the tasks directory. Then any `.ts` task can use `//[MISE] depends=["local-tasks-npm-install"]` for automatic dependency management.
+
+After setup, run `npm install` once, then verify with `npx tsc --noEmit`.
+
+## Bash Tasks
 
 ```bash
 #!/usr/bin/env bash
@@ -112,44 +174,22 @@ echo "Running migrations..."
 #USAGE   choices "dev" "staging" "prod"
 #USAGE }
 #USAGE flag "--dry-run" help="Preview without executing"
-#USAGE flag "--region <region>" help="AWS region" default="us-east-1"
 
 set -euo pipefail
 
 ENVIRONMENT="${usage_environment}"
-REGION="${usage_region}"
 DRY_RUN="${usage_dry_run:-false}"
 
 if [[ "$DRY_RUN" == "true" ]]; then
-  echo "DRY RUN: Would deploy to $ENVIRONMENT in $REGION"
+  echo "DRY RUN: Would deploy to $ENVIRONMENT"
 else
-  echo "Deploying to $ENVIRONMENT in $REGION..."
+  echo "Deploying to $ENVIRONMENT..."
 fi
 ```
 
-### TypeScript example
-
-```typescript
-#!/usr/bin/env -S node --experimental-strip-types
-//#MISE description="Sync configuration from API"
-//#USAGE arg "<env>" help="Target environment"
-//#USAGE flag "--dry-run" help="Preview changes"
-
-const env: string = process.env.usage_env!;
-const dryRun: boolean = process.env.usage_dry_run === "true";
-
-async function main(): Promise<void> {
-  console.log(`Syncing config for ${env}${dryRun ? " (dry run)" : ""}`);
-}
-
-main();
-```
-
-Note: In TypeScript tasks, `#MISE` and `#USAGE` directives use `//` comment prefix.
-
 ## #MISE Directives
 
-Configuration comments at the top of the file (after shebang):
+Configuration comments at the top of the file (after shebang). Use `#MISE` in bash, `//[MISE]` in TypeScript:
 
 | Directive | Example | Purpose |
 |-----------|---------|---------|
@@ -167,11 +207,11 @@ Configuration comments at the top of the file (after shebang):
 | `silent` | `#MISE silent=true` | Suppress all output |
 | `wait_for` | `#MISE wait_for=["setup"]` | Wait if running, don't trigger |
 
-**Note:** Some formatters convert `#MISE` to `# MISE`. Use `# [MISE]` as an alternative if needed.
+**Note:** Some formatters convert `#MISE` to `# MISE` which is ignored. Use `# [MISE]` as a workaround. In TypeScript files, always use `//[MISE]`.
 
 ## #USAGE Directives (Arguments & Flags)
 
-Arguments and flags use `#USAGE` directives. Values are accessible as `$usage_<name>` env vars (hyphens become underscores).
+Arguments and flags use `#USAGE` directives (`//[USAGE]` in TypeScript). Values are accessible as `$usage_<name>` env vars (hyphens become underscores).
 
 ### Positional arguments
 
@@ -207,7 +247,7 @@ Arguments and flags use `#USAGE` directives. Values are accessible as `$usage_<n
 
 Available in `#MISE` directives:
 
-- `{{config_root}}` — Project directory
+- `{{config_root}}` — Project root directory (for global config, this is `$HOME`)
 - `{{cwd}}` — Current working directory
 - `{{env.VAR}}` — Environment variable
 
