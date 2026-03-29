@@ -154,12 +154,24 @@ if [[ ${TRACK_STATUS} -ne 0 ]]; then
   fi
 fi
 
-SESSION_SWITCH_PLUGIN="https://github.com/mostafaqanbaryan/zellij-switch/releases/download/0.2.1/zellij-switch.wasm"
-
 # Compute max session name length from the zellij socket path.
 # Unix socket paths are limited (104 bytes on macOS, 108 on Linux).
 ZELLIJ_VERSION="$(zellij --version | awk '{print $2}')"
-ZELLIJ_SOCK_DIR="${TMPDIR%/}/zellij-$(id -u)/${ZELLIJ_VERSION}"
+ZELLIJ_SOCK_BASE="${TMPDIR%/}/zellij-$(id -u)"
+ZELLIJ_SOCK_SUBDIR=""
+shopt -s nullglob
+contract_dirs=("${ZELLIJ_SOCK_BASE}"/contract_version_*)
+shopt -u nullglob
+
+if (( ${#contract_dirs[@]} > 0 )); then
+  ZELLIJ_SOCK_SUBDIR="${contract_dirs[${#contract_dirs[@]} - 1]##*/}"
+elif [[ -d "${ZELLIJ_SOCK_BASE}/${ZELLIJ_VERSION}" ]]; then
+  ZELLIJ_SOCK_SUBDIR="${ZELLIJ_VERSION}"
+else
+  ZELLIJ_SOCK_SUBDIR="${ZELLIJ_VERSION}"
+fi
+
+ZELLIJ_SOCK_DIR="${ZELLIJ_SOCK_BASE}/${ZELLIJ_SOCK_SUBDIR}"
 if [[ "$(uname -s)" == "Darwin" ]]; then
   SOCK_MAX=104
 else
@@ -238,7 +250,7 @@ if [[ -n "${ZELLIJ:-}" ]]; then
   if ! zellij list-sessions --short 2>/dev/null | grep -Fxq "${SESSION_NAME}"; then
     zellij attach --create-background "${SESSION_NAME}" >/dev/null
   fi
-  exec zellij pipe --plugin "${SESSION_SWITCH_PLUGIN}" -- "--session ${SESSION_NAME}"
+  exec zellij action switch-session "${SESSION_NAME}"
 fi
 
 if zellij list-sessions --short 2>/dev/null | grep -Fxq "${SESSION_NAME}"; then
