@@ -154,6 +154,13 @@ keybinds clear-defaults=true {
             }
             SwitchToMode "locked"
         }
+        bind "l" {
+            LaunchOrFocusPlugin "layout-manager" {
+                floating true
+                move_to_focused_tab true
+            }
+            SwitchToMode "locked"
+        }
         bind "v" {
             LaunchOrFocusPlugin "zellij:share" {
                 floating true
@@ -253,6 +260,7 @@ plugins {
     filepicker location="zellij:strider" {
         cwd "/Users/rwjblue/src/github/"
     }
+    layout-manager location="zellij:layout-manager"
     plugin-manager location="zellij:plugin-manager"
     session-manager location="zellij:session-manager"
     status-bar location="zellij:status-bar"
@@ -261,14 +269,6 @@ plugins {
     welcome-screen location="zellij:session-manager" {
         welcome_screen true
     }
-}
-
-// Plugins to load in the background when a new session starts
-// eg. "file:/path/to/my-plugin.wasm"
-// eg. "https://example.com/my-plugin.wasm"
-load_plugins {
-  // allows us to call `zellij pipe https://github.com/mostafaqanbaryan/zellij-switch/releases/download/0.2.1/zellij-switch.wasm -- "--session some-session-name"`
-  "https://github.com/mostafaqanbaryan/zellij-switch/releases/download/0.2.1/zellij-switch.wasm"
 }
 
 web_client {
