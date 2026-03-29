@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Create a jj commit via Codex on personal machines or Claude on work machines"
+#MISE dir="{{cwd}}"
+#USAGE arg "[hint]" var=#true help="Optional commit hint passed to the agent"
+#USAGE flag "--agent <agent>" help="Override agent selection" {
+#USAGE   choices "codex" "claude"
+#USAGE }
+#USAGE flag "--role <role>" help="Override machine role" {
+#USAGE   choices "personal" "work"
+#USAGE }
+
+set -euo pipefail
+
+HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
+MACHINE_ROLE="${usage_role:-${DOTFILES_MACHINE_ROLE:-}}"
+AGENT_OVERRIDE="${usage_agent:-}"
+WORK_HOST_PATTERN="${DOTFILES_WORK_HOST_PATTERN:-}"
+PERSONAL_HOST_PATTERN="${DOTFILES_PERSONAL_HOST_PATTERN:-}"
+
+if [[ -z "${MACHINE_ROLE}" ]]; then
+  if [[ -n "${WORK_HOST_PATTERN}" && "${HOSTNAME_SHORT}" == ${WORK_HOST_PATTERN} ]]; then
+    MACHINE_ROLE="work"
+  elif [[ -n "${PERSONAL_HOST_PATTERN}" && "${HOSTNAME_SHORT}" == ${PERSONAL_HOST_PATTERN} ]]; then
+    MACHINE_ROLE="personal"
+  else
+    MACHINE_ROLE="personal"
+  fi
+fi
+
+if [[ -n "${AGENT_OVERRIDE}" ]]; then
+  AGENT="${AGENT_OVERRIDE}"
+else
+  case "${MACHINE_ROLE}" in
+    work)
+      AGENT="claude"
+      ;;
+    personal)
+      AGENT="codex"
+      ;;
+    *)
+      echo "Unknown machine role: ${MACHINE_ROLE}" >&2
+      echo "Expected 'personal' or 'work'." >&2
+      exit 1
+      ;;
+  esac
+fi
+
+USER_HINT="${usage_hint:-}"
+
+if [[ "${AGENT}" == "codex" ]]; then
+  PROMPT='$jj-commit --auto'
+  if [[ -n "${USER_HINT}" ]]; then
+    PROMPT+=" ${USER_HINT}"
+  fi
+
+  exec mise exec npm:@openai/codex -- \
+    codex exec --skip-git-repo-check --ephemeral "${PROMPT}"
+fi
+
+PROMPT='/jj-commit --auto'
+if [[ -n "${USER_HINT}" ]]; then
+  PROMPT+=" ${USER_HINT}"
+fi
+
+exec mise exec claude-code -- \
+  claude -p --dangerously-skip-permissions --no-session-persistence "${PROMPT}"
