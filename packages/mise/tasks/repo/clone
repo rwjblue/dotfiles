@@ -3,6 +3,7 @@
 #MISE description="Clone/fork a GitHub repo into ~/src/github and initialize jj + zellij"
 #MISE raw=true
 #USAGE arg "[owner_repo]" help="GitHub repository in OWNER/REPO format"
+#USAGE flag "--session-name <session_name>" help="Override the zellij session name"
 
 set -euo pipefail
 
@@ -181,69 +182,12 @@ fi
 # socket path = ZELLIJ_SOCK_DIR + "/" + SESSION_NAME
 MAX_SESSION_LEN=$(( SOCK_MAX - ${#ZELLIJ_SOCK_DIR} - 1 - 1 ))
 
-# Build session name: prefer repo-only, add owner prefix on collision,
-# and truncate as a last resort to avoid hanging on socket path overflow.
-choose_session_name() {
-  local active_sessions
-  active_sessions="$(zellij list-sessions --no-formatting 2>/dev/null | grep -v EXITED | awk '{print $1}' || true)"
+SESSION_NAME="${usage_session_name:-${REPO}}"
 
-  # 1. Try repo name only
-  if ! echo "${active_sessions}" | grep -Fxq "${REPO}"; then
-    echo "${REPO}"
-    return
-  fi
-
-  # 2. Repo collides with an active session — use owner-repo
-  echo "${OWNER}-${REPO}"
-}
-
-truncate_session_name() {
-  local name="$1"
-  local max="$2"
-
-  if (( ${#name} <= max )); then
-    echo "${name}"
-    return
-  fi
-
-  # Split on dashes, keep segments from the front until adding more would overflow.
-  # Always keep the last segment so the name stays recognizable.
-  local IFS='-'
-  read -ra parts <<< "${name}"
-
-  local last_idx=$(( ${#parts[@]} - 1 ))
-  local last="${parts[${last_idx}]}"
-  local result=""
-
-  # Reserve room for the last segment (ellipsis + last).
-  # The ellipsis (…) is 3 bytes in UTF-8; socket path limit is in bytes.
-  local budget=$(( max - ${#last} - 3 ))
-
-  for (( i=0; i < last_idx; i++ )); do
-    local seg="${parts[${i}]}"
-    local candidate
-    if [[ -z "${result}" ]]; then
-      candidate="${seg}"
-    else
-      candidate="${result}-${seg}"
-    fi
-    if (( ${#candidate} <= budget )); then
-      result="${candidate}"
-    else
-      break
-    fi
-  done
-
-  if [[ -n "${result}" ]]; then
-    echo "${result}…${last}"
-  else
-    # Last segment alone is too long — hard truncate
-    echo "${last:0:$(( max - 3 ))}…"
-  fi
-}
-
-SESSION_NAME="$(choose_session_name)"
-SESSION_NAME="$(truncate_session_name "${SESSION_NAME}" "${MAX_SESSION_LEN}")"
+# Truncate if needed to avoid zellij socket path overflow.
+if (( ${#SESSION_NAME} > MAX_SESSION_LEN )); then
+  SESSION_NAME="${SESSION_NAME:0:$(( MAX_SESSION_LEN - 1 ))}…"
+fi
 
 echo "Opening zellij session: ${SESSION_NAME}"
 
