@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Clone/fork a GitHub repo into ~/src/github and initialize jj + zellij"
+#MISE raw=true
 #USAGE arg "[owner_repo]" help="GitHub repository in OWNER/REPO format"
 
 set -euo pipefail
