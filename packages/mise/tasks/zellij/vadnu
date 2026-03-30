@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Attach to (or create) the vadnu Zellij session"
+#MISE alias="vadnu"
+
+set -euo pipefail
+
+if [[ -n "${ZELLIJ_SESSION_NAME:-}" ]]; then
+  exec zellij action switch-session vadnu --cwd /Users/rwjblue/src/vadnu
+else
+  exec zellij attach --create vadnu options --default-cwd /Users/rwjblue/src/vadnu
+fi
