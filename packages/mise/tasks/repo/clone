@@ -247,6 +247,12 @@ SESSION_NAME="$(truncate_session_name "${SESSION_NAME}" "${MAX_SESSION_LEN}")"
 
 echo "Opening zellij session: ${SESSION_NAME}"
 
+# Clear mise task-runner and usage arg env vars so the zellij session starts clean.
+if [[ -n "${__MISE_ORIG_PATH:-}" ]]; then
+  PATH="${__MISE_ORIG_PATH}"
+fi
+unset "${!MISE_@}" "${!__MISE_@}" "${!usage_@}"
+
 if [[ -n "${ZELLIJ:-}" ]]; then
   if ! zellij list-sessions --short 2>/dev/null | grep -Fxq "${SESSION_NAME}"; then
     zellij attach --create-background "${SESSION_NAME}" >/dev/null
