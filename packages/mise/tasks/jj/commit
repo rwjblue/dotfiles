@@ -2,6 +2,7 @@
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Create a jj commit via Codex on personal machines or Claude on work machines"
 #MISE dir="{{cwd}}"
+#MISE env = {DOTFILES_MACHINE_ROLE = "{{vars.machine_role | default(value='personal')}}"}
 #USAGE arg "[hint]" var=#true help="Optional commit hint passed to the agent"
 #USAGE flag "--agent <agent>" help="Override agent selection" {
 #USAGE   choices "codex" "claude"
@@ -12,24 +13,10 @@
 
 set -euo pipefail
 
-HOSTNAME_SHORT="$(hostname -s 2>/dev/null || hostname)"
-MACHINE_ROLE="${usage_role:-${DOTFILES_MACHINE_ROLE:-}}"
-AGENT_OVERRIDE="${usage_agent:-}"
-WORK_HOST_PATTERN="${DOTFILES_WORK_HOST_PATTERN:-}"
-PERSONAL_HOST_PATTERN="${DOTFILES_PERSONAL_HOST_PATTERN:-}"
+MACHINE_ROLE="${usage_role:-${DOTFILES_MACHINE_ROLE}}"
 
-if [[ -z "${MACHINE_ROLE}" ]]; then
-  if [[ -n "${WORK_HOST_PATTERN}" && "${HOSTNAME_SHORT}" == ${WORK_HOST_PATTERN} ]]; then
-    MACHINE_ROLE="work"
-  elif [[ -n "${PERSONAL_HOST_PATTERN}" && "${HOSTNAME_SHORT}" == ${PERSONAL_HOST_PATTERN} ]]; then
-    MACHINE_ROLE="personal"
-  else
-    MACHINE_ROLE="personal"
-  fi
-fi
-
-if [[ -n "${AGENT_OVERRIDE}" ]]; then
-  AGENT="${AGENT_OVERRIDE}"
+if [[ -n "${usage_agent:-}" ]]; then
+  AGENT="${usage_agent}"
 else
   case "${MACHINE_ROLE}" in
     work)

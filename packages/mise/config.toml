@@ -48,6 +48,7 @@ bun = "latest"
 
 [vars]
 gh_user = "rwjblue"
+# machine_role = "personal" # override in config.local.toml (e.g. "work")
 
 [env]
 GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ vars.gh_user, cache_duration='4h') }}", redact = true }
