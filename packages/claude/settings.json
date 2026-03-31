@@ -15,13 +15,20 @@
     "glean-core@glean-plugins": true,
     "pyright-lsp@claude-plugins-official": true,
     "oncall-pact@pact-plugins": true,
-    "glean-skills@glean-plugins": true
+    "glean-skills@glean-plugins": true,
+    "superpowers@superpowers-marketplace": true
   },
   "extraKnownMarketplaces": {
     "pact-plugins": {
       "source": {
         "source": "directory",
         "path": "/Users/rwjblue/src/github/askscio/claude-plugins-pact"
+      }
+    },
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
       }
     }
   },

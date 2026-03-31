@@ -35,6 +35,7 @@ usage = "latest"
 "npm:@mcpjam/inspector" = "latest"
 "npm:@openai/codex" = "latest"
 "npm:@googleworkspace/cli" = "latest"
+"npm:@fission-ai/openspec" = "latest"
 
 # core tools
 go = "latest"
