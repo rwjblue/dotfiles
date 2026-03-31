@@ -79,19 +79,11 @@ fi
 
 cd "${TARGET_DIR}"
 
-# Derive the correct gh account from jj's scoped user.email config.
-# The jj config uses --when.repositories to set the glean email for work repos;
-# we piggyback on that to decide which GitHub account to fork under.
-# NOTE: We set GH_TOKEN rather than using `gh auth switch` to avoid mutating
-# global gh state. In interactive shells, mise handles this automatically via
-# the GH_TOKEN template in the global mise config.
-JJ_EMAIL="$(jj config get user.email 2>/dev/null || true)"
-if [[ "${JJ_EMAIL}" == "robert.jackson@glean.com" ]]; then
-  GH_ACCOUNT="rwjblue-glean"
-else
-  GH_ACCOUNT="rwjblue"
-fi
-export GH_TOKEN="$(gh auth token --user "${GH_ACCOUNT}")"
+# Re-resolve GH_TOKEN for the target directory. The global mise [env] defines
+# GH_TOKEN using vars.gh_user, and repo-local overrides (local-packages/
+# repo-local) set gh_user per org (e.g. "rwjblue-glean" for work repos).
+# Re-evaluating from the target dir picks up the correct org-scoped account.
+export GH_TOKEN="$(mise env --json 2>/dev/null | jq -r '.GH_TOKEN')"
 
 PERMISSION="$(gh repo view "${OWNER_REPO}" --json viewerPermission --jq '.viewerPermission')"
 TRACK_REMOTE="origin"
