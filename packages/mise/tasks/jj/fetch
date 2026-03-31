@@ -2,5 +2,35 @@
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Fetch tracked bookmarks from jj remote"
 #MISE dir="{{cwd}}"
+#USAGE flag "-f --force" help="Fetch even if recently fetched"
 
-exec jj git fetch --tracked "$@"
+set -euo pipefail
+
+MAX_AGE=$((1 * 60 * 60)) # 1 hour in seconds
+
+should_fetch() {
+  if [[ "${usage_force:-}" == "true" ]]; then
+    return 0
+  fi
+
+  local marker
+  marker="$(jj root --ignore-working-copy)/.jj/fetch-marker"
+
+  if [[ ! -f "$marker" ]]; then
+    return 0
+  fi
+
+  local now mtime age
+  now=$(date +%s)
+  mtime=$(stat -f %m "$marker")
+  age=$((now - mtime))
+
+  [[ "$age" -gt "$MAX_AGE" ]]
+}
+
+if should_fetch; then
+  jj git fetch --tracked
+  touch "$(jj root --ignore-working-copy)/.jj/fetch-marker"
+else
+  echo "Skipping fetch (last fetch < 1h ago, use --force to override)"
+fi
