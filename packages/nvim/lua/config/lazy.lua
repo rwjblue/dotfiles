@@ -12,8 +12,6 @@ if not file_exists(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
-local non_rdev = not file_exists("/etc/rdev.conf")
-
 local rwjblue = require("rwjblue")
 
 require("lazy").setup({
@@ -21,9 +19,6 @@ require("lazy").setup({
     -- add LazyVim and import its plugins
     { "LazyVim/LazyVim", import = "lazyvim.plugins" },
     -- import any extras modules here
-
-    -- disable AI related features when using rdev
-    rwjblue.maybe_add_plugin(non_rdev, { import = "lazyvim.plugins.extras.ai.copilot" }),
 
     -- import/override with your plugins
     { import = "plugins" },
