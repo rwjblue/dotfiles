@@ -3,5 +3,5 @@
   "compaction": {
     "enabled": true
   },
-  "skills": ["~/.claude/skills"]
+  "skills": ["~/.agents/skills"]
 }
