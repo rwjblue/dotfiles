@@ -90,6 +90,7 @@ link_dotfile "packages/claude/settings.json"                    "$HOME/.claude/s
 link_dotfile "packages/agents/skills/"                          "$HOME/.claude/skills"
 link_dotfile "packages/agents/skills/"                          "$HOME/.agents/skills"
 link_dotfile "packages/codex/skills/"                           "$HOME/.codex/skills"
+link_dotfile "packages/agent-browser/config.json"               "$HOME/.agent-browser/config.json"
 link_dotfile "packages/opencode/opencode.json"                  "$HOME/.config/opencode/opencode.json"
 link_dotfile "packages/pi/agent/settings.json"                  "$HOME/.pi/agent/settings.json"
 
