@@ -89,6 +89,7 @@ link_dotfile "packages/ccstatusline/"                           "$HOME/.config/c
 link_dotfile "packages/claude/settings.json"                    "$HOME/.claude/settings.json"
 link_dotfile "packages/claude/skills/"                          "$HOME/.claude/skills"
 link_dotfile "packages/claude/skills/"                          "$HOME/.agents/skills"
+link_dotfile "packages/codex/skills/"                           "$HOME/.codex/skills"
 link_dotfile "packages/opencode/opencode.json"                  "$HOME/.config/opencode/opencode.json"
 link_dotfile "packages/pi/agent/settings.json"                  "$HOME/.pi/agent/settings.json"
 
