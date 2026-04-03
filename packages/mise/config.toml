@@ -37,6 +37,8 @@ usage = "latest"
 "npm:@googleworkspace/cli" = "latest"
 "npm:@fission-ai/openspec" = "latest"
 "npm:agent-browser" = "latest"
+# pinned — run /rtk-evaluate before upgrading
+rtk = "0.34.3"
 
 # core tools
 go = "latest"

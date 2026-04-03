@@ -1,0 +1,20 @@
+1a864eb feat(openspec): add RTK integration change proposal
+a0f136c fix(mise): use static exclude list for openspec:init
+ce4da76 feat(agent-browser): manage Brave config in dotfiles
+a29c09e refactor(skills): move shared skills to agents dir
+b27d610 feat(claude): add agent-browser skill
+403c906 feat(codex): manage shared skills via dotfiles
+848bde3 feat(mise): add agent-browser to AI tool updates
+624a1a7 chore(nvim): update plugins 2026-04-02 07:57:39
+abeb506 chore(nvim): update plugins 2026-04-02 07:55:58
+da0889d refactor(nvim): remove unused AI plugins
+9d11f85 feat(openspec): bootstrap openspec with specs for core subsystems
+89143bd feat(mise): add openspec:init task
+d8c1468 feat(mise): add jj:new task and time-based caching to jj:fetch
+d546fc0 feat(claude): add superpowers plugin and openspec tool
+0bc60de feat(mise): add up:ai task for updating AI coding tools
+88408f9 fix(mise): use mise vars.gh_user for repo:clone auth
+499bee6 refactor(mise): simplify repo:clone session naming
+28671b6 fix(mise): clean leaked env vars before launching zellij session
+70aa212 fix(mise): enable raw mode for repo:clone interactive prompt
+5d12ffa feat(mise): add zellij:vadnu session task

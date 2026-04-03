@@ -1,0 +1,7 @@
+[hooks]
+exclude_commands = ["cargo test", "npm test", "pytest", "tsc", "eslint", "rustc", "go test"]
+
+[tee]
+enabled = true
+mode = "always"
+max_files = 50

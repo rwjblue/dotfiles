@@ -1,0 +1,20 @@
+.claude/
+.codanna/
+.codex/
+.git/
+.jj/
+.vectorcode/
+mise/
+openspec/
+packages/
+packages-dist/
+scripts/
+.codannaignore  965B
+.editorconfig  230B
+.fastembed_cache -> /Users/rwjblue/.codanna/models  30B
+.gitignore  770B
+AGENTS.md  2.8K
+Brewfile  4.6K
+install  140B
+local-packages -> /Users/rwjblue/src/github/rwjblue-glean/local-dotfiles  54B
+README.md  1.6K

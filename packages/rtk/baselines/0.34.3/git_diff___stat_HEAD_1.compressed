@@ -1,0 +1,18 @@
+mise/tasks/dot/install                             |   5 +
+ mise/tasks/rtk/audit                               | 105 +++++++++++++++++++++
+ openspec/changes/add-rtk/.openspec.yaml            |   2 +
+ openspec/changes/add-rtk/design.md                 |  78 +++++++++++++++
+ openspec/changes/add-rtk/proposal.md               |  34 +++++++
+ .../changes/add-rtk/specs/rtk-evaluation/spec.md   |  38 ++++++++
+ .../changes/add-rtk/specs/rtk-integration/spec.md  |  67 +++++++++++++
+ openspec/changes/add-rtk/tasks.md                  |  39 ++++++++
+ packages/agents/skills/rtk-evaluate/SKILL.md       |  86 +++++++++++++++++
+ packages/claude/RTK.md                             |  19 ++++
+ packages/claude/hooks/rtk-rewrite.sh               |  63 +++++++++++++
+ packages/claude/settings.json                      |  13 +++
+ packages/codex/AGENTS.md                           |   1 +
+ packages/codex/RTK.md                              |  23 +++++
+ packages/mise/config.toml                          |   2 +
+ packages/rtk/baselines/.gitkeep                    |   0
+ packages/rtk/config.toml                           |   7 ++
+ 17 files changed, 582 insertions(+)

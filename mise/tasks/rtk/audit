@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Audit RTK compression behavior and compare against baselines"
+#USAGE flag "--save-baseline" help="Save current output as baseline for this RTK version"
+
+set -euo pipefail
+
+DOTFILES_DIR="$MISE_PROJECT_ROOT"
+BASELINES_DIR="$DOTFILES_DIR/packages/rtk/baselines"
+SAVE_BASELINE="${usage_save_baseline:-false}"
+
+if ! command -v rtk &>/dev/null; then
+  echo "ERROR: rtk is not installed"
+  exit 1
+fi
+
+RTK_VERSION=$(rtk --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+echo "RTK version: $RTK_VERSION"
+
+# Audit directory for this run
+AUDIT_DIR=$(mktemp -d)
+trap 'rm -rf "$AUDIT_DIR"' EXIT
+
+# Commands to test
+COMMANDS=(
+  "git status"
+  "git log --oneline -20"
+  "ls -la"
+  "git diff --stat HEAD~1"
+  "git branch -a"
+)
+
+echo ""
+echo "Running audit commands..."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+printf "%-30s %10s %10s %10s\n" "COMMAND" "RAW" "COMPRESSED" "RATIO"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+for cmd in "${COMMANDS[@]}"; do
+  safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
+
+  # Raw output (via rtk proxy)
+  rtk proxy $cmd > "$AUDIT_DIR/${safe_name}.raw" 2>/dev/null || true
+
+  # Compressed output (via rtk)
+  rtk $cmd > "$AUDIT_DIR/${safe_name}.compressed" 2>/dev/null || true
+
+  raw_words=$(wc -w < "$AUDIT_DIR/${safe_name}.raw" | tr -d ' ')
+  compressed_words=$(wc -w < "$AUDIT_DIR/${safe_name}.compressed" | tr -d ' ')
+
+  if [ "$raw_words" -gt 0 ]; then
+    ratio=$(echo "scale=1; (1 - $compressed_words / $raw_words) * 100" | bc)
+    printf "%-30s %10s %10s %9s%%\n" "$cmd" "$raw_words" "$compressed_words" "$ratio"
+  else
+    printf "%-30s %10s %10s %10s\n" "$cmd" "$raw_words" "$compressed_words" "N/A"
+  fi
+done
+
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
+# Diff against previous baseline if it exists
+BASELINE_VERSION_DIR="$BASELINES_DIR/$RTK_VERSION"
+LATEST_BASELINE=$(ls -1d "$BASELINES_DIR"/*/  2>/dev/null | sort -V | tail -1 || true)
+
+if [ -n "$LATEST_BASELINE" ] && [ "$SAVE_BASELINE" != "true" ]; then
+  echo ""
+  echo "Comparing against baseline: $(basename "$LATEST_BASELINE")"
+  echo ""
+
+  has_diff=false
+  for cmd in "${COMMANDS[@]}"; do
+    safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
+    baseline_file="$LATEST_BASELINE/${safe_name}.compressed"
+    current_file="$AUDIT_DIR/${safe_name}.compressed"
+
+    if [ -f "$baseline_file" ]; then
+      if ! diff -q "$baseline_file" "$current_file" &>/dev/null; then
+        has_diff=true
+        echo "CHANGED: $cmd"
+        diff --unified=3 "$baseline_file" "$current_file" || true
+        echo ""
+      fi
+    else
+      echo "NEW: $cmd (no baseline to compare)"
+    fi
+  done
+
+  if [ "$has_diff" = false ]; then
+    echo "No changes detected from baseline."
+  fi
+fi
+
+# Save baseline if requested
+if [ "$SAVE_BASELINE" = "true" ]; then
+  echo ""
+  echo "Saving baseline for RTK $RTK_VERSION..."
+  mkdir -p "$BASELINE_VERSION_DIR"
+
+  for cmd in "${COMMANDS[@]}"; do
+    safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
+    cp "$AUDIT_DIR/${safe_name}.compressed" "$BASELINE_VERSION_DIR/${safe_name}.compressed"
+  done
+
+  echo "Baseline saved to: $BASELINE_VERSION_DIR"
+fi
