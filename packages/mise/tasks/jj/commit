@@ -42,7 +42,7 @@ if [[ "${AGENT}" == "codex" ]]; then
   fi
 
   exec mise exec npm:@openai/codex -- \
-    codex exec --skip-git-repo-check --ephemeral "${PROMPT}"
+    codex exec --sandbox danger-full-access --skip-git-repo-check --ephemeral "${PROMPT}"
 fi
 
 PROMPT='/jj-commit --auto'
