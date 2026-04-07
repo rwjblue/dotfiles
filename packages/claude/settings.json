@@ -15,131 +15,13 @@
             "command": "~/.claude/hooks/rtk-rewrite.sh"
           }
         ]
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook command_execution --telemetry-enabled"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook file_access_read --telemetry-enabled"
-          }
-        ],
-        "matcher": "Read"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook file_access_write --telemetry-enabled"
-          }
-        ],
-        "matcher": "Write|Edit"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook network_access --telemetry-enabled"
-          }
-        ],
-        "matcher": "WebFetch|WebSearch"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook mcp --telemetry-enabled"
-          }
-        ],
-        "matcher": "mcp__.*"
       }
     ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook post_shell_execution --telemetry-enabled"
-          }
-        ],
-        "matcher": "Bash"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook post_write_file --telemetry-enabled"
-          }
-        ],
-        "matcher": "Write|Edit"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook post_network_access --telemetry-enabled"
-          }
-        ],
-        "matcher": "WebFetch"
-      },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook post_mcp --telemetry-enabled"
-          }
-        ],
-        "matcher": "mcp__.*"
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook before_submit_prompt --telemetry-enabled"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook stop --telemetry-enabled"
-          }
-        ]
-      }
-    ],
-    "SessionStart": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook session_start --telemetry-enabled"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "ARMOR_HOME=/Users/rwjblue/.armor /Users/rwjblue/.armor/policies/hooks.sh --policy claude-code-policy --hook session_end --telemetry-enabled"
-          }
-        ]
-      }
-    ]
+    "PostToolUse": [],
+    "UserPromptSubmit": [],
+    "Stop": [],
+    "SessionStart": [],
+    "SessionEnd": []
   },
   "statusLine": {
     "type": "command",
