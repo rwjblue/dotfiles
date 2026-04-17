@@ -34,8 +34,7 @@
     "pyright-lsp@claude-plugins-official": true,
     "oncall-pact@pact-plugins": true,
     "glean-skills@glean-plugins": true,
-    "superpowers@superpowers-marketplace": true,
-    "vercel-plugin@vercel-vercel-plugin": true
+    "superpowers@superpowers-marketplace": true
   },
   "extraKnownMarketplaces": {
     "pact-plugins": {
@@ -58,7 +57,7 @@
     }
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "auto",
-  "effortLevel": "high"
+  "teammateMode": "auto"
 }
