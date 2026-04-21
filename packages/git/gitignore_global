@@ -68,7 +68,9 @@ Thumbs.db
 # ########################### #
 .mise/config.local.toml
 .mise.local.toml
+.mise.local.lock
 mise.local.toml
+mise.local.lock
 
 # Coding assistant related Hint files
 /.vectorcode/
