@@ -4,6 +4,14 @@
 
 set -euo pipefail
 
+script_path="$(realpath "${BASH_SOURCE[0]}")"
+dotfiles_dir="$(cd "$(dirname "$script_path")/../../../.." && pwd -P)"
+lockfile="packages/mise/mise.lock"
+lockfile_fileset="root:packages/mise/mise.lock"
+commit_subject="chore(mise): update AI tool lockfile"
+upgrade_output_file="$(mktemp)"
+trap 'rm -f "$upgrade_output_file"' EXIT
+
 tools=(
   opencode
   claude-code
@@ -12,5 +20,36 @@ tools=(
   npm:agent-browser
 )
 
-mise up "${tools[@]}"
+lockfile_was_dirty=false
+if [[ -n "$(jj -R "$dotfiles_dir" diff --name-only "$lockfile_fileset")" ]]; then
+  lockfile_was_dirty=true
+  echo "Skipping lockfile auto-commit: $lockfile was already dirty before up:ai"
+fi
+
+mise up "${tools[@]}" | tee "$upgrade_output_file"
 mise lock --global "${tools[@]}"
+
+lockfile_is_dirty=false
+if [[ -n "$(jj -R "$dotfiles_dir" diff --name-only "$lockfile_fileset")" ]]; then
+  lockfile_is_dirty=true
+fi
+
+if [[ "$lockfile_was_dirty" == "false" ]] && [[ "$lockfile_is_dirty" == "true" ]]; then
+  upgrade_summary="$(
+    awk '
+      /^Upgraded [0-9]+ tools:$/ { capture = 1 }
+      capture { print }
+    ' "$upgrade_output_file"
+  )"
+
+  if [[ -n "$upgrade_summary" ]]; then
+    commit_body=$'Update `packages/mise/mise.lock` after refreshing AI tools.\n\n'"$upgrade_summary"
+  else
+    commit_body="Update \`packages/mise/mise.lock\` after refreshing AI tools."
+  fi
+
+  echo "Auto-committing $lockfile with jj"
+  jj -R "$dotfiles_dir" commit --quiet "$lockfile_fileset" -m "$commit_subject"$'\n\n'"$commit_body"
+elif [[ "$lockfile_was_dirty" == "false" ]]; then
+  echo "Skipping lockfile auto-commit: $lockfile was not changed by up:ai"
+fi
