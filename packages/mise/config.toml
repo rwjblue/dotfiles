@@ -42,6 +42,7 @@ rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
 bun = "latest"
+aube = "latest"
 
 [vars]
 gh_user = "rwjblue"
