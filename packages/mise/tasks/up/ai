@@ -2,4 +2,15 @@
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Update AI coding tools (opencode, claude-code, codex, openspec, agent-browser)"
 
-exec mise up opencode claude-code npm:@openai/codex npm:@fission-ai/openspec npm:agent-browser
+set -euo pipefail
+
+tools=(
+  opencode
+  claude-code
+  npm:@openai/codex
+  npm:@fission-ai/openspec
+  npm:agent-browser
+)
+
+mise up "${tools[@]}"
+mise lock --global "${tools[@]}"
