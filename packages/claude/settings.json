@@ -4,7 +4,7 @@
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
     "DISABLE_AUTOUPDATER": "1"
   },
-  "model": "claude-opus-4-6",
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -29,11 +29,7 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "gopls-lsp@claude-plugins-official": true,
-    "glean-core@glean-plugins": true,
-    "pyright-lsp@claude-plugins-official": true,
     "oncall-pact@pact-plugins": true,
-    "glean-skills@glean-plugins": true,
     "superpowers@superpowers-marketplace": true
   },
   "extraKnownMarketplaces": {
