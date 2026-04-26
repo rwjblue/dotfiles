@@ -486,6 +486,7 @@ provenance = "github-attestations"
 [tools.python."platforms.linux-x64-baseline"]
 checksum = "sha256:fe9a9c32d13870af632cbac3dfc7528ae53597e94472aa4c7d6a42e8166136cd"
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260414/cpython-3.14.4+20260414-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
+provenance = "github-attestations"
 
 [tools.python."platforms.linux-x64-musl"]
 checksum = "sha256:fe9a9c32d13870af632cbac3dfc7528ae53597e94472aa4c7d6a42e8166136cd"
@@ -495,6 +496,7 @@ provenance = "github-attestations"
 [tools.python."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:fe9a9c32d13870af632cbac3dfc7528ae53597e94472aa4c7d6a42e8166136cd"
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260414/cpython-3.14.4+20260414-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz"
+provenance = "github-attestations"
 
 [tools.python."platforms.macos-arm64"]
 checksum = "sha256:6f304f4ec30854611f23316578302235fb517cd970519ecdd11a8c4db87fd843"
@@ -509,6 +511,7 @@ provenance = "github-attestations"
 [tools.python."platforms.macos-x64-baseline"]
 checksum = "sha256:d51250a32fa5d9f0799c7bcb71720c27b10a3afd4a7de288120f96085d508a5a"
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260414/cpython-3.14.4+20260414-x86_64-apple-darwin-install_only_stripped.tar.gz"
+provenance = "github-attestations"
 
 [tools.python."platforms.windows-x64"]
 checksum = "sha256:a976991dcd085c1bb5d9a8084823a6bc8b7f9b079d8c432574a6ddd68c3a6fe1"
@@ -518,6 +521,7 @@ provenance = "github-attestations"
 [tools.python."platforms.windows-x64-baseline"]
 checksum = "sha256:a976991dcd085c1bb5d9a8084823a6bc8b7f9b079d8c432574a6ddd68c3a6fe1"
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260414/cpython-3.14.4+20260414-x86_64-pc-windows-msvc-install_only_stripped.tar.gz"
+provenance = "github-attestations"
 
 [[tools.rtk]]
 version = "0.34.3"
@@ -600,6 +604,7 @@ provenance = "github-attestations"
 [tools.ruby."platforms.linux-x64-baseline"]
 checksum = "sha256:4564603d7f314912091b01978627be183a16b057e3c98309eed0137c3b74601a"
 url = "https://github.com/jdx/ruby/releases/download/4.0.2-1/ruby-4.0.2.x86_64_linux.tar.gz"
+provenance = "github-attestations"
 
 [tools.ruby."platforms.linux-x64-musl"]
 checksum = "sha256:4564603d7f314912091b01978627be183a16b057e3c98309eed0137c3b74601a"
@@ -609,6 +614,7 @@ provenance = "github-attestations"
 [tools.ruby."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:4564603d7f314912091b01978627be183a16b057e3c98309eed0137c3b74601a"
 url = "https://github.com/jdx/ruby/releases/download/4.0.2-1/ruby-4.0.2.x86_64_linux.tar.gz"
+provenance = "github-attestations"
 
 [tools.ruby."platforms.macos-arm64"]
 checksum = "sha256:3719af6ceff6c1b977eecf5b48e398827ea82872377480684b75db5925b78493"
@@ -632,7 +638,7 @@ checksum = "sha256:f6c562d507b272b892055f35ece3cbc65de5f3f2f63d18b7345a602af8c1e
 url = "https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-4.0.2-1/rubyinstaller-4.0.2-1-x64.7z"
 
 [[tools.rust]]
-version = "1.95.0"
+version = "1.94.1"
 backend = "core:rust"
 
 [[tools.slsa-verifier]]
@@ -771,46 +777,57 @@ backend = "aqua:astral-sh/uv"
 [tools.uv."platforms.linux-arm64"]
 checksum = "sha256:46647dc16cbb7d6700f762fdd7a67d220abe18570914732bc310adc91308d272"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-aarch64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-arm64-musl"]
 checksum = "sha256:46647dc16cbb7d6700f762fdd7a67d220abe18570914732bc310adc91308d272"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-aarch64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64"]
 checksum = "sha256:64ddb5f1087649e3f75aa50d139aa4f36ddde728a5295a141e0fa9697bfb7b0f"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64-baseline"]
 checksum = "sha256:64ddb5f1087649e3f75aa50d139aa4f36ddde728a5295a141e0fa9697bfb7b0f"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64-musl"]
 checksum = "sha256:64ddb5f1087649e3f75aa50d139aa4f36ddde728a5295a141e0fa9697bfb7b0f"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.linux-x64-musl-baseline"]
 checksum = "sha256:64ddb5f1087649e3f75aa50d139aa4f36ddde728a5295a141e0fa9697bfb7b0f"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-unknown-linux-musl.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.macos-arm64"]
 checksum = "sha256:66e37d91f839e12481d7b932a1eccbfe732560f42c1cfb89faddfa2454534ba8"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-aarch64-apple-darwin.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.macos-x64"]
 checksum = "sha256:0a4bc8fcde4974ea3560be21772aeecab600a6f43fa6e58169f9fa7b3b71d302"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-apple-darwin.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.macos-x64-baseline"]
 checksum = "sha256:0a4bc8fcde4974ea3560be21772aeecab600a6f43fa6e58169f9fa7b3b71d302"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-apple-darwin.tar.gz"
+provenance = "github-attestations"
 
 [tools.uv."platforms.windows-x64"]
 checksum = "sha256:fe0c7815acf4fc45f8a5eff58ed3cf7ae2e15c3cf1dceadbd10c816ec1690cc1"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-pc-windows-msvc.zip"
+provenance = "github-attestations"
 
 [tools.uv."platforms.windows-x64-baseline"]
 checksum = "sha256:fe0c7815acf4fc45f8a5eff58ed3cf7ae2e15c3cf1dceadbd10c816ec1690cc1"
 url = "https://github.com/astral-sh/uv/releases/download/0.11.7/uv-x86_64-pc-windows-msvc.zip"
+provenance = "github-attestations"
 
 [[tools.zig]]
 version = "0.16.0"
