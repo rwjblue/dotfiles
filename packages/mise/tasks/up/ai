@@ -28,13 +28,19 @@ fi
 
 mise up "${tools[@]}" | tee "$upgrade_output_file"
 
-lock_tools=()
-for tool in "${tools[@]}"; do
-  latest_version="$(mise latest "$tool")"
-  lock_tools+=("$tool@$latest_version")
-done
+upgraded_tools=()
+while IFS= read -r upgraded_tool; do
+  upgraded_tools+=("$upgraded_tool")
+done < <(
+  awk '
+    /^Upgraded [0-9]+ tools:$/ { capture = 1; next }
+    capture && /^  / { print $1 "@" $NF }
+  ' "$upgrade_output_file"
+)
 
-mise lock --global "${lock_tools[@]}"
+if (( ${#upgraded_tools[@]} > 0 )); then
+  mise lock --global "${upgraded_tools[@]}"
+fi
 
 lockfile_is_dirty=false
 if [[ -n "$(jj -R "$dotfiles_dir" diff --name-only "$lockfile_fileset")" ]]; then
