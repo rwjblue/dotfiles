@@ -30,7 +30,8 @@
   },
   "enabledPlugins": {
     "oncall-pact@pact-plugins": true,
-    "superpowers@superpowers-marketplace": true
+    "superpowers@superpowers-marketplace": true,
+    "mcp-pact@pact-plugins": true
   },
   "extraKnownMarketplaces": {
     "pact-plugins": {
