@@ -152,13 +152,14 @@ Determine stacked PR creation mode:
 Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
 - **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
+  When citing prior PR-reviewed changes, prefer **PR numbers (`#NNNN`) or full PR URLs** in the PR body because GitHub auto-links these. Use raw commit SHAs only when the exact commit identity matters, such as cherry-picks, reverts, bisect notes, comparison anchors, or upstream commits without a PR.
   If template exists, fill it out. Otherwise write a short conversational description that prioritizes reviewer context:
   - Explain **why** the change is being made (motivation, constraint, or problem being solved).
   - Call out only the **non-obvious** parts of the implementation or behavior; do not restate what is already obvious from the diff.
   - Include any useful maintainer/reviewer "color" (tradeoffs considered, follow-up work, rollout notes, edge cases, risks, or context from prior discussion).
   - Keep it concise but complete enough that a maintainer can understand intent without reconstructing it from commit history.
   - Add an explicit test/verification note only when there is meaningful test context to share (for example manual verification steps, known gaps, or why tests were/weren't added).
-  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section at the end of the author-written description, before any template boilerplate (checklists, release notes, metadata sections). Use bottom-up order where the base PR is #1:
+  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section immediately below the main author-written description, before generated template metadata, checklists, release notes, or tracking sections. In templates that separate reviewer prose from metadata with `---`, place `## Stack` before that separator. Use bottom-up order where the base PR is #1:
   ```markdown
   ## Stack
   1. https://github.com/askscio/scio/pull/NNNNN
@@ -189,7 +190,7 @@ After creating the PR, update all other open PRs in the stack so they have the c
 Only do this in **true stacked mode** where the PRs live in the same `<target-repo>`. Skip this step in upstream fallback mode.
 
 - For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
-- Replace or insert the `## Stack` section at the end of the author-written description, before any template boilerplate
+- Replace or insert the `## Stack` section immediately below the author-written prose, before generated template metadata, checklists, release notes, or tracking sections. If the template uses `---` to separate reviewer prose from metadata, place the stack before that separator, not at the bottom of the body.
 - Use bare GitHub PR URLs for other entries; bold the PR's own entry with its title and "(this PR)"
 - Update via `gh pr edit <pr-number> --repo "<target-repo>" --body "..."`
 

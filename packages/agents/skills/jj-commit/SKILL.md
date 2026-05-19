@@ -72,6 +72,7 @@ Draft a commit message that matches the style used in this repo.
 - Do NOT explain **how** unless the approach is non-obvious from the diff
 - Wrap lines at 72 characters
 - Only skip the body for truly trivial changes (typo fixes, single-line config tweaks)
+- **Reference durable history carefully.** When citing a prior change that has already landed on the repository's main/trunk history, prefer the short commit SHA because it is a durable git artifact. Do not cite SHAs from unmerged branches, stacked PRs, or commits that may be rewritten or squash merged; those SHAs may disappear from useful history. For unmerged or squash-merged work, prefer a PR number/full PR URL, issue ID, or avoid the reference in the commit message and put the context in the PR body instead.
 
 The message should look like it belongs with the other commits in the repo.
 
