@@ -20,7 +20,16 @@
     "PostToolUse": [],
     "UserPromptSubmit": [],
     "Stop": [],
-    "SessionStart": [],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f \"/Users/rwjblue/.claude/sfw-env.sh\" ] && cat \"/Users/rwjblue/.claude/sfw-env.sh\" >> \"$CLAUDE_ENV_FILE\""
+          }
+        ]
+      }
+    ],
     "SessionEnd": []
   },
   "statusLine": {
