@@ -35,6 +35,8 @@ user hint.
 
 Run `jj diff` to see what changes are in the working copy (`@`).
 
+If the user asked to commit only specific files or paths, also run `jj diff <paths>` for those paths and treat the request as a scoped commit. Do not include unrelated working-copy changes.
+
 If there are no changes (empty diff), inform the user there's nothing to commit.
 
 ### 2. Analyze Commit Style
@@ -93,6 +95,11 @@ committing.
 ### 5. Create the Commit
 
 Run `jj commit -m "<approved or auto-selected message>"`.
+
+For a scoped commit, include the requested paths:
+```bash
+jj commit <paths> -m "<approved or auto-selected message>"
+```
 
 Use `jj commit` (not `jj describe`) so that `@` advances to a new empty revision, ready for more work.
 

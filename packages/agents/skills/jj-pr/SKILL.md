@@ -10,6 +10,12 @@ Create or update a GitHub pull request from the current jj branch.
 
 **User hint:** $ARGUMENTS
 
+## Signing Policy (Mandatory)
+
+- Commit signing for pushed changes is required in this environment.
+- Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
+- If pushing fails because signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
+
 ## Process
 
 ### 1. Gather Current State
@@ -54,7 +60,7 @@ If the bookmark is **behind** `@-` (new commits exist beyond the bookmark), ask 
 - **Update existing PR** (Recommended) - move the bookmark forward to include new commits
 - **Create stacked PR** - keep the bookmark where it is and create a new PR targeting it
 
-If **Update existing PR**: continue to U3.
+If **Update existing PR**: run `jj tug` to move the existing bookmark forward to the nearest pushable commit, then continue to U3.
 If **Create stacked PR**: jump to CREATE mode (C1), passing the existing bookmark name as the stacked base branch.
 
 ### U3. Handle Changes
@@ -78,12 +84,19 @@ Run `jj git push --tracked` to push the bookmark.
 
 If the PR exists, ask the user if they want to update the PR title or description.
 
-If yes, use `gh pr edit <pr-number> --repo "<target-repo>" --title "<new title>" --body "<new body>"` to update it.
+If yes, use `--body-file` when updating the body so markdown, backticks, and shell-special characters are preserved:
+```bash
+cat > /tmp/pr-body.md <<'EOF'
+<new body content>
+EOF
+
+gh pr edit <pr-number> --repo "<target-repo>" --title "<new title>" --body-file /tmp/pr-body.md
+```
 
 ### U6. Report Result
 
 If PR exists: Show the PR URL and confirm updates were pushed.
-If no PR exists: Proceed to CREATE mode step C4 to create the PR.
+If no PR exists: Proceed to CREATE mode step C3 to create the PR.
 
 ---
 
@@ -96,6 +109,8 @@ If `@` has changes, invoke `/jj-commit` first. This uses `jj commit` (not `jj de
 ### C2. Create Bookmark
 
 Run `jj log --no-pager -r "@-" -T 'description.first_line()'` to get the commit message at `@-`.
+
+If this is a stacked PR, leave the stacked base bookmark where it is. Do not run `jj tug` or otherwise move the base bookmark; create a new bookmark for the follow-up PR at `@-`.
 
 Generate a branch name:
 - Prefix with `rwjblue/`
@@ -113,15 +128,7 @@ Present the proposed branch name to the user for confirmation.
 
 Once confirmed, run `jj git push --named "<bookmark-name>=@-"`.
 
-### C3. Handle Stacked Branches (optional)
-
-If closest bookmark exists but isn't on `@-`, ask the user to choose:
-- **Use `jj tug`** (Recommended) - move bookmark forward
-- **Create new bookmark** - for a new branch
-
-If tug: run `jj tug && jj git push --tracked`
-
-### C4. Create Pull Request
+### C3. Create Pull Request
 
 First, check for a PR template:
 ```bash
@@ -183,7 +190,7 @@ gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-nam
 gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<trunk-bookmark-or-branch>" --title "<title>" --body-file /tmp/pr-body.md
 ```
 
-### C5. Update Stack in Other PRs (stacked PRs only)
+### C4. Update Stack in Other PRs (stacked PRs only)
 
 After creating the PR, update all other open PRs in the stack so they have the complete stack list.
 
@@ -192,8 +199,8 @@ Only do this in **true stacked mode** where the PRs live in the same `<target-re
 - For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
 - Replace or insert the `## Stack` section immediately below the author-written prose, before generated template metadata, checklists, release notes, or tracking sections. If the template uses `---` to separate reviewer prose from metadata, place the stack before that separator, not at the bottom of the body.
 - Use bare GitHub PR URLs for other entries; bold the PR's own entry with its title and "(this PR)"
-- Update via `gh pr edit <pr-number> --repo "<target-repo>" --body "..."`
+- Update via `gh pr edit <pr-number> --repo "<target-repo>" --body-file /tmp/pr-body.md`
 
-### C6. Report Success
+### C5. Report Success
 
 Show the PR URL and confirm the pull request was created.
