@@ -20,6 +20,8 @@ packages/wezterm/local_config_overrides.lua
 # this is unstable across machines
 /packages/hammerspoon/Spoons/EmmyLua.spoon/annotations/timestamps.json
 
+packages/codex/skills/.system
+
 # Override global gitignore to track local claude skills
 # Git requires un-ignoring at each directory level
 !/.claude/
