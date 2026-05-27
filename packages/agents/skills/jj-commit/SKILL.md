@@ -33,9 +33,24 @@ user hint.
 
 ### 1. Review Current Changes
 
-Run `jj diff` to see what changes are in the working copy (`@`).
+Run `jj diff --stat` to see which files are affected and the scale of changes.
 
-If the user asked to commit only specific files or paths, also run `jj diff <paths>` for those paths and treat the request as a scoped commit. Do not include unrelated working-copy changes.
+Then decide how much more context you need:
+
+- **In-session changes** — If the current conversation already contains context
+  about why these files were modified (you made the changes, or they were
+  discussed), the stat is sufficient. You already know the motivation; use the
+  session context to write the commit message. Do not re-read the full diff.
+
+- **Out-of-session changes** — If the working copy contains changes you have no
+  context for (fresh session, manual edits, external tool), run `rtk jj diff`
+  to understand what changed semantically. RTK compresses the output; full raw
+  diff is in `~/.local/share/rtk/tee/` if needed.
+
+If the user asked to commit only specific files or paths, scope both the stat
+and any full diff to those paths (`jj diff --stat <paths>`, `rtk jj diff
+<paths>`) and treat the request as a scoped commit. Do not include unrelated
+working-copy changes.
 
 If there are no changes (empty diff), inform the user there's nothing to commit.
 
