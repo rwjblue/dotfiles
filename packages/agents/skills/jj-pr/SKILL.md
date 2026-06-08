@@ -36,6 +36,7 @@ Run these to understand the current situation:
   - Derive `<target-owner>` from `<target-repo>`
   - Derive `<origin-owner>` from the `origin` remote URL for head refs (`<origin-owner>:<bookmark-name>`)
   - Treat this as a fork flow when `<target-owner> != <origin-owner>`
+  - **Same-repo simplification:** when `<target-owner> == <origin-owner>` (pushing to the upstream repo, not a fork), the `<origin-owner>:` prefix in `--head` is redundant. Plain `--head <bookmark-name>` works and avoids edge cases (e.g., if you mentally substitute your GitHub username instead of deriving from the origin URL, the head ref breaks). The `<origin-owner>:<bookmark-name>` form is only required for fork flow.
 
 Determine the mode:
 
@@ -100,6 +101,48 @@ If no PR exists: Proceed to CREATE mode step C3 to create the PR.
 
 ---
 
+## AMEND Mode (rewriting an existing PR's commit)
+
+Use when you need to change what's *inside* an existing PR's commit — review fixes that should fold into the existing commit instead of stacking on top, scope expansion within a draft PR, or conflict resolution after a rebase. Distinct from UPDATE mode (which adds a *new* commit on top, moving the bookmark forward) and CREATE mode (which makes a new bookmark from trunk).
+
+### A1. Position the working copy on the target revision
+
+```bash
+jj edit <change-id>
+```
+
+Use the change ID of the revision whose bookmark matches the PR you want to amend. The working copy is now ON that revision; descendants auto-rebase as you mutate.
+
+### A2. Make changes
+
+Edit files normally. jj snapshots automatically — do NOT run `jj commit` or `jj describe` to land them. Your edits become part of the existing revision.
+
+If descendants conflict during the rebase, resolve them in place; `jj resolve --list` shows what needs attention.
+
+### A3. Verify
+
+Build and test as needed. The commit message and bookmark stay attached to this revision; only the SHA changes.
+
+### A4. Push
+
+```bash
+jj git push --bookmark <bookmark-name>
+```
+
+If multiple bookmarks in the stack moved (e.g., a rebase shifted every revision's SHA), push them all together:
+
+```bash
+jj git push --tracked
+```
+
+Each tracked bookmark whose target SHA changed gets pushed; bookmarks already in sync are skipped.
+
+### A5. Update PR description if scope changed
+
+If the amendment changed *what* the PR does (not just *how*), update the description per U5 — the diff is now different from the body's claims.
+
+---
+
 ## CREATE Mode (new branch from trunk or stacked base)
 
 ### C1. Handle Uncommitted Changes
@@ -160,19 +203,33 @@ Draft the PR:
 - **Title**: Use the primary commit message or user's hint, keep under 70 chars
 - **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
   When citing prior PR-reviewed changes, prefer **PR numbers (`#NNNN`) or full PR URLs** in the PR body because GitHub auto-links these. Use raw commit SHAs only when the exact commit identity matters, such as cherry-picks, reverts, bisect notes, comparison anchors, or upstream commits without a PR.
-  If template exists, fill it out. Otherwise write a short conversational description that prioritizes reviewer context:
-  - Explain **why** the change is being made (motivation, constraint, or problem being solved).
-  - Call out only the **non-obvious** parts of the implementation or behavior; do not restate what is already obvious from the diff.
+  If template exists, fill it out. Otherwise write a description that prioritizes reviewer context:
+
+  - **BLUF up top.** Open with `**BLUF; _Why_** — <one paragraph stating the motivation, constraint, or problem being solved>`. Reviewers should know within two sentences whether this PR matters to them.
+  - **One paragraph on the non-obvious "what".** Call out only what isn't already obvious from the diff. Don't restate file changes — the diff shows them.
+  - **Compact metric table** if the PR has a measurable outcome (perf, size, quality). One row per case, one aggregate row at the bottom.
+  - **Stack section** if stacked (see template below).
+  - **Test/verification note** only when there's something non-obvious to share — manual repro steps, known gaps, a deliberate decision not to test something. "Unit tests pass" is not worth saying.
   - Include any useful maintainer/reviewer "color" (tradeoffs considered, follow-up work, rollout notes, edge cases, risks, or context from prior discussion).
-  - Keep it concise but complete enough that a maintainer can understand intent without reconstructing it from commit history.
-  - Add an explicit test/verification note only when there is meaningful test context to share (for example manual verification steps, known gaps, or why tests were/weren't added).
-  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section immediately below the main author-written description, before generated template metadata, checklists, release notes, or tracking sections. In templates that separate reviewer prose from metadata with `---`, place `## Stack` before that separator. Use bottom-up order where the base PR is #1:
+
+  **Length discipline.** Default to under 2 KB. GitHub's hard cap on the PR body is ~256 KB but you should be nowhere near it. Anti-patterns to avoid:
+  - File/test enumeration ("modified X.go, added 5 tests, BUILD.bazel updated") — the diff already shows this.
+  - Pre/post-condition lists summarizing what changed mechanically.
+  - "What to spot-check" filler — reviewers know how to read a diff.
+  - Pasting more than ~50 KB of raw evidence inline (logs, captures, eval outputs) — link to a gist or a local path instead.
+
+  The "Churchillian PR" — the one that defends itself against being read by sheer length — is the failure mode. Punchy and skimmable wins.
+  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section immediately below the main author-written description, before generated template metadata, checklists, release notes, or tracking sections. In templates that separate reviewer prose from metadata with `---`, place `## Stack` before that separator. Use a single numbered list with the trunk branch (`master`/`main`/etc.) as item **#1** in bold, then PRs in dependency order with a 👉 prefix on the current PR:
   ```markdown
   ## Stack
-  1. https://github.com/askscio/scio/pull/NNNNN
-  2. **Current PR title** (this PR)
+
+  1. **master**
+  2. https://github.com/askscio/scio/pull/AAAA
+  3. https://github.com/askscio/scio/pull/BBBB
+  4. 👉 https://github.com/askscio/scio/pull/CCCC
+  5. https://github.com/askscio/scio/pull/DDDD
   ```
-  Use bare GitHub PR URLs for other PRs in the stack (GitHub renders these as rich links with title and status). Bold the current PR's own entry with its title and mark it with "(this PR)".
+  Reading top→bottom: PR at slot 2 builds on `master`, slot 3 builds on slot 2, etc. — direction is unambiguous. Including the trunk as a numbered base resolves "is this stack growing up or down?" confusion that comes up otherwise. Bare GitHub PR URLs render as rich auto-linked cards with title and status — no need to repeat the title manually. The 👉 prefix is more scannable than a "(this PR)" suffix and survives PR renames without going stale.
 
 Present the draft to the user for approval.
 
@@ -204,3 +261,7 @@ Only do this in **true stacked mode** where the PRs live in the same `<target-re
 ### C5. Report Success
 
 Show the PR URL and confirm the pull request was created.
+
+### C6. Stack composition changes after creation
+
+If you later add, remove, or rename a PR in the stack, update every other PR's Stack section to match. Same flow as C4 — read each body, replace the Stack section, write back via `gh pr edit --body-file`. Stale stack listings on siblings confuse reviewers.
