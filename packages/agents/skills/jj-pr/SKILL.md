@@ -205,7 +205,8 @@ Draft the PR:
   When citing prior PR-reviewed changes, prefer **PR numbers (`#NNNN`) or full PR URLs** in the PR body because GitHub auto-links these. Use raw commit SHAs only when the exact commit identity matters, such as cherry-picks, reverts, bisect notes, comparison anchors, or upstream commits without a PR.
   If template exists, fill it out. Otherwise write a description that prioritizes reviewer context:
 
-  - **BLUF up top.** Open with `**BLUF; _Why_** — <one paragraph stating the motivation, constraint, or problem being solved>`. Reviewers should know within two sentences whether this PR matters to them.
+  - **BLUF up top — one short sentence.** Open with `**BLUF:** <one sentence, ≤ 15 words, answering "what does THIS PR do?">`. Leave a blank line, then 1–3 supporting sentences for the "why" (motivation, gating, scope). Do NOT mush the headline and context into one paragraph — the reviewer should grasp the change from the first sentence alone. The BLUF describes THIS PR, not the stack or initiative it belongs to (stack/initiative context goes in the supporting sentences or the explicit Stack section).
+  - **Standalone reviewability.** The PR description must read cold. Assume the reviewer has not opened the rest of the stack. Never refer to other PRs in the stack by position ("PR 4", "the next PR"). If a sibling PR's behavior is load-bearing for understanding this one, describe it inline; otherwise drop the reference. Words like "earlier" and "later" are fine as glue ("a later commit clears the matching metadata") but only when the description still reads without them.
   - **One paragraph on the non-obvious "what".** Call out only what isn't already obvious from the diff. Don't restate file changes — the diff shows them.
   - **Compact metric table** if the PR has a measurable outcome (perf, size, quality). One row per case, one aggregate row at the bottom.
   - **Stack section** if stacked (see template below).
