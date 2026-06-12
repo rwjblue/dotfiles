@@ -41,13 +41,29 @@ jj show -r @-         # Show parent commit details
 ### Creating & Modifying Commits
 ```bash
 jj new                # Create new empty commit on @
-jj new <rev>          # Create new commit on specific revision
+jj new <rev>          # Create new child commit from rev
+jj new --insert-after <rev>  # Create fixup after rev and rebase descendants onto it
 jj commit -m "msg"    # Describe @ and create new empty commit
 jj commit <paths>     # Commit only specific files (partial commit)
 jj describe           # Edit description of @
 jj describe -r <rev>  # Edit description of specific revision
-jj edit <rev>         # Make revision the working copy (to modify it)
+jj edit <rev>         # Make revision the working copy; use sparingly for direct mutation
 ```
+
+### Fixing Earlier Stack Commits
+When fixing an earlier commit in a stack, prefer a temporary fixup commit over directly editing the target commit. This keeps the new delta easy to inspect with `jj diff`, while still letting later commits see the fix during verification.
+
+```bash
+jj new --insert-after <target-rev>
+# edit files
+jj diff
+mise run pre-commit
+jj squash
+```
+
+`jj new --insert-after <target-rev>` creates a new change immediately after the target commit and rebases the target's descendants on top of it. After verification, plain `jj squash` folds the current fixup commit into its parent, which is the target commit.
+
+Use `jj new <target-rev>` when you only need a sibling fixup to inspect and squash locally. Use `--insert-after` when descendants should be tested with the fix before squashing. Reserve `jj edit <rev>` for inspection, intentionally continuing work in the current commit, or explicit direct mutation.
 
 ### Squashing & Combining
 ```bash
