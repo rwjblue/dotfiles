@@ -5,6 +5,7 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use tree_sitter::{Node, Parser as TSParser, Query, QueryCursor};
+use crate::debug_path_helpers::{get_line_content, get_line_number};
 
 /// A tool to debug and inspect the $PATH environment variable.
 #[derive(Parser)]
@@ -154,25 +155,4 @@ fn process_shell_file(path: &Path) -> Result<()> {
     }
 
     Ok(())
-}
-// Helper function to get the line number from byte offset
-fn get_line_number(line_offsets: &[(usize, &str)], byte_offset: usize) -> usize {
-    match line_offsets.binary_search_by(|&(offset, _)| offset.cmp(&byte_offset)) {
-        Ok(index) => index,
-        Err(index) => index,
-    }
-}
-
-// Helper function to get the line content where the node is located
-fn get_line_content<'a>(source_code: &'a str, node: Node) -> &'a str {
-    let start = source_code[..node.start_byte()]
-        .rfind('\n')
-        .map(|pos| pos + 1)
-        .unwrap_or(0);
-    let end = source_code[node.end_byte()..]
-        .find('\n')
-        .map(|pos| node.end_byte() + pos)
-        .unwrap_or(source_code.len());
-
-    &source_code[start..end]
 }
