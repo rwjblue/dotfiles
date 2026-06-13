@@ -210,16 +210,24 @@ Gather information for the PR:
 If this is a stacked PR, gather the full stack for the PR body:
 - Run `jj log --no-pager -r "bookmarks() & trunk()..@-" --reversed -T 'bookmarks ++ "\n"'` to find all bookmarks in the stack (bottom-up order, base first)
 - For each bookmark, run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark>" --json url,title,number --limit 1` to get its PR info
-- Include the current PR (being created now) as the last entry
+- In fork flows, this lookup is still required even when the bookmark branch is missing from `<target-repo>`. GitHub upstream PRs commonly use fork head refs (`<origin-owner>:<bookmark>`) while not exposing the fork branch as a base branch in `<target-repo>`. Do not infer "no upstream PR" from a missing target-repo branch.
+- Record any existing PR URL for each stacked base bookmark. Use that URL in the Stack section and fallback explanation.
+- Include the current PR (being created now) as the last entry. Before PR creation, use a placeholder such as `👉 <current PR, created below>`.
 
 Determine stacked PR creation mode:
 - **True stacked mode**: only when `<stacked-base-bookmark>` exists as a branch in `<target-repo>`
   - Check with: `gh api repos/<target-repo>/branches/<stacked-base-bookmark>`
   - If this succeeds, create with `--base "<stacked-base-bookmark>"`
 - **Upstream fallback mode**: when stacked base branch is missing from `<target-repo>` (common fork flow)
+  - First check for an existing upstream PR for the stacked base head ref:
+    ```bash
+    gh pr list --repo "<target-repo>" --head "<origin-owner>:<stacked-base-bookmark>" --json url,title,number --limit 1
+    ```
+  - If found, cite that PR URL or number as the dependency. Do not say "no upstream PR found."
+  - If not found, say only that no upstream PR was found for `<origin-owner>:<stacked-base-bookmark>` after checking that exact head ref.
   - Do **not** create the follow-up PR in your fork unless the user explicitly asks
   - Create the PR in `<target-repo>` against `trunk()` instead
-  - Pass fallback context into `pr-description` (depends-on URL, temporary extra commits, rebase after merge)
+  - Pass fallback context into `pr-description` (depends-on URL if one exists, temporary extra commits, rebase after merge)
 
 Load `pr-description` with the gathered commits, diff stat, template, stack list, and mode. Present its draft (that skill already asks for approval).
 
@@ -238,6 +246,14 @@ gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-nam
 ```
 
 Same-repo simplification still applies to `--head`.
+
+After `gh pr create` succeeds, capture the created PR URL. If this is a stacked PR, rewrite `/tmp/pr-body.md` so its own Stack entry uses the real URL instead of the placeholder, then immediately update the newly created PR body:
+
+```bash
+gh pr edit <new-pr-number-or-url> --repo "<target-repo>" --body-file /tmp/pr-body.md
+```
+
+The post-create body must include the complete stack with the current PR URL marked by `👉`, for both true stacked mode and upstream fallback mode. This keeps the PR body self-contained and avoids leaving placeholder branch names or "created below" text in the final description.
 
 ### C4. Update Stack in Other PRs (stacked PRs only)
 

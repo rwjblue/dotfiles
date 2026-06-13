@@ -1,0 +1,48 @@
+---
+name: nvim
+description: Neovim/LazyVim configuration. Use when working with Neovim config, plugins, keymaps, or TreeSitter queries.
+user-invocable: false
+---
+
+# Neovim Configuration
+
+## Overview
+
+- Based on **LazyVim** starter
+- Config location: `packages/nvim/`
+- Plugin management: lazy.nvim with `lazy-lock.json` for version pinning
+
+## Directory Structure
+
+```
+packages/nvim/
+├── init.lua              # Entry point
+├── lazy-lock.json        # Plugin version lock file
+└── lua/
+    ├── config/           # Core config (autocmds, keymaps, options)
+    ├── plugins/          # Plugin specs (lazy.nvim format)
+    └── util/             # Custom utilities
+```
+
+## Common Tasks
+
+- `mise run nvim:restore` - Restore plugins to locked versions
+- `mise run nvim:update` - Update plugins and lock file
+
+## Plugin Development
+
+When adding/modifying plugins:
+
+1. Add plugin spec in `lua/plugins/<name>.lua`
+2. Follow lazy.nvim spec format with `opts`, `config`, `dependencies`
+3. After testing, run `mise run nvim:update` to update lock file
+
+## TreeSitter Customization
+
+Query overrides go in `after/queries/<language>/` following standard Neovim patterns.
+
+## References
+
+- LazyVim docs (distribution): https://www.lazyvim.org/
+- lazy.nvim docs (plugin manager): https://lazy.folke.io
+- Plugin specs live in `lua/plugins/`
