@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Fetch latest changes and create new branch from trunk"
-#MISE depends=["jj:fetch"]
 #MISE dir="{{cwd}}"
+#USAGE flag "--force-fetch" help="Pass --force to jj:fetch (fetch even if recently fetched)"
 
 set -euo pipefail
+
+if [[ "${usage_force_fetch:-}" == "true" ]]; then
+  mise run jj:fetch --force
+else
+  mise run jj:fetch
+fi
 
 exec jj new 'trunk()'
