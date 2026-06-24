@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Run agent-review.nvim tests headless"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT/packages/agent-review.nvim"
+nvim --headless --noplugin -u ./tests/minimal_init.lua -c "lua MiniTest.run()"
