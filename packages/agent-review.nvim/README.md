@@ -24,7 +24,23 @@ Requires `snacks.nvim`.
 
 ## File format
 
-See `docs/superpowers/specs/2026-06-24-agent-review-nvim-design.md`.
+Comments live in `.agent-review/comments.md` at the repo root, e.g.:
+
+````markdown
+<!-- agent-review:v1 -->
+# Agent review comments
+
+<!-- agent-review:v1 comment id=1 file=src/user.ts start=42 end=44 -->
+### src/user.ts:42-44
+> const result = await fetchUser(id)
+
+This needs a null check before `.name`.
+````
+
+The HTML-comment marker carries the structured anchor (`id`, `file`, `start`, `end`);
+the `>` quote is the line snippet used to re-anchor if the code drifts; the prose
+below is the comment body. See also
+`docs/superpowers/specs/2026-06-24-agent-review-nvim-design.md` in the dotfiles repo.
 
 ## Tests
 

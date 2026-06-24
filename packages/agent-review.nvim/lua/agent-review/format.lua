@@ -1,14 +1,10 @@
 local M = {}
 
-local MARKER = "<!%-%- agent%-review:v1 comment (.-) %-%->"
-
-local function parse_attrs(s)
-  local attrs = {}
-  for key, value in s:gmatch("(%w+)=(%S+)") do
-    attrs[key] = value
-  end
-  return attrs
-end
+-- A comment block begins with this marker, anchored at the start of a line.
+-- `file` is captured non-greedily up to " start=", so paths may contain spaces.
+local MARKER = "^<!%-%- agent%-review:v1 comment id=(%d+) file=(.-) start=(%d+) end=(%d+) %-%->"
+-- Prefix that marks the start of the next comment block (used to terminate a body).
+local MARKER_PREFIX = "^<!%-%- agent%-review:v1 comment "
 
 ---@param text string
 ---@return table[] comments
@@ -17,14 +13,13 @@ function M.decode(text)
   local comments = {}
   local i = 1
   while i <= #lines do
-    local attr_str = lines[i]:match(MARKER)
-    if attr_str then
-      local attrs = parse_attrs(attr_str)
+    local id, file, s, e = lines[i]:match(MARKER)
+    if id then
       local comment = {
-        id = tonumber(attrs.id),
-        file = attrs.file,
-        start_line = tonumber(attrs.start),
-        end_line = tonumber(attrs["end"]),
+        id = tonumber(id),
+        file = file,
+        start_line = tonumber(s),
+        end_line = tonumber(e),
       }
       i = i + 1
       if lines[i] and lines[i]:match("^###%s") then
@@ -38,7 +33,7 @@ function M.decode(text)
       comment.snippet = table.concat(snippet, "\n")
       if lines[i] == "" then i = i + 1 end
       local body = {}
-      while lines[i] ~= nil and not lines[i]:match(MARKER) do
+      while lines[i] ~= nil and not lines[i]:match(MARKER_PREFIX) do
         table.insert(body, lines[i])
         i = i + 1
       end

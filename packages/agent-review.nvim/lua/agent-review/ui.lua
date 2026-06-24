@@ -3,6 +3,14 @@ local render = require("agent-review.render")
 
 local M = {}
 
+local function rejects_marker(body)
+  if body:find("agent%-review:v1 comment") then
+    vim.notify("agent-review: comment body cannot contain the agent-review marker", vim.log.levels.WARN)
+    return true
+  end
+  return false
+end
+
 ---Build a comment table from buffer state (reads the buffer).
 ---@param bufnr integer
 ---@param srow integer 1-based start row
@@ -52,6 +60,7 @@ function M.add()
   local root = store.repo_root()
   if not root then return vim.notify("agent-review: not in a repo", vim.log.levels.WARN) end
   prompt(nil, function(body)
+    if rejects_marker(body) then return end
     local c, err = M._make_comment(0, row, row, body, root)
     if not c then return vim.notify("agent-review: " .. err, vim.log.levels.WARN) end
     store.add(root, c)
@@ -66,6 +75,7 @@ function M.add_visual()
   local root = store.repo_root()
   if not root then return vim.notify("agent-review: not in a repo", vim.log.levels.WARN) end
   prompt(nil, function(body)
+    if rejects_marker(body) then return end
     local c, err = M._make_comment(0, srow, erow, body, root)
     if not c then return vim.notify("agent-review: " .. err, vim.log.levels.WARN) end
     store.add(root, c)
@@ -83,6 +93,7 @@ function M.edit()
     if c.id == id then existing = c; break end
   end
   prompt(existing and existing.body, function(body)
+    if rejects_marker(body) then return end
     store.update(root, id, { body = body })
     render.buffer(0)
   end)

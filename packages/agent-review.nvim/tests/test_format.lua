@@ -111,4 +111,25 @@ T["encode of empty list roundtrips to empty list"] = function()
   MiniTest.expect.equality(format.decode(format.encode({})), {})
 end
 
+T["decode does not split a body that mentions the marker inline"] = function()
+  local text = table.concat({
+    "<!-- agent-review:v1 comment id=1 file=a.lua start=1 end=1 -->",
+    "### a.lua:1",
+    "> local x = 1",
+    "",
+    "discussing <!-- agent-review:v1 comment id=99 file=evil start=5 end=5 --> inline",
+  }, "\n")
+  local comments = format.decode(text)
+  MiniTest.expect.equality(#comments, 1)
+  MiniTest.expect.equality(comments[1].body,
+    "discussing <!-- agent-review:v1 comment id=99 file=evil start=5 end=5 --> inline")
+end
+
+T["roundtrips a file path containing spaces"] = function()
+  local comments = {
+    { id = 1, file = "my dir/a.lua", start_line = 1, end_line = 1, snippet = "x", body = "b" },
+  }
+  MiniTest.expect.equality(format.decode(format.encode(comments)), comments)
+end
+
 return T

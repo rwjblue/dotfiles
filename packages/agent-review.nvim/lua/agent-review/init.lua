@@ -43,11 +43,21 @@ local function setup_autocmds()
   })
 end
 
+local function render_loaded_buffers()
+  local render = require("agent-review.render")
+  for _, b in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(b) and vim.api.nvim_buf_get_name(b) ~= "" then
+      render.buffer(b)
+    end
+  end
+end
+
 function M.setup(opts)
   M.config = vim.tbl_deep_extend("force", M.config, opts or {})
   setup_commands()
   setup_keymaps()
   setup_autocmds()
+  render_loaded_buffers()
 end
 
 return M
