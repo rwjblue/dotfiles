@@ -54,4 +54,26 @@ function M.decode(text)
   return comments
 end
 
+---@param comments table[]
+---@return string
+function M.encode(comments)
+  local out = { "<!-- agent-review:v1 -->", "# Agent review comments", "" }
+  for _, c in ipairs(comments) do
+    local span = c.start_line == c.end_line
+        and tostring(c.start_line)
+        or (c.start_line .. "-" .. c.end_line)
+    table.insert(out, string.format(
+      "<!-- agent-review:v1 comment id=%d file=%s start=%d end=%d -->",
+      c.id, c.file, c.start_line, c.end_line))
+    table.insert(out, "### " .. c.file .. ":" .. span)
+    for _, line in ipairs(vim.split(c.snippet or "", "\n", { plain = true })) do
+      table.insert(out, "> " .. line)
+    end
+    table.insert(out, "")
+    table.insert(out, c.body or "")
+    table.insert(out, "")
+  end
+  return table.concat(out, "\n")
+end
+
 return M

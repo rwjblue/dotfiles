@@ -70,4 +70,45 @@ T["decode handles missing body"] = function()
   MiniTest.expect.equality(c.body, "")
 end
 
+T["encode then decode roundtrips"] = function()
+  local comments = {
+    {
+      id = 1, file = "src/user.ts", start_line = 42, end_line = 44,
+      snippet = "const result = await fetchUser(id)",
+      body = "needs a null check",
+    },
+    {
+      id = 2, file = "a.lua", start_line = 1, end_line = 2,
+      snippet = "local x = 1\nlocal y = 2",
+      body = "line one\nline two",
+    },
+  }
+  local decoded = format.decode(format.encode(comments))
+  MiniTest.expect.equality(decoded, comments)
+end
+
+T["encode emits the version header once"] = function()
+  local out = format.encode({})
+  MiniTest.expect.equality(out:match("^<!%-%- agent%-review:v1 %-%->") ~= nil, true)
+end
+
+T["encode single-line range uses :N heading, multi uses :N-M"] = function()
+  local out = format.encode({
+    { id = 1, file = "f", start_line = 5, end_line = 5, snippet = "x", body = "b" },
+  })
+  MiniTest.expect.equality(out:match("### f:5\n") ~= nil, true)
+end
+
+T["encode handles nil body without error"] = function()
+  local out = format.encode({
+    { id = 1, file = "f", start_line = 1, end_line = 1, snippet = "", body = nil },
+  })
+  local c = format.decode(out)[1]
+  MiniTest.expect.equality(c.body, "")
+end
+
+T["encode of empty list roundtrips to empty list"] = function()
+  MiniTest.expect.equality(format.decode(format.encode({})), {})
+end
+
 return T
