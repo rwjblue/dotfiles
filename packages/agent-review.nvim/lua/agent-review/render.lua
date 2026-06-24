@@ -26,9 +26,11 @@ end
 ---@param bufnr? integer
 function M.buffer(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  if name == "" or name:match("^%w+://") then return end
   local root = store.repo_root()
   if not root then return end
-  local rel = rel_path(root, vim.api.nvim_buf_get_name(bufnr))
+  local rel = rel_path(root, name)
   if not rel then return end
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)

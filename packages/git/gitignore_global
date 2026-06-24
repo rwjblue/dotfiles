@@ -80,3 +80,6 @@ mise.local.lock
 /.goosehints
 .cursorignore
 .rules
+
+# agent-review.nvim local review batches
+.agent-review/
