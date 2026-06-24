@@ -33,4 +33,19 @@ T["clear removes extmarks"] = function()
   MiniTest.expect.equality(#vim.api.nvim_buf_get_extmarks(buf, render.ns, 0, -1, {}), 0)
 end
 
+T["comment_id_at returns the comment id on a rendered line"] = function()
+  local root = temp_git_repo()
+  local file = root .. "/foo.txt"
+  vim.fn.writefile({ "alpha", "beta", "gamma" }, file)
+  local stored = store.add(root, { file = "foo.txt", start_line = 2, end_line = 2, snippet = "beta", body = "look here" })
+  local prev = vim.fn.getcwd()
+  vim.fn.chdir(root)
+  local buf = vim.fn.bufadd(file)
+  vim.fn.bufload(buf)
+  render.buffer(buf)
+  vim.fn.chdir(prev)
+  MiniTest.expect.equality(render.comment_id_at(buf, 1), stored.id) -- line 2 = row 1
+  MiniTest.expect.equality(render.comment_id_at(buf, 0), nil)       -- line 1 has no comment
+end
+
 return T

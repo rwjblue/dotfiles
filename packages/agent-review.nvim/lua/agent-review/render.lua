@@ -48,6 +48,7 @@ function M.buffer(bufnr)
           table.insert(virt, { { text, "Comment" } })
         end
         vim.api.nvim_buf_set_extmark(bufnr, M.ns, res.line - 1, 0, {
+          id = c.id,
           virt_lines = virt,
           sign_text = ">>",
           sign_hl_group = "Comment",
@@ -55,6 +56,16 @@ function M.buffer(bufnr)
       end
     end
   end
+end
+
+---Return the comment id of an agent-review extmark on the given 0-based row, or nil.
+---@param bufnr integer
+---@param row integer 0-based row
+---@return integer|nil
+function M.comment_id_at(bufnr, row)
+  local marks = vim.api.nvim_buf_get_extmarks(bufnr, M.ns, { row, 0 }, { row, -1 }, {})
+  if #marks > 0 then return marks[1][1] end
+  return nil
 end
 
 return M
