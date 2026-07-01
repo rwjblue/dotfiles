@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# -*- mode: sh; sh-shell: bash; -*-
+#MISE description="Open a new Zellij tab running an AI coding agent in the current directory"
+#MISE dir="{{cwd}}"
+#USAGE arg "[agent]" default="claude" help="Agent to launch" {
+#USAGE   choices "claude" "cursor" "codex" "opencode" "pi"
+#USAGE }
+
+set -euo pipefail
+
+if [[ -z "${ZELLIJ_SESSION_NAME:-}" ]]; then
+  echo "Not running inside a Zellij session." >&2
+  exit 1
+fi
+
+agent="${usage_agent:-claude}"
+
+case "$agent" in
+  claude)   command="mise x claude-code -- claude --dangerously-skip-permissions" ;;
+  cursor)   command="cursor-agent" ;;
+  codex)    command="mise x npm:@openai/codex -- codex --sandbox danger-full-access" ;;
+  opencode) command="mise x opencode -- opencode" ;;
+  pi)       command="mise x npm:@mariozechner/pi-coding-agent -- pi" ;;
+  *)
+    echo "Invalid agent: $agent (use claude, cursor, codex, opencode, or pi)" >&2
+    exit 1
+    ;;
+esac
+
+cwd="$PWD"
+zellij action new-tab --name "$agent" --cwd "$cwd"
+zellij action write-chars "cd $cwd"$'\r'
+zellij action write-chars "$command"$'\r'

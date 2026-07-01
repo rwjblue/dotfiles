@@ -95,35 +95,6 @@ function M.rename_tab_prompt()
   end)
 end
 
---- Creates a new zellij pane with an agent
---- @param agent_type string The type of agent ('claude', 'cursor', or 'codex')
-function M.new_agent_tab(agent_type)
-  local command_map = {
-    cursor = "cursor-agent",
-    claude = "mise x claude-code -- claude --dangerously-skip-permissions",
-    codex = "mise x npm:@openai/codex -- codex --sandbox danger-full-access",
-    opencode = "mise x opencode -- opencode",
-    pi = "mise x npm:@mariozechner/pi-coding-agent -- pi",
-  }
-  local command = command_map[agent_type]
-
-  if not command then
-    error("Invalid agent type. Use 'claude', 'cursor', 'codex', 'opencode', or 'pi'.")
-  end
-
-  local cwd = vim.fn.getcwd(0)
-  vim.fn.system(
-    "zellij action new-tab --name "
-      .. agent_type
-      .. " --cwd "
-      .. vim.fn.shellescape(cwd)
-      .. " && zellij action write-chars "
-      .. vim.fn.shellescape("cd " .. cwd .. "\r")
-      .. " && zellij action write-chars "
-      .. vim.fn.shellescape(command .. "\r")
-  )
-end
-
 --- Sets up Vim commands for tab management
 function M.setup_commands()
   vim.api.nvim_create_user_command("TabNew", function(opts)
@@ -151,26 +122,6 @@ function M.setup_commands()
   vim.api.nvim_create_user_command("TabClearName", function()
     M.remove_current_tab_name()
   end, {})
-
-  vim.api.nvim_create_user_command("AgentTab", function(opts)
-    if opts.args and opts.args ~= "" then
-      M.new_agent_tab(opts.args)
-    else
-      M.new_agent_tab("claude")
-    end
-  end, {
-    nargs = "?",
-    complete = function(ArgLead, CmdLine, CursorPos)
-      local candidates = { "claude", "cursor", "codex", "opencode", "pi" }
-      local filtered = {}
-      for _, candidate in ipairs(candidates) do
-        if candidate:find("^" .. ArgLead) then
-          table.insert(filtered, candidate)
-        end
-      end
-      return filtered
-    end
-  })
 end
 
 return M
