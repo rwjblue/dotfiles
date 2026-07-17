@@ -194,36 +194,36 @@ version = "0.9.133"
 backend = "cargo:cargo-nextest"
 
 [[tools.claude-code]]
-version = "2.1.197"
+version = "2.1.212"
 backend = "aqua:anthropics/claude-code"
 
 [tools.claude-code."platforms.linux-arm64"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-arm64/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-arm64/claude"
 
 [tools.claude-code."platforms.linux-arm64-musl"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-arm64-musl/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-arm64-musl/claude"
 
 [tools.claude-code."platforms.linux-x64"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-x64/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-x64/claude"
 
 [tools.claude-code."platforms.linux-x64-baseline"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-x64/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-x64/claude"
 
 [tools.claude-code."platforms.linux-x64-musl"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-x64-musl/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-x64-musl/claude"
 
 [tools.claude-code."platforms.linux-x64-musl-baseline"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/linux-x64-musl/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/linux-x64-musl/claude"
 
 [tools.claude-code."platforms.macos-arm64"]
-checksum = "blake3:2ecb00e35ac65f42671a8db2cfca872a8fbf99b3504f64ec1c3a4ac0f78572d2"
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/darwin-arm64/claude"
+checksum = "blake3:88592d51a8ae65cf873db7edccd2e95d3c26063f31b89536f891cf3b5b1c16bc"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/darwin-arm64/claude"
 
 [tools.claude-code."platforms.macos-x64"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/darwin-x64/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/darwin-x64/claude"
 
 [tools.claude-code."platforms.macos-x64-baseline"]
-url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.197/darwin-x64/claude"
+url = "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.212/darwin-x64/claude"
 
 [[tools.cosign]]
 version = "3.0.6"
@@ -385,7 +385,7 @@ checksum = "sha256:929552b8305effac843ba7b4270c437aefb702fc3fbd73fcd1bffd35d4ac2
 url = "https://nodejs.org/dist/v25.9.0/node-v25.9.0-win-x64.zip"
 
 [[tools."npm:@fission-ai/openspec"]]
-version = "1.5.0"
+version = "1.6.0"
 backend = "npm:@fission-ai/openspec"
 
 [[tools."npm:@mariozechner/pi-coding-agent"]]
@@ -401,11 +401,11 @@ version = "11.12.0"
 backend = "npm:@mermaid-js/mermaid-cli"
 
 [[tools."npm:@openai/codex"]]
-version = "0.142.5"
+version = "0.144.5"
 backend = "npm:@openai/codex"
 
 [[tools."npm:agent-browser"]]
-version = "0.31.1"
+version = "0.32.1"
 backend = "npm:agent-browser"
 
 [[tools."npm:ccstatusline"]]
@@ -417,52 +417,52 @@ version = "3.6.1"
 backend = "npm:sort-package-json"
 
 [[tools.opencode]]
-version = "1.17.13"
+version = "1.18.3"
 backend = "aqua:anomalyco/opencode"
 
 [tools.opencode."platforms.linux-arm64"]
-checksum = "sha256:bbaccdd374aaab66cd97c7f8ad1c080aa393610fa5f80ee8dfc007f9500afaf9"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-arm64.tar.gz"
+checksum = "sha256:da0a631174eba380b2a1d51f9d364fa3812da433e72743c72471d4b5da59c69d"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-arm64.tar.gz"
 
 [tools.opencode."platforms.linux-arm64-musl"]
-checksum = "sha256:c2323c8c9643ac627a5291d33fba740c029c8487283d5f4f933ef11ac11ee15a"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-arm64-musl.tar.gz"
+checksum = "sha256:e937e4149160634782c4e7c3d83245058630ce1ae67577c9e9197c3798d8933e"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-arm64-musl.tar.gz"
 
 [tools.opencode."platforms.linux-x64"]
-checksum = "sha256:157afa289d1a8d9372de0ce19ac726119b937a1f6b201808d46f06e4e59bb348"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-x64.tar.gz"
+checksum = "sha256:60f27b2679f00a511b6539f97e02448afaf58d9c66e2448285ea0c517ca84583"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-x64.tar.gz"
 
 [tools.opencode."platforms.linux-x64-baseline"]
-checksum = "sha256:157afa289d1a8d9372de0ce19ac726119b937a1f6b201808d46f06e4e59bb348"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-x64.tar.gz"
+checksum = "sha256:60f27b2679f00a511b6539f97e02448afaf58d9c66e2448285ea0c517ca84583"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-x64.tar.gz"
 
 [tools.opencode."platforms.linux-x64-musl"]
-checksum = "sha256:078ec3e678cc77be11b127660fd3e1f70c676a388ac9cb68cafee8e605b8c2f3"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-x64-musl.tar.gz"
+checksum = "sha256:dc28ff8034f46eead03e54c39d435e217323474965c2da2f5eedb766bf967c1c"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-x64-musl.tar.gz"
 
 [tools.opencode."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:078ec3e678cc77be11b127660fd3e1f70c676a388ac9cb68cafee8e605b8c2f3"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-linux-x64-musl.tar.gz"
+checksum = "sha256:dc28ff8034f46eead03e54c39d435e217323474965c2da2f5eedb766bf967c1c"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-linux-x64-musl.tar.gz"
 
 [tools.opencode."platforms.macos-arm64"]
-checksum = "sha256:dd016d3e26b347d675ab26c45d1e287545912d5c4c49fa0770b622d4a1367e23"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-darwin-arm64.zip"
+checksum = "sha256:946f62b155638b911144b7bef520ee4a6442f696297907873463bca3524e40ef"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-darwin-arm64.zip"
 
 [tools.opencode."platforms.macos-x64"]
-checksum = "sha256:0bf3d9d134097ca698b83f64c55db960d6d2d0c409069bf4cfd863e5de503b4a"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-darwin-x64.zip"
+checksum = "sha256:4ea147867ba19e4ec03559df557811f1674f40788aea4d10326dc563b7667c6d"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-darwin-x64.zip"
 
 [tools.opencode."platforms.macos-x64-baseline"]
-checksum = "sha256:0bf3d9d134097ca698b83f64c55db960d6d2d0c409069bf4cfd863e5de503b4a"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-darwin-x64.zip"
+checksum = "sha256:4ea147867ba19e4ec03559df557811f1674f40788aea4d10326dc563b7667c6d"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-darwin-x64.zip"
 
 [tools.opencode."platforms.windows-x64"]
-checksum = "sha256:18aa3df701a6eafcca201b5bcc63e086c96c8daa6ae2495cf718e12cb0ce3361"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-windows-x64.zip"
+checksum = "sha256:68bc62930f6cb5755e0409aa9de0bb270a66ed2b8c9cf0c029e9f2287ed5486e"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-windows-x64.zip"
 
 [tools.opencode."platforms.windows-x64-baseline"]
-checksum = "sha256:18aa3df701a6eafcca201b5bcc63e086c96c8daa6ae2495cf718e12cb0ce3361"
-url = "https://github.com/anomalyco/opencode/releases/download/v1.17.13/opencode-windows-x64.zip"
+checksum = "sha256:68bc62930f6cb5755e0409aa9de0bb270a66ed2b8c9cf0c029e9f2287ed5486e"
+url = "https://github.com/anomalyco/opencode/releases/download/v1.18.3/opencode-windows-x64.zip"
 
 [[tools.python]]
 version = "3.14.4"
