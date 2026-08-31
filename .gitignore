@@ -17,6 +17,9 @@ packages/wezterm/local_config_overrides.lua
 # these contain machine-specific paths and repo-specific overrides
 /packages/jj/repos/
 
+# jj workspace metadata contains machine-specific paths
+/packages/jj/workspaces/
+
 # this is unstable across machines
 /packages/hammerspoon/Spoons/EmmyLua.spoon/annotations/timestamps.json
 
