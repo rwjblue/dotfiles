@@ -2,55 +2,110 @@
 
 lockfile_version = 1
 
-[[tools.aube]]
-version = "1.0.0-beta.11"
-backend = "github:endevco/aube"
+[[tools."aqua:jdx/aube"]]
+version = "2.2.0"
+backend = "aqua:jdx/aube"
 specifiers = ["latest"]
 
-[tools.aube."platforms.linux-arm64"]
-checksum = "sha256:9ea60d200d001f617acd49c5ca827716117c9fb5334abaf3e50fb79296de1d6b"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716091"
+[tools."aqua:jdx/aube"."platforms.linux-arm64"]
+checksum = "sha256:cbfb10e58297f6b352b7722af7d069a10a991a2ec6589f2b7a9c017d14d9926e"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529737048"
 
-[tools.aube."platforms.linux-arm64-musl"]
-checksum = "sha256:9ea60d200d001f617acd49c5ca827716117c9fb5334abaf3e50fb79296de1d6b"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716091"
+[tools."aqua:jdx/aube"."platforms.linux-arm64-musl"]
+checksum = "sha256:115adfa9ba0b138f7d54c10ea8a9741d1cd1854c07306320796406d5a83375c1"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-aarch64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529705095"
 
-[tools.aube."platforms.linux-x64"]
-checksum = "sha256:c9d15fb087326074599c6d9e45139f9b243ae051b03023d4e8804caf952ae365"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716051"
+[tools."aqua:jdx/aube"."platforms.linux-x64"]
+checksum = "sha256:5d8b91f772712e6f971a2e15a52dcc392acbb21782fbb532124588deb647656b"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529716822"
 
-[tools.aube."platforms.linux-x64-baseline"]
-checksum = "sha256:c9d15fb087326074599c6d9e45139f9b243ae051b03023d4e8804caf952ae365"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716051"
+[tools."aqua:jdx/aube"."platforms.linux-x64-baseline"]
+checksum = "sha256:5d8b91f772712e6f971a2e15a52dcc392acbb21782fbb532124588deb647656b"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529716822"
 
-[tools.aube."platforms.linux-x64-musl"]
-checksum = "sha256:c9d15fb087326074599c6d9e45139f9b243ae051b03023d4e8804caf952ae365"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716051"
+[tools."aqua:jdx/aube"."platforms.linux-x64-musl"]
+checksum = "sha256:3f01b75136705709cda862ae29c059dedf52341b2bb95359f61c2b72b03f9fc8"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529714460"
 
-[tools.aube."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:c9d15fb087326074599c6d9e45139f9b243ae051b03023d4e8804caf952ae365"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716051"
+[tools."aqua:jdx/aube"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:3f01b75136705709cda862ae29c059dedf52341b2bb95359f61c2b72b03f9fc8"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529714460"
 
-[tools.aube."platforms.macos-arm64"]
-checksum = "sha256:9c0ad71d8f394758b0bedca1797649774a0fa209eed7aa66c40c0b1c9e50aae6"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401716623"
+[tools."aqua:jdx/aube"."platforms.macos-arm64"]
+checksum = "sha256:702de7f549cef800a1f35900e638ea4fbe07bce854f234cef869cd5442484c90"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529761660"
 
-[tools.aube."platforms.windows-x64"]
-checksum = "sha256:ae27f5aa773f0e6e177a2b9ce20dc35ea1136cde17f4f1c61e85f687920de00f"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401717682"
+[tools."aqua:jdx/aube"."platforms.windows-x64"]
+checksum = "sha256:2d68e3e995c336486647034eb8b99c3cfa68894e385a44200af2bc14bc4064cf"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529724125"
 
-[tools.aube."platforms.windows-x64-baseline"]
-checksum = "sha256:ae27f5aa773f0e6e177a2b9ce20dc35ea1136cde17f4f1c61e85f687920de00f"
-url = "https://github.com/jdx/aube/releases/download/v1.0.0-beta.11/aube-v1.0.0-beta.11-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/jdx/aube/releases/assets/401717682"
+[tools."aqua:jdx/aube"."platforms.windows-x64-baseline"]
+checksum = "sha256:2d68e3e995c336486647034eb8b99c3cfa68894e385a44200af2bc14bc4064cf"
+url = "https://github.com/jdx/aube/releases/download/v2.2.0/aube-v2.2.0-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/jdx/aube/releases/assets/529724125"
+
+[[tools."aqua:rtk-ai/rtk"]]
+version = "0.34.3"
+backend = "aqua:rtk-ai/rtk"
+specifiers = ["0.34.3"]
+
+[tools."aqua:rtk-ai/rtk"."platforms.linux-arm64"]
+checksum = "sha256:0a3afae8435a352c32eaacb8ecd76953146928191fefc8b2de703f3adf10c9f8"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-aarch64-unknown-linux-gnu.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902851"
+
+[tools."aqua:rtk-ai/rtk"."platforms.linux-x64"]
+checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
+
+[tools."aqua:rtk-ai/rtk"."platforms.linux-x64-baseline"]
+checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
+
+[tools."aqua:rtk-ai/rtk"."platforms.linux-x64-musl"]
+checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
+
+[tools."aqua:rtk-ai/rtk"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
+
+[tools."aqua:rtk-ai/rtk"."platforms.macos-arm64"]
+checksum = "sha256:945f644a77e5da3367142a999c41a4fa448d0a4ae3e61c8a45094b8522dba047"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-aarch64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902847"
+
+[tools."aqua:rtk-ai/rtk"."platforms.macos-x64"]
+checksum = "sha256:35928229a7fe064016b7cd567e9333278c661221e2a19180d4f1943516a8c1f1"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902846"
+
+[tools."aqua:rtk-ai/rtk"."platforms.macos-x64-baseline"]
+checksum = "sha256:35928229a7fe064016b7cd567e9333278c661221e2a19180d4f1943516a8c1f1"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-apple-darwin.tar.gz"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902846"
+
+[tools."aqua:rtk-ai/rtk"."platforms.windows-x64"]
+checksum = "sha256:27fc7be1f90af050bc533dd77ff53bfe39a972206621ff217d27bcd671a6aac6"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902845"
+
+[tools."aqua:rtk-ai/rtk"."platforms.windows-x64-baseline"]
+checksum = "sha256:27fc7be1f90af050bc533dd77ff53bfe39a972206621ff217d27bcd671a6aac6"
+url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-pc-windows-msvc.zip"
+url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902845"
 
 [[tools.bun]]
 version = "1.3.12"
@@ -352,6 +407,96 @@ url = "https://github.com/sigstore/cosign/releases/download/v3.0.6/cosign-window
 url_api = "https://api.github.com/repos/sigstore/cosign/releases/assets/390332008"
 provenance = "cosign"
 
+[[tools."github:docker/compose"]]
+version = "5.5.0"
+backend = "github:docker/compose"
+specifiers = ["latest"]
+
+[tools."github:docker/compose"."platforms.linux-arm64"]
+checksum = "sha256:ff42489f5a9b879d5d117c5ffea6defc27390b3286da8ad52cbc9c6ab5df590e"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-aarch64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869355"
+
+[tools."github:docker/compose"."platforms.linux-arm64".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-aarch64.provenance.json"
+
+[tools."github:docker/compose"."platforms.linux-arm64-musl"]
+checksum = "sha256:ff42489f5a9b879d5d117c5ffea6defc27390b3286da8ad52cbc9c6ab5df590e"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-aarch64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869355"
+
+[tools."github:docker/compose"."platforms.linux-arm64-musl".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-aarch64.provenance.json"
+
+[tools."github:docker/compose"."platforms.linux-x64"]
+checksum = "sha256:c57ab918abd5b05ca7e7d0f275875dd1330a695074f309dc9eab1b49efafcd4b"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869325"
+
+[tools."github:docker/compose"."platforms.linux-x64".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.linux-x64-baseline"]
+checksum = "sha256:c57ab918abd5b05ca7e7d0f275875dd1330a695074f309dc9eab1b49efafcd4b"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869325"
+
+[tools."github:docker/compose"."platforms.linux-x64-baseline".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.linux-x64-musl"]
+checksum = "sha256:c57ab918abd5b05ca7e7d0f275875dd1330a695074f309dc9eab1b49efafcd4b"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869325"
+
+[tools."github:docker/compose"."platforms.linux-x64-musl".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.linux-x64-musl-baseline"]
+checksum = "sha256:c57ab918abd5b05ca7e7d0f275875dd1330a695074f309dc9eab1b49efafcd4b"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869325"
+
+[tools."github:docker/compose"."platforms.linux-x64-musl-baseline".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-linux-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.macos-arm64"]
+checksum = "sha256:6777710e5a5db5709e5f4b5985844e74b73cc1a6123e3a6690b6ababf2deaf51"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-darwin-aarch64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869368"
+
+[tools."github:docker/compose"."platforms.macos-x64"]
+checksum = "sha256:d0f0c867fd740953899a63d6d1a291dc60200b0961de9612a01bcc560e6e29a6"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-darwin-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869340"
+
+[tools."github:docker/compose"."platforms.macos-x64".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-darwin-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.macos-x64-baseline"]
+checksum = "sha256:d0f0c867fd740953899a63d6d1a291dc60200b0961de9612a01bcc560e6e29a6"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-darwin-x86_64"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869340"
+
+[tools."github:docker/compose"."platforms.macos-x64-baseline".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-darwin-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.windows-x64"]
+checksum = "sha256:51e1e61195f3616896265487ed64551095f3bd27ac7fbd5758d3538c3bfa1b19"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-windows-x86_64.exe"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869313"
+
+[tools."github:docker/compose"."platforms.windows-x64".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-windows-x86_64.provenance.json"
+
+[tools."github:docker/compose"."platforms.windows-x64-baseline"]
+checksum = "sha256:51e1e61195f3616896265487ed64551095f3bd27ac7fbd5758d3538c3bfa1b19"
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-windows-x86_64.exe"
+url_api = "https://api.github.com/repos/docker/compose/releases/assets/517869313"
+
+[tools."github:docker/compose"."platforms.windows-x64-baseline".provenance.slsa]
+url = "https://github.com/docker/compose/releases/download/v5.5.0/docker-compose-windows-x86_64.provenance.json"
+
 [[tools.go]]
 version = "1.26.2"
 backend = "core:go"
@@ -611,66 +756,6 @@ provenance = "github-attestations"
 checksum = "sha256:a976991dcd085c1bb5d9a8084823a6bc8b7f9b079d8c432574a6ddd68c3a6fe1"
 url = "https://github.com/astral-sh/python-build-standalone/releases/download/20260414/cpython-3.14.4+20260414-x86_64-pc-windows-msvc-install_only_stripped.tar.gz"
 provenance = "github-attestations"
-
-[[tools.rtk]]
-version = "0.34.3"
-backend = "github:rtk-ai/rtk"
-specifiers = ["0.34.3"]
-
-[tools.rtk."platforms.linux-arm64"]
-checksum = "sha256:0a3afae8435a352c32eaacb8ecd76953146928191fefc8b2de703f3adf10c9f8"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902851"
-
-[tools.rtk."platforms.linux-arm64-musl"]
-checksum = "sha256:0a3afae8435a352c32eaacb8ecd76953146928191fefc8b2de703f3adf10c9f8"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-aarch64-unknown-linux-gnu.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902851"
-
-[tools.rtk."platforms.linux-x64"]
-checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
-
-[tools.rtk."platforms.linux-x64-baseline"]
-checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
-
-[tools.rtk."platforms.linux-x64-musl"]
-checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
-
-[tools.rtk."platforms.linux-x64-musl-baseline"]
-checksum = "sha256:a607c17bfdccc1d48dc94ca81cd3a545523329df6a378368fd175d8023425ea5"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-unknown-linux-musl.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902842"
-
-[tools.rtk."platforms.macos-arm64"]
-checksum = "sha256:945f644a77e5da3367142a999c41a4fa448d0a4ae3e61c8a45094b8522dba047"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-aarch64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902847"
-
-[tools.rtk."platforms.macos-x64"]
-checksum = "sha256:35928229a7fe064016b7cd567e9333278c661221e2a19180d4f1943516a8c1f1"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902846"
-
-[tools.rtk."platforms.macos-x64-baseline"]
-checksum = "sha256:35928229a7fe064016b7cd567e9333278c661221e2a19180d4f1943516a8c1f1"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-apple-darwin.tar.gz"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902846"
-
-[tools.rtk."platforms.windows-x64"]
-checksum = "sha256:27fc7be1f90af050bc533dd77ff53bfe39a972206621ff217d27bcd671a6aac6"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902845"
-
-[tools.rtk."platforms.windows-x64-baseline"]
-checksum = "sha256:27fc7be1f90af050bc533dd77ff53bfe39a972206621ff217d27bcd671a6aac6"
-url = "https://github.com/rtk-ai/rtk/releases/download/v0.34.3/rtk-x86_64-pc-windows-msvc.zip"
-url_api = "https://api.github.com/repos/rtk-ai/rtk/releases/assets/386902845"
 
 [[tools.ruby]]
 version = "4.0.2"

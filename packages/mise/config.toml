@@ -30,8 +30,9 @@ usage = "latest"
 "npm:@openai/codex" = "latest"
 "npm:@fission-ai/openspec" = "latest"
 "npm:agent-browser" = "latest"
+"github:docker/compose" = "latest"
 # pinned — run /rtk-evaluate before upgrading
-rtk = "0.34.3"
+"aqua:rtk-ai/rtk" = "0.34.3"
 
 # core tools
 go = "latest"
@@ -42,7 +43,7 @@ rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
 bun = "latest"
-aube = "latest"
+"aqua:jdx/aube" = "latest"
 
 [vars]
 gh_user = "rwjblue"
