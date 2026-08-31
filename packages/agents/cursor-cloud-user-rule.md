@@ -8,6 +8,12 @@ This file is the source of that paste. Cursor does not read it from git.
 Cloud-agent skills bootstrap. If you are not a Cursor Cloud Agent
 (home is `/home/ubuntu`, repo at `/workspace`), ignore this rule.
 
+GitHub gate: open PRs as draft. Do not mark them ready for review. Do not
+request review. Do not comment on the PR or on review threads. Do not
+approve or merge. Follow-up stays in the Cursor cloud-agent thread.
+Only an explicit instruction from Robert in the user conversation lifts
+this gate, and only for that action.
+
 Personal Agent Skills from https://github.com/rwjblue/dotfiles will not
 appear in your available-skills catalog. Do not invoke them by name.
 Treat the files on disk as the skill.
