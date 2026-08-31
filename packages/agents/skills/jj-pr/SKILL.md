@@ -1,6 +1,11 @@
 ---
 name: jj-pr
-description: Create or update GitHub pull requests for jj branches, including stacked PRs, existing PR updates, signed pushes, bookmark handling, PR body/title formatting, BLUF descriptions, dual BLUF (stack goal + this-PR goal) for stacked PRs, stack sections, and body-file based gh commands. Use whenever creating a PR, updating a PR after review fixes, pushing PR branch changes, or editing PR descriptions.
+description: >-
+  Create or update GitHub pull requests for jj branches, including stacked
+  PRs, existing PR updates, signed pushes, bookmark handling, and body-file
+  based gh commands. Use whenever creating a PR, updating a PR after review
+  fixes, pushing PR branch changes, or editing PR descriptions. Loads
+  pr-description for title/body prose and jj-commit for new commits.
 argument-hint: "[optional: PR title or description hint]"
 ---
 
@@ -15,6 +20,25 @@ Create or update a GitHub pull request from the current jj branch.
 - Commit signing for pushed changes is required in this environment.
 - Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
 - If pushing fails because signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
+
+## Related skills
+
+Load these rather than copying their rules:
+
+**`commit-message` via `jj-commit`** when you need a new commit:
+
+1. Invoke `jj-commit` (Cursor / Claude Code: `/jj-commit`; Pi: `/skill:jj-commit`) or read `../jj-commit/SKILL.md`.
+2. `jj-commit` loads `commit-message` for the prose. Use `jj commit`, not `jj describe`.
+
+**`pr-description`** for every title and body (create or edit):
+
+1. Invoke `pr-description` (Cursor / Claude Code: `/pr-description`; Pi: `/skill:pr-description`; Codex: the skill name).
+2. Otherwise read sibling `../pr-description/SKILL.md`.
+3. Otherwise read `~/.agents/skills/pr-description/SKILL.md`.
+
+Follow `pr-description` in full for BLUF, dual BLUF, Details, stack section
+format, linkify, length, wrapping, citations, and `--body-file`. This skill
+only covers jj bookmarks, push, and `gh` invocation.
 
 ## Process
 
@@ -72,7 +96,7 @@ Ask the user to choose:
 - **Create new commit** - add as a separate commit
 
 If squash: run `jj squash`
-If new commit: invoke `/jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward
+If new commit: load `jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward
 
 **If `@` is empty:**
 The changes are already committed. Proceed to push.
@@ -85,7 +109,8 @@ Run `jj git push --tracked` to push the bookmark.
 
 If the PR exists, ask the user if they want to update the PR title or description.
 
-If yes, use `--body-file` when updating the body so markdown, backticks, and shell-special characters are preserved:
+If yes, load `pr-description` with the current PR, then submit with `--body-file` as that skill specifies:
+
 ```bash
 cat > /tmp/pr-body.md <<'EOF'
 <new body content>
@@ -139,7 +164,7 @@ Each tracked bookmark whose target SHA changed gets pushed; bookmarks already in
 
 ### A5. Update PR description if scope changed
 
-If the amendment changed *what* the PR does (not just *how*), update the description per U5 — the diff is now different from the body's claims.
+If the amendment changed *what* the PR does (not just *how*), load `pr-description` and submit per U5 — the diff is now different from the body's claims.
 
 ---
 
@@ -147,7 +172,7 @@ If the amendment changed *what* the PR does (not just *how*), update the descrip
 
 ### C1. Handle Uncommitted Changes
 
-If `@` has changes, invoke `/jj-commit` first. This uses `jj commit` (not `jj describe`) so that `@` becomes empty and the committed change lands at `@-`.
+If `@` has changes, load `jj-commit` first. This uses `jj commit` (not `jj describe`) so that `@` becomes empty and the committed change lands at `@-`.
 
 ### C2. Create Bookmark
 
@@ -194,58 +219,13 @@ Determine stacked PR creation mode:
 - **Upstream fallback mode**: when stacked base branch is missing from `<target-repo>` (common fork flow)
   - Do **not** create the follow-up PR in your fork unless the user explicitly asks
   - Create the PR in `<target-repo>` against `trunk()` instead
-  - Include explicit stack context in the body explaining:
-    - Which prior PR this depends on (URL)
-    - That this PR temporarily includes commits from earlier PR(s)
-    - That after earlier PR(s) merge, the branch will be rebased and merged commits removed, leaving only incremental changes
+  - Pass fallback context into `pr-description` (depends-on URL, temporary extra commits, rebase after merge)
 
-Draft the PR:
-- **Title**: Use the primary commit message or user's hint, keep under 70 chars
-- **Body**: Do NOT hard-wrap prose in the PR body at any specific line length. PR descriptions are rendered as markdown on GitHub, which reflows text automatically. Write full paragraphs as single unwrapped lines. (This is different from commit messages, which should be wrapped at 72 characters.)
-  When citing prior PR-reviewed changes, prefer **PR numbers (`#NNNN`) or full PR URLs** in the PR body because GitHub auto-links these. Use raw commit SHAs only when the exact commit identity matters, such as cherry-picks, reverts, bisect notes, comparison anchors, or upstream commits without a PR.
-  If template exists, fill it out. Otherwise write a description that prioritizes reviewer context:
+Load `pr-description` with the gathered commits, diff stat, template, stack list, and mode. Present its draft (that skill already asks for approval).
 
-  - **BLUF up top.** Open with the bottom-line-up-front headline, a blank line, then 1–3 supporting sentences for the "why" (motivation, gating, scope). Do NOT mush headline and context into one paragraph — the reviewer should grasp the change from the headline alone.
-    - **Non-stacked PR:** a single line — `**BLUF:** <one sentence, ≤ 15 words, "what does THIS PR do?">`.
-    - **Stacked PR:** two parallel BLUF lines whose labels announce *scope* — the stack-level bottom line first, then this PR's:
+Create the PR with `--body-file` (see `pr-description`):
 
-      ```markdown
-      **BLUF (stack):** <one sentence on the whole stack's goal>
-
-      **BLUF (this PR):** <one sentence, ≤ 15 words, this PR's specific goal>
-      ```
-
-      The labels exist to tell the reader *which* BLUF they're looking at (stack vs this PR); the *what* lives in the sentence, and the tracking id (e.g. `PACT-292`) goes in the `## Stack` section / Context line, not the label. Write the `**BLUF (stack):**` line ONCE and reuse it **verbatim** in every PR of the stack — only `**BLUF (this PR):**` changes. The stack line is shared zoom-out context, not a dependency crutch: the `**BLUF (this PR):**` line plus the "why" must still read cold (see Standalone reviewability).
-  - **Standalone reviewability.** The PR description must read cold. Assume the reviewer has not opened the rest of the stack. Never refer to other PRs in the stack by position ("PR 4", "the next PR"). If a sibling PR's behavior is load-bearing for understanding this one, describe it inline; otherwise drop the reference. Words like "earlier" and "later" are fine as glue ("a later commit clears the matching metadata") but only when the description still reads without them.
-  - **`### Details` — optional, only when needed.** When there's non-obvious what/why beyond the BLUF (a gotcha, a deliberate decision, behavior the diff and any code/proto doc-comments don't make obvious), put it under a `### Details` heading so it is clearly separated from the BLUF line(s) above. **Omit the section entirely** when the `**BLUF (this PR)**` line plus the diff already say everything — e.g. a one-line proto field whose own doc-comment is self-explanatory needs no Details. Never restate file changes; the diff shows them.
-  - **Linkify everything linkable.** Any ticket, PR, doc, or runbook that has a URL should be a Markdown link, not bare text. Linear/PACT issues → `https://linear.app/gleanwork/issue/PACT-NNN`; Jira escalations (`EE-`, `EN-`, etc.) → `https://askscio.atlassian.net/browse/<KEY>`; sibling PRs → `#NNN` (auto-links in-repo); `go/` shortlinks stay as written. Bare `EE-29350` / `PACT-292` text is a miss. Ticket links live in the Context/Jira line (or the `## Stack` section), keeping the BLUF lines clean.
-  - **Compact metric table** if the PR has a measurable outcome (perf, size, quality). One row per case, one aggregate row at the bottom.
-  - **Stack section** if stacked (see template below).
-  - **Test/verification note** only when there's something non-obvious to share — manual repro steps, known gaps, a deliberate decision not to test something. "Unit tests pass" is not worth saying.
-  - Include any useful maintainer/reviewer "color" (tradeoffs considered, follow-up work, rollout notes, edge cases, risks, or context from prior discussion).
-
-  **Length discipline.** Default to under 2 KB. GitHub's hard cap on the PR body is ~256 KB but you should be nowhere near it. Anti-patterns to avoid:
-  - File/test enumeration ("modified X.go, added 5 tests, BUILD.bazel updated") — the diff already shows this.
-  - Pre/post-condition lists summarizing what changed mechanically.
-  - "What to spot-check" filler — reviewers know how to read a diff.
-  - Pasting more than ~50 KB of raw evidence inline (logs, captures, eval outputs) — link to a gist or a local path instead.
-
-  The "Churchillian PR" — the one that defends itself against being read by sheer length — is the failure mode. Punchy and skimmable wins.
-  If stacked (true stacked mode or upstream fallback mode), include a **Stack** section immediately below the main author-written description, before generated template metadata, checklists, release notes, or tracking sections. In templates that separate reviewer prose from metadata with `---`, place `## Stack` before that separator. Use a single numbered list with the trunk branch (`master`/`main`/etc.) as item **#1** in bold, then PRs in dependency order, each as `#NNN — <short label>`, with a 👉 prefix on the current PR:
-  ```markdown
-  ## Stack
-
-  1. **master**
-  2. #AAAA — add client_id proto field
-  3. 👉 #BBBB — populate client_id from JWT claim
-  ```
-  Reading top→bottom: PR at slot 2 builds on `master`, slot 3 builds on slot 2, etc. — direction is unambiguous. Including the trunk as a numbered base resolves "is this stack growing up or down?" confusion that comes up otherwise. Each entry is `#NNN — <≤6-word label>`: the `#NNN` auto-links within the repo, and the short label makes the stack skimmable at a glance (preferred over bare-URL cards, which stack into tall blocks you can't scan). The label is a terse description of that PR's change, not its full title. The 👉 prefix marks the current PR — more scannable than a "(this PR)" suffix and survives PR renames without going stale.
-
-Present the draft to the user for approval.
-
-Create the PR:
 ```bash
-# Prefer --body-file to avoid shell interpolation issues with markdown/backticks
 cat > /tmp/pr-body.md <<'EOF'
 <body content>
 EOF
@@ -257,6 +237,8 @@ gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-nam
 gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<trunk-bookmark-or-branch>" --title "<title>" --body-file /tmp/pr-body.md
 ```
 
+Same-repo simplification still applies to `--head`.
+
 ### C4. Update Stack in Other PRs (stacked PRs only)
 
 After creating the PR, update all other open PRs in the stack so they have the complete stack list.
@@ -264,8 +246,8 @@ After creating the PR, update all other open PRs in the stack so they have the c
 Only do this in **true stacked mode** where the PRs live in the same `<target-repo>`. Skip this step in upstream fallback mode.
 
 - For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
-- Replace or insert the `## Stack` section immediately below the author-written prose, before generated template metadata, checklists, release notes, or tracking sections. If the template uses `---` to separate reviewer prose from metadata, place the stack before that separator, not at the bottom of the body.
-- Use the `#NNN — <short label>` form for every entry (trunk as bold #1); mark whichever PR is being viewed with the 👉 prefix — not bold, not a "(this PR)" suffix. The `**BLUF (stack):**` line stays verbatim across all siblings; only `**BLUF (this PR):**` and the 👉 position differ per PR.
+- Replace or insert the `## Stack` section per `pr-description` (immediately below the author-written prose, before generated template metadata). If the template uses `---` to separate reviewer prose from metadata, place the stack before that separator, not at the bottom of the body.
+- Use the `#NNN — <short label>` form for every entry (trunk as bold #1); mark whichever PR is being viewed with the 👉 prefix. The `**BLUF (stack):**` line stays verbatim across all siblings; only `**BLUF (this PR):**` and the 👉 position differ per PR.
 - Update via `gh pr edit <pr-number> --repo "<target-repo>" --body-file /tmp/pr-body.md`
 
 ### C5. Report Success

@@ -1,12 +1,17 @@
 ---
 name: jj-commit
-description: Create a jujutsu commit with a well-crafted commit message based on the current diff and your commit style.
+description: >-
+  Create a jujutsu commit for the current working copy. Use when committing
+  with jj (not git). Loads the commit-message skill for style, subject/body,
+  confirm vs auto, and citations; this skill covers signing and jj mechanics
+  only.
 argument-hint: "[optional: brief description of changes]"
 ---
 
 # JJ Commit
 
-Create a commit for current changes with a commit message matching your style in this repo.
+Create a commit for current changes with jj. The message comes from the
+`commit-message` skill.
 
 **User hint:** $ARGUMENTS
 
@@ -16,22 +21,24 @@ Create a commit for current changes with a commit message matching your style in
 - Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
 - If this workflow includes pushing and signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
 
-## Commit Mode Resolution
+## Load `commit-message`
 
-Determine commit mode in this order:
+Do not write the message yourself. Load the `commit-message` skill and follow
+it in full for mode (`--auto` / `--confirm` / `AGENTS.md`), style matching,
+subject/body rules, citations, and user confirmation.
 
-1. If `$ARGUMENTS` contains `--auto` or `--yes`, mode is `auto`.
-2. Else if `$ARGUMENTS` contains `--confirm`, mode is `confirm`.
-3. Else check `AGENTS.md` at repo root for a line formatted as:
-   `jj-commit-default: auto|confirm`
-4. Else default to `confirm`.
+How to load it (first that works):
 
-Remove mode flags from `$ARGUMENTS` before using the remaining text as the
-user hint.
+1. Invoke by name: `commit-message` (Cursor / Claude Code: `/commit-message`; Pi: `/skill:commit-message`; Codex: the skill name).
+2. Read sibling `../commit-message/SKILL.md`.
+3. Read `~/.agents/skills/commit-message/SKILL.md`.
+
+Pass `$ARGUMENTS` through. `commit-message-default` and the older
+`jj-commit-default` in `AGENTS.md` are both valid.
 
 ## Process
 
-### 1. Review Current Changes
+### 1. Review current changes
 
 Run `jj diff --stat` to see which files are affected and the scale of changes.
 
@@ -40,7 +47,7 @@ Then decide how much more context you need:
 - **In-session changes** — If the current conversation already contains context
   about why these files were modified (you made the changes, or they were
   discussed), the stat is sufficient. You already know the motivation; use the
-  session context to write the commit message. Do not re-read the full diff.
+  session context. Do not re-read the full diff.
 
 - **Out-of-session changes** — If the working copy contains changes you have no
   context for (fresh session, manual edits, external tool), run `rtk jj diff`
@@ -54,68 +61,22 @@ working-copy changes.
 
 If there are no changes (empty diff), inform the user there's nothing to commit.
 
-### 2. Analyze Commit Style
+### 2. Draft and confirm the message
 
-Run `jj log --no-pager -r "mine() & ~empty()" --limit 15 -T 'description.first_line() ++ "\n"'` to see the user's recent commit messages for style reference.
+Load `commit-message` (see above) with the diff context and `$ARGUMENTS`.
+Stop when it returns an approved message.
 
-Analyze the commit messages to identify the style used in this repo:
-- Do they use conventional commits (`type(scope): description`)?
-- Do they use a prefix like `[category]` or `category:`?
-- Are they plain descriptive sentences?
-- What tense/mood? (imperative "add X" vs past "added X")
-- Are they capitalized? Do they end with periods?
-- What's the typical length?
+### 3. Create the commit
 
-Match whatever style you observe in the user's commits.
-
-### 3. Draft Commit Message
-
-Based on:
-- The diff content
-- The user's hint (if provided via $ARGUMENTS)
-- The commit style observed in step 2
-
-Draft a commit message that matches the style used in this repo.
-
-**Subject line** (first line):
-- MUST be 72 characters or fewer
-- Concise summary of the change
-- Show the character count next to the subject when presenting to the user
-
-**Body** (after a blank line):
-- Always include a body for non-trivial changes (most changes are non-trivial)
-- Explain **why** this change is being made (the motivation/problem)
-- Explain **what** the change accomplishes at a high level
-- Do NOT explain **how** unless the approach is non-obvious from the diff
-- Wrap lines at 72 characters
-- Only skip the body for truly trivial changes (typo fixes, single-line config tweaks)
-- **Reference durable history carefully.** When citing a prior change that has already landed on the repository's main/trunk history, prefer the short commit SHA because it is a durable git artifact. Do not cite SHAs from unmerged branches, stacked PRs, or commits that may be rewritten or squash merged; those SHAs may disappear from useful history. For unmerged or squash-merged work, prefer a PR number/full PR URL, issue ID, or avoid the reference in the commit message and put the context in the PR body instead.
-
-The message should look like it belongs with the other commits in the repo.
-
-### 4. Confirm with User (Conditional)
-
-If mode is `confirm`, present the proposed commit message and ask the user
-to choose:
-- **Use this message** -- proceed with the drafted message
-- **Edit message** -- ask for their preferred message
-- **See diff again** -- re-show the diff
-
-If the user wants to edit, ask for their preferred message. Loop until the
-user approves.
-
-If mode is `auto`, skip confirmation. Still show the final message before
-committing.
-
-### 5. Create the Commit
-
-Run `jj commit -m "<approved or auto-selected message>"`.
+Run `jj commit -m "<approved message>"`.
 
 For a scoped commit, include the requested paths:
+
 ```bash
-jj commit <paths> -m "<approved or auto-selected message>"
+jj commit <paths> -m "<approved message>"
 ```
 
-Use `jj commit` (not `jj describe`) so that `@` advances to a new empty revision, ready for more work.
+Use `jj commit` (not `jj describe`) so that `@` advances to a new empty
+revision, ready for more work. Never `git commit` in a colocated jj repo.
 
 Confirm success to the user.
