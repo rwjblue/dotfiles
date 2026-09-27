@@ -5,10 +5,16 @@ description: Draft, file, and track Ham2K issues in Cabo. Use for reporting HaLo
 
 # Ham2K issues
 
-Use https://cabo.ham2k.com/halo and the user's authenticated local browser,
-normally signed in as Robert Jackson. Use the agent-browser skill for browser
-interaction; an available authenticated browser tool is also suitable. Inspect
-the current UI rather than relying on saved element IDs or guessed APIs.
+Use the Cabo MCP server at https://cabo.ham2k.com/mcp for the `halo` project,
+normally authenticated as Robert Jackson. Discover its available tools and
+read their schemas before use. Use qualified card references such as
+`HALO-721` and return canonical links such as
+`https://cabo.ham2k.com/halo/c/721`.
+
+If the server is unavailable or unauthenticated, report the connection problem
+and continue drafting locally. Do not guess tool names or substitute browser
+automation. MCP uses OAuth; `read` covers status checks, and `write` is needed
+for approved submissions. The `internal` scope is not needed for this workflow.
 
 For HaLo contributions, use a Cabo issue and an optional patch: no forks,
 pushes, or pull requests. Keep implementation on a separate local jj bookmark.
@@ -34,12 +40,22 @@ limits honestly, including when only a test subset ran.
   review. Wait for approval before posting. Prior approval in the conversation
   counts; do not ask again. Apply the same review to substantive follow-up
   comments, unless the user has already approved their content.
-- In the HaLo board, **+ New card** creates the title/kind. Open the card to
-  add its description. Choose the appropriate kind; leave priority and assignee
-  alone unless requested. If submission is uncertain, check for the card
-  before retrying to avoid duplicates.
-- Attach only the relevant patch. **Attach a file** uploads it into the
-  comment composer; submit **Comment** too and verify the posted attachment.
+- Use `create_card` with `project: "halo"`, `kind` (`bug`, `idea`, or `task`),
+  `title`, and the approved Markdown description in `body`. Let the server
+  choose the default board and intake column. Leave priority and assignee
+  alone unless requested. Use `update_card` for approved edits; omitted fields
+  stay unchanged.
+- Use `add_comment` with `ref` and the approved `body`; use `parentId` when
+  replying to an existing comment.
+- Use `add_attachment` with `ref`, `filename`, and the patch bytes encoded as
+  `content_base64`. The MCP upload limit is 5 MB. Omit `commentId` to attach
+  directly to the card, or supply the ID returned by `add_comment` to attach
+  to that comment. No extra comment is required for a card attachment.
+- Read the result back with `get_card`; verify attachments with
+  `read_attachment` using the returned attachment ID. If any submission is
+  uncertain, inspect the existing card/comments/attachments before retrying.
+  For an uncertain card creation, use `search_cards` scoped to `project: "halo"`
+  to avoid duplicates.
 - Return the issue URL and add it to the register below. If a local fix exists,
   include the issue ID and full URL in its commit description, preserving
   useful text.
@@ -77,7 +93,12 @@ store cookies, tokens, or browser profiles in the register or dotfiles.
 
 ## Check progress in a new session
 
-For "our issues," load the register and open the relevant saved Cabo URLs.
+For "our issues," load the register and call `get_card` with each saved issue's
+qualified `ref`. It includes comments and recent activity. Use `get_board`
+with `project: "halo"` when board context is needed, and `get_activity` for
+project changes (`since` is Unix milliseconds). Scope `search_cards` to
+`project: "halo"`; it searches titles, bodies, and comments, with a maximum
+`limit` of 100. Narrow a truncated search rather than treating it as complete.
 Check the current column/status, description, and recent comments for fixes,
 release/build references, and requests for information. Include previously
 resolved issues if the user asks about all tracked issues. If the register is
