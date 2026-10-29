@@ -207,6 +207,7 @@ Configuration comments at the top of the file (after shebang). Use `#MISE` in ba
 | `outputs` | `#MISE outputs=["target/debug/mycli"]` | Output files for caching |
 | `tools` | `#MISE tools={node = "22"}` | Tools to install/activate |
 | `raw` | `#MISE raw=true` | Direct shell I/O (interactive tasks) |
+| `raw_args` | `#MISE raw_args=true` | Forward all CLI arguments, including native `--help` |
 | `quiet` | `#MISE quiet=true` | Suppress mise output |
 | `silent` | `#MISE silent=true` | Suppress all output |
 | `wait_for` | `#MISE wait_for=["setup"]` | Wait if running, don't trigger |
@@ -215,7 +216,21 @@ Configuration comments at the top of the file (after shebang). Use `#MISE` in ba
 
 ## #USAGE Directives (Arguments & Flags)
 
-Arguments and flags use `#USAGE` directives (`//[USAGE]` in TypeScript). Values are accessible as `$usage_<name>` env vars (hyphens become underscores).
+Declare task-owned arguments and flags with `#USAGE` directives (`//[USAGE]` in TypeScript), including help text and useful choices/defaults. These declarations give mise argument validation, task-specific `--help`, and shell completions. Add them when creating or updating a task's interface, including wrappers around project scripts.
+
+Values are accessible as `$usage_<name>` env vars (hyphens become underscores). Read these variables in task logic. File-task wrappers also retain their original arguments, so they can forward them with `"$@"` after declaring the supported interface:
+
+```bash
+#!/usr/bin/env bash
+#MISE description="Run the project service"
+#USAGE flag "--read-only" help="Disable writes"
+set -euo pipefail
+exec python tools/service.py "$@"
+```
+
+Keep the usage declarations consistent with the wrapped script. A declaration describes and validates an option; the script must still implement or forward it. When forwarding original arguments, the wrapped script supplies its own defaults.
+
+For a transparent proxy to another CLI with its own argument parser and help, use `#MISE raw_args=true` and forward `"$@"`. This preserves that CLI's flags and native `--help` without duplicating its interface. Keep task-owned options declared with `#USAGE`.
 
 ### Positional arguments
 
@@ -257,8 +272,16 @@ Available in `#MISE` directives:
 
 ## Running Tasks
 
+Pass task arguments directly after the task name. Do not add a standalone `--` separator to routine invocations or documentation. Put mise's own options before the task name and the task's options after it:
+
 ```bash
-mise tasks                    # List all tasks
-mise run <name>               # Run a task
-mise run <name> -- <args>     # Pass args after --
+mise tasks                               # List tasks
+mise run <name> <args>                    # Pass arguments directly
+mise run deploy staging --dry-run        # The task's --dry-run option
+mise run --dry-run deploy staging        # Mise previews task execution
+mise run <name> --help                    # Task-specific argument help
 ```
+
+Use a `--` separator only when an underlying command needs a literal end-of-options boundary, such as for a filename beginning with `-`.
+
+Run `mise tasks validate` after changing usage declarations, then check the affected task's `--help`. For argument forwarding, verify representative flags, positional arguments, and quoted values reach the wrapped command. Use a dry run or an inert stand-in when executing the real task would have side effects.
