@@ -37,7 +37,7 @@ Work-specific or private config goes in `local-packages/` (separate repo), not h
 ## Common Commands
 
 - `./install` - Full system setup
-- `FORCE=true ./install` - Reinstall, replacing existing links and backing up existing files to `<path>.bak.<timestamp>`
+- `FORCE=true ./install` - Reinstall, replacing existing links and moving existing files to `~/.local/state/dotfiles/backups/<timestamp>/`
 - `mise tasks` - List available tasks
 - `mise run dot:install` - Apply dotfile symlinks/copies
 - `mise run nvim:restore` - Restore Neovim plugins from lock file

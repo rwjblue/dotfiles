@@ -36,7 +36,7 @@ The default installation method SHALL be symlinking via `link_dotfile()`. Symlin
 
 #### Scenario: Force mode installation
 - **WHEN** `FORCE=true` is set
-- **THEN** an existing symlink at the target is replaced, and an existing regular file or directory is moved to `<target>.bak.<timestamp>` before the symlink is created
+- **THEN** an existing symlink at the target is replaced, and an existing regular file or directory is moved under `${XDG_STATE_HOME:-~/.local/state}/dotfiles/backups/<timestamp>/` (keeping its path relative to `$HOME`) before the symlink is created
 
 ### Requirement: Copy-only for local overrides
 

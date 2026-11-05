@@ -15,7 +15,7 @@
 
 ## Build, Test, and Development Commands
 - `./install`: System setup (tools, dotfiles, Neovim). Use on a new machine.
-- `FORCE=true ./install`: Reinstall, replacing existing links and moving existing files to `<path>.bak.<timestamp>`.
+- `FORCE=true ./install`: Reinstall, replacing existing links and moving existing files to `~/.local/state/dotfiles/backups/<timestamp>/`.
 - `mise tasks`: List available tasks.
 - `mise run install`: Run full multi-step setup.
 - `mise run brew:install`: Install Homebrew and packages from `Brewfile`.

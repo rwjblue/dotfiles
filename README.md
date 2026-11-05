@@ -6,11 +6,13 @@
 ./install
 ```
 
-To force a re-install (replacing existing links; existing files and directories are moved to `<path>.bak.<timestamp>`):
+To force a re-install (replacing existing links):
 
 ```sh
 FORCE=true ./install
 ```
+
+Existing files and directories that get replaced are moved to `~/.local/state/dotfiles/backups/<timestamp>/`, keeping their path relative to `$HOME`. Clear them all with `rm -rf ~/.local/state/dotfiles/backups`.
 
 `shared_binutils` is expected at `../../malleatus/shared_binutils` relative to this repo. Set `SHARED_BINUTILS_PATH` to use a different checkout.
 
