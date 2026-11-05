@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#MISE description="Mirror agent skills into Cursor's synced skill store for Cloud Agents"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+
+src="packages/agents/skills"
+
+# With "Sync Skills for Cloud Agents" on, Cursor uploads whatever is in this
+# store. CURSOR_SKILLS_STORE overrides discovery (point it at the `files` dir).
+store="${CURSOR_SKILLS_STORE:-}"
+if [ -z "$store" ]; then
+  stores="$HOME/Library/Application Support/Cursor/AgentStores/cursor_agent_stores"
+  if [ ! -d "$stores" ]; then
+    echo "No Cursor agent stores at $stores; skipping (is skill sync on?)"
+    exit 0
+  fi
+
+  # The personal store is named <team>-<user>; per-agent stores are UUIDs.
+  shopt -s nullglob
+  candidates=("$stores"/t*-u*/files)
+  shopt -u nullglob
+  if [ "${#candidates[@]}" -ne 1 ]; then
+    echo "Expected one personal Cursor store, found ${#candidates[@]}:" >&2
+    printf '  %s\n' "${candidates[@]}" >&2
+    echo "Set CURSOR_SKILLS_STORE to the right .../files directory." >&2
+    exit 1
+  fi
+  store="${candidates[0]}"
+fi
+
+# Turning sync on moves ~/.cursor/skills into the store and trashes the
+# originals, which would hit this repo through a symlink. Cursor already
+# reads these skills locally from ~/.agents/skills and ~/.claude/skills.
+if [ -L "$HOME/.cursor/skills" ]; then
+  echo "removing symlink $HOME/.cursor/skills -> $(readlink "$HOME/.cursor/skills")"
+  rm "$HOME/.cursor/skills"
+fi
+
+# Sync skips symlinks, so -L copies the private skills that local-packages
+# links in. node_modules has made sync time out. --checksum skips rewriting
+# unchanged files so they don't upload again.
+mkdir -p "$store/skills"
+rsync -rL --executability --checksum --delete \
+  --exclude .gitignore \
+  --exclude .DS_Store \
+  --exclude node_modules \
+  "$src/" "$store/skills/"
+
+echo "Mirrored $(find "$store/skills" -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l | tr -d ' ') skills into $store/skills"
