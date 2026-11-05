@@ -8,7 +8,7 @@ user-invocable: false
 
 ## Repository Structure
 
-- `packages/` - Source configs organized by tool (nvim, git, zsh, Codex, etc.)
+- `packages/` - Source configs organized by tool (nvim, git, zsh, claude, codex, etc.)
 - `packages-dist/` - Generated outputs (shell configs)
 - `local-packages/` - Separate private repo for work-specific overrides (symlinked)
 - `mise/config.toml` and `mise/tasks/` - Mise taskrunner automation
