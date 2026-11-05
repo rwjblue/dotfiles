@@ -24,11 +24,11 @@ The install task SHALL run four stages in strict order: system dependencies, cus
 
 ### Requirement: System dependency installation
 
-`system:install` SHALL handle platform-specific package managers and tool runtimes. On macOS it MUST install Homebrew and packages from `Brewfile`. On all platforms it installs and updates mise-managed tools.
+`system:install` SHALL handle platform-specific package managers and tool runtimes. On macOS it MUST install Homebrew and packages from `Brewfile`. On all platforms it installs mise-managed tools at their locked versions; it MUST NOT upgrade them (that is `tools:update`).
 
 #### Scenario: macOS system setup
 - **WHEN** running on macOS (`darwin*`)
-- **THEN** `brew:install` runs Homebrew installation and `brew bundle` from `Brewfile`, then `tools:install` and `tools:update` handle mise-managed runtimes
+- **THEN** `brew:install` runs Homebrew installation and `brew bundle` from `Brewfile`, then `tools:install` installs mise-managed runtimes
 
 #### Scenario: Linux system setup
 - **WHEN** running on Linux
