@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+#MISE description="Check whether Cursor has uploaded every file in the synced skill store"
+set -euo pipefail
+
+store=$("$MISE_PROJECT_ROOT/packages/cursor/skills-store.sh")
+if [ -z "$store" ]; then
+  echo "No Cursor skill store found (is Sync Skills for Cloud Agents on?)" >&2
+  exit 1
+fi
+index="$(dirname "$store")/.sync/index.sqlite"
+wait_seconds="${CURSOR_SKILLS_SYNC_WAIT:-0}"
+
+# Cursor's extension hosts keep the index open while they can upload.
+# Without one, waiting can't help.
+if [ "$wait_seconds" -gt 0 ] && ! lsof -t "$index" >/dev/null 2>&1; then
+  echo "Cursor isn't running, so nothing will upload until it starts."
+  wait_seconds=0
+fi
+
+# Cursor's sync index records the sha256 of each file it has uploaded, so a
+# file is synced once its path and hash appear there as live.
+deadline=$((SECONDS + wait_seconds))
+while :; do
+  if ! synced=$(sqlite3 -readonly -separator $'\t' "$index" \
+    "select rel_path, last_synced_sha from files where state = 'live' and rel_path like 'skills/%'"); then
+    echo "Could not read Cursor's sync index at $index" >&2
+    exit 2
+  fi
+  synced=$(sort <<<"$synced")
+  local_files=$(
+    cd "$store" && find skills -type f -print0 | xargs -0 shasum -a 256 |
+      sed -E 's/^([0-9a-f]{64})  (.*)$/\2\t\1/' | sort
+  )
+  pending=$(
+    comm -23 <(echo "$local_files") <(echo "$synced") | cut -f1 | sed '/^$/d; s/^/upload: /'
+    comm -13 <(cut -f1 <<<"$local_files") <(cut -f1 <<<"$synced") | sed '/^$/d; s/^/delete: /'
+  )
+
+  if [ -z "$pending" ]; then
+    echo "Cursor has synced all $(wc -l <<<"$local_files" | tr -d ' ') skill files."
+    exit 0
+  fi
+  [ "$SECONDS" -lt "$deadline" ] || break
+  sleep 5
+done
+
+echo "Cursor has not synced $(wc -l <<<"$pending" | tr -d ' ') skill files yet:" >&2
+head -20 <<<"$pending" | sed 's/^/  /' >&2
+exit 1

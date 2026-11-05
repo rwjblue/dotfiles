@@ -129,7 +129,8 @@ fi
   --local-dotfiles-path "$LOCAL_DOTFILES_PATH"
 
 # After local setup, so the mirror includes private skills it links in
-mise run cursor:skills-sync
+mise run cursor:skills-sync || echo "WARNING: Cursor skill sync incomplete; the LaunchAgent will retry"
+mise run cursor:skills-sync-agent
 
 # Refresh shell environment
 mise run shell:update

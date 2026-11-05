@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+#MISE description="Install a LaunchAgent that runs cursor:skills-sync every 15 minutes"
+set -euo pipefail
+
+if [[ "$OSTYPE" != darwin* ]]; then
+  echo "cursor:skills-sync-agent is macOS-only; skipping"
+  exit 0
+fi
+
+label="com.rwjblue.cursor-skills-sync"
+plist="$HOME/Library/LaunchAgents/$label.plist"
+log="$HOME/Library/Logs/cursor-skills-sync.log"
+# Same checkout ~/.agents/skills points at, so a worktree install still runs
+# the task from the main checkout.
+skills="$(cd "$HOME/.agents/skills" && pwd -P)"
+root="$(cd "$skills/../../.." && pwd -P)"
+mise_bin="$(command -v mise)"
+
+mkdir -p "$(dirname "$plist")" "$(dirname "$log")"
+cat >"$plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>$label</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$mise_bin</string>
+    <string>run</string>
+    <string>cursor:skills-sync</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>$root</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>$(dirname "$mise_bin"):/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StartInterval</key>
+  <integer>900</integer>
+  <key>StandardOutPath</key>
+  <string>$log</string>
+  <key>StandardErrorPath</key>
+  <string>$log</string>
+</dict>
+</plist>
+EOF
+plutil -lint "$plist" >/dev/null
+
+launchctl bootout "gui/$(id -u)/$label" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "$plist"
+echo "Loaded $label; logs in $log"
