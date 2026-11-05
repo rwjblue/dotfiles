@@ -10,6 +10,13 @@ fi
 index="$(dirname "$store")/.sync/index.sqlite"
 wait_seconds="${CURSOR_SKILLS_SYNC_WAIT:-0}"
 
+# Cursor's extension hosts keep the index open while they can upload.
+# Without one, waiting can't help.
+if [ "$wait_seconds" -gt 0 ] && ! lsof -t "$index" >/dev/null 2>&1; then
+  echo "Cursor isn't running, so nothing will upload until it starts."
+  wait_seconds=0
+fi
+
 # Cursor's sync index records the sha256 of each file it has uploaded, so a
 # file is synced once its path and hash appear there as live.
 deadline=$((SECONDS + wait_seconds))
@@ -37,6 +44,6 @@ while :; do
   sleep 5
 done
 
-echo "Cursor has not synced $(wc -l <<<"$pending" | tr -d ' ') skill files yet (it only uploads while Cursor is running):" >&2
+echo "Cursor has not synced $(wc -l <<<"$pending" | tr -d ' ') skill files yet:" >&2
 head -20 <<<"$pending" | sed 's/^/  /' >&2
 exit 1
