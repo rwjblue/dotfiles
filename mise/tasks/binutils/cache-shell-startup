@@ -4,8 +4,6 @@
 set -euo pipefail
 
 DOTFILES_DIR="$MISE_PROJECT_ROOT"
-SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
-
 for shell in zsh fish starship; do
   "$SHARED_BINUTILS_PATH/target/debug/cache-shell-startup" \
     --config-file="$DOTFILES_DIR/packages/binutils/config/config.lua" \

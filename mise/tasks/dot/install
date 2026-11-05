@@ -3,7 +3,6 @@
 set -euo pipefail
 
 DOTFILES_DIR="$MISE_PROJECT_ROOT"
-SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
 LOCAL_DOTFILES_PATH="$DOTFILES_DIR/local-packages"
 FORCE="${FORCE:-false}"
 
