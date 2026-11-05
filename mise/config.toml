@@ -2,4 +2,5 @@
 min_version = "2025.10.0"
 
 [env]
-SHARED_BINUTILS_PATH = "{{ get_env(name='SHARED_BINUTILS_PATH', default=config_root ~ '/../../malleatus/shared_binutils') }}"
+# Must match the path dependencies in packages/binutils/Cargo.toml.
+SHARED_BINUTILS_PATH = "{{ config_root }}/../../malleatus/shared_binutils"

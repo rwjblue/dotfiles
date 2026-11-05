@@ -10,7 +10,7 @@
 - `Brewfile` captures Homebrew packages managed by tasks.
 - `packages/` contains versioned tooling and editor configs (Neovim, Hammerspoon, binutils).
 - `packages-dist/` holds generated shell config outputs. It is gitignored and rebuilt by `binutils:cache-shell-startup` (run via `shell:update`); edit the sources in `packages/` instead.
-- `~/src/github/malleatus/shared_binutils` provides shared task utilities (setup-local-dotfiles, symlink generation). Tasks read its location from `SHARED_BINUTILS_PATH`, set in `mise/config.toml`.
+- `~/src/github/malleatus/shared_binutils` provides shared task utilities (setup-local-dotfiles, symlink generation). Tasks read its location from `SHARED_BINUTILS_PATH` in `mise/config.toml`, which must match the path dependencies in `packages/binutils/Cargo.toml`.
 - Agent skills live in `packages/agents/skills/` (shared by all tools). `packages/codex/skills/` is only for Codex-specific skills; `mise run skills:check` enforces no duplicates.
 
 ## Build, Test, and Development Commands

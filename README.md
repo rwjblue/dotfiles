@@ -14,7 +14,7 @@ FORCE=true ./install
 
 Existing files and directories that get replaced are moved to `~/.local/state/dotfiles/backups/<timestamp>/`, keeping their path relative to `$HOME`. Clear them all with `rm -rf ~/.local/state/dotfiles/backups`.
 
-`shared_binutils` is expected at `../../malleatus/shared_binutils` relative to this repo. Set `SHARED_BINUTILS_PATH` to use a different checkout.
+`shared_binutils` must be checked out at `../../malleatus/shared_binutils` relative to this repo; `binutils:install` clones it there if it is missing.
 
 ## Available Tasks
 
