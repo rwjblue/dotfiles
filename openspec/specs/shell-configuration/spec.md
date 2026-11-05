@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Shell configs use a build-time compilation pattern: source files in `packages/` contain command directives that get expanded into `packages-dist/` for fast startup. Zsh is the primary shell; bash redirects to zsh; fish has standalone config.
+Shell configs use a build-time compilation pattern: source files in `packages/` contain command directives that get expanded into `packages-dist/` for fast startup. Zsh is the primary shell; fish has standalone config.
 
 ## Requirements
 
@@ -41,14 +41,6 @@ Zsh SHALL be the fully-configured primary shell. The startup chain MUST be: `zsh
 #### Scenario: PATH ordering
 - **WHEN** `path.zsh` runs
 - **THEN** it ensures this order: `/opt/homebrew/bin` → `/opt/homebrew/sbin` → `$CARGO_HOME/bin` → fzf → custom binutils → `$HOME/.local/bin`
-
-### Requirement: Bash as zsh redirect
-
-Bash configuration SHALL be minimal — it MUST exist only to redirect to zsh in interactive contexts and to support rdev environments where bash is the default.
-
-#### Scenario: Interactive bash session
-- **WHEN** bash starts interactively (not in rdev/tmux context)
-- **THEN** it exec's into `zsh -l`, replacing the bash process
 
 ### Requirement: Fish standalone configuration
 

@@ -63,7 +63,6 @@ mkdir -p ~/.cargo
 link_dotfile "packages/nvim"                                    "$HOME/.config/nvim"
 link_dotfile "packages-dist/starship/jj.toml"                  "$HOME/.config/starship.toml"
 link_dotfile "packages/starship/"                               "$HOME/.config/starship"
-link_dotfile "packages-dist/bash/bashrc"                        "$HOME/.bashrc"
 link_dotfile "packages-dist/zsh/"                               "$HOME/.zsh"
 link_dotfile "packages-dist/fish/"                              "$HOME/.config/fish"
 link_dotfile "packages-dist/zsh/zshenv"                         "$HOME/.zshenv"

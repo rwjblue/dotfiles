@@ -48,7 +48,7 @@ The install task SHALL run four stages in strict order: system dependencies, cus
 
 #### Scenario: Shell cache rebuild
 - **WHEN** `dot:install` completes symlink setup
-- **THEN** `shell:update` runs `cache-shell-startup` for all shells (zsh, bash, fish, starship), clears the zsh completion cache, and rebuilds completions
+- **THEN** `shell:update` runs `cache-shell-startup` for all shells (zsh, fish, starship), clears the zsh completion cache, and rebuilds completions
 
 ### Requirement: Editor setup
 
