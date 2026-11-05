@@ -1,2 +1,6 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 min_version = "2025.10.0"
+
+[env]
+# Must match the path dependencies in packages/binutils/Cargo.toml.
+SHARED_BINUTILS_PATH = "{{ config_root }}/../../malleatus/shared_binutils"

@@ -9,12 +9,13 @@
 - `mise/config.toml` and `mise/tasks/` define mise taskrunner automation (e.g., `brew:*`, `nvim:*`, `system:*`).
 - `Brewfile` captures Homebrew packages managed by tasks.
 - `packages/` contains versioned tooling and editor configs (Neovim, Hammerspoon, binutils).
-- `packages-dist/` holds generated config outputs.
-- `~/src/github/malleatus/shared_binutils` provides shared task utilities (setup-local-dotfiles, symlink generation).
+- `packages-dist/` holds generated shell config outputs. It is gitignored and rebuilt by `binutils:cache-shell-startup` (run via `shell:update`); edit the sources in `packages/` instead.
+- `~/src/github/malleatus/shared_binutils` provides shared task utilities (setup-local-dotfiles, symlink generation). Tasks read its location from `SHARED_BINUTILS_PATH` in `mise/config.toml`, which must match the path dependencies in `packages/binutils/Cargo.toml`.
+- Agent skills live in `packages/agents/skills/` (shared by all tools). `packages/codex/skills/` is only for Codex-specific skills; `mise run skills:check` enforces no duplicates.
 
 ## Build, Test, and Development Commands
 - `./install`: System setup (tools, dotfiles, Neovim). Use on a new machine.
-- `FORCE=true ./install`: Reinstall and clobber existing files.
+- `FORCE=true ./install`: Reinstall, replacing existing links and moving existing files to `~/.local/state/dotfiles/backups/<timestamp>/`.
 - `mise tasks`: List available tasks.
 - `mise run install`: Run full multi-step setup.
 - `mise run brew:install`: Install Homebrew and packages from `Brewfile`.
@@ -28,12 +29,13 @@
 - Keep local-only or work-specific files out of this repo; put them in the local dotfiles repo.
 
 ## Coding Style & Naming Conventions
-- Shell scripts target `zsh`; keep scripts in `scripts/` and name them descriptively (e.g., `commit_changed_file.sh`).
+- Mise tasks and `scripts/` are bash (`#!/usr/bin/env bash`, `set -euo pipefail`); name scripts descriptively (e.g., `commit_changed_file.sh`). Interactive shell config targets `zsh`.
 - Indentation is 2 spaces in YAML, Lua, and shell scripts; follow existing file style before introducing new rules.
 - Task names use a `namespace:verb` pattern (e.g., `nvim:update`); defined by directory structure under `mise/tasks/`.
 
 ## Testing Guidelines
-- No repo-wide test runner; validate changes by running the relevant task or script.
+- CI (`.github/workflows/ci.yml`) runs shellcheck at warning severity, `skills:check`, cargo fmt/clippy/test for `packages/binutils`, and `agent-review:test`.
+- Beyond that, validate changes by running the relevant task or script.
 
 ## Commit & Pull Request Guidelines
 - This repo uses `jj` for source control; keep commits small and imperative.

@@ -3,8 +3,6 @@
 set -euo pipefail
 
 DOTFILES_DIR="$MISE_PROJECT_ROOT"
-SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
-
 # Clone shared_binutils if it doesn't exist
 if [ ! -d "$SHARED_BINUTILS_PATH" ]; then
   git clone https://github.com/malleatus/shared_binutils.git "$SHARED_BINUTILS_PATH"

@@ -3,9 +3,10 @@
 set -euo pipefail
 
 DOTFILES_DIR="$MISE_PROJECT_ROOT"
-SHARED_BINUTILS_PATH="$DOTFILES_DIR/../../malleatus/shared_binutils"
 LOCAL_DOTFILES_PATH="$DOTFILES_DIR/local-packages"
 FORCE="${FORCE:-false}"
+BACKUP_ROOT="${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/backups"
+BACKUP_DIR="$BACKUP_ROOT/$(date '+%Y%m%d-%H%M%S')"
 
 link_dotfile() {
   local src="$DOTFILES_DIR/$1"
@@ -14,9 +15,16 @@ link_dotfile() {
   # Create parent directory if it doesn't exist
   mkdir -p "$(dirname "$dest")"
 
-  # If FORCE is true, remove the target
   if [ "$FORCE" = "true" ]; then
-    rm -rf "$dest"
+    if [ -L "$dest" ]; then
+      rm "$dest"
+    elif [ -e "$dest" ]; then
+      local rel="${dest#"$HOME"/}"
+      local backup="$BACKUP_DIR/${rel#/}"
+      mkdir -p "$(dirname "$backup")"
+      echo "moving existing $dest to $backup"
+      mv "$dest" "$backup"
+    fi
   fi
 
   if [ -L "$dest" ]; then
@@ -107,15 +115,14 @@ if [[ "$OSTYPE" == darwin* ]]; then
   link_dotfile "packages/alfred/snippets"                       "$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/snippets"
 fi
 
-# Linux-specific dotfiles
-if [[ "$OSTYPE" == linux* ]]; then
-  link_dotfile "packages/jj/"                                   "$HOME/.config/jj"
-fi
-
 # Copy local override files (never overwrite existing)
 copy_dotfile "packages-dist/zsh/zshrc.local"                    "$HOME/.zshrc.local"
 copy_dotfile "packages/git/gitconfig.local"                     "$HOME/.gitconfig.local"
 copy_dotfile "packages/tmux/tmux.local.conf"                    "$HOME/.tmux.local.conf"
+
+if [ -d "$BACKUP_DIR" ]; then
+  echo "Replaced files were backed up to $BACKUP_DIR (clear all backups with: rm -rf $BACKUP_ROOT)"
+fi
 
 # Set up local dotfiles
 "$SHARED_BINUTILS_PATH/target/debug/setup-local-dotfiles" \

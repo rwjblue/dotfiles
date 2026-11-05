@@ -8,7 +8,7 @@ user-invocable: false
 
 ## Repository Structure
 
-- `packages/` - Source configs organized by tool (nvim, git, zsh, Codex, etc.)
+- `packages/` - Source configs organized by tool (nvim, git, zsh, claude, codex, etc.)
 - `packages-dist/` - Generated outputs (shell configs)
 - `local-packages/` - Separate private repo for work-specific overrides (symlinked)
 - `mise/config.toml` and `mise/tasks/` - Mise taskrunner automation
@@ -37,7 +37,7 @@ Work-specific or private config goes in `local-packages/` (separate repo), not h
 ## Common Commands
 
 - `./install` - Full system setup
-- `FORCE=true ./install` - Reinstall, clobbering existing files
+- `FORCE=true ./install` - Reinstall, replacing existing links and moving existing files to `~/.local/state/dotfiles/backups/<timestamp>/`
 - `mise tasks` - List available tasks
 - `mise run dot:install` - Apply dotfile symlinks/copies
 - `mise run nvim:restore` - Restore Neovim plugins from lock file

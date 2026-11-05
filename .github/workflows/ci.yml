@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  MISE_TRUSTED_CONFIG_PATHS: ${{ github.workspace }}
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: shellcheck --severity=warning install scripts/* mise/tasks/install mise/tasks/*/*
+
+  skills:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jdx/mise-action@v2
+        with:
+          install: false
+      - run: mise run skills:check
+
+  binutils:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/binutils
+    steps:
+      - uses: actions/checkout@v4
+      # Cargo path dependencies expect shared_binutils as a sibling org checkout.
+      - run: git clone --depth 1 https://github.com/malleatus/shared_binutils.git "$GITHUB_WORKSPACE/../../malleatus/shared_binutils"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: packages/binutils
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+
+  agent-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: stable
+      - uses: jdx/mise-action@v2
+        with:
+          install: false
+      - run: mise run agent-review:test
