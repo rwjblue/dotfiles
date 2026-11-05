@@ -4,11 +4,13 @@ local M = {}
 
 ---@return string|nil absolute repo root, or nil if not in a repo
 function M.repo_root()
-  local out = vim.fn.systemlist({ "jj", "root" })
-  if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
-    return out[1]
+  if vim.fn.executable("jj") == 1 then
+    local out = vim.fn.systemlist({ "jj", "root" })
+    if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
+      return out[1]
+    end
   end
-  out = vim.fn.systemlist({ "git", "rev-parse", "--show-toplevel" })
+  local out = vim.fn.systemlist({ "git", "rev-parse", "--show-toplevel" })
   if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
     return out[1]
   end
