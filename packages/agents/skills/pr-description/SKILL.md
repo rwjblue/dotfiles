@@ -64,6 +64,12 @@ sentences for the "why" (motivation, gating, scope). Do NOT mush headline and
 context into one paragraph. The reviewer should grasp the change from the
 headline alone.
 
+For a fix or behavior change, the "why" names the concrete problem a user or
+caller hit: what they did and what went wrong. When the change in behavior
+isn't obvious from that, add a short before/after (a command and its output,
+or a request and its response). A reviewer who reads only the description
+should understand what was broken.
+
 **Non-stacked PR:** a single line:
 
 `**BLUF:** <one sentence, ≤ 15 words, "what does THIS PR do?">`
@@ -77,7 +83,7 @@ headline alone.
 ```
 
 The labels tell the reader *which* BLUF they are looking at. The *what* lives
-in the sentence. Tracking ids (e.g. `PACT-292`) go in the `## Stack` section
+in the sentence. Tracking ids (e.g. `ABC-123`) go in the `## Stack` section
 or a Context line, not the label.
 
 Write the `**BLUF (stack):**` line ONCE and reuse it **verbatim** in every PR
@@ -111,21 +117,24 @@ them.
 Any ticket, PR, doc, or runbook that has a URL should be a Markdown link, not
 bare text.
 
-- Linear/PACT issues → `https://linear.app/gleanwork/issue/PACT-NNN`
-- Jira escalations (`EE-`, `EN-`, etc.) → `https://askscio.atlassian.net/browse/<KEY>`
+- Tickets → the tracker's issue URL. Employer-specific tracker URL patterns
+  live in `../rwjblue-mode-local/SKILL.md` when it exists; this public skill
+  does not list them.
 - Sibling PRs → `#NNN` (auto-links in-repo)
-- `go/` shortlinks stay as written
+- Internal shortlinks (e.g. `go/` links) stay as written
 
-Bare `EE-29350` / `PACT-292` text is a miss. Ticket links live in the
-Context/Jira line or the `## Stack` section, keeping the BLUF lines clean.
+Bare `ABC-123` text is a miss. Ticket links live in a Context line or the
+`## Stack` section, keeping the BLUF lines clean.
 
 ## Metrics, tests, color
 
 - **Compact metric table** if the PR has a measurable outcome (perf, size,
   quality). One row per case, one aggregate row at the bottom.
 - **Test/verification note** only when there is something non-obvious to share
-  (manual repro, known gaps, a deliberate decision not to test something).
-  "Unit tests pass" is not worth saying.
+  (a manual repro, a deliberate decision not to test something).
+  "Unit tests pass" is not worth saying. Don't add "verification
+  limitations" or "not yet validated" sections; caveats about what the agent
+  could not check go in the agent's report to the user, not the PR body.
 - Include useful maintainer/reviewer color (tradeoffs, follow-up, rollout,
   edge cases, risks, or context from prior discussion).
 
@@ -171,6 +180,11 @@ the short label is skimmable (preferred over bare-URL cards). The label is a
 terse description of that PR's change, not its full title. The 👉 prefix marks
 the current PR — more scannable than a "(this PR)" suffix and survives PR
 renames.
+
+Keep merged PRs in the list, in their original slot. Never drop an entry
+because it merged: the list is the stack's history, and GitHub already marks
+merged `#NNN` links. When a PR joins the stack, add it to every sibling's
+list.
 
 When updating sibling PRs, reuse `**BLUF (stack):**` verbatim. Only
 `**BLUF (this PR):**` and the 👉 position differ per PR.
