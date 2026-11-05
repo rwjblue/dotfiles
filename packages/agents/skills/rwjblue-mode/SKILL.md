@@ -93,6 +93,9 @@ These hold even when everything else is autonomous:
   user's default checkout alone, and preserve edits you find there rather
   than consuming them. Once the work merges, remove the workspaces and
   worktrees you created.
+- In Cursor, use a git worktree (`git worktree add`), not a jj workspace,
+  and commit there with git. A secondary jj workspace has no `.git`, so
+  Cursor can't find the remote and can't launch Cloud Agents from it.
 - In a jj repo, use jj, never `git commit`. Follow `../jj/SKILL.md` and
   `../jj-commit/SKILL.md`. Detect jj from `jj root`, not from a `.git`
   directory.
