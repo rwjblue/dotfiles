@@ -14,9 +14,15 @@ link_dotfile() {
   # Create parent directory if it doesn't exist
   mkdir -p "$(dirname "$dest")"
 
-  # If FORCE is true, remove the target
   if [ "$FORCE" = "true" ]; then
-    rm -rf "$dest"
+    if [ -L "$dest" ]; then
+      rm "$dest"
+    elif [ -e "$dest" ]; then
+      local backup
+      backup="$dest.bak.$(date '+%Y%m%d%H%M%S')"
+      echo "moving existing $dest to $backup"
+      mv "$dest" "$backup"
+    fi
   fi
 
   if [ -L "$dest" ]; then
@@ -105,11 +111,6 @@ if [[ "$OSTYPE" == darwin* ]]; then
   link_dotfile "packages/vscode/snippets"                       "$HOME/Library/Application Support/Code/User/snippets"
   link_dotfile "packages/tealdeer/config.toml"                  "$HOME/Library/Application Support/tealdeer/config.toml"
   link_dotfile "packages/alfred/snippets"                       "$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/snippets"
-fi
-
-# Linux-specific dotfiles
-if [[ "$OSTYPE" == linux* ]]; then
-  link_dotfile "packages/jj/"                                   "$HOME/.config/jj"
 fi
 
 # Copy local override files (never overwrite existing)
