@@ -128,5 +128,8 @@ fi
 "$SHARED_BINUTILS_PATH/target/debug/setup-local-dotfiles" \
   --local-dotfiles-path "$LOCAL_DOTFILES_PATH"
 
+# After local setup, so the mirror includes private skills it links in
+mise run cursor:skills-sync
+
 # Refresh shell environment
 mise run shell:update
