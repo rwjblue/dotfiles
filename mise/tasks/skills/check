@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+#MISE description="Fail if an agent skill is duplicated across skill directories"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+
+status=0
+
+# Codex also reads ~/.agents/skills, so a skill must live in only one of these.
+dupes=$(
+  for skill in packages/agents/skills/*/SKILL.md packages/codex/skills/*/SKILL.md; do
+    if [ -e "$skill" ]; then basename "$(dirname "$skill")"; fi
+  done | sort | uniq -d
+)
+if [ -n "$dupes" ]; then
+  echo "Skills present in both packages/agents/skills and packages/codex/skills:"
+  echo "$dupes" | sed 's/^/  /'
+  status=1
+fi
+
+# openspec-* skills are generated per tool by `openspec init`.
+for dir in .claude/skills/*/; do
+  name=$(basename "$dir")
+  [[ "$name" == openspec-* ]] && continue
+  if [ -d ".agents/skills/$name" ] && [ ! -L ".claude/skills/$name" ]; then
+    echo ".claude/skills/$name duplicates .agents/skills/$name; make it a symlink"
+    status=1
+  fi
+done
+
+if [ "$status" -eq 0 ]; then
+  echo "No duplicated skills."
+fi
+exit "$status"
