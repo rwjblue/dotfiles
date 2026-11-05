@@ -19,6 +19,21 @@ approve or merge. Follow-up stays in the Cursor cloud-agent thread.
 Only an explicit instruction from Robert in the user conversation lifts
 this gate, and only for that action.
 
+PR descriptions: Cursor's PR tool (`update_pr`) replaces only the text
+between `<!-- CURSOR_AGENT_PR_BODY_BEGIN -->` and
+`<!-- CURSOR_AGENT_PR_BODY_END -->`. On a body without those markers,
+such as a PR Robert opened locally, it keeps the old body and appends a
+second copy. Before you send a body with `update_pr`, read the live body
+with `gh pr view`. If both markers are there, use `update_pr` and leave
+the markers out of the body you pass; the tool adds them. If they are
+missing, do not call `update_pr` with a body. Write the full new body,
+wrapped in the two markers, to a file Robert can open (the Project
+store, or `/opt/cursor/artifacts/`), and give him
+`gh pr edit <number> --repo <owner/repo> --body-file <path>` to run.
+Once he has, later updates go through `update_pr`. The tool also
+adds an "Open in Web / Open in Cursor" footer that no setting removes;
+leave it.
+
 Robert's personal skills (`commit-message`, `pr-description`,
 `rwjblue-mode`, and others) come from https://github.com/rwjblue/dotfiles.
 If `commit-message` is in your available-skills catalog, use the catalog
