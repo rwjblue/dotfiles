@@ -28,7 +28,7 @@
 - Keep local-only or work-specific files out of this repo; put them in the local dotfiles repo.
 
 ## Coding Style & Naming Conventions
-- Shell scripts target `zsh`; keep scripts in `scripts/` and name them descriptively (e.g., `setup-rdev-nvim.zsh`).
+- Shell scripts target `zsh`; keep scripts in `scripts/` and name them descriptively (e.g., `commit_changed_file.sh`).
 - Indentation is 2 spaces in YAML, Lua, and shell scripts; follow existing file style before introducing new rules.
 - Task names use a `namespace:verb` pattern (e.g., `nvim:update`); defined by directory structure under `mise/tasks/`.
 

@@ -80,7 +80,7 @@ Machine-specific Neovim configuration MUST live in a `local_nvim` module (from `
 
 ### Requirement: Conditional features by environment
 
-Some features SHALL be environment-dependent: Copilot MUST be disabled in rdev environments, plugin install/update checks MUST be skipped when opening commit-related filetypes (gitcommit, jj, jjdescription).
+Some features SHALL be environment-dependent: plugin install/update checks MUST be skipped when opening commit-related filetypes (gitcommit, jj, jjdescription).
 
 #### Scenario: Opening a commit message
 - **WHEN** Neovim opens with a gitcommit or jj filetype
