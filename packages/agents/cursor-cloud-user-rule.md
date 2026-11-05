@@ -11,7 +11,7 @@ Agents (fed by `mise run cursor:skills-sync`) or a repo start script that runs
 ---
 
 Cloud-agent skills fallback. If you are not a Cursor Cloud Agent
-(home is `/home/ubuntu`, repo at `/workspace`), ignore this rule.
+(home is `/home/ubuntu`), ignore this rule.
 
 GitHub gate: open PRs as draft. Do not mark them ready for review. Do not
 request review. Do not comment on the PR or on review threads. Do not
