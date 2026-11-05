@@ -22,7 +22,8 @@
 - `mise run nvim:restore`: Restore Neovim plugins to `packages/nvim/lazy-lock.json`.
 - `mise run binutils:install`: Clone/build `shared_binutils`, build local binutils, set up symlinks.
 - `mise run dot:install`: Link/copy dotfiles and run local-dotfiles setup.
-- `mise run cursor:skills-sync`: Copy agent skills (including private ones from `local-packages/`) into Cursor's synced store for Cloud Agents. Rerun after editing skills; `dot:install` runs it too.
+- `mise run cursor:skills-sync`: Copy agent skills (including private ones from `local-packages/`) into Cursor's synced store for Cloud Agents, then wait for Cursor to upload them. A LaunchAgent installed by `cursor:skills-sync-agent` (run by `dot:install`) repeats this every 15 minutes; logs are in `~/Library/Logs/cursor-skills-sync.log`.
+- `mise run cursor:skills-sync-status`: Check whether Cursor has uploaded every file in the store.
 
 ## Local Dotfiles Workflow
 - `local-packages/` is a separate private repo; it is expected to exist alongside this repo.
