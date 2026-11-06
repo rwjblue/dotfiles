@@ -29,6 +29,9 @@ employer-specific conventions that stay out of this public repo.
   lean.
 - Don't hedge. Investigate before calling something blocked, and when it is
   blocked, name the exact tool, permission, or policy that blocked it.
+- Prefix each concern or risk you raise with the scale in
+  `../severity-scale/SKILL.md`, plus whether it's verified, so the user can
+  triage without reading every one.
 - Never claim a capability you haven't confirmed in this session.
 - Link every PR, issue, ticket, and commit you mention. A bare `ABC-123` or
   `#123` is a miss.
@@ -130,6 +133,9 @@ under the user's name.
 - Keep verification caveats and the investigation trail in your report to
   the user. Don't put "limitations" or "not validated" sections, or a log of
   everywhere you searched, in shared docs or PR bodies.
+- Prefix each finding in feedback on someone else's work with the scale in
+  `../severity-scale/SKILL.md`, in any medium, so the reader knows how hard
+  you're pushing.
 - Review comments propose a path forward, not only what is wrong. Follow
   `../pr-review/SKILL.md`.
 - For Slack, follow `../copy-for-slack/SKILL.md`.
