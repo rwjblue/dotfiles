@@ -112,6 +112,19 @@ already say everything. A one-line proto field whose own doc-comment is
 self-explanatory needs no Details. Never restate file changes; the diff shows
 them.
 
+Details states conclusions, not the investigation. Say what the reviewer
+should believe and what follows from it. Leave out how you got there (the
+repos, branches, manifests, and queries you searched, and what you couldn't
+check); that trail belongs in your report to the user. If the scope of a
+search matters to the reviewer, one clause covers it ("nothing in the server
+or the warehouse models reads it"). A reviewer approves on consequences, and
+a search log buries them.
+
+Keep it to a few short items, each one or two sentences that lead with the
+consequence. If Details runs longer than the BLUF and its "why", cut it: a
+heavy Details makes the whole PR look like a wall of text, and readers skip
+the BLUF along with it.
+
 ## Linkify everything linkable
 
 Any ticket, PR, doc, or runbook that has a URL should be a Markdown link, not
@@ -135,16 +148,21 @@ Bare `ABC-123` text is a miss. Ticket links live in a Context line or the
   "Unit tests pass" is not worth saying. Don't add "verification
   limitations" or "not yet validated" sections; caveats about what the agent
   could not check go in the agent's report to the user, not the PR body.
-- Include useful maintainer/reviewer color (tradeoffs, follow-up, rollout,
-  edge cases, risks, or context from prior discussion).
+- Include maintainer/reviewer color (tradeoffs, rollout, edge cases, risks,
+  or context from prior discussion) only when it changes how someone reviews,
+  rolls out, or later uses the change. Pick the one or two items that do;
+  this is not a checklist to fill. Follow-ups get one line, or none.
 
 ## Length discipline
 
-Default to under 2 KB. GitHub's hard cap on the PR body is ~256 KB; you should
-be nowhere near it. Anti-patterns:
+Default to under 2 KB of prose you wrote; a repo template's boilerplate
+doesn't count against it. GitHub's hard cap on the PR body is ~256 KB; you
+should be nowhere near it. Anti-patterns:
 
 - File/test enumeration ("modified X.go, added 5 tests, BUILD.bazel updated")
   — the diff already shows this.
+- Research logs: per-repo or per-system lists of everywhere you looked, how
+  you searched, and what you didn't check. State the conclusion instead.
 - Pre/post-condition lists summarizing what changed mechanically.
 - "What to spot-check" filler — reviewers know how to read a diff.
 - Pasting more than ~50 KB of raw evidence inline (logs, captures, eval

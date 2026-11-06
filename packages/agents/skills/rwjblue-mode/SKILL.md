@@ -127,8 +127,9 @@ under the user's name.
 - Write as the user, not "we", unless it is a team voice.
 - Make it standalone. Don't cite the chat, private conversations, or the
   draft's own revision history.
-- Keep verification caveats in your report to the user. Don't put
-  "limitations" or "not validated" sections in shared docs or PR bodies.
+- Keep verification caveats and the investigation trail in your report to
+  the user. Don't put "limitations" or "not validated" sections, or a log of
+  everywhere you searched, in shared docs or PR bodies.
 - Review comments propose a path forward, not only what is wrong. Follow
   `../pr-review/SKILL.md`.
 - For Slack, follow `../copy-for-slack/SKILL.md`.
