@@ -67,16 +67,9 @@ could not run and why; never imply verification that did not happen.
 
 ## 3. Write actionable comments
 
-Start every finding with one of these exact prefixes:
-
-- `1/5 (nit, non-blocking)`
-- `2/5 (minor preference, non-blocking)`
-- `3/5 (strong opinion: non-blocking)`
-- `4/5 (serious issue: blocking)`
-- `5/5 (fundamental issue: blocking)`
-
-Follow the prefix with a colon, the issue and its consequence, and a concrete
-change or test. Keep each comment to one finding, usually 2–4 short sentences.
+Prefix every finding with the scale in `../severity-scale/SKILL.md`. Read it in
+full; it owns the exact prefixes and when a finding may be blocking. Keep each
+comment to one finding, usually 2–4 short sentences.
 Use natural language and contractions where they fit. Skip praise sandwiches,
 robotic headings, vague questions, and a tutorial on concepts the author knows.
 If the resolution genuinely needs a human decision, name that decision rather
@@ -88,10 +81,8 @@ Example:
 > stored ID. A caller can receive an ID that immediately fails on its next read.
 > Please return the stored ID and add a read → returned ID → lookup test.
 
-Use blocking severities for concrete issues that need resolution before landing,
-not personal preferences. Do not pad the review with low-value nits or invent a
-finding for every PR. Keep evidence with the comment, but link lengthy logs or
-reproductions instead of pasting them.
+Keep evidence with the comment, but link lengthy logs or reproductions instead
+of pasting them.
 
 ## 4. Save pending reviews safely
 
