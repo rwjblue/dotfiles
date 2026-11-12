@@ -3,7 +3,9 @@ name: commit-message
 description: >-
   Draft a commit message that matches this repo's style. Use when writing or
   rewriting a git or jj commit message, including conventional commits, subject
-  and body, confirm vs auto, and what to cite. VCS-agnostic; does not create
+  and body, confirm vs auto, squash and amend messages, what to cite, and the
+  repo-settings lookup (AGENTS.local.md, CLAUDE.local.md, AGENTS.md) that other
+  skills share. VCS-agnostic; does not create
   the commit. Callers such as jj-commit load this skill for the prose, then
   create the commit themselves.
 argument-hint: "[optional: brief description of changes]"
@@ -27,15 +29,33 @@ Skills cannot import each other. A caller should:
 
 Then follow this file in full. Do not improvise the message.
 
+## Repo settings
+
+Repo settings are `key: value` lines in Markdown files at the repo root.
+Check these files in order and use the first one that sets the key:
+
+1. `AGENTS.local.md`
+2. `CLAUDE.local.md`
+3. `AGENTS.md`
+
+The two local files are globally gitignored per-checkout overrides, so a
+repo I don't own can still get my preferences without a commit. They don't
+exist in a fresh linked git worktree, so when working in one, also check
+the main checkout's root
+(`dirname "$(git rev-parse --path-format=absolute --git-common-dir)"`)
+before falling back to `AGENTS.md`. In a secondary jj workspace, check
+`jj workspace root --name default` the same way.
+
+Other skills read their own keys with this same lookup.
+
 ## Commit mode
 
 Determine mode in this order:
 
 1. If `$ARGUMENTS` contains `--auto` or `--yes`, mode is `auto`.
 2. Else if `$ARGUMENTS` contains `--confirm`, mode is `confirm`.
-3. Else check `AGENTS.md` at repo root for a line:
-   `commit-message-default: auto|confirm`
-   or the older alias `jj-commit-default: auto|confirm`
+3. Else read the repo setting `commit-message-default: auto|confirm`, or
+   the older alias `jj-commit-default`, using the lookup above.
 4. Else default to `confirm`.
 
 Remove mode flags from `$ARGUMENTS` before using the remaining text as the
@@ -100,6 +120,22 @@ Based on the diff, the user's hint, and the observed style.
 
 The message should look like it belongs with the other commits in the repo.
 
+### Squashing or amending
+
+When several commits are squashed into one, or a change is amended into an
+existing commit, the message describes the commit's whole change, not the
+latest delta. The reason: that message becomes the squash-merge message on
+trunk, so a reader there sees only the final change.
+
+- Squashing: write a fresh message from the combined diff. Don't
+  concatenate the old messages or list them as bullets.
+- Amending: start from the existing message. Keep the subject unless the
+  commit's scope changed, and fix the body only where it no longer matches
+  the code.
+- Never add "Address review feedback", "Fix lint", or "Also fix X" lines,
+  and don't list the fixes that were folded in. That history belongs in the
+  PR conversation.
+
 ## 4. Confirm with the user (conditional)
 
 If mode is `confirm`, present the proposed message and ask:
@@ -109,6 +145,9 @@ If mode is `confirm`, present the proposed message and ask:
 - **See diff again** -- re-show the diff
 
 If they want to edit, loop until they approve.
+
+An amend that leaves the message unchanged needs no confirmation in either
+mode.
 
 If mode is `auto`, skip confirmation. Still show the final message before the caller creates the commit.
 

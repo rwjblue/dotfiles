@@ -34,7 +34,8 @@ How to load it (first that works):
 3. Read `~/.agents/skills/commit-message/SKILL.md`.
 
 Pass `$ARGUMENTS` through. `commit-message-default` and the older
-`jj-commit-default` in `AGENTS.md` are both valid.
+`jj-commit-default` are both valid, in any file `commit-message`'s
+repo-settings lookup reads.
 
 ## Process
 
