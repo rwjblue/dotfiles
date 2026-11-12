@@ -25,6 +25,11 @@ Create or update a GitHub pull request from the current jj branch.
 
 Load these rather than copying their rules:
 
+**`commit-shape`** for when to squash, amend, or add a commit:
+
+1. Invoke `commit-shape` (Cursor / Claude Code: `/commit-shape`; Pi: `/skill:commit-shape`) or read `../commit-shape/SKILL.md`.
+2. It reads the `pr-commit-shape` repo setting. The steps below assume the default, `single`: one commit per PR, squashed at creation and amended after. Under `multi`, or one of its exceptions, follow `commit-shape` instead of the squash steps here.
+
 **`commit-message` via `jj-commit`** when you need a new commit:
 
 1. Invoke `jj-commit` (Cursor / Claude Code: `/jj-commit`; Pi: `/skill:jj-commit`) or read `../jj-commit/SKILL.md`.
@@ -85,18 +90,21 @@ If the bookmark is **behind** `@-` (new commits exist beyond the bookmark), ask 
 - **Update existing PR** (Recommended) - move the bookmark forward to include new commits
 - **Create stacked PR** - keep the bookmark where it is and create a new PR targeting it
 
-If **Update existing PR**: run `jj tug` to move the existing bookmark forward to the nearest pushable commit, then continue to U3.
+If **Update existing PR**: squash the new commits into the PR's commit so it stays a single commit, then continue to U3:
+
+```bash
+jj squash --from '<bookmark-name>..@-' --into '<bookmark-name>' --use-destination-message
+```
+
+If the PR's message no longer describes the whole change, redraft it with `commit-message` ("Squashing or amending") and apply it with `jj describe -r '<bookmark-name>' --stdin`.
 If **Create stacked PR**: jump to CREATE mode (C1), passing the existing bookmark name as the stacked base branch.
 
 ### U3. Handle Changes
 
 **If `@` has changes:**
-Ask the user to choose:
-- **Squash into last commit** (Recommended) - amend the previous commit
-- **Create new commit** - add as a separate commit
+Run `jj squash` to amend them into the PR's commit. Don't ask. If the message no longer describes the whole change, redraft it as in U2.
 
-If squash: run `jj squash`
-If new commit: load `jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward
+Create a separate commit only when the user asks for one or `commit-shape` says to: load `jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward.
 
 **If `@` is empty:**
 The changes are already committed. Proceed to push.
@@ -173,6 +181,16 @@ If the amendment changed *what* the PR does (not just *how*), load `pr-descripti
 ### C1. Handle Uncommitted Changes
 
 If `@` has changes, load `jj-commit` first. This uses `jj commit` (not `jj describe`) so that `@` becomes empty and the committed change lands at `@-`.
+
+### C1b. Squash to one commit
+
+The new PR's range is `trunk()..@-`, or `<stacked-base-bookmark>..@-` for a stacked PR. If it holds more than one commit, squash them into one before creating the bookmark, with a message for the combined change from `commit-message` ("Squashing or amending"):
+
+```bash
+jj squash --from '<base>..@-' --into 'roots(<base>..@-)' -m "$(cat /tmp/commit-msg.txt)"
+```
+
+In a stack being created all at once, run this per PR, bottom-up, with each PR's own range.
 
 ### C2. Create Bookmark
 

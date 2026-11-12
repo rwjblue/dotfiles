@@ -79,4 +79,9 @@ jj commit <paths> -m "<approved message>"
 Use `jj commit` (not `jj describe`) so that `@` advances to a new empty
 revision, ready for more work. Never `git commit` in a colocated jj repo.
 
+Local commits are free, but a PR holds one commit (`../commit-shape/SKILL.md`).
+If `@-` is an open PR's commit and this change belongs to that PR, run
+`jj squash` instead of creating a commit on top. `jj-pr` squashes any
+leftover local commits when it pushes.
+
 Confirm success to the user.

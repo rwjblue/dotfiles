@@ -88,7 +88,8 @@ These hold even when everything else is autonomous:
   follow-up PR instead of growing this one.
 - Update the README, docs, and task help in the same change as the code.
 - For multi-part features, write a short design spec, then a task-by-task
-  plan, then implement test first, one commit per task.
+  plan, then implement test first, one local commit per task. Squash them
+  when opening the PR, or make each task its own PR in a stack.
 
 ## Source control
 
@@ -103,8 +104,12 @@ These hold even when everything else is autonomous:
 - Before drafting any commit message, PR title, or PR body, read
   `../commit-message/SKILL.md` and `../pr-description/SKILL.md` in full. Don't
   improvise a BLUF or conventional-commit format from habit.
-- Commit in small logical steps. Once pushing is authorized in a thread, push
-  as you go, including later fixes, so CI starts early.
+- Commit in small logical steps while work is local. Once a PR opens, it
+  holds one commit, and every later fix amends it. Follow
+  `../commit-shape/SKILL.md` for the squash, the amend, the lease push, and
+  the exceptions.
+- Once pushing is authorized in a thread, push each amend as you go so CI
+  starts early.
 - Aim for PRs under about 1,000 changed lines.
 - In a stack, keep one commit per PR and put each fix in the PR that
   introduced the code, bottom-up. Push each fixed PR as soon as it is ready
@@ -114,9 +119,10 @@ These hold even when everything else is autonomous:
 - Push one branch or bookmark at a time and verify each push. Force-push only
   with a lease on the observed SHA.
 - Pass PR bodies with `--body-file`, never as an interpolated string.
-- Respect the repo's confirm or auto mode (`commit-message-default` in
-  `AGENTS.md`). Inside an invoked autonomous workflow, the workflow's
-  authority wins. Show the final text and keep going.
+- Respect the repo's confirm or auto mode (`commit-message-default`, read
+  through `commit-message`'s repo-settings lookup). Inside an invoked
+  autonomous workflow, the workflow's authority wins. Show the final text and
+  keep going.
 
 ## Prose written for the user
 
