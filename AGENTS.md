@@ -45,6 +45,11 @@
 - PRs should include a brief summary, the tasks/commands run, and user-impacting changes.
 
 commit-message-default: auto
+pr-commit-shape: single
+
+- Agent skills read `key: value` settings like these from `AGENTS.local.md`, then `CLAUDE.local.md`, then this file. The local files are globally gitignored per-checkout overrides.
+- `pr-commit-shape: single` (the default) means a PR holds one commit: squash when opening it, then amend every later change. `multi` keeps a PR's logical commits. See `packages/agents/skills/commit-shape/`.
+- `packages/agents/cursor-commit-shape-rule.md` is the source of the Cursor user rule that applies this policy to local and Cloud Agents.
 
 ## Security & Configuration Notes
 - This is a public repo: do not add private keys, secrets, or work-specific settings here.
