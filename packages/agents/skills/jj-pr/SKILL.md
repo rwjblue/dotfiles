@@ -18,7 +18,7 @@ Create or update a GitHub pull request from the current jj branch.
 ## Signing Policy (Mandatory)
 
 - Commit signing for pushed changes is required in this environment.
-- Never bypass signing via config overrides (for example `--config git.sign-on-push=false`) or by changing config to disable signing.
+- Never bypass signing via config overrides (for example `--config 'revsets.git-sign-on-push="none()"'` or the deprecated `--config git.sign-on-push=false`) or by changing config to disable signing.
 - If pushing fails because signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
 
 ## Related skills

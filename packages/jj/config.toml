@@ -19,7 +19,6 @@ diff-editor = ":builtin"
 [git]
 # https://jj-vcs.github.io/jj/latest/config/#set-of-private-commits
 private-commits = 'description(glob:"private:*")'
-sign-on-push = true
 colocate = true
 
 # by default `jj git fetch` will fetch from `origin` (just like `git`), but
@@ -28,6 +27,13 @@ colocate = true
 # 'usptream']` `jj git fetch` will error in repos with only an `origin`, so we
 # just set it to `glob:*`
 fetch = ["glob:*"]
+
+# Sign my unsigned commits when they are pushed (paired with
+# `signing.behavior = "drop"` below). Replaces the deprecated
+# `git.sign-on-push = true` (jj 0.47.1+); requires jj >= 0.47.1.
+# https://docs.jj-vcs.dev/latest/config/#automatically-signing-commits
+[revsets]
+git-sign-on-push = "~signed() & mine()"
 
 # See https://github.com/jj-vcs/jj/discussions/3750
 [signing]

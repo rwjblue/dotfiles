@@ -15,7 +15,7 @@ Uses **Jujutsu (jj)** for version control with git backend. Key differences from
 ## Signing Policy (Mandatory)
 
 - Commit signing is required for pushable changes in this environment.
-- Never bypass signing by overriding config at command time (for example `--config git.sign-on-push=false` or similar).
+- Never bypass signing by overriding config at command time (for example `--config 'revsets.git-sign-on-push="none()"'`, the deprecated `--config git.sign-on-push=false`, or similar).
 - Never modify repo/user config to disable push signing.
 - If signing fails (for example 1Password/SSH agent issues), stop and ask the user to fix or approve the next step; do not push unsigned as a workaround.
 
@@ -182,7 +182,7 @@ jj rebase-private     # Later, rebase private commits onto @
 ## Configuration Notes
 
 - **Colocated repos**: `git.colocate = true` -- all repos are colocated, git commands work alongside jj
-- **Signing**: `behavior = "drop"` locally (commits may be unsigned), but `sign-on-push = true` signs commits when pushed via 1Password SSH agent. Do not disable this for pushes.
+- **Signing**: `behavior = "drop"` locally (commits may be unsigned), but `revsets.git-sign-on-push = "~signed() & mine()"` signs commits when pushed via 1Password SSH agent. Do not disable this for pushes.
 - **Auto push bookmark**: Creates `rwjblue/push-<change_id>` on push when no bookmark exists
 - **Fetch from all remotes**: `git.fetch = ["glob:*"]` -- handles fork workflows where `origin` and `upstream` both exist
 - **Delta pager**: Used only for `jj diff` (scoped config), not for other commands to avoid terminal clearing
