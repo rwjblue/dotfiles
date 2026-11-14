@@ -27,6 +27,10 @@ Uses **Jujutsu (jj)** for version control with git backend. Key differences from
 - `immutable()` - Commits that shouldn't be modified
 - Revisions use short change IDs (e.g., `xy`, `zk`, `trunk()`)
 
+## Workspaces
+
+For an isolated checkout, use `jj workspace add --colocate <destination>`.
+
 ## Most Used Commands
 
 ### Status & Viewing (daily drivers)
@@ -181,7 +185,6 @@ jj rebase-private     # Later, rebase private commits onto @
 
 ## Configuration Notes
 
-- **Colocated repos**: `git.colocate = true` -- all repos are colocated, git commands work alongside jj
 - **Signing**: `behavior = "drop"` locally (commits may be unsigned), but `revsets.git-sign-on-push = "~signed() & mine()"` signs commits when pushed via 1Password SSH agent. Do not disable this for pushes.
 - **Auto push bookmark**: Creates `rwjblue/push-<change_id>` on push when no bookmark exists
 - **Fetch from all remotes**: `git.fetch = ["glob:*"]` -- handles fork workflows where `origin` and `upstream` both exist

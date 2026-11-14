@@ -92,16 +92,14 @@ These hold even when everything else is autonomous:
 
 ## Source control
 
-- Do substantial work in a new jj workspace or git worktree. Leave the
-  user's default checkout alone, and preserve edits you find there rather
-  than consuming them. Once the work merges, remove the workspaces and
-  worktrees you created.
-- In Cursor, use a git worktree (`git worktree add`), not a jj workspace,
-  and commit there with git. A secondary jj workspace has no `.git`, so
-  Cursor can't find the remote and can't launch Cloud Agents from it.
-- In a jj repo, use jj, never `git commit`. Follow `../jj/SKILL.md` and
-  `../jj-commit/SKILL.md`. Detect jj from `jj root`, not from a `.git`
-  directory.
+- Follow the user's checkout preference. If none is configured, use an
+  isolated checkout for substantial work. Preserve existing edits. Once the
+  work merges, remove the workspaces and worktrees you created.
+- For isolation, follow the jj skill in a jj workspace. Use
+  `git worktree add` for Git-only repos or when jj is unavailable, as in
+  Cursor Cloud Agents.
+- In a jj workspace, use jj for commits. Follow `../jj/SKILL.md` and
+  `../jj-commit/SKILL.md`. Use `jj root` to identify the workspace.
 - Before drafting any commit message, PR title, or PR body, read
   `../commit-message/SKILL.md` and `../pr-description/SKILL.md` in full. Don't
   improvise a BLUF or conventional-commit format from habit.

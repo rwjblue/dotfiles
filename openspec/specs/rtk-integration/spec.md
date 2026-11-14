@@ -43,23 +43,21 @@ The system SHALL provide `packages/claude/RTK.md` with brief instructions tellin
 - **THEN** it learns that `rtk proxy <cmd>` bypasses compression and that full output is available in the tee directory
 
 ### Requirement: Codex RTK integration
-The system SHALL provide `packages/codex/AGENTS.md` and `packages/codex/RTK.md` with instructions for Codex to prefix shell commands with `rtk`.
+The system SHALL link `~/.codex/AGENTS.md` to the shared `packages/agents/AGENTS.md` via `mise run dot:install`.
 
-#### Scenario: AGENTS.md references RTK.md
-- **WHEN** Codex reads AGENTS.md
-- **THEN** it finds an `@RTK.md` reference
-
-#### Scenario: RTK.md instructs prefixing
-- **WHEN** Codex reads RTK.md
-- **THEN** it learns to prefix shell commands with `rtk` and that `rtk proxy` bypasses compression
+#### Scenario: Shared instructions cover RTK
+- **WHEN** Codex reads its global instructions
+- **THEN** it learns to prefix shell commands with `rtk` when available and to use `rtk proxy` for unfiltered output
 
 ### Requirement: Easy rollback
-Disabling RTK SHALL require only removing the hook entry from settings.json (Claude Code) or the RTK instructions from AGENTS.md (Codex). No other config changes needed.
+Removing the RTK instructions from the shared AGENTS.md SHALL disable manual
+prefixing guidance. Removing the hook entry from Claude Code settings.json
+SHALL disable automatic rewriting.
 
-#### Scenario: Disable for Claude Code
+#### Scenario: Disable automatic rewriting for Claude Code
 - **WHEN** the PreToolUse hook entry is removed from settings.json
-- **THEN** Claude Code sessions work normally without RTK, with no errors or missing config references
+- **THEN** Claude Code no longer rewrites Bash commands through RTK
 
 #### Scenario: Disable for Codex
-- **WHEN** RTK references are removed from AGENTS.md
+- **WHEN** RTK instructions are removed from the shared AGENTS.md
 - **THEN** Codex sessions work normally without RTK

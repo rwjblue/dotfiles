@@ -97,14 +97,17 @@ link_dotfile "packages/claude/settings.json"                    "$HOME/.claude/s
 link_dotfile "packages/claude/hooks/"                           "$HOME/.claude/hooks"
 link_dotfile "packages/claude/RTK.md"                           "$HOME/.claude/RTK.md"
 link_dotfile "packages/agents/skills/"                          "$HOME/.claude/skills"
+link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.claude/CLAUDE.md"
 link_dotfile "packages/agents/skills/"                          "$HOME/.agents/skills"
+link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.agents/AGENTS.md"
 link_dotfile "packages/codex/skills/"                           "$HOME/.codex/skills"
-link_dotfile "packages/codex/AGENTS.md"                         "$HOME/.codex/AGENTS.md"
+link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.codex/AGENTS.md"
 link_dotfile "packages/codex/RTK.md"                            "$HOME/.codex/RTK.md"
 link_dotfile "packages/rtk/config.toml"                         "$HOME/.config/rtk/config.toml"
 link_dotfile "packages/agent-browser/config.json"               "$HOME/.agent-browser/config.json"
 link_dotfile "packages/opencode/opencode.json"                  "$HOME/.config/opencode/opencode.json"
 link_dotfile "packages/pi/agent/settings.json"                  "$HOME/.pi/agent/settings.json"
+link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.pi/agent/AGENTS.md"
 
 # macOS-specific dotfiles
 if [[ "$OSTYPE" == darwin* ]]; then
