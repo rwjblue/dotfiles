@@ -32,7 +32,7 @@ usage = "latest"
 "npm:agent-browser" = "latest"
 "github:docker/compose" = "latest"
 # pinned — run /rtk-evaluate before upgrading
-"aqua:rtk-ai/rtk" = "0.34.3"
+"github:rtk-ai/rtk" = { version = "1.2.0", matching_regex = "^rtk-oss-.*[.](tar[.]gz|zip)$" }
 
 # core tools
 go = "latest"

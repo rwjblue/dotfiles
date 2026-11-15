@@ -1,23 +1,19 @@
 # RTK - Rust Token Killer
 
-RTK compresses shell output for token savings. Prefix shell commands with `rtk` to get compressed output.
+Run shell commands directly by default. Use RTK for supported commands when
+their output is verbose and a summary is enough.
 
 ## Usage
 
 ```bash
-# Instead of:
-git status
-git log --oneline -20
-
-# Use:
+# Use compressed output for a quick overview:
 rtk git status
 rtk git log --oneline -20
+
+# Run commands directly when you need details or exact output:
+git diff
+rg -n 'pattern' src
 ```
 
-## Bypassing Compression
-
-Use `rtk proxy <cmd>` to run a command without filtering when you need full output.
-
-## Full Output Recovery
-
-Raw output is saved to `~/.local/share/rtk/tee/`. Check there if compressed output seems incomplete.
+If RTK prints a recovery path, use it to inspect the saved output. Otherwise,
+rerun a read-only command directly if you need the original output.

@@ -168,8 +168,8 @@ under the user's name.
   or a cloud agent can run cold.
 - Start with `diff --stat`. Skip the full diff when this session already wrote
   the change; read it only for unfamiliar work.
-- Use `rtk` for noisy commands where it's installed. Save large logs to a file
-  and read focused slices.
+- Use `rtk` for supported noisy commands when a summary is enough. Save large
+  logs to a file and read focused slices.
 
 ## Skills and dotfiles
 

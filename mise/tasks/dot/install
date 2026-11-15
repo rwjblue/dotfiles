@@ -103,11 +103,17 @@ link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.agents/A
 link_dotfile "packages/codex/skills/"                           "$HOME/.codex/skills"
 link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.codex/AGENTS.md"
 link_dotfile "packages/codex/RTK.md"                            "$HOME/.codex/RTK.md"
-link_dotfile "packages/rtk/config.toml"                         "$HOME/.config/rtk/config.toml"
 link_dotfile "packages/agent-browser/config.json"               "$HOME/.agent-browser/config.json"
 link_dotfile "packages/opencode/opencode.json"                  "$HOME/.config/opencode/opencode.json"
 link_dotfile "packages/pi/agent/settings.json"                  "$HOME/.pi/agent/settings.json"
 link_dotfile "packages/agents/AGENTS.md"                        "$HOME/.pi/agent/AGENTS.md"
+
+# RTK uses the platform's config directory.
+if [[ "$OSTYPE" == darwin* ]]; then
+  link_dotfile "packages/rtk/config.toml"                       "$HOME/Library/Application Support/rtk/config.toml"
+else
+  link_dotfile "packages/rtk/config.toml"                       "$HOME/.config/rtk/config.toml"
+fi
 
 # macOS-specific dotfiles
 if [[ "$OSTYPE" == darwin* ]]; then

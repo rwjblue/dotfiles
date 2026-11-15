@@ -50,13 +50,12 @@ Then decide how much more context you need:
   session context. Do not re-read the full diff.
 
 - **Out-of-session changes** — If the working copy contains changes you have no
-  context for (fresh session, manual edits, external tool), run `rtk jj diff`
-  to understand what changed semantically. RTK compresses the output; full raw
-  diff is in `~/.local/share/rtk/tee/` if needed.
+  context for (fresh session, manual edits, external tool), run `jj diff` to
+  understand what changed. Use a hook bypass if needed to see the full diff.
 
 If the user asked to commit only specific files or paths, scope both the stat
-and any full diff to those paths (`jj diff --stat <paths>`, `rtk jj diff
-<paths>`) and treat the request as a scoped commit. Do not include unrelated
+and any full diff to those paths (`jj diff --stat <paths>`, `jj diff <paths>`)
+and treat the request as a scoped commit. Do not include unrelated
 working-copy changes.
 
 If there are no changes (empty diff), inform the user there's nothing to commit.

@@ -9,7 +9,9 @@
 
 ## Shell commands
 
-- Prefix shell commands with `rtk` when it is available and no hook already
-  applies it.
-- Use `rtk proxy <command>` to get unfiltered output. RTK saves raw output in
-  `~/.local/share/rtk/tee/`.
+- Run shell commands directly by default. Use `rtk` for supported commands
+  with noisy output when a summary is enough. Avoid wrapping commands a hook
+  already rewrites.
+- Use native commands when exact output matters, such as for scripts, diffs,
+  and debugging. If a hook would rewrite the command, use
+  `rtk bypass <command>`.

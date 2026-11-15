@@ -1,19 +1,22 @@
 # RTK - Rust Token Killer
 
-RTK is active. All Bash commands are automatically rewritten through RTK via a PreToolUse hook for token savings.
+The PreToolUse hook can rewrite supported Bash commands to use RTK for shorter
+output. Claude Code still applies its own permission rules to the command.
 
 ## Bypassing Compression
 
-Use `rtk proxy <cmd>` to run a command without any filtering when you need full unfiltered output.
+Run commands directly by default. Use `rtk bypass <command>` when you need
+exact output and the hook would otherwise rewrite the command.
 
 ## Full Output Recovery
 
-Raw output from all commands is saved to `~/.local/share/rtk/tee/`. Check there if compressed output seems incomplete.
+If RTK prints a recovery path, use it to inspect the saved output. Otherwise,
+use `rtk bypass` to rerun a read-only command and get its original output.
 
 ## Meta Commands
 
 ```bash
 rtk gain              # Show token savings analytics
 rtk gain --history    # Show command usage history with savings
-rtk proxy <cmd>       # Execute raw command without filtering
+rtk bypass git diff   # Show the original Git diff
 ```

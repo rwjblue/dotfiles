@@ -47,7 +47,7 @@ If the caller already summarized the diff, do not re-read it. Otherwise:
 
 - Prefer a stat first (`jj diff --stat` in a colocated jj repo, else `git diff --stat` / `git diff --cached --stat`).
 - **In-session changes:** the conversation already explains why the files changed. The stat is enough. Do not re-read the full diff.
-- **Out-of-session changes:** you have no context (fresh session, manual edits, external tool). Read a compressed or full diff. In a jj repo, `rtk jj diff` (raw diff in `~/.local/share/rtk/tee/` if needed). Otherwise `git diff` / `git diff --cached`.
+- **Out-of-session changes:** you have no context (fresh session, manual edits, external tool). Read `jj diff` in a jj repo, or `git diff` / `git diff --cached` in a Git repo. Use a hook bypass if needed to see the full diff.
 
 If the user asked to commit only specific paths, scope the stat and diff to those paths. Do not include unrelated working-copy changes.
 

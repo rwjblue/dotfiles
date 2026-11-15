@@ -2,11 +2,7 @@
 # RTK Claude Code hook — rewrites Bash commands through RTK for token savings.
 # Requires: rtk >= 0.23.0, jq
 #
-# Exit code protocol for `rtk rewrite`:
-#   0 + stdout  Rewrite found → auto-allow
-#   1           No RTK equivalent → pass through unchanged
-#   2           Deny rule matched → pass through
-#   3 + stdout  Ask rule matched → rewrite but prompt user
+# RTK returns rewrites on exit 0 or 3. Claude Code decides whether to run them.
 
 if ! command -v jq &>/dev/null; then
   exit 0
@@ -17,47 +13,29 @@ if ! command -v rtk &>/dev/null; then
 fi
 
 INPUT=$(cat)
-CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty')
-
-if [ -z "$CMD" ]; then
+if ! CMD=$(jq -ers '
+  select(length == 1) | .[0].tool_input.command
+  | select(type == "string")
+  | select(test("\\S") and (contains("\u0000") | not))
+' <<<"$INPUT" 2>/dev/null); then
   exit 0
 fi
 
-REWRITTEN=$(rtk rewrite "$CMD" 2>/dev/null)
-EXIT_CODE=$?
-
-case $EXIT_CODE in
-  0)
-    [ "$CMD" = "$REWRITTEN" ] && exit 0
+# Keep the rewriter on its default approval path regardless of the shell environment.
+REWRITE_STATUS=0
+REWRITTEN=$(env -u RTK_REWRITE_HOST rtk rewrite -- "$CMD" 2>/dev/null) || REWRITE_STATUS=$?
+case "$REWRITE_STATUS" in
+  0|3)
     ;;
-  1|2|*)
-    [ "$EXIT_CODE" -ne 3 ] && exit 0
-    ;;
-  3)
+  *)
+    exit 0
     ;;
 esac
 
-ORIGINAL_INPUT=$(echo "$INPUT" | jq -c '.tool_input')
-UPDATED_INPUT=$(echo "$ORIGINAL_INPUT" | jq --arg cmd "$REWRITTEN" '.command = $cmd')
-
-if [ "$EXIT_CODE" -eq 3 ]; then
-  jq -n \
-    --argjson updated "$UPDATED_INPUT" \
-    '{
-      "hookSpecificOutput": {
-        "hookEventName": "PreToolUse",
-        "updatedInput": $updated
-      }
-    }'
-else
-  jq -n \
-    --argjson updated "$UPDATED_INPUT" \
-    '{
-      "hookSpecificOutput": {
-        "hookEventName": "PreToolUse",
-        "permissionDecision": "allow",
-        "permissionDecisionReason": "RTK auto-rewrite",
-        "updatedInput": $updated
-      }
-    }'
+if [[ "$CMD" == "$REWRITTEN" || ! "$REWRITTEN" =~ [^[:space:]] ]]; then
+  exit 0
 fi
+
+jq -c --arg cmd "$REWRITTEN" '.tool_input.command = $cmd | {
+  hookSpecificOutput: {hookEventName: "PreToolUse", updatedInput: .tool_input}
+}' <<<"$INPUT"
