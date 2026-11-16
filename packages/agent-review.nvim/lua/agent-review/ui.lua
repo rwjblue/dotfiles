@@ -16,16 +16,15 @@ end
 ---@param srow integer 1-based start row
 ---@param erow integer 1-based end row
 ---@param body string
----@param root? string repo root (defaults to store.repo_root())
+---@param root? string repo root (defaults to the buffer's repo)
 ---@return table|nil comment, string|nil err
 function M._make_comment(bufnr, srow, erow, body, root)
-  root = root or store.repo_root()
-  if not root then return nil, "not in a repo" end
   local name = vim.api.nvim_buf_get_name(bufnr)
   if name == "" then return nil, "buffer has no name" end
-  local prefix = root .. "/"
-  if name:sub(1, #prefix) ~= prefix then return nil, "buffer not under repo root" end
-  local rel = name:sub(#prefix + 1)
+  root = root or store.repo_root(bufnr)
+  if not root then return nil, "not in a repo" end
+  local rel = store.relative_path(root, name)
+  if not rel then return nil, "buffer not under repo root" end
   local snippet_lines = vim.api.nvim_buf_get_lines(bufnr, srow - 1, erow, false)
   return {
     file = rel,
@@ -36,10 +35,16 @@ function M._make_comment(bufnr, srow, erow, body, root)
   }
 end
 
----Find the comment whose anchored line is at the cursor (current buffer).
----@return integer|nil id
-local function comment_id_at_cursor()
-  return render.comment_id_at(0, vim.api.nvim_win_get_cursor(0)[1] - 1)
+local function target_at_cursor(bufnr)
+  local id = render.comment_id_at(bufnr, vim.api.nvim_win_get_cursor(0)[1] - 1)
+  if not id then return end
+  local root = store.repo_root(bufnr)
+  local file = root and store.relative_path(root, vim.api.nvim_buf_get_name(bufnr))
+  if file then return id, root, file end
+end
+
+local function no_comment_here()
+  vim.notify("agent-review: no comment here", vim.log.levels.INFO)
 end
 
 local function prompt(default, cb)
@@ -54,62 +59,68 @@ local function prompt(default, cb)
   end
 end
 
----Add a comment on the current line.
-function M.add()
-  local row = vim.api.nvim_win_get_cursor(0)[1]
-  local root = store.repo_root()
+---Add a comment spanning the given 1-based lines in the active buffer.
+function M.add_range(srow, erow)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local root = store.repo_root(bufnr)
   if not root then return vim.notify("agent-review: not in a repo", vim.log.levels.WARN) end
+  local comment, err = M._make_comment(bufnr, srow, erow, "", root)
+  if not comment then return vim.notify("agent-review: " .. err, vim.log.levels.WARN) end
   prompt(nil, function(body)
     if rejects_marker(body) then return end
-    local c, err = M._make_comment(0, row, row, body, root)
-    if not c then return vim.notify("agent-review: " .. err, vim.log.levels.WARN) end
-    store.add(root, c)
-    render.buffer(0)
+    comment.body = body
+    store.add(root, comment)
+    render.buffer(bufnr)
   end)
 end
 
----Add a comment spanning the last visual selection.
+---Add a comment on the current line.
+function M.add()
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  M.add_range(row, row)
+end
+
+---Add a comment spanning the active visual selection.
 function M.add_visual()
-  local srow = vim.fn.line("'<")
-  local erow = vim.fn.line("'>")
-  local root = store.repo_root()
-  if not root then return vim.notify("agent-review: not in a repo", vim.log.levels.WARN) end
-  prompt(nil, function(body)
-    if rejects_marker(body) then return end
-    local c, err = M._make_comment(0, srow, erow, body, root)
-    if not c then return vim.notify("agent-review: " .. err, vim.log.levels.WARN) end
-    store.add(root, c)
-    render.buffer(0)
-  end)
+  local start = vim.fn.getpos("v")[2]
+  local cursor = vim.api.nvim_win_get_cursor(0)[1]
+  M.add_range(math.min(start, cursor), math.max(start, cursor))
 end
 
 ---Edit the comment under the cursor.
 function M.edit()
-  local id = comment_id_at_cursor()
-  if not id then return vim.notify("agent-review: no comment here", vim.log.levels.INFO) end
-  local root = store.repo_root()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local id, root, file = target_at_cursor(bufnr)
+  if not id then return no_comment_here() end
   local existing
   for _, c in ipairs(store.load(root)) do
-    if c.id == id then existing = c; break end
+    if c.id == id and c.file == file then existing = c; break end
   end
-  prompt(existing and existing.body, function(body)
+  if not existing then
+    render.buffer(bufnr)
+    return no_comment_here()
+  end
+  prompt(existing.body, function(body)
     if rejects_marker(body) then return end
-    store.update(root, id, { body = body })
-    render.buffer(0)
+    local updated = store.update(root, id, { body = body }, file)
+    render.buffer(bufnr)
+    if not updated then no_comment_here() end
   end)
 end
 
 ---Delete the comment under the cursor.
 function M.delete()
-  local id = comment_id_at_cursor()
-  if not id then return vim.notify("agent-review: no comment here", vim.log.levels.INFO) end
-  store.delete(store.repo_root(), id)
-  render.buffer(0)
+  local bufnr = vim.api.nvim_get_current_buf()
+  local id, root, file = target_at_cursor(bufnr)
+  if not id then return no_comment_here() end
+  local deleted = store.delete(root, id, file)
+  render.buffer(bufnr)
+  if not deleted then no_comment_here() end
 end
 
 ---Open a snacks picker of all comments.
 function M.list()
-  local root = store.repo_root()
+  local root = store.repo_root(0)
   if not root then return end
   local comments = store.load(root)
   local items = {}

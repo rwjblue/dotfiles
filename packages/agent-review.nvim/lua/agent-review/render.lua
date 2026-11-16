@@ -5,36 +5,37 @@ local M = {}
 
 M.ns = vim.api.nvim_create_namespace("agent-review")
 
----@param root string
----@param bufname string absolute buffer path
----@return string|nil repo-relative path
-local function rel_path(root, bufname)
-  if bufname == "" then return nil end
-  local prefix = root .. "/"
-  if bufname:sub(1, #prefix) == prefix then
-    return bufname:sub(#prefix + 1)
-  end
-  return nil
-end
-
 ---@param bufnr? integer
 function M.clear(bufnr)
   vim.api.nvim_buf_clear_namespace(bufnr or 0, M.ns, 0, -1)
+end
+
+---@param root string
+function M.clear_repo(root)
+  for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_is_loaded(bufnr)
+      and #vim.api.nvim_buf_get_extmarks(bufnr, M.ns, 0, -1, { limit = 1 }) > 0
+      and store.repo_root(bufnr) == root
+    then
+      M.clear(bufnr)
+    end
+  end
 end
 
 ---Resolve + render all comments for the buffer's file.
 ---@param bufnr? integer
 function M.buffer(bufnr)
   bufnr = bufnr or vim.api.nvim_get_current_buf()
+  if not vim.api.nvim_buf_is_loaded(bufnr) then return end
+  M.clear(bufnr)
   local name = vim.api.nvim_buf_get_name(bufnr)
-  if name == "" or name:match("^%w+://") then return end
-  local root = store.repo_root()
+  if name == "" then return end
+  local root = store.repo_root(bufnr)
   if not root then return end
-  local rel = rel_path(root, name)
+  local rel = store.relative_path(root, name)
   if not rel then return end
 
   local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
-  M.clear(bufnr)
 
   for _, c in ipairs(store.load(root)) do
     if c.file == rel then

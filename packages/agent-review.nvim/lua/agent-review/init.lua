@@ -10,15 +10,18 @@ local function setup_commands()
   local store = require("agent-review.store")
 
   vim.api.nvim_create_user_command("AgentReviewAdd", function(o)
-    if o.range > 0 then ui.add_visual() else ui.add() end
+    if o.range > 0 then ui.add_range(o.line1, o.line2) else ui.add() end
   end, { range = true, desc = "Add a review comment" })
   vim.api.nvim_create_user_command("AgentReviewEdit", ui.edit, { desc = "Edit comment under cursor" })
   vim.api.nvim_create_user_command("AgentReviewDelete", ui.delete, { desc = "Delete comment under cursor" })
   vim.api.nvim_create_user_command("AgentReviewList", ui.list, { desc = "List review comments" })
   vim.api.nvim_create_user_command("AgentReviewReload", function() render.buffer(0) end, { desc = "Re-render comments" })
   vim.api.nvim_create_user_command("AgentReviewClear", function()
-    local root = store.repo_root()
-    if root then store.clear(root); render.buffer(0) end
+    local root = store.repo_root(0)
+    if root then
+      store.clear(root)
+      render.clear_repo(root)
+    end
   end, { desc = "Clear the active review batch" })
 end
 

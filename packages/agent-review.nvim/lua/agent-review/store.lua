@@ -2,19 +2,51 @@ local format = require("agent-review.format")
 
 local M = {}
 
+local function root_from_command(command, dir)
+  if vim.fn.executable(command[1]) ~= 1 then return nil end
+  local result = vim.system(command, { cwd = dir, text = true }):wait()
+  if result.code ~= 0 or not result.stdout then return nil end
+  local root = result.stdout:gsub("\n$", "")
+  return root ~= "" and root or nil
+end
+
+---@param bufnr? integer Use the buffer's directory when it has a file name.
 ---@return string|nil absolute repo root, or nil if not in a repo
-function M.repo_root()
-  if vim.fn.executable("jj") == 1 then
-    local out = vim.fn.systemlist({ "jj", "root" })
-    if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
-      return out[1]
+function M.repo_root(bufnr)
+  local dir = vim.fn.getcwd()
+  if bufnr then
+    local name = vim.api.nvim_buf_get_name(bufnr)
+    if name:match("^%a[%w+.-]*://") then return nil end
+    if name ~= "" then
+      for parent in vim.fs.parents(name) do
+        local stat = vim.uv.fs_stat(parent)
+        if stat and stat.type == "directory" then
+          dir = parent
+          break
+        end
+      end
     end
   end
-  local out = vim.fn.systemlist({ "git", "rev-parse", "--show-toplevel" })
-  if vim.v.shell_error == 0 and out[1] and out[1] ~= "" then
-    return out[1]
+  return root_from_command({ "jj", "root" }, dir)
+    or root_from_command({ "git", "rev-parse", "--show-toplevel" }, dir)
+end
+
+---@param root string
+---@param name string buffer name
+---@return string|nil repo-relative file path
+function M.relative_path(root, name)
+  local prefix = root:gsub("/$", "") .. "/"
+  if name:sub(1, #prefix) == prefix then
+    return name:sub(#prefix + 1)
   end
-  return nil
+  local dir = vim.fs.dirname(name)
+  dir = dir and vim.uv.fs_realpath(dir)
+  if dir then
+    local resolved = vim.fs.joinpath(dir, vim.fs.basename(name))
+    if resolved:sub(1, #prefix) == prefix then
+      return resolved:sub(#prefix + 1)
+    end
+  end
 end
 
 ---@param root string
@@ -73,29 +105,34 @@ end
 ---@param root string
 ---@param id integer
 ---@param fields table
+---@param file? string restrict the update to this repo-relative path
 ---@return boolean found whether a comment with the given id was updated
-function M.update(root, id, fields)
+function M.update(root, id, fields, file)
   local comments = M.load(root)
   local found = false
   for _, c in ipairs(comments) do
-    if c.id == id then
+    if c.id == id and (not file or c.file == file) then
       for k, v in pairs(fields) do c[k] = v end
       found = true
     end
   end
-  M.save(root, comments)
+  if found then M.save(root, comments) end
   return found
 end
 
 ---@param root string
 ---@param id integer
-function M.delete(root, id)
+---@param file? string restrict the deletion to this repo-relative path
+---@return boolean found whether a comment with the given id was deleted
+function M.delete(root, id, file)
   local comments = M.load(root)
   local kept = {}
   for _, c in ipairs(comments) do
-    if c.id ~= id then table.insert(kept, c) end
+    if c.id ~= id or (file and c.file ~= file) then table.insert(kept, c) end
   end
+  if #kept == #comments then return false end
   M.save(root, kept)
+  return true
 end
 
 ---@param root string
