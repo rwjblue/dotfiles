@@ -34,7 +34,7 @@ while IFS= read -r upgraded_tool; do
 done < <(
   awk '
     /^Upgraded [0-9]+ tools:$/ { capture = 1; next }
-    capture && /^  / { print $1 "@" $NF }
+    capture && /^  / { print $1 }
   ' "$upgrade_output_file"
 )
 

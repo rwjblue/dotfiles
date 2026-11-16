@@ -35,6 +35,8 @@ if (track) {
 
 const excludePatterns = [
   "/openspec",
+  "/.agents/skills/.openspec-target",
+  "/.agents/skills/openspec-*/",
   "/.codeagent/commands/opsx/",
   "/.codex/skills/openspec-*/",
   "/.cursor/commands/opsx-*.md",

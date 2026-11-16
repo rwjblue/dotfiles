@@ -1,7 +1,7 @@
 #:schema https://mise.jdx.dev/schema/mise.json
 
-# this version added experimental support for rust
-min_version = "2025.10.0"
+# Required to read lockfile revision 4.
+min_version = "2026.11.1"
 
 [tools]
 # cargo augmenting tools
@@ -19,31 +19,31 @@ cosign = "latest"
 usage = "latest"
 
 # useful global tools
-"npm:@mermaid-js/mermaid-cli" = "latest"
+"npm:@mermaid-js/mermaid-cli" = "11"
 "go:github.com/spf13/cobra-cli" = "latest"
 "claude-code" = "latest"
-"opencode" = "latest"
-"npm:@mariozechner/pi-coding-agent" = "latest"
+"opencode" = "1"
+"npm:@earendil-works/pi-coding-agent" = "latest"
 "npm:sort-package-json" = "latest"
 "npm:ccstatusline" = "latest"
-"npm:@mcpjam/inspector" = "latest"
+"npm:@mcpjam/inspector" = "2"
 "npm:@openai/codex" = "latest"
-"npm:@fission-ai/openspec" = "latest"
+"npm:@fission-ai/openspec" = "1"
 "npm:agent-browser" = "latest"
-"github:docker/compose" = "latest"
+"aqua:docker/compose" = "latest"
 # pinned — run /rtk-evaluate before upgrading
 "github:rtk-ai/rtk" = { version = "1.2.0", matching_regex = "^rtk-oss-.*[.](tar[.]gz|zip)$" }
 
 # core tools
-go = "latest"
-node = "latest"
-python = "latest"
+go = "1.26"
+node = "26"
+python = "3.14"
 ruby = "latest"
 rust = { version = "latest", components = "rust-analyzer,clippy" }
 uv = "latest"
 zig = "latest"
 bun = "latest"
-"aqua:jdx/aube" = "latest"
+"aqua:aubepkg/aube" = "latest"
 
 [vars]
 gh_user = "rwjblue"
@@ -55,6 +55,7 @@ GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ vars.gh_user, ca
 [settings]
 experimental = true
 lockfile = true
+aqua.registries = [".config/mise/aqua-registry.yaml"]
 # disabled until https://github.com/jdx/mise/issues/4600 is resolved
 #python.uv_venv_auto = true
 pipx.uvx = true

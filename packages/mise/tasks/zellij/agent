@@ -20,7 +20,7 @@ case "$agent" in
   cursor)   command="cursor-agent" ;;
   codex)    command="mise x npm:@openai/codex -- codex --sandbox danger-full-access" ;;
   opencode) command="mise x opencode -- opencode" ;;
-  pi)       command="mise x npm:@mariozechner/pi-coding-agent -- pi" ;;
+  pi)       command="mise x npm:@earendil-works/pi-coding-agent -- pi" ;;
   *)
     echo "Invalid agent: $agent (use claude, cursor, codex, opencode, or pi)" >&2
     exit 1

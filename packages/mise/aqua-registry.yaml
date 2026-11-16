@@ -1,0 +1,31 @@
+# Derived from aquaproj/aqua-registry's docker/compose recipe. Keep the
+# docker-compose executable name and verify Docker's signed release bundles.
+packages:
+  - type: github_release
+    repo_owner: docker
+    repo_name: compose
+    version_constraint: 'semver(">= 5.0.3")'
+    asset: "docker-compose-{{.OS}}-{{.Arch}}"
+    format: raw
+    replacements:
+      amd64: x86_64
+      arm64: aarch64
+    files:
+      - name: docker-compose
+    checksum:
+      type: github_release
+      asset: "{{.Asset}}.sha256"
+      algorithm: sha256
+    cosign:
+      bundle:
+        type: github_release
+        asset: "docker-compose-{{.OS}}-{{.Arch}}.sigstore.json"
+      opts:
+        - --certificate-identity-regexp
+        - '^https://github\.com/docker/github-builder/\.github/workflows/bake\.yml@'
+        - --certificate-oidc-issuer
+        - https://token.actions.githubusercontent.com
+        - --certificate-github-workflow-repository
+        - docker/compose
+        - --certificate-github-workflow-ref
+        - "refs/tags/{{.Version}}"
