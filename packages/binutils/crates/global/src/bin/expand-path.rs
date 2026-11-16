@@ -1,13 +1,16 @@
 use anyhow::{Context, Result};
 use clap::Parser;
 use std::env;
+use std::io::{self, Write};
 
-/// A tool to debug and inspect the $PATH environment variable.
+/// Print the entries in $PATH, one per line.
 #[derive(Parser)]
 #[clap(author, version, about)]
 struct Cli {}
 
 fn main() -> Result<()> {
+    let _cli = Cli::parse();
+
     tracing_subscriber::fmt()
         .with_env_filter(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -17,11 +20,11 @@ fn main() -> Result<()> {
 
     latest_bin::ensure_latest_bin()?;
 
-    let _cli = Cli::parse();
-
-    let path = env::var("PATH").context("Failed reading $PATH")?;
-    for part in path.split(':') {
-        println!("{}", part);
+    let path = env::var_os("PATH").context("Failed reading $PATH")?;
+    let mut stdout = io::stdout().lock();
+    for part in env::split_paths(&path) {
+        stdout.write_all(part.as_os_str().as_encoded_bytes())?;
+        stdout.write_all(b"\n")?;
     }
 
     Ok(())

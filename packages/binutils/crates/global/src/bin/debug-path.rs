@@ -109,13 +109,13 @@ fn process_shell_file(path: &Path) -> Result<()> {
     let mut parser = TSParser::new();
     parser.set_language(&language.into())?;
 
-    // Tree-sitter query to find assignments to PATH
+    // Zsh ties the PATH string to the path array.
     let query_str = r#"
         (
             (variable_assignment
                 name: (variable_name) @name
                 value: (_) @value)
-            (#eq? @name "PATH")
+            (#any-of? @name "PATH" "path")
         )
     "#;
     let query = Query::new(&language.into(), query_str)?;
