@@ -13,6 +13,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { execSync, spawnSync } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 
 const HAS_CREDS = Boolean(process.env.CLOUDFLARE_API_TOKEN && process.env.CLOUDFLARE_ACCOUNT_ID);
 const TARGET_MS = 4000;
@@ -52,20 +53,17 @@ describeIfCreds('deploy-to-clean-account speed', () => {
 
 describe('deploy artifacts present', () => {
 	it('wrangler.toml has the expected name', () => {
-		const fs = require('node:fs');
-		const text = fs.readFileSync('wrangler.toml', 'utf-8');
+		const text = readFileSync('wrangler.toml', 'utf-8');
 		expect(text).toMatch(/^name\s*=\s*"turnstile-siteverify"/m);
 	});
 
 	it('wrangler.toml configures the post-deploy assets directory', () => {
-		const fs = require('node:fs');
-		const text = fs.readFileSync('wrangler.toml', 'utf-8');
+		const text = readFileSync('wrangler.toml', 'utf-8');
 		expect(text).toMatch(/\[assets\]/);
 		expect(text).toMatch(/directory\s*=\s*"\.\/public"/);
 	});
 
 	it('public/post-deploy.html exists', () => {
-		const fs = require('node:fs');
-		expect(fs.existsSync('public/post-deploy.html')).toBe(true);
+		expect(existsSync('public/post-deploy.html')).toBe(true);
 	});
 });
