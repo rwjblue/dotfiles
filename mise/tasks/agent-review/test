@@ -3,4 +3,13 @@
 set -euo pipefail
 
 cd "$MISE_PROJECT_ROOT/packages/agent-review.nvim"
-nvim --headless --noplugin -u ./tests/minimal_init.lua -c "lua MiniTest.run()"
+
+mini_revision=86a2f85cca908077f29ab11565472e8055fa13e8
+mini_path=$(mktemp -d "${TMPDIR:-/tmp}/agent-review-mini-test.XXXXXXXX")
+trap 'rm -rf -- "$mini_path"' EXIT
+git -C "$mini_path" init --quiet
+git -C "$mini_path" fetch --quiet --depth=1 https://github.com/nvim-mini/mini.test.git "$mini_revision"
+git -C "$mini_path" checkout --quiet --detach FETCH_HEAD
+
+AGENT_REVIEW_TEST_MINI_PATH="$mini_path" \
+  nvim --headless --noplugin -u NONE -i NONE -n -c "luafile ./tests/minimal_init.lua"
