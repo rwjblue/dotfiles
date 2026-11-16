@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+#MISE description="Maintain the public Neovim plugins"
+#MISE hide=true
+set -euo pipefail
+
+action="${1:?Expected update or restore}"
+config="$MISE_PROJECT_ROOT/packages/nvim"
+lockfile="$config/lazy-lock.json"
+work_dir="$(mktemp -d "${TMPDIR:-/tmp}/dotfiles-nvim.XXXXXXXX")"
+candidate=""
+cleanup() {
+  rm -rf "$work_dir"
+  if [[ -n "$candidate" ]]; then
+    rm -f "$candidate"
+  fi
+}
+trap cleanup EXIT
+
+installed_config="${XDG_CONFIG_HOME:-$HOME/.config}/nvim"
+data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+case "$action" in
+  update) export XDG_DATA_HOME="$work_dir/data" ;;
+  restore)
+    if [[ -d "$config/lua/local_nvim" ]] ||
+      [[ -e "$installed_config" && ! "$installed_config" -ef "$config" ]]; then
+      export XDG_DATA_HOME="$data_home/dotfiles-nvim-public"
+    fi
+    ;;
+  *) echo "Unknown Neovim maintenance action: $action" >&2; exit 2 ;;
+esac
+
+unset LAZY
+export DOTFILES_NVIM_MAINTENANCE="$action"
+export DOTFILES_NVIM_LOCK_SNAPSHOT="$work_dir/lazy-lock.json"
+export NVIM_APPNAME=nvim
+export XDG_CONFIG_HOME="$work_dir/config"
+export XDG_CACHE_HOME="$work_dir/cache"
+export XDG_STATE_HOME="$work_dir/state"
+
+staged_config="$XDG_CONFIG_HOME/nvim"
+mkdir -p "$staged_config"
+ln -s "$config/init.lua" "$config/lua" "$config/after" "$config/snippets" "$staged_config/"
+cp "$config/lazyvim.json" "$staged_config/"
+cp "$lockfile" "$DOTFILES_NVIM_LOCK_SNAPSHOT"
+cp "$DOTFILES_NVIM_LOCK_SNAPSHOT" "$staged_config/"
+cd "$work_dir"
+
+run_nvim() {
+  nvim --headless -u "$staged_config/init.lua" -i NONE -n \
+    -c "lua require('rwjblue.maintenance').run('$1')" -c 'cquit 1'
+}
+
+run_nvim "$action"
+# Reload Neovim so parser maintenance uses the newly checked out plugin code.
+run_nvim parsers
+
+if [[ "$action" == update ]]; then
+  if ! cmp -s "$lockfile" "$DOTFILES_NVIM_LOCK_SNAPSHOT"; then
+    echo "The public Neovim lockfile changed during the update. Run nvim:update again." >&2
+    exit 1
+  fi
+  if ! cmp -s "$lockfile" "$staged_config/lazy-lock.json"; then
+    candidate="$(mktemp "$config/.lazy-lock.XXXXXXXX")"
+    cp -p "$staged_config/lazy-lock.json" "$candidate"
+    mv -f "$candidate" "$lockfile"
+  fi
+fi

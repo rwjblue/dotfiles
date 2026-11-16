@@ -60,11 +60,16 @@ Post-plugin overrides SHALL use Neovim's `after/` directory: `ftplugin/` for fil
 
 #### Scenario: Restoring plugins on a new machine
 - **WHEN** `mise run nvim:restore` runs
-- **THEN** Neovim runs headless: `Lazy! restore` from lock file, `Lazy! clean` unused, `TSUpdateSync` parsers, `MasonUpdateAll` LSP servers
+- **THEN** Neovim installs and verifies the public plugin pins headlessly, cleans unused plugins in the target data directory, and waits for matching Tree-sitter parsers
+- **AND** when a private or separate daily configuration is present, the task uses the dedicated public data directory under `$XDG_DATA_HOME/dotfiles-nvim-public` (defaulting to `~/.local/share/dotfiles-nvim-public`)
 
 #### Scenario: Updating plugins
 - **WHEN** `mise run nvim:update` runs
-- **THEN** Neovim runs headless with `Lazy! sync` (updates all plugins and lock file), then `nvim:commit` auto-commits the lock file change
+- **THEN** Neovim updates the public plugin and parser set in a disposable profile, replaces the public lockfile after successful maintenance, and runs `nvim:commit`
+
+#### Scenario: Managing Mason tools
+- **WHEN** the restore or update task runs
+- **THEN** it leaves unpinned Mason tools to the editor's regular setup or an explicit `:MasonUpdateAll`
 
 ### Requirement: Local machine overrides
 
@@ -75,8 +80,12 @@ Machine-specific Neovim configuration MUST live in a `local_nvim` module (from `
 - **THEN** add it via `local_nvim.plugins` in the local-packages overlay
 
 #### Scenario: Lock file selection
-- **WHEN** local plugins exist
+- **WHEN** local plugins exist and Neovim starts normally
 - **THEN** lazy.nvim uses the local lock file (`local_nvim/lazy-lock.json`) instead of the public one
+
+#### Scenario: Starting without local overrides
+- **WHEN** a local options, keymaps, or autocmds module is absent
+- **THEN** the public configuration starts without it
 
 ### Requirement: Conditional features by environment
 

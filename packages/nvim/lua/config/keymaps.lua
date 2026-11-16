@@ -59,7 +59,4 @@ map("n", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
 map("i", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
 map("v", "<D-s>", "<cmd>w<cr>", { desc = "Save file" })
 
--- NOTE: local_nvim is symlinked in from local-dotfiles to allow for local
--- system specific customizations
--- see: https://github.com/malleatus/shared_binutils/blob/master/global/src/bin/setup-local-dotfiles.rs
-require("local_nvim.config.keymaps")
+require("rwjblue").load_local_config("keymaps")

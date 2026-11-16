@@ -1,5 +1,15 @@
 local M = {}
 
+local maintenance = vim.env.DOTFILES_NVIM_MAINTENANCE
+M.maintaining_plugins = maintenance == "restore" or maintenance == "update"
+
+function M.load_local_config(name)
+  local module = "local_nvim.config." .. name
+  if not M.maintaining_plugins and vim.loader.find(module)[1] then
+    require(module)
+  end
+end
+
 ---Check if the current buffer path is within a specific subdirectory
 ---@param subdir string The subdirectory name to check for (e.g. ".git", "node_modules")
 ---@return boolean True if the buffer path starts with or contains the subdirectory
@@ -38,7 +48,7 @@ function M.has_modules(path)
 end
 
 --- Cached check for local config plugins
-M.has_local_plugins = M.has_modules("local_nvim.plugins")
+M.has_local_plugins = not M.maintaining_plugins and M.has_modules("local_nvim.plugins")
 
 --- Determines the appropriate path for the lazy.nvim lockfile
 ---
@@ -120,14 +130,6 @@ function M.setup_auto_commit_for_lockfile()
     pattern = "LazyUpdate",
     callback = M.commit_lockfile,
   })
-end
-
-function M.maybe_add_plugin(bool, spec)
-  if bool then
-    return spec
-  else
-    return nil
-  end
 end
 
 return M
