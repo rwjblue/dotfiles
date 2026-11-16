@@ -1,9 +1,17 @@
+# RTK evaluation
+
+## Purpose
+
+Compare RTK releases against recorded output before changing the version pin.
+
+## Requirements
+
 ### Requirement: Audit task for RTK version evaluation
 The system SHALL provide a `mise run rtk:audit` task that runs a suite of known commands through RTK and captures the compressed output for comparison.
 
 #### Scenario: Audit task runs baseline commands
 - **WHEN** `mise run rtk:audit` is run
-- **THEN** it executes a predefined set of shell commands (git status, git log, ls, npm test output sample, cargo build output sample) through both `rtk <cmd>` and `rtk proxy <cmd>`, saving both outputs to a timestamped directory
+- **THEN** it executes `git status`, `git log --oneline -20`, `ls -la`, `git diff --stat HEAD~1`, and `git branch -a` through both `rtk <cmd>` and `rtk bypass <cmd>`, capturing both outputs in a temporary directory
 
 #### Scenario: Audit task reports compression ratios
 - **WHEN** the audit completes
@@ -14,7 +22,7 @@ The system SHALL provide a `mise run rtk:audit` task that runs a suite of known 
 - **THEN** the task diffs the current compressed output against the previous baseline and highlights any changes in what was stripped
 
 ### Requirement: RTK evaluation skill for AI-assisted review
-The system SHALL provide a Claude Code skill (`rtk-evaluate`) that guides an AI agent through evaluating a new RTK version.
+The system SHALL provide a shared agent skill (`rtk-evaluate`) that guides an AI agent through evaluating a new RTK version.
 
 #### Scenario: Skill guides version upgrade evaluation
 - **WHEN** the `rtk-evaluate` skill is invoked

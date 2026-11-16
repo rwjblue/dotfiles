@@ -1,20 +1,28 @@
-### Requirement: RTK installed via Homebrew
-The system SHALL install RTK via the Brewfile with a pinned version.
+# RTK integration
+
+## Purpose
+
+Install a reviewed RTK release and configure how agent clients use it to reduce shell output.
+
+## Requirements
+
+### Requirement: RTK installed via mise
+The system SHALL pin RTK's OSS release in the global mise tool configuration and lockfile.
 
 #### Scenario: Fresh install
-- **WHEN** `mise run brew:install` is run on a new machine
+- **WHEN** `mise run tools:install` is run on a new machine
 - **THEN** RTK is installed at the pinned version and `rtk --version` succeeds
 
 #### Scenario: Version pinning prevents silent upgrade
-- **WHEN** `brew upgrade` is run
-- **THEN** RTK is NOT upgraded beyond the pinned version
+- **WHEN** `mise upgrade` is run within the configured version ranges
+- **THEN** RTK remains at the pinned version
 
 ### Requirement: RTK config managed in dotfiles
-The system SHALL store RTK configuration in `packages/rtk/config.toml` and symlink it to `~/.config/rtk/config.toml` via `mise run dot:install`.
+The system SHALL store RTK configuration in `packages/rtk/config.toml` and symlink it to RTK's platform config directory via `mise run dot:install`.
 
 #### Scenario: Config symlinked on install
 - **WHEN** `mise run dot:install` is run
-- **THEN** `~/.config/rtk/config.toml` is a symlink to `packages/rtk/config.toml`
+- **THEN** the symlink points to `packages/rtk/config.toml` from `~/Library/Application Support/rtk/config.toml` on macOS and `~/.config/rtk/config.toml` on Linux
 
 #### Scenario: Config includes conservative defaults
 - **WHEN** the RTK config is read
@@ -29,7 +37,7 @@ The system SHALL provide a PreToolUse hook at `packages/claude/hooks/rtk-rewrite
 
 #### Scenario: Hook rewrites commands
 - **WHEN** Claude Code executes a Bash command like `git status`
-- **THEN** the hook rewrites it to `rtk git status` and returns the compressed output
+- **THEN** the hook returns a rewritten command such as `rtk git status` for Claude Code to run
 
 #### Scenario: Hook handles RTK absence gracefully
 - **WHEN** the `rtk` binary is not found in PATH
@@ -40,14 +48,14 @@ The system SHALL provide `packages/claude/RTK.md` with brief instructions tellin
 
 #### Scenario: Awareness doc content
 - **WHEN** Claude Code reads RTK.md
-- **THEN** it learns that `rtk proxy <cmd>` bypasses compression and that full output is available in the tee directory
+- **THEN** it learns that `rtk bypass <cmd>` runs a command without RTK formatting and how to use a recovery path when RTK prints one
 
 ### Requirement: Codex RTK integration
 The system SHALL link `~/.codex/AGENTS.md` to the shared `packages/agents/AGENTS.md` via `mise run dot:install`.
 
 #### Scenario: Shared instructions cover RTK
 - **WHEN** Codex reads its global instructions
-- **THEN** it learns to prefix shell commands with `rtk` when available and to use `rtk proxy` for unfiltered output
+- **THEN** it learns to use RTK for supported noisy commands when a summary suffices and to use `rtk bypass` when a hook would rewrite a command whose exact output is needed
 
 ### Requirement: Easy rollback
 Removing the RTK instructions from the shared AGENTS.md SHALL disable manual
