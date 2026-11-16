@@ -12,20 +12,6 @@ authors = ["Robert Jackson <me@rwjblue.com>"]
 [workspace.dependencies]
 anyhow = "1.0.97"
 clap = { version = "4.5.31", features = ["derive"] }
-insta = { version = "1.42.2", features = ["yaml", "toml"] }
-rand = "0.9.0"
-regex = "1.11.1"
-shellexpand = "3.1.0"
-temp-env = "0.3.6"
 tempfile = "3.18.0"
-toml = "0.8.20"
-tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-walkdir = "2.5.0"
 latest_bin = { path = "../../../../malleatus/shared_binutils/latest_bin" }
-test_utils = { path = "../../../../malleatus/shared_binutils/test_utils" }
-fixturify = { path = "../../../../malleatus/shared_binutils/fixturify" }
-
-[profile.dev.package]
-insta.opt-level = 3
-similar.opt-level = 3

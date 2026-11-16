@@ -2,30 +2,16 @@
 name = "global"
 version.workspace = true
 edition.workspace = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+rust-version.workspace = true
 
 [dependencies]
 anyhow = { workspace = true }
 clap = { workspace = true }
-toml = { workspace = true }
-tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
-walkdir = { workspace = true }
-regex = { workspace = true }
-shellexpand = { workspace = true }
 latest_bin = { workspace = true }
 
 tree-sitter = "0.23"
 tree-sitter-bash = "0.23"
 
 [dev-dependencies]
-insta = { workspace = true }
 tempfile = { workspace = true }
-temp-env = { workspace = true }
-rand = { workspace = true }
-test_utils = { workspace = true }
-fixturify = { workspace = true }
-
-[build-dependencies]
-cc = "*"
