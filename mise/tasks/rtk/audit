@@ -39,8 +39,8 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 for cmd in "${COMMANDS[@]}"; do
   safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
 
-  # Raw output (via rtk proxy)
-  rtk proxy $cmd > "$AUDIT_DIR/${safe_name}.raw" 2>/dev/null || true
+  # Raw output (without RTK filtering)
+  rtk bypass $cmd > "$AUDIT_DIR/${safe_name}.raw" 2>/dev/null || true
 
   # Compressed output (via rtk)
   rtk $cmd > "$AUDIT_DIR/${safe_name}.compressed" 2>/dev/null || true
