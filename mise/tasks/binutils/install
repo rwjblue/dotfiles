@@ -10,12 +10,14 @@ fi
 
 # Build shared and local binutils
 mise run binutils:build
+workspaces=(--workspace-path "$SHARED_BINUTILS_PATH" --workspace-path "$DOTFILES_DIR/packages/binutils")
 
 # Build local-packages/binutils if crates exist
 LOCAL_CRATES_DIR="$DOTFILES_DIR/local-packages/binutils/crates"
 if [ -d "$LOCAL_CRATES_DIR" ] && [ "$(find "$LOCAL_CRATES_DIR" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)" -gt 0 ]; then
   (cd "$DOTFILES_DIR/local-packages/binutils" && cargo build)
+  workspaces+=(--workspace-path "$DOTFILES_DIR/local-packages/binutils")
 fi
 
-# Set up symlinks
-"$SHARED_BINUTILS_PATH/target/debug/generate-binutils-symlinks"
+# The binutils home config is linked by dot:install later in the pipeline.
+"$SHARED_BINUTILS_PATH/target/debug/generate-binutils-symlinks" "${workspaces[@]}"

@@ -28,10 +28,11 @@ link_dotfile() {
   fi
 
   if [ -L "$dest" ]; then
+    local current
     current=$(readlink "$dest")
 
     # Check if it's a broken symlink
-    if [ ! -e "$current" ]; then
+    if [ ! -e "$dest" ]; then
       echo "$dest is a broken symlink, replacing it"
       rm "$dest"
       ln -s "$src" "$dest"
@@ -54,13 +55,16 @@ copy_dotfile() {
   mkdir -p "$(dirname "$dest")"
 
   # Check if target already exists
-  if [ -e "$dest" ]; then
+  if [ -e "$dest" ] || [ -L "$dest" ]; then
     echo "$dest already exists"
   else
     echo "creating $dest"
     cp "$src" "$dest"
   fi
 }
+
+# Build the shell configs before creating home links to them.
+mise run shell:update
 
 # Ensure directories exist
 mkdir -p ~/bin
@@ -70,7 +74,11 @@ mkdir -p ~/.cargo
 # Cross-platform dotfiles
 link_dotfile "packages/nvim"                                    "$HOME/.config/nvim"
 link_dotfile "packages-dist/starship/jj.toml"                  "$HOME/.config/starship.toml"
-link_dotfile "packages/starship/"                               "$HOME/.config/starship"
+starship_dir="$HOME/.config/starship"
+if [ -L "$starship_dir" ] && [ "$(readlink "$starship_dir")" = "$DOTFILES_DIR/packages/starship/" ]; then
+  rm "$starship_dir"
+fi
+link_dotfile "packages-dist/starship/"                          "$starship_dir"
 link_dotfile "packages-dist/zsh/"                               "$HOME/.zsh"
 link_dotfile "packages-dist/fish/"                              "$HOME/.config/fish"
 link_dotfile "packages-dist/zsh/zshenv"                         "$HOME/.zshenv"
@@ -88,7 +96,7 @@ link_dotfile "packages/ghostty/"                                "$HOME/.config/g
 link_dotfile "packages/zellij/"                                 "$HOME/.config/zellij"
 link_dotfile "packages/ssh/rc"                                  "$HOME/.ssh/rc"
 link_dotfile "packages/1Password/"                              "$HOME/.config/1Password"
-link_dotfile "packages/mise/"                                   "$HOME/.config/mise"
+link_dotfile "packages/mise/"                                   "${MISE_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/mise}"
 link_dotfile "packages/mcp/"                                    "$HOME/.config/mcp"
 link_dotfile "packages/hammerspoon/"                            "$HOME/.hammerspoon"
 link_dotfile "packages/jj/"                                     "$HOME/.config/jj"
@@ -141,5 +149,3 @@ fi
 mise run cursor:skills-sync || echo "WARNING: Cursor skill sync incomplete; the LaunchAgent will retry"
 mise run cursor:skills-sync-agent
 
-# Refresh shell environment
-mise run shell:update

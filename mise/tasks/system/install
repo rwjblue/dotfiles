@@ -2,6 +2,24 @@
 #MISE description="Install all system dependencies"
 set -euo pipefail
 
+# shellcheck source=mise/lib/install-env.sh
+source "$MISE_PROJECT_ROOT/mise/lib/install-env.sh"
+use_install_path
+use_install_mise_config
+
+if [[ "$OSTYPE" == linux* ]]; then
+  missing=()
+  for tool in atuin cc curl git make nvim pkg-config tree-sitter unzip zoxide zsh; do
+    if ! command -v "$tool" >/dev/null; then
+      missing+=("$tool")
+    fi
+  done
+  if (( ${#missing[@]} > 0 )); then
+    printf 'Install the missing Linux prerequisites before retrying: %s\n' "${missing[*]}" >&2
+    exit 1
+  fi
+fi
+
 mise run brew:install
 mise run tools:install
 

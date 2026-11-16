@@ -2,4 +2,8 @@
 #MISE description="Install mise-managed tools"
 set -euo pipefail
 
+# shellcheck source=mise/lib/install-env.sh
+source "$MISE_PROJECT_ROOT/mise/lib/install-env.sh"
+use_install_mise_config
+
 exec mise install

@@ -8,7 +8,7 @@ The dotfiles installation is a 4-stage sequential pipeline orchestrated by mise 
 
 ### Requirement: Minimal entry point
 
-The `./install` script SHALL bootstrap mise if not present, then delegate everything to `mise run install`. No logic MUST live in the entry point itself.
+The `./install` script SHALL bootstrap mise if not present, then delegate setup to `mise run install` from the repository root.
 
 #### Scenario: Fresh machine with no mise
 - **WHEN** `./install` runs and `mise` is not on PATH
@@ -28,11 +28,15 @@ The install task SHALL run four stages in strict order: system dependencies, cus
 
 #### Scenario: macOS system setup
 - **WHEN** running on macOS (`darwin*`)
-- **THEN** `brew:install` runs Homebrew installation and `brew bundle` from `Brewfile`, then `tools:install` installs mise-managed runtimes
+- **THEN** `brew:install` makes the default prefixes available on `PATH`, installs Homebrew if needed, and runs `brew bundle --no-upgrade` from `Brewfile`. The subsequent stages can use the Homebrew-installed tools in the same invocation.
 
 #### Scenario: Linux system setup
 - **WHEN** running on Linux
-- **THEN** `system:install-linux` handles platform-specific tools (starship, eza, bat, delta, sd via cargo binstall, fzf from git)
+- **THEN** `system:install` reports missing host prerequisites before downloading tools. After mise installs the managed runtime tools, `system:install-linux` installs Starship, installs eza, bat, delta, and sd using cargo binstall, and sets up fzf.
+
+#### Scenario: Global mise configuration on first install
+- **WHEN** no global mise configuration exists
+- **THEN** the install tasks use the repository's `packages/mise/config.toml` and its adjacent lockfile until the managed configuration is linked. Resolving tools does not require an authenticated `gh` account.
 
 ### Requirement: Custom utilities build
 
@@ -40,23 +44,23 @@ The install task SHALL run four stages in strict order: system dependencies, cus
 
 #### Scenario: First-time binutils setup
 - **WHEN** `shared_binutils` directory doesn't exist
-- **THEN** it's cloned from GitHub, then both shared and local binutils are compiled with `cargo build`
+- **THEN** it's cloned from GitHub, then the installer compiles and generates symlinks for the built workspaces before the home binutils config is available
 
 ### Requirement: Dotfile configuration
 
-`dot:install` SHALL create all symlinks and copies, then MUST run `shell:update` to rebuild shell caches and completions.
+`dot:install` SHALL run `shell:update` before creating symlinks and copies that depend on generated files.
 
 #### Scenario: Shell cache rebuild
-- **WHEN** `dot:install` completes symlink setup
-- **THEN** `shell:update` runs `cache-shell-startup` for all shells (zsh, fish, starship), clears the zsh completion cache, and rebuilds completions
+- **WHEN** `dot:install` runs with no generated shell files
+- **THEN** `shell:update` generates the Zsh, Fish, and Starship configurations and clears the Zsh completion cache before the installer creates any links to generated files. Zsh rebuilds its completion cache on the next interactive launch.
 
 ### Requirement: Editor setup
 
-`nvim:restore` SHALL run Neovim in headless mode to restore plugins from the lock file, clean unused plugins, update TreeSitter parsers, and update Mason-managed LSP servers.
+`nvim:restore` SHALL use the public Neovim configuration and plugin lockfile and wait for the corresponding Tree-sitter parsers. Mason-managed tools are installed by normal editor setup or updated explicitly with `:MasonUpdateAll`.
 
 #### Scenario: Neovim headless restoration
 - **WHEN** `nvim:restore` runs
-- **THEN** it executes `Lazy! restore`, `Lazy! clean`, `Lazy! clear`, `TSUpdateSync`, and `MasonUpdateAll` in a single headless Neovim session
+- **THEN** it verifies the public plugin pins and parser setup before exiting. It uses a dedicated public data directory when the installed configuration differs from the bundled configuration or uses a private overlay.
 
 ### Requirement: Idempotent execution
 

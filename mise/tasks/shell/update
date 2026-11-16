@@ -4,6 +4,5 @@ set -euo pipefail
 
 mise run binutils:cache-shell-startup
 
-# Clear zsh completion cache and rebuild
-rm -f ~/.cache/prezto/zcompdump
-zsh -c 'autoload -Uz compinit && compinit'
+# Prezto rebuilds completions with the configured fpath on the next shell start.
+rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/prezto/zcompdump"

@@ -5,7 +5,8 @@ set -euo pipefail
 
 # Install starship if not present
 if ! command -v starship &>/dev/null; then
-  curl -sS https://starship.rs/install.sh | sh -s -- --force
+  mkdir -p "$HOME/.local/bin"
+  curl -fsSL https://starship.rs/install.sh | sh -s -- --force --bin-dir "$HOME/.local/bin"
 fi
 
 # Install tools via cargo binstall (skip if already installed)
@@ -23,5 +24,7 @@ done
 # Install fzf if not present
 if [ ! -d "$HOME/.fzf" ]; then
   git clone https://github.com/junegunn/fzf.git "$HOME/.fzf"
+fi
+if [ ! -x "$HOME/.fzf/bin/fzf" ]; then
   "$HOME/.fzf/install" --bin
 fi

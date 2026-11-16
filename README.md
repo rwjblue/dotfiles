@@ -6,6 +6,8 @@
 ./install
 ```
 
+Start with Git and curl available on `PATH`. On macOS, setup installs Homebrew and the packages in `Brewfile`. On Linux, install a C toolchain, Make, pkg-config, Neovim, the Tree-sitter CLI, unzip, Zsh, zoxide, and Atuin through your distribution or their upstream packages before running the installer. The installer checks for these commands before installing the remaining tools.
+
 To force a re-install (replacing existing links):
 
 ```sh

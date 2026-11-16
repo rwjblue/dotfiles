@@ -9,10 +9,18 @@ fi
 
 DOTFILES_DIR="$MISE_PROJECT_ROOT"
 
+# Add the default Homebrew prefixes before checking, including the one the
+# installer will create on a fresh machine.
+# shellcheck source=mise/lib/install-env.sh
+source "$DOTFILES_DIR/mise/lib/install-env.sh"
+use_install_path
+
 # Install Homebrew if not present
 if ! command -v brew &>/dev/null; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  installer="$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$installer"
 fi
 
 # Install packages from Brewfile
-(cd "$DOTFILES_DIR" && brew bundle)
+cd "$DOTFILES_DIR"
+exec brew bundle --no-upgrade

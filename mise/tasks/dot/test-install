@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+#MISE description="Test bootstrap and dotfile links in a disposable home"
+set -euo pipefail
+
+root="$MISE_PROJECT_ROOT"
+fixture="$(mktemp -d)"
+trap 'rm -rf "$fixture"' EXIT
+
+export HOME="$fixture/home"
+export MISE_PROJECT_ROOT="$fixture/dotfiles"
+export MISE_CONFIG_DIR="$HOME/.config/mise"
+export SHARED_BINUTILS_PATH="$fixture/shared_binutils"
+export XDG_STATE_HOME="$fixture/state"
+export PATH="$fixture/bin:/usr/bin:/bin"
+unset MISE_GLOBAL_CONFIG_FILE FORCE
+
+mkdir -p "$HOME/.config" "$MISE_PROJECT_ROOT" "$fixture/bin" "$SHARED_BINUTILS_PATH/target/debug"
+ln -s "$root/packages" "$MISE_PROJECT_ROOT/packages"
+ln -s "$root/mise" "$MISE_PROJECT_ROOT/mise"
+
+cat >"$fixture/bin/mise" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "$*" in
+  install)
+    [[ "$MISE_GLOBAL_CONFIG_FILE" == "$MISE_PROJECT_ROOT/packages/mise/config.toml" ]]
+    [[ -f "$(dirname "$MISE_GLOBAL_CONFIG_FILE")/mise.lock" ]]
+    ;;
+  'run shell:update')
+    mkdir -p "$MISE_PROJECT_ROOT/packages-dist"
+    for package in zsh fish starship; do
+      cp -R "$MISE_PROJECT_ROOT/packages/$package" "$MISE_PROJECT_ROOT/packages-dist/"
+    done
+    ;;
+  'run cursor:skills-sync' | 'run cursor:skills-sync-agent')
+    [[ -f "$HOME/.zshrc" ]]
+    ;;
+  *)
+    printf 'Unexpected mise command: %s\n' "$*" >&2
+    exit 1
+    ;;
+esac
+EOF
+
+cat >"$SHARED_BINUTILS_PATH/target/debug/setup-local-dotfiles" <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+[[ -f "$HOME/.zshrc.local" ]]
+EOF
+chmod +x "$fixture/bin/mise" "$SHARED_BINUTILS_PATH/target/debug/setup-local-dotfiles"
+
+cd "$MISE_PROJECT_ROOT"
+bash "$root/mise/tasks/tools/install"
+
+mkdir "$HOME/custom-nvim"
+ln -s ../custom-nvim "$HOME/.config/nvim"
+ln -s "$MISE_PROJECT_ROOT/packages/starship/" "$HOME/.config/starship"
+ln -s missing-zshrc "$HOME/.zshrc"
+bash "$root/mise/tasks/dot/install"
+
+[[ "$(readlink "$HOME/.config/nvim")" == ../custom-nvim ]]
+[[ "$(readlink "$HOME/.config/starship")" == "$MISE_PROJECT_ROOT/packages-dist/starship/" ]]
+[[ -L "$HOME/.zshrc" && -f "$HOME/.zshrc" ]]
+[[ -f "$HOME/.zshrc.local" && -f "$MISE_CONFIG_DIR/mise.lock" ]]
+
+unlink "$HOME/.config/wezterm"
+mkdir "$HOME/.config/wezterm"
+printf 'config to preserve\n' >"$HOME/.config/wezterm/retained.txt"
+printf 'local override\n' >"$HOME/.zshrc.local"
+FORCE=true bash "$root/mise/tasks/dot/install"
+
+[[ -L "$HOME/.config/wezterm" && -d "$HOME/.config/wezterm" ]]
+[[ "$(cat "$XDG_STATE_HOME"/dotfiles/backups/*/.config/wezterm/retained.txt)" == 'config to preserve' ]]
+[[ "$(cat "$HOME/.zshrc.local")" == 'local override' ]]
+printf 'Install checks passed.\n'

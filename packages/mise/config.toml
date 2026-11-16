@@ -49,7 +49,8 @@ gh_user = "rwjblue"
 # machine_role = "personal" # override in config.local.toml (e.g. "work")
 
 [env]
-GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ vars.gh_user, cache_duration='4h') }}", redact = true }
+# Use the selected account when available and let mise run before gh auth login.
+GH_TOKEN = { value = "{{ exec(command='gh auth token --user ' ~ (vars.gh_user | quote) ~ ' 2>/dev/null || true', cache_duration='1m') | default(value=env.GH_TOKEN | default(value=''), boolean=true) }}", redact = true }
 
 [settings]
 experimental = true

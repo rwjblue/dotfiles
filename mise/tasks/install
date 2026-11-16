@@ -2,6 +2,11 @@
 #MISE description="Complete system setup - installs dependencies, builds utilities, configures dotfiles, and sets up Neovim"
 set -euo pipefail
 
+# shellcheck source=mise/lib/install-env.sh
+source "$MISE_PROJECT_ROOT/mise/lib/install-env.sh"
+use_install_path
+use_install_mise_config
+
 mise run system:install
 mise run binutils:install
 mise run dot:install

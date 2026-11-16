@@ -26,6 +26,10 @@ The default installation method SHALL be symlinking via `link_dotfile()`. Symlin
 - **WHEN** the target is already a symlink pointing to the correct source
 - **THEN** the link is left unchanged (idempotent)
 
+#### Scenario: Target already exists as a valid relative symlink
+- **WHEN** the target points to an existing path relative to its own directory and `FORCE` is disabled
+- **THEN** the existing symlink is preserved
+
 #### Scenario: Broken symlink exists at target
 - **WHEN** a symlink exists at the target but points to a nonexistent path
 - **THEN** the broken symlink is removed and replaced with the correct one
@@ -80,4 +84,4 @@ Shell configurations SHALL use a build step: source files in `packages/` contain
 
 #### Scenario: Rebuilding distributed files
 - **WHEN** source files in `packages/` change
-- **THEN** run `mise run shell:update` which re-runs `cache-shell-startup` for all shells and rebuilds completions
+- **THEN** run `mise run shell:update` to regenerate shell files and invalidate the Zsh completion cache for the next interactive shell
