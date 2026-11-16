@@ -1,4 +1,3 @@
-tap "jesseduffield/lazygit"
 tap "rwjblue/tap"
 # Run your GitHub Actions locally
 brew "act"
@@ -19,7 +18,7 @@ brew "gettext"
 # Cross-platform make
 brew "cmake"
 # Cryptographic recipes and primitives for Python
-brew "cryptography", link: false
+brew "cryptography"
 # Get a file from an HTTP, HTTPS or FTP server
 brew "curl"
 # Modern diagram scripting language that turns text to diagrams
@@ -97,7 +96,7 @@ brew "zoxide"
 # UNIX shell (command interpreter)
 brew "zsh"
 # A simple terminal UI for git commands, written in Go
-brew "jesseduffield/lazygit/lazygit"
+brew "lazygit"
 # Simple command line calendar, written in Rust
 brew "rwjblue/tap/cal"
 # Command-line interface for 1Password
@@ -111,7 +110,7 @@ cask "discord"
 # Terminal emulator that uses platform-native UI and GPU acceleration
 cask "ghostty"
 # Set of tools to manage resources and applications hosted on Google Cloud
-cask "google-cloud-sdk"
+cask "gcloud-cli"
 # Desktop automation application
 cask "hammerspoon"
 # System monitoring app
@@ -123,15 +122,13 @@ cask "krisp"
 # Knowledge base that works on top of a local folder of plain text Markdown files
 cask "obsidian"
 # Get up and running with large language models locally
-cask "ollama"
+cask "ollama-app"
 # WebKit based web browser
 cask "orion"
 # Open-source code editor
 cask "visual-studio-code"
 # GPU-accelerated cross-platform terminal emulator and multiplexer
 cask "wezterm"
-# Agentic IDE powered by AI Flow paradigm
-cask "windsurf"
 # Multiplayer code editor
 cask "zed"
 vscode "charliermarsh.ruff"
