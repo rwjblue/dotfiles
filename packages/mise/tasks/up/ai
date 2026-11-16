@@ -6,8 +6,7 @@ set -euo pipefail
 
 script_path="$(realpath "${BASH_SOURCE[0]}")"
 dotfiles_dir="$(cd "$(dirname "$script_path")/../../../.." && pwd -P)"
-lockfile="packages/mise/mise.lock"
-lockfile_fileset="root:packages/mise/mise.lock"
+lock_paths=(root:packages/mise/mise.lock root:packages/mise/locks)
 commit_subject="chore(mise): update AI tool lockfile"
 upgrade_output_file="$(mktemp)"
 trap 'rm -f "$upgrade_output_file"' EXIT
@@ -20,13 +19,12 @@ tools=(
   npm:agent-browser
 )
 
-lockfile_was_dirty=false
-if [[ -n "$(jj -R "$dotfiles_dir" diff --name-only "$lockfile_fileset")" ]]; then
-  lockfile_was_dirty=true
-  echo "Skipping lockfile auto-commit: $lockfile was already dirty before up:ai"
+lock_changes_before=$(jj -R "$dotfiles_dir" diff --name-only "${lock_paths[@]}")
+if [[ -n "$lock_changes_before" ]]; then
+  echo "Skipping lockfile auto-commit: mise lock files were already dirty before up:ai"
 fi
 
-mise up "${tools[@]}" | tee "$upgrade_output_file"
+mise up --global "${tools[@]}" | tee "$upgrade_output_file"
 
 upgraded_tools=()
 while IFS= read -r upgraded_tool; do
@@ -42,12 +40,8 @@ if (( ${#upgraded_tools[@]} > 0 )); then
   mise lock --global "${upgraded_tools[@]}"
 fi
 
-lockfile_is_dirty=false
-if [[ -n "$(jj -R "$dotfiles_dir" diff --name-only "$lockfile_fileset")" ]]; then
-  lockfile_is_dirty=true
-fi
-
-if [[ "$lockfile_was_dirty" == "false" ]] && [[ "$lockfile_is_dirty" == "true" ]]; then
+lock_changes_after=$(jj -R "$dotfiles_dir" diff --name-only "${lock_paths[@]}")
+if [[ -z "$lock_changes_before" && -n "$lock_changes_after" ]]; then
   upgrade_summary="$(
     awk '
       /^Upgraded [0-9]+ tools:$/ { capture = 1 }
@@ -56,13 +50,13 @@ if [[ "$lockfile_was_dirty" == "false" ]] && [[ "$lockfile_is_dirty" == "true" ]
   )"
 
   if [[ -n "$upgrade_summary" ]]; then
-    commit_body=$'Update `packages/mise/mise.lock` after refreshing AI tools.\n\n'"$upgrade_summary"
+    commit_body=$'Record the global tool versions and npm dependency graphs together.\n\n'"$upgrade_summary"
   else
-    commit_body="Update \`packages/mise/mise.lock\` after refreshing AI tools."
+    commit_body="Record the global tool versions and npm dependency graphs together."
   fi
 
-  echo "Auto-committing $lockfile with jj"
-  jj -R "$dotfiles_dir" commit --quiet "$lockfile_fileset" -m "$commit_subject"$'\n\n'"$commit_body"
-elif [[ "$lockfile_was_dirty" == "false" ]]; then
-  echo "Skipping lockfile auto-commit: $lockfile was not changed by up:ai"
+  echo "Auto-committing the global mise lock files with jj"
+  jj -R "$dotfiles_dir" commit --quiet "${lock_paths[@]}" -m "$commit_subject"$'\n\n'"$commit_body"
+elif [[ -z "$lock_changes_before" ]]; then
+  echo "Skipping lockfile auto-commit: no mise lock files changed"
 fi

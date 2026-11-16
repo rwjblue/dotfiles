@@ -27,6 +27,34 @@ jobs:
           install: false
       - run: mise run skills:check
 
+  mise-lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify npm lock sidecars
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import tomllib
+
+          lockfile = Path('packages/mise/mise.lock')
+          with lockfile.open('rb') as file:
+              lock = tomllib.load(file)
+          tracked = set(subprocess.check_output(['git', 'ls-files', '-z'], text=True).split('\0'))
+          missing = []
+          for entries in lock['tools'].values():
+              for entry in entries:
+                  if sidecar := entry.get('aube'):
+                      directory = lockfile.parent / sidecar['path']
+                      for name in ('package.json', 'aube-lock.yaml'):
+                          path = directory / name
+                          if path.as_posix() not in tracked or not path.is_file():
+                              missing.append(path.as_posix())
+          if missing:
+              raise SystemExit('Missing tracked mise lock files:\n' + '\n'.join(missing))
+          PY
+
   binutils:
     runs-on: ubuntu-latest
     defaults:
