@@ -1,25 +1,20 @@
 # sourced by zshenv and zshrc
 
 function _path_add() {
-  case ":$PATH:" in
-    *:"$1":*) ;;
-    *) PATH="$1${PATH+:$PATH}" ;;
-  esac
+  if (( ! ${path[(Ie)$1]} )); then
+    path=("$1" "${path[@]}")
+  fi
   export PATH
 }
 
 function _path_remove() {
-  case ":$PATH:" in
-    *:"$1":*)
-      PATH=$(echo ":$PATH:" | sd ":$1:" ":" | sd '^:' '' | sd ':$' '')
-      ;;
-  esac
+  path=("${(@)path:#"$1"}")
   export PATH
 }
 
 function _ensure_first_path() {
-  _path_remove $1
-  _path_add $1
+  _path_remove "$1"
+  _path_add "$1"
 }
 
 export CARGO_HOME="$HOME/.cargo"

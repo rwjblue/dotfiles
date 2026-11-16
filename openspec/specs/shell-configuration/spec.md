@@ -36,11 +36,11 @@ Zsh SHALL be the fully-configured primary shell. The startup chain MUST be: `zsh
 
 ### Requirement: Idempotent PATH management
 
-`path.zsh` SHALL provide helper functions that prevent PATH duplication: `_path_add()` MUST only add if not present, `_path_remove()` cleans entries, `_ensure_first_path()` moves an entry to the front. `path.zsh` is sourced in both `zshenv` and `zshrc` safely.
+`path.zsh` SHALL use Zsh's `path` array to manage PATH without external commands. `_path_add()` only adds an absent entry, `_path_remove()` removes exact matches, and `_ensure_first_path()` moves an entry to the front. `path.zsh` is sourced from both `zshenv` and `zshrc`.
 
 #### Scenario: PATH ordering
 - **WHEN** `path.zsh` runs
-- **THEN** it ensures this order: `/opt/homebrew/bin` → `/opt/homebrew/sbin` → `$CARGO_HOME/bin` → fzf → custom binutils → `$HOME/.local/bin`
+- **THEN** it prepends `$HOME/.local/bin`, custom binutils, fzf, `$CARGO_HOME/bin`, and the Homebrew directories in that priority order before mise activation
 
 ### Requirement: Fish standalone configuration
 
@@ -57,6 +57,10 @@ Completions SHALL come from three sources: Homebrew (`/opt/homebrew/share/zsh/si
 #### Scenario: Adding a non-Homebrew completion
 - **WHEN** a tool's completions aren't provided by Homebrew
 - **THEN** add a completion file to `packages/zsh/completions/` — either as a `# CMD_SILENT:` directive (for generated completions) or as a static file
+
+#### Scenario: fzf installed
+- **WHEN** an interactive Zsh starts with fzf available
+- **THEN** it loads fzf's completion and key bindings from `fzf --zsh` or from the installed integration scripts on older versions
 
 ### Requirement: Starship prompt with modular configuration
 

@@ -72,24 +72,20 @@ fi
 # Setup fzf
 # ---------
 
-if [[ "$OSTYPE" == darwin* ]]; then
-  # Auto-completion
-  [[ $- == *i* ]] && source "/opt/homeberw/opt/fzf/shell/completion.zsh" 2> /dev/null
-
-  # Key bindings
-  source "/opt/homebrew/opt/fzf/shell/key-bindings.zsh"
-else
-  if [[ ! "$PATH" == */$HOME/.fzf/bin* ]]; then
-    export PATH="$PATH:$HOME/.fzf/bin"
+if [[ -x "$HOME/.fzf/bin/fzf" ]] && ! command -v fzf >/dev/null 2>&1; then
+  _path_add "$HOME/.fzf/bin"
+fi
+if [[ -o interactive ]] && command -v fzf >/dev/null 2>&1; then
+  if fzf_setup=$(fzf --zsh 2>/dev/null); then
+    eval "$fzf_setup"
+  else
+    fzf_shell="$HOME/.fzf/shell"
+    [[ "$OSTYPE" == darwin* ]] && fzf_shell="${HOMEBREW_PREFIX}/opt/fzf/shell"
+    [[ -r "$fzf_shell/completion.zsh" ]] && source "$fzf_shell/completion.zsh"
+    [[ -r "$fzf_shell/key-bindings.zsh" ]] && source "$fzf_shell/key-bindings.zsh"
+    unset fzf_shell
   fi
-
-  # Auto-completion
-  # ---------------
-  [[ $- == *i* ]] && source "$HOME/.fzf/shell/completion.zsh" 2> /dev/null
-
-  # Key bindings
-  # ------------
-  source "$HOME/.fzf/shell/key-bindings.zsh"
+  unset fzf_setup
 fi
 
 # helpful unixy aliases
