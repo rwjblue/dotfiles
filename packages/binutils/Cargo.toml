@@ -13,5 +13,5 @@ authors = ["Robert Jackson <me@rwjblue.com>"]
 anyhow = "1.0.97"
 clap = { version = "4.5.31", features = ["derive"] }
 tempfile = "3.18.0"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tracing-subscriber = { version = "0.3.23", features = ["env-filter"] }
 latest_bin = { path = "../../../../malleatus/shared_binutils/latest_bin" }
