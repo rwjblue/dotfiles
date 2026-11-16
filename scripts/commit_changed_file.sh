@@ -10,17 +10,17 @@ FILE_PATH=$1
 COMMIT_MSG=$2
 
 # Covers both modified and untracked files.
-has_changes() {
+change_summary() {
   if [[ "$VCS" == "jj" ]]; then
-    [ -n "$(jj diff --summary "$FILE_PATH")" ]
+    jj diff --summary -- "$FILE_PATH"
   else
-    [ -n "$(git status --porcelain -- "$FILE_PATH")" ]
+    git status --porcelain -- "$FILE_PATH"
   fi
 }
 
 commit_changes() {
   if [[ "$VCS" == "jj" ]]; then
-    jj commit --quiet "$FILE_PATH" -m "$COMMIT_MSG" || {
+    jj commit --quiet -m "$COMMIT_MSG" -- "$FILE_PATH" || {
       echo "Failed to commit changes in $FILE_PATH" >&2
       return 1
     }
@@ -45,7 +45,12 @@ else
   VCS="git"
 fi
 
-if has_changes; then
+if ! changes=$(change_summary); then
+  echo "Failed to check changes in $FILE_PATH" >&2
+  exit 1
+fi
+
+if [[ -n "$changes" ]]; then
   commit_changes
 else
   echo "No changes in $FILE_PATH"
