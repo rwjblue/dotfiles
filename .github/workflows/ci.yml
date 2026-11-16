@@ -16,7 +16,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: shellcheck --severity=warning install scripts/* mise/tasks/install mise/tasks/*/*
+      - run: |
+          scripts=()
+          while IFS= read -r -d '' path; do
+            if IFS= read -r first_line < "$path" && [[ "$first_line" == '#!'*bash* ]]; then
+              scripts+=("$path")
+            fi
+          done < <(git ls-files -z -- install scripts mise packages/mise/tasks packages/cursor packages/claude/hooks)
+          shellcheck --severity=warning --external-sources "${scripts[@]}"
 
   skills:
     runs-on: ubuntu-latest
@@ -26,6 +33,34 @@ jobs:
         with:
           install: false
       - run: mise run skills:check
+      - run: mise tasks validate
+      - run: mise run dot:test-install
+
+  config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Type-check global mise tasks
+        working-directory: packages/mise/tasks
+        run: |
+          npm ci --ignore-scripts
+          npx --no-install tsc --noEmit
+      - name: Validate OpenSpec specs
+        env:
+          OPENSPEC_TELEMETRY: '0'
+        run: |
+          version=$(python3 - <<'PY'
+          import tomllib
+
+          with open('packages/mise/mise.lock', 'rb') as file:
+              lock = tomllib.load(file)
+          print(lock['tools']['npm:@fission-ai/openspec'][0]['version'])
+          PY
+          )
+          npm exec --yes --package="@fission-ai/openspec@$version" -- openspec validate --specs
 
   mise-lock:
     runs-on: ubuntu-latest

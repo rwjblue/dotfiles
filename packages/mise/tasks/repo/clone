@@ -83,7 +83,8 @@ cd "${TARGET_DIR}"
 # GH_TOKEN using vars.gh_user, and repo-local overrides (local-packages/
 # repo-local) set gh_user per org (e.g. "rwjblue-glean" for work repos).
 # Re-evaluating from the target dir picks up the correct org-scoped account.
-export GH_TOKEN="$(mise env --json 2>/dev/null | jq -r '.GH_TOKEN')"
+GH_TOKEN="$(mise env --json | jq -r '.GH_TOKEN // empty')"
+export GH_TOKEN
 
 PERMISSION="$(gh repo view "${OWNER_REPO}" --json viewerPermission --jq '.viewerPermission')"
 TRACK_REMOTE="origin"
