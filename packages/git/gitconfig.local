@@ -4,6 +4,6 @@
 # that does not belong in the main rwjblue/dotfiles
 # repo, it is referenced from the main `.gitconfig`
 
-[user]
-  email = your.work.email@here.com
-  name = Robert Jackson
+# [user]
+#   email = your.work.email@here.com
+#   name = Your Name
