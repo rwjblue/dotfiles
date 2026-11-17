@@ -1,105 +1,142 @@
 #!/usr/bin/env bash
 # -*- mode: sh; sh-shell: bash; -*-
 #MISE description="Audit RTK compression behavior and compare against baselines"
+#USAGE flag "--rtk <path>" help="Audit a specific RTK executable"
 #USAGE flag "--save-baseline" help="Save current output as baseline for this RTK version"
 
 set -euo pipefail
 
-DOTFILES_DIR="$MISE_PROJECT_ROOT"
-BASELINES_DIR="$DOTFILES_DIR/packages/rtk/baselines"
-SAVE_BASELINE="${usage_save_baseline:-false}"
+# Fixture baselines are comparable with each other. Older baselines captured the live checkout.
+baselines_dir="$MISE_PROJECT_ROOT/packages/rtk/baselines/fixture-v1"
+rtk_request="${usage_rtk:-rtk}"
+if ! rtk_binary=$(type -P "$rtk_request"); then
+  printf 'RTK executable not found: %s\n' "$rtk_request" >&2
+  exit 1
+fi
+if [[ "$rtk_binary" != /* ]]; then
+  rtk_binary="$PWD/$rtk_binary"
+fi
 
-if ! command -v rtk &>/dev/null; then
-  echo "ERROR: rtk is not installed"
+audit_dir=$(mktemp -d)
+trap 'rm -rf "$audit_dir"' EXIT
+audit_home="$audit_dir/home"
+mkdir -p "$audit_home" "$audit_dir/fixture"
+cd "$audit_dir/fixture"
+
+run_rtk() {
+  env -u RTK_DISABLED HOME="$audit_home" XDG_CONFIG_HOME="$audit_home/.config" \
+    XDG_CACHE_HOME="$audit_home/.cache" XDG_DATA_HOME="$audit_home/.local/share" \
+    XDG_STATE_HOME="$audit_home/.local/state" RTK_DB_PATH="$audit_dir/history.db" \
+    RTK_RECALL=0 RTK_TELEMETRY_DISABLED=1 "$rtk_binary" "$@"
+}
+
+version_output=$(run_rtk --version)
+if [[ "$version_output" =~ ^rtk[[:space:]]+([0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.+-]+)?) ]]; then
+  rtk_version="${BASH_REMATCH[1]}"
+else
+  printf 'Could not read RTK version from: %s\n' "$version_output" >&2
   exit 1
 fi
 
-RTK_VERSION=$(rtk --version 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
-echo "RTK version: $RTK_VERSION"
+# A caller can inherit an index or worktree override from another Git command.
+git_env_names=$(git rev-parse --local-env-vars)
+while IFS= read -r name; do
+  unset "$name"
+done <<< "$git_env_names"
+export GIT_CONFIG_NOSYSTEM=1 GIT_CONFIG_GLOBAL=/dev/null
+export GIT_AUTHOR_NAME='RTK Audit' GIT_AUTHOR_EMAIL='audit@example.invalid'
+export GIT_COMMITTER_NAME="$GIT_AUTHOR_NAME" GIT_COMMITTER_EMAIL="$GIT_AUTHOR_EMAIL"
+export GIT_AUTHOR_DATE='2000-01-01T00:00:00Z'
+export GIT_COMMITTER_DATE="$GIT_AUTHOR_DATE"
+export LC_ALL=C TZ=UTC COLUMNS=80 TERM=dumb NO_COLOR=1
+umask 022
 
-# Audit directory for this run
-AUDIT_DIR=$(mktemp -d)
-trap 'rm -rf "$AUDIT_DIR"' EXIT
+git init --quiet --template= --initial-branch=main --object-format=sha1
+git config core.abbrev 7
+printf 'RTK audit fixture\n' > README.md
+git add README.md
+git commit --quiet -m 'Initialize audit fixture'
+git switch --quiet -c feature/docs
+mkdir docs
+printf 'Example documentation\n' > docs/example.md
+git add docs/example.md
+git commit --quiet -m 'Add example documentation'
+git update-ref refs/remotes/origin/main main
+printf 'Working copy change\n' >> README.md
+printf 'Untracked fixture file\n' > notes.txt
 
-# Commands to test
-COMMANDS=(
+commands=(
   "git status"
   "git log --oneline -20"
-  "ls -la"
+  "ls -1"
   "git diff --stat HEAD~1"
   "git branch -a"
 )
 
-echo ""
-echo "Running audit commands..."
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-printf "%-30s %10s %10s %10s\n" "COMMAND" "RAW" "COMPRESSED" "RATIO"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-for cmd in "${COMMANDS[@]}"; do
-  safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
-
-  # Raw output (without RTK filtering)
-  rtk bypass $cmd > "$AUDIT_DIR/${safe_name}.raw" 2>/dev/null || true
-
-  # Compressed output (via rtk)
-  rtk $cmd > "$AUDIT_DIR/${safe_name}.compressed" 2>/dev/null || true
-
-  raw_words=$(wc -w < "$AUDIT_DIR/${safe_name}.raw" | tr -d ' ')
-  compressed_words=$(wc -w < "$AUDIT_DIR/${safe_name}.compressed" | tr -d ' ')
-
-  if [ "$raw_words" -gt 0 ]; then
-    ratio=$(echo "scale=1; (1 - $compressed_words / $raw_words) * 100" | bc)
-    printf "%-30s %10s %10s %9s%%\n" "$cmd" "$raw_words" "$compressed_words" "$ratio"
-  else
-    printf "%-30s %10s %10s %10s\n" "$cmd" "$raw_words" "$compressed_words" "N/A"
+capture_probe() {
+  local output="$1"
+  shift
+  if ! run_rtk "$@" > "$output"; then
+    printf 'RTK audit probe failed: rtk %s\n' "$*" >&2
+    return 1
   fi
+}
+
+printf 'RTK version: %s\n\n' "$rtk_version"
+printf '%-30s %10s %10s %10s\n' COMMAND RAW COMPRESSED SAVINGS
+
+for cmd in "${commands[@]}"; do
+  name="${cmd//[^a-zA-Z0-9]/_}"
+  read -r -a args <<< "$cmd"
+  capture_probe "$audit_dir/$name.raw" bypass "${args[@]}"
+  capture_probe "$audit_dir/$name.compressed" "${args[@]}"
+
+  raw_words=$(wc -w < "$audit_dir/$name.raw")
+  compressed_words=$(wc -w < "$audit_dir/$name.compressed")
+  if (( raw_words == 0 || compressed_words == 0 )); then
+    printf 'RTK audit probe produced empty output: %s\n' "$cmd" >&2
+    exit 1
+  fi
+  savings=$(awk -v raw="$raw_words" -v compressed="$compressed_words" \
+    'BEGIN { printf "%.1f%%", 100 * (1 - compressed / raw) }')
+  printf '%-30s %10d %10d %10s\n' "$cmd" "$raw_words" "$compressed_words" "$savings"
 done
 
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-
-# Diff against previous baseline if it exists
-BASELINE_VERSION_DIR="$BASELINES_DIR/$RTK_VERSION"
-LATEST_BASELINE=$(ls -1d "$BASELINES_DIR"/*/  2>/dev/null | sort -V | tail -1 || true)
-
-if [ -n "$LATEST_BASELINE" ] && [ "$SAVE_BASELINE" != "true" ]; then
-  echo ""
-  echo "Comparing against baseline: $(basename "$LATEST_BASELINE")"
-  echo ""
-
-  has_diff=false
-  for cmd in "${COMMANDS[@]}"; do
-    safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
-    baseline_file="$LATEST_BASELINE/${safe_name}.compressed"
-    current_file="$AUDIT_DIR/${safe_name}.compressed"
-
-    if [ -f "$baseline_file" ]; then
-      if ! diff -q "$baseline_file" "$current_file" &>/dev/null; then
-        has_diff=true
-        echo "CHANGED: $cmd"
-        diff --unified=3 "$baseline_file" "$current_file" || true
-        echo ""
-      fi
-    else
-      echo "NEW: $cmd (no baseline to compare)"
-    fi
-  done
-
-  if [ "$has_diff" = false ]; then
-    echo "No changes detected from baseline."
-  fi
+if [[ "${usage_save_baseline:-false}" == true ]]; then
+  baseline_dir="$baselines_dir/$rtk_version"
+  mkdir -p "$baseline_dir"
+  cp "$audit_dir"/*.compressed "$baseline_dir/"
+  printf '\nBaseline saved to: %s\n' "$baseline_dir"
+  exit 0
 fi
 
-# Save baseline if requested
-if [ "$SAVE_BASELINE" = "true" ]; then
-  echo ""
-  echo "Saving baseline for RTK $RTK_VERSION..."
-  mkdir -p "$BASELINE_VERSION_DIR"
+latest_baseline=$(
+  for dir in "$baselines_dir"/*/; do
+    [[ -d "$dir" ]] || continue
+    printf '%s\n' "${dir%/}"
+  done | sort -V | tail -n 1
+)
+if [[ -z "$latest_baseline" ]]; then
+  printf '\nNo baseline for this fixture. Save one with --save-baseline.\n'
+  exit 0
+fi
 
-  for cmd in "${COMMANDS[@]}"; do
-    safe_name=$(echo "$cmd" | sed 's/[^a-zA-Z0-9]/_/g')
-    cp "$AUDIT_DIR/${safe_name}.compressed" "$BASELINE_VERSION_DIR/${safe_name}.compressed"
-  done
-
-  echo "Baseline saved to: $BASELINE_VERSION_DIR"
+baseline_version="${latest_baseline##*/}"
+printf '\nComparing against baseline: %s\n\n' "$baseline_version"
+has_diff=false
+for cmd in "${commands[@]}"; do
+  name="${cmd//[^a-zA-Z0-9]/_}"
+  if diff -u -L "$baseline_version: $cmd" -L "$rtk_version: $cmd" \
+    "$latest_baseline/$name.compressed" "$audit_dir/$name.compressed"; then
+    continue
+  else
+    diff_status=$?
+  fi
+  if [[ "$diff_status" != 1 ]]; then
+    exit "$diff_status"
+  fi
+  has_diff=true
+done
+if [[ "$has_diff" == false ]]; then
+  printf 'No changes detected from baseline.\n'
 fi

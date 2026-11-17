@@ -1,86 +1,34 @@
 ---
 name: rtk-evaluate
-description: Evaluate an RTK version upgrade for safety and compatibility before updating
+description: Evaluate an RTK version upgrade for safety and compatibility before updating the mise pin.
 ---
 
-# RTK Version Evaluation
+# RTK version evaluation
 
-Use this skill when upgrading RTK to a new version. It guides you through verifying that the new version is safe and doesn't introduce regressions in compression behavior.
+From the dotfiles checkout, check the installed version against the `github:rtk-ai/rtk` pin in `packages/mise/config.toml`. Review the candidate's [release notes](https://github.com/rtk-ai/rtk/releases) for changes to network activity, telemetry, filesystem access, dependencies, or the `rtk rewrite` command and its exit codes.
 
-## Steps
-
-### 1. Check Current Version
-
-```bash
-rtk --version
-```
-
-Note the current version for comparison.
-
-### 2. Review Changelog
-
-Fetch the RTK changelog/releases for the target version:
-
-```bash
-gh release view <version> --repo rtk-ai/rtk
-```
-
-Or check https://github.com/rtk-ai/rtk/releases for the target version.
-
-Flag any of these changes:
-- New network calls or telemetry
-- Changes to the hook rewrite logic
-- New file system access patterns
-- New dependencies
-- Changes to the `rtk rewrite` exit code protocol
-
-### 3. Run Audit Baseline
-
-Run the audit task to capture current behavior before upgrading:
+Capture the current pin's output before evaluating the candidate:
 
 ```bash
 mise run rtk:audit --save-baseline
 ```
 
-### 4. Upgrade RTK
-
-Update the version in the Brewfile and install:
+Set `candidate_version` to the release you reviewed, without the leading `v`. Use mise to select the candidate OSS executable for the audit:
 
 ```bash
-brew upgrade rtk
+candidate_binary=$(mise exec "github:rtk-ai/rtk[matching_regex=^rtk-oss-.*[.](tar[.]gz|zip)\$]@$candidate_version" -- which rtk)
+"$candidate_binary" --version
+mise run rtk:audit --rtk "$candidate_binary"
 ```
 
-### 5. Run Post-Upgrade Audit
+Verify that the reported version matches the candidate. Review the output diff for lost details, misleading summaries, and changes in compression or passthrough behavior. Inspect new configuration options with `"$candidate_binary" config`.
+
+When accepting the candidate, change the version in `packages/mise/config.toml` and keep its OSS asset selector. Refresh the global lockfile, install from it, and record the new baseline:
 
 ```bash
-mise run rtk:audit
+mise lock --global github:rtk-ai/rtk
+mise install --locked github:rtk-ai/rtk
+mise run rtk:audit --save-baseline
 ```
 
-Review the diff output. Look for:
-- Commands that were previously passed through but are now compressed
-- Commands where compression is significantly more aggressive
-- Any commands that produce empty or misleading output
-- Changes in compression ratios (>10% change warrants investigation)
-
-### 6. Security Check
-
-Verify no new concerning behavior:
-
-```bash
-# Check for network calls
-rtk --help | grep -i telemetry
-# Check config for new options
-rtk config show 2>/dev/null || true
-```
-
-### 7. Decision
-
-If everything looks good:
-1. Update the Brewfile version pin
-2. Save the new baseline: `mise run rtk:audit --save-baseline`
-3. Commit the changes
-
-If concerning changes found:
-1. Roll back: `brew install rtk@<previous-version>` or reinstall from Brewfile
-2. File an issue or wait for a fix
-3. Document concerns in the commit message if proceeding anyway
+Keep the config, lockfile, and baseline together when committing an upgrade. To roll back an applied upgrade, restore its previous version and lock entry, then run `mise install --locked github:rtk-ai/rtk`.
