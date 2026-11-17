@@ -132,40 +132,34 @@ recent = ["log", "-r", "last()"]
 # bring a branch up to date with trunk() works with `jj update` alone or with `-b REV`
 up = ["rebase", "--skip-emptied", "-d", "trunk()"]
 
-pre-commit-last = [
+# Feed filenames to pre-commit as NUL-delimited paths and protect leading dashes.
+pre-commit-files = [
   "util",
   "exec",
   "--",
   "bash",
+  "-o",
+  "pipefail",
   "-c",
-  "jj diff -r @ --name-only --no-pager | xargs pre-commit run --files",
+  '''
+jj diff -r "$1" --no-pager --color=never -T '"./" ++ path.display() ++ "\0"' |
+  xargs -0 -r pre-commit run --files
+''',
+  "pre-commit-files",
 ]
+pre-commit-last = ["pre-commit-files", "@"]
 
 # Get files changed in the current branch (linear path from trunk to @)
 branch-diff = ["diff", "-r", "branch()"]
 branch-diff-files = ["diff", "-r", "branch()", "--name-only", "--no-pager"]
 
-pre-commit-branch = [
-  "util",
-  "exec",
-  "--",
-  "bash",
-  "-c",
-  "jj branch-diff-files | xargs pre-commit run --files",
-]
+pre-commit-branch = ["pre-commit-files", "branch()"]
 
 # Get files changed in the full stack (includes sibling branches)
 stack-diff = ["diff", "-r", "stack()"]
 stack-diff-files = ["diff", "-r", "stack()", "--name-only", "--no-pager"]
 
-pre-commit-stack = [
-  "util",
-  "exec",
-  "--",
-  "bash",
-  "-c",
-  "jj stack-diff-files | xargs pre-commit run --files",
-]
+pre-commit-stack = ["pre-commit-files", "stack()"]
 
 # find the nearest bookmark and move it forward to the nearest pushable revision
 tug = [
