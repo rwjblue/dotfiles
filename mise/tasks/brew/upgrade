@@ -8,5 +8,4 @@ if [[ "$OSTYPE" != darwin* ]]; then
 fi
 
 brew update
-brew upgrade
-mise run brew:update
+exec brew upgrade

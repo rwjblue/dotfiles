@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#MISE description="Update Brewfile with current packages and commit"
+#MISE description="Preview Brewfile differences against installed Homebrew packages"
 set -euo pipefail
 
 # macOS only
@@ -7,10 +7,18 @@ if [[ "$OSTYPE" != darwin* ]]; then
   exit 0
 fi
 
-DOTFILES_DIR="$MISE_PROJECT_ROOT"
+snapshot_dir=$(mktemp -d)
+trap 'rm -rf "$snapshot_dir"' EXIT
+snapshot="$snapshot_dir/Brewfile"
 
-(cd "$DOTFILES_DIR" && brew bundle dump --force --describe)
+brew bundle dump --file "$snapshot"
 
-"$DOTFILES_DIR/scripts/commit_changed_file.sh" \
-  'Brewfile' \
-  "chore(brew): update packages $(date '+%Y-%m-%d %H:%M:%S')"
+if diff -u -L Brewfile -L 'Installed Homebrew snapshot' "$MISE_PROJECT_ROOT/Brewfile" "$snapshot"; then
+  echo "The Brewfile matches the installed Homebrew snapshot."
+else
+  status=$?
+  # diff returns 1 for an ordinary difference.
+  if (( status != 1 )); then
+    exit "$status"
+  fi
+fi

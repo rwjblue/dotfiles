@@ -26,8 +26,8 @@ mise/
     │   └── install            # Link/copy all dotfiles
     ├── brew/
     │   ├── install            # Install Homebrew + bundle
-    │   ├── update             # Dump Brewfile + commit
-    │   ├── upgrade            # brew update + upgrade + update Brewfile
+    │   ├── update             # Preview the diff against installed packages
+    │   ├── upgrade            # brew update + upgrade
     │   └── cleanup            # brew cleanup + autoremove
     ├── nvim/
     │   ├── restore            # Restore plugins from lazy-lock.json
