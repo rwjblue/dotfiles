@@ -54,7 +54,7 @@ employer-specific conventions that stay out of this public repo.
 - Gather mechanical facts from the repo, `gh`, or logs yourself before asking.
 - Weigh practical impact before raising a concern. Drop hypotheticals that
   can't happen in this system.
-- Never bypass commit signing. If signing fails, stop and ask.
+- Before pushing, follow [Commit signing](../commit-shape/SKILL.md#commit-signing).
 - Run the number of cycles, passes, or waits the user names. No more.
 - Keep automations quiet. Run them no more often than needed, and archive
   runs that found nothing to do.

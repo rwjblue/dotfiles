@@ -12,12 +12,10 @@ Uses **Jujutsu (jj)** for version control with git backend. Key differences from
 - Working copy is always a commit (`@`)
 - Branches are optional "bookmarks"
 
-## Signing Policy (Mandatory)
+## Commit signing
 
-- Commit signing is required for pushable changes in this environment.
-- Never bypass signing by overriding config at command time (for example `--config 'revsets.git-sign-on-push="none()"'`, the deprecated `--config git.sign-on-push=false`, or similar).
-- Never modify repo/user config to disable push signing.
-- If signing fails (for example 1Password/SSH agent issues), stop and ask the user to fix or approve the next step; do not push unsigned as a workaround.
+Before pushing, follow [Commit signing](../commit-shape/SKILL.md#commit-signing)
+for signer checks, the cloud exception, and signing failures.
 
 ## Core Concepts
 
@@ -101,7 +99,7 @@ jj op log             # View operation history (for undo)
 ### Git Integration
 ```bash
 jj git fetch          # Fetch from all remotes (configured: glob:*, handles fork workflows)
-jj git push           # Push current bookmark (must remain signed)
+jj git push           # Push current bookmark
 jj git push --named <branch>=<rev>  # Create bookmark and push (e.g., --named my-feature=@)
 jj git push -b <name> # Push specific bookmark
 jj git init --colocate  # Initialize jj in existing git repo

@@ -68,9 +68,10 @@ changing the transport does not bypass them.
 
 ## 1. Preflight and record the stack
 
-1. Read repository guidance. In jj mode, load the `jj` and `jj-pr` skills through
-   the host's skill registry or shared skills directory. Reuse their signing and
-   amendment guidance, but **never their batch-push shortcuts in this workflow**.
+1. Read repository guidance and the [commit signing policy](../commit-shape/SKILL.md#commit-signing).
+   In jj mode, load the `jj` and `jj-pr` skills through the host's skill registry
+   or shared skills directory. Reuse their amendment guidance, but **never
+   their batch-push shortcuts in this workflow**.
    When changing prose, load `commit-message` with `--auto` and use `pr-description`
    for its writing conventions. Pass along this invocation's existing authority:
    skip helper skills' routine confirmation/draft-approval flows, but retain their
@@ -198,14 +199,16 @@ actual final diff. Distinguish local-tool limitations from hosted CI failures.
    Git stack, rebase the root with
    `git rebase --gpg-sign --onto TARGET_BASE_SHA OLD_ROOT_BASE_SHA ROOT_BRANCH`,
    then apply the child-by-child procedure below using recorded old cut points.
+   Omit `--gpg-sign` only when the cloud signing exception applies.
 3. Resolve conflicts in their owning revisions, preserving intended changes from
    both upstream and the PR. Do not blanket-accept "ours"/"theirs" or drop a feature
    to clear conflicts. Validate affected behavior and inspect every PR's own diff,
    parent, and commit count. Pause only for decisions that cannot be safely inferred.
-4. Publish all affected PRs individually, bottom-up, with signing and remote-head
-   checks. Verify current mergeability again after publication; distinguish GitHub
-   recalculation from a remaining conflict. Start a full settling interval for the
-   rewritten head map; older CI/wait evidence does not cover those heads.
+4. Publish all affected PRs individually, bottom-up, following the signing
+   policy and remote-head checks. Verify current mergeability again after
+   publication. Distinguish GitHub recalculation from a remaining conflict.
+   Start a full settling interval for the rewritten head map because older
+   CI and wait evidence does not cover those heads.
 
 An explicit fresh-base request selects a target once, not on every cycle. Record
 that it was fulfilled. Revisit the target only for another confirmed conflict or
@@ -232,7 +235,9 @@ another checkout. Stage only the intended files/hunks and inspect the staged dif
 For a one-commit PR, amend with signing. Retain an accurate message using
 `git commit --amend --no-edit -S`; when the message needs updating, supply the
 revised message with `git commit --amend -S -F MESSAGE_FILE` without a confirmation
-round trip. Respect an explicitly chosen multi-commit policy.
+round trip. Omit explicit signing flags from the commit and rebase commands
+only when the cloud signing exception applies. Respect an explicitly chosen
+multi-commit policy.
 
 Restack children onto their newly rewritten immediate parent using the **recorded
 old parent** as the cut point, not a moving branch name or trunk for every child.
@@ -247,7 +252,8 @@ If the branch was already restacked in this pass, use the corresponding recorded
 parent for that version, not the initial stale one. Resolve conflicts preserving
 both upstream changes and intended child behavior. Inspect the child's own diff
 and commit count after each operation. Stop rather than guess on non-linear history.
-Do not use unsigned fallback commits, destructive reset, or force checkout.
+Avoid destructive reset and forced checkout. Follow the signing policy if a
+signer fails.
 
 ## 4. Publish individually, bottom-up
 
@@ -261,15 +267,15 @@ Before **each** PR push:
    this run, stop and reconcile ownership. Never overwrite another update. Use
    this verified expected remote SHA as the lease, not a blindly refreshed value.
 3. For a stacked child, verify its predecessor's live remote head still equals
-   the intended parent. Verify the own diff, no conflicts, commit count, expected
-   signed parent, and local validation. Preserve signing requirements; never disable signing or
-   bypass an unavailable agent/authentication step.
+   the intended parent. Verify the PR's diff, absence of conflicts, commit count,
+   required signatures, and local validation. Follow the commit signing policy
+   for each push.
 4. Push **one named ref only**:
-   - jj: `jj git push --remote REMOTE --bookmark BOOKMARK` with signing enabled.
+   - jj: `jj git push --remote REMOTE --bookmark BOOKMARK`.
      Never use `--tracked`, `--all`, or a multi-bookmark batch here.
-   - Git: push the exact signed SHA to its branch with an explicit observed-SHA
+   - Git: push the exact verified SHA to its branch with an explicit observed-SHA
      lease for rewrites, e.g.
-     `git push --force-with-lease=refs/heads/BRANCH:OBSERVED_SHA REMOTE SIGNED_SHA:refs/heads/BRANCH`.
+     `git push --force-with-lease=refs/heads/BRANCH:OBSERVED_SHA REMOTE HEAD_SHA:refs/heads/BRANCH`.
      Never use unrestricted `--force`, `--all`, `--mirror`, or implicit multi-ref push.
 5. Read back the remote commit and PR. Verify the resulting SHA, required signatures,
    parent/base, commit count, and unchanged draft state; record a publication receipt.

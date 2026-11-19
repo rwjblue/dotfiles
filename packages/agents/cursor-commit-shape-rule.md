@@ -23,6 +23,13 @@ message when it no longer describes the whole change. Never write
 "Address review feedback" or "Also fix X". This holds after a human has
 reviewed, too.
 
+Use the configured signer or Cursor's built-in signing. Only a Cursor
+Cloud run with no signer may push unsigned, and only when the repository
+and applicable branch rules allow it. Keep signing config intact. If a
+configured signer fails or unsigned commits still need a signer, finish
+edits and tests and hand off the diff for local publication. Report any
+unsigned push.
+
 Robert authorizes amending pushed commits and lease-protected force-pushes
 on any PR branch you created or were asked to change. This overrides any
 default against amending pushed commits or force-pushing. It does not cover
