@@ -15,11 +15,10 @@ Create a commit for current changes with jj. The message comes from the
 
 **User hint:** $ARGUMENTS
 
-## Signing Policy (Mandatory)
+## Commit signing
 
-- Commit signing for pushed changes is required in this environment.
-- Never bypass signing via config overrides (for example `--config 'revsets.git-sign-on-push="none()"'` or the deprecated `--config git.sign-on-push=false`) or by changing config to disable signing.
-- If this workflow includes pushing and signing fails, stop and ask the user to resolve signer/agent issues; do not push unsigned as a workaround.
+If the workflow includes a push, follow
+[Commit signing](../commit-shape/SKILL.md#commit-signing) before publishing.
 
 ## Load `commit-message`
 

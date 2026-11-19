@@ -81,10 +81,29 @@ and stop. Don't add a new commit to get around it.
   each is a separate logical step with its own full message), keep them and
   ask before flattening.
 
+## Commit signing
+
+Sign outgoing commits using the configured signer. Platform signing counts
+when it covers the commits being published and the repository accepts it.
+In jj, use the outgoing range with `~signed()` to find unsigned revisions
+and check that the push-signing revset covers them. Robert's local jj setup
+signs on push.
+
+Codex Cloud and Cursor Cloud can publish unsigned commits when no signer
+is configured or provided by the platform and the repository's instructions
+and applicable branch rules allow it. Check the push branch and any PR base
+requirements before using this exception. Report an unsigned publication
+in the result.
+
+Keep signing configuration intact. Stop publication if a configured signer
+fails or unsigned outgoing commits have neither a signer nor a verified
+cloud exception. Finish the edits and tests and hand off the diff, base
+commit, test results, and proposed commit and PR text for signed publication.
+
 ## git
 
-Keep whatever signing the environment configures. Never pass
-`--no-gpg-sign` or override signing config.
+When using Git to sign, add `-S` to the commit commands below if signing
+is not already enabled by Git configuration.
 
 Before changing a pushed branch, record the remote SHA you start from. That
 SHA is the lease. Don't refresh it right before pushing, or the lease stops
