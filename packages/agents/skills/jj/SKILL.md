@@ -12,6 +12,10 @@ Uses **Jujutsu (jj)** for version control with git backend. Key differences from
 - Working copy is always a commit (`@`)
 - Branches are optional "bookmarks"
 
+Use the checkout selected for the task. Run `jj root` to identify it
+before acting. Commands and revsets marked as custom need the user's jj
+configuration. The core commit and PR workflows use built-in commands.
+
 ## Commit signing
 
 Before pushing, follow [Commit signing](../commit-shape/SKILL.md#commit-signing)

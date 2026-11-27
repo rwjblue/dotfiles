@@ -12,6 +12,9 @@ argument-hint: "[optional: PR title or description hint]"
 # JJ Pull Request
 
 Create or update a GitHub pull request from the current jj branch.
+Combine commit and PR creation through this workflow when the user requests
+both. Use the selected jj checkout, an authenticated `gh` CLI for the target
+GitHub host, and the signing policy below.
 
 **User hint:** $ARGUMENTS
 
@@ -21,23 +24,22 @@ Before pushing, follow [Commit signing](../commit-shape/SKILL.md#commit-signing)
 
 ## Related skills
 
-Load these rather than copying their rules:
+Read the related skills using paths relative to this file. If sibling paths
+are unavailable, invoke the corresponding skill by name.
 
 **`commit-shape`** for when to squash, amend, or add a commit:
 
-1. Invoke `commit-shape` (Cursor / Claude Code: `/commit-shape`; Pi: `/skill:commit-shape`) or read `../commit-shape/SKILL.md`.
+1. Read [commit-shape](../commit-shape/SKILL.md).
 2. It reads the `pr-commit-shape` repo setting. The steps below assume the default, `single`: one commit per PR, squashed at creation and amended after. Under `multi`, or one of its exceptions, follow `commit-shape` instead of the squash steps here.
 
 **`commit-message` via `jj-commit`** when you need a new commit:
 
-1. Invoke `jj-commit` (Cursor / Claude Code: `/jj-commit`; Pi: `/skill:jj-commit`) or read `../jj-commit/SKILL.md`.
+1. Read [jj-commit](../jj-commit/SKILL.md).
 2. `jj-commit` loads `commit-message` for the prose. Use `jj commit`, not `jj describe`.
 
 **`pr-description`** for every title and body (create or edit):
 
-1. Invoke `pr-description` (Cursor / Claude Code: `/pr-description`; Pi: `/skill:pr-description`; Codex: the skill name).
-2. Otherwise read sibling `../pr-description/SKILL.md`.
-3. Otherwise read `~/.agents/skills/pr-description/SKILL.md`.
+Read [pr-description](../pr-description/SKILL.md).
 
 Follow `pr-description` in full for BLUF, dual BLUF, Details, stack section
 format, linkify, length, wrapping, citations, and `--body-file`. This skill
@@ -48,27 +50,30 @@ only covers jj bookmarks, push, and `gh` invocation.
 ### 1. Gather Current State
 
 Run these to understand the current situation:
+- `jj root` to identify the checkout selected for the task. Run the workflow
+  from that root so repository settings and PR templates resolve correctly.
 - `jj diff` - check if `@` has uncommitted changes
-- Bookmark status - run all three of these commands:
+- Inspect the working-copy parent, nearest feature bookmarks, and trunk:
   ```bash
-  echo "=== @- (parent commit) ===" && jj log --no-pager -r "@-" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
-  echo "=== closest_bookmark(@) ===" && jj log --no-pager -r "closest_bookmark(@)" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
-  echo "=== trunk() ===" && jj log --no-pager -r "trunk()" -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  jj log --no-pager -r '@-' -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  jj log --no-pager -r 'heads((trunk()..@) & bookmarks())' -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
+  jj log --no-pager -r 'trunk()' -T 'change_id.short() ++ " " ++ bookmarks ++ "\n"'
   ```
 - Determine PR target remote:
   - Run `jj git remote list`
   - If `upstream` is present, target `upstream` for PR operations
   - Otherwise, target `origin`
-  - Derive `<target-repo>` (owner/name) from that remote URL and use it in `gh pr ... --repo "<target-repo>"`
-  - Derive `<target-owner>` from `<target-repo>`
+  - Derive `<target-repo>` (owner/name) and `<github-host>` from the target remote URL. Use `gh pr ... --repo "<github-host>/<target-repo>"` and pass `--hostname "<github-host>"` to `gh api`.
+  - Confirm the target and origin are on the same GitHub host, and use `origin` as the push remote.
   - Derive `<origin-owner>` from the `origin` remote URL for head refs (`<origin-owner>:<bookmark-name>`)
-  - Treat this as a fork flow when `<target-owner> != <origin-owner>`
-  - **Same-repo simplification:** when `<target-owner> == <origin-owner>` (pushing to the upstream repo, not a fork), the `<origin-owner>:` prefix in `--head` is redundant. Plain `--head <bookmark-name>` works and avoids edge cases (e.g., if you mentally substitute your GitHub username instead of deriving from the origin URL, the head ref breaks). The `<origin-owner>:<bookmark-name>` form is only required for fork flow.
+  - Set `<head-ref>` to the bookmark name when origin and target identify the same repository. For a fork, use `<origin-owner>:<bookmark-name>`.
 
 Determine the mode:
 
-**UPDATE mode**: Closest bookmark is NOT trunk() (there's an existing feature branch)
-**CREATE mode**: Closest bookmark IS trunk() (new branch needed)
+**UPDATE mode** applies when there is a feature bookmark. If multiple bookmarks
+remain and the request does not identify one, resolve which bookmark to use.
+
+**CREATE mode** applies when there is no feature bookmark.
 
 ---
 
@@ -76,59 +81,86 @@ Determine the mode:
 
 ### U1. Check for Existing PR
 
-Get the bookmark name from `closest_bookmark(@)` using `jj log --no-pager -r "closest_bookmark(@)" -T 'bookmarks'`.
+Use the selected feature bookmark. Look up its open PR by owner and branch
+using the [GitHub pull request API](https://docs.github.com/en/rest/pulls/pulls#list-pull-requests):
 
-Run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark-name>" --json url,state,title,number --limit 1` to see if a PR exists.
+```bash
+gh api --hostname "<github-host>" --method GET "repos/<target-repo>/pulls" \
+  -f state=open -f head="<origin-owner>:<bookmark-name>" \
+  --jq 'map({url: .html_url, state, title, number, base: .base.ref})'
+```
+
+If the user requested a new PR and this bookmark already has an open PR,
+confirm whether they want to update it or create a separate PR before
+changing the existing branch. For a separate PR, continue at C1 with the
+existing bookmark as the stacked base.
+
+If there is no open PR, continue at C1. Use the selected feature bookmark
+as the new PR's head and use trunk as the base unless the user chose another
+base.
 
 ### U2. Detect Stacked PR vs Update
 
-Compare `closest_bookmark(@)` with `@-`. If the bookmark is already on `@-`, skip to U3.
+Compare the feature bookmark with `@-`. If the bookmark is already on `@-`, skip to U3.
 
 If the bookmark is **behind** `@-` (new commits exist beyond the bookmark), ask the user:
 - **Update existing PR** (Recommended) - move the bookmark forward to include new commits
 - **Create stacked PR** - keep the bookmark where it is and create a new PR targeting it
 
-If **Update existing PR**: squash the new commits into the PR's commit so it stays a single commit, then continue to U3:
+If **Update existing PR** under the single-commit policy, squash the new
+commits into the PR's commit, then continue to U3:
 
 ```bash
 jj squash --from '<bookmark-name>..@-' --into '<bookmark-name>' --use-destination-message
 ```
 
 If the PR's message no longer describes the whole change, redraft it with `commit-message` ("Squashing or amending") and apply it with `jj describe -r '<bookmark-name>' --stdin`.
+
+Under the multi-commit policy, keep the commits and move the selected bookmark
+to `@-` with `jj bookmark move "<bookmark-name>" --to @-` before continuing.
+
 If **Create stacked PR**: jump to CREATE mode (C1), passing the existing bookmark name as the stacked base branch.
 
 ### U3. Handle Changes
 
 **If `@` has changes:**
-Run `jj squash` to amend them into the PR's commit. Don't ask. If the message no longer describes the whole change, redraft it as in U2.
+If the changes belong in the PR's nearest commit under `commit-shape`, run
+`jj squash` to fold them into it. If the message no longer describes the
+whole change, redraft it as in U2. For a multi-commit PR, fold a fix into the
+commit it belongs to and verify the descendant commits after the rewrite.
 
-Create a separate commit only when the user asks for one or `commit-shape` says to: load `jj-commit` (which uses `jj commit`, not `jj describe`), then run `jj tug` to move the bookmark forward.
+Create a separate commit only when the user asks for one or `commit-shape`
+says to. Load `jj-commit`, then move the selected bookmark forward with
+`jj bookmark move "<bookmark-name>" --to @-`.
 
 **If `@` is empty:**
 The changes are already committed. Proceed to push.
 
 ### U4. Push Updates
 
-Run `jj git push --tracked` to push the bookmark.
+Run `jj git push --remote origin --bookmark "<bookmark-name>"` to push the
+selected bookmark.
 
 ### U5. Optionally Update PR Title/Body
 
 If the PR exists, ask the user if they want to update the PR title or description.
 
-If yes, load `pr-description` with the current PR, then submit with `--body-file` as that skill specifies:
+If yes, load `pr-description` with the current PR, then submit with
+`--body-file` as that skill specifies. Use a fresh temporary body file for
+this operation.
 
 ```bash
-cat > /tmp/pr-body.md <<'EOF'
+body_file="$(mktemp)"
+cat > "$body_file" <<'EOF'
 <new body content>
 EOF
 
-gh pr edit <pr-number> --repo "<target-repo>" --title "<new title>" --body-file /tmp/pr-body.md
+gh pr edit <pr-number> --repo "<github-host>/<target-repo>" --title "<new title>" --body-file "$body_file"
 ```
 
 ### U6. Report Result
 
-If PR exists: Show the PR URL and confirm updates were pushed.
-If no PR exists: Proceed to CREATE mode step C3 to create the PR.
+Show the PR URL and confirm updates were pushed.
 
 ---
 
@@ -157,16 +189,11 @@ Build and test as needed. The commit message and bookmark stay attached to this 
 ### A4. Push
 
 ```bash
-jj git push --bookmark <bookmark-name>
+jj git push --remote origin --bookmark <bookmark-name>
 ```
 
-If multiple bookmarks in the stack moved (e.g., a rebase shifted every revision's SHA), push them all together:
-
-```bash
-jj git push --tracked
-```
-
-Each tracked bookmark whose target SHA changed gets pushed; bookmarks already in sync are skipped.
+If multiple bookmarks in the intended stack moved, push them one at a
+time, bottom-up. Verify each remote head before pushing the next.
 
 ### A5. Update PR description if scope changed
 
@@ -179,10 +206,15 @@ If the amendment changed *what* the PR does (not just *how*), load `pr-descripti
 ### C1. Handle Uncommitted Changes
 
 If `@` has changes, load `jj-commit` first. This uses `jj commit` (not `jj describe`) so that `@` becomes empty and the committed change lands at `@-`.
+Pass through any path scope and commit message approval flags the user set.
 
 ### C1b. Squash to one commit
 
-The new PR's range is `trunk()..@-`, or `<stacked-base-bookmark>..@-` for a stacked PR. If it holds more than one commit, squash them into one before creating the bookmark, with a message for the combined change from `commit-message` ("Squashing or amending"):
+The new PR's range is `trunk()..@-`, or `<stacked-base-bookmark>..@-` for a
+stacked PR. Stop before pushing if that range has no changes. If it holds
+multiple commits and `commit-shape` calls for one, squash them before
+creating or moving the bookmark. Use a message for the combined change from
+`commit-message` ("Squashing or amending"):
 
 ```bash
 jj squash --from '<base>..@-' --into 'roots(<base>..@-)' -m "$(cat /tmp/commit-msg.txt)"
@@ -192,9 +224,14 @@ In a stack being created all at once, run this per PR, bottom-up, with each PR's
 
 ### C2. Create Bookmark
 
+If using an existing feature bookmark as the new PR's head, confirm that
+head and ensure it points at `@-`. Move it there if needed, then push it with
+`jj git push --remote origin --bookmark "<bookmark-name>"` and continue at C3.
+
 Run `jj log --no-pager -r "@-" -T 'description.first_line()'` to get the commit message at `@-`.
 
-If this is a stacked PR, leave the stacked base bookmark where it is. Do not run `jj tug` or otherwise move the base bookmark; create a new bookmark for the follow-up PR at `@-`.
+If this is a stacked PR, leave the stacked base bookmark where it is and
+create a new bookmark for the follow-up PR at `@-`.
 
 Generate a branch name:
 - Prefix with `rwjblue/`
@@ -208,9 +245,10 @@ Generate a branch name:
   - `feat(skills): Add stacked PR support` -> `rwjblue/skills-add-stacked-pr-support`
   - `Add dark mode toggle` -> `rwjblue/add-dark-mode-toggle`
 
-Present the proposed branch name to the user for confirmation.
+Check that the proposed bookmark name is available locally and on the push
+remote. Present the proposed branch name to the user for confirmation.
 
-Once confirmed, run `jj git push --named "<bookmark-name>=@-"`.
+Once confirmed, run `jj git push --remote origin --named "<bookmark-name>=@-"`.
 
 ### C3. Create Pull Request
 
@@ -225,20 +263,18 @@ Gather information for the PR:
 
 If this is a stacked PR, gather the full stack for the PR body:
 - Run `jj log --no-pager -r "bookmarks() & trunk()..@-" --reversed -T 'bookmarks ++ "\n"'` to find all bookmarks in the stack (bottom-up order, base first)
-- For each bookmark, run `gh pr list --repo "<target-repo>" --head "<origin-owner>:<bookmark>" --json url,title,number --limit 1` to get its PR info
+- For each bookmark, use the API lookup in U1 with that bookmark's name to get its PR info. Include known merged PRs by querying with `state=all` when needed.
 - In fork flows, this lookup is still required even when the bookmark branch is missing from `<target-repo>`. GitHub upstream PRs commonly use fork head refs (`<origin-owner>:<bookmark>`) while not exposing the fork branch as a base branch in `<target-repo>`. Do not infer "no upstream PR" from a missing target-repo branch.
 - Record any existing PR URL for each stacked base bookmark. Use that URL in the Stack section and fallback explanation.
 - Include the current PR (being created now) as the last entry. Before PR creation, use a placeholder such as `👉 <current PR, created below>`.
 
 Determine stacked PR creation mode:
 - **True stacked mode**: only when `<stacked-base-bookmark>` exists as a branch in `<target-repo>`
-  - Check with: `gh api repos/<target-repo>/branches/<stacked-base-bookmark>`
+  - Check that exact branch via the repository branches API on `<github-host>`. Confirm a missing branch before falling back. Authentication and transport errors require resolving the lookup.
   - If this succeeds, create with `--base "<stacked-base-bookmark>"`
 - **Upstream fallback mode**: when stacked base branch is missing from `<target-repo>` (common fork flow)
-  - First check for an existing upstream PR for the stacked base head ref:
-    ```bash
-    gh pr list --repo "<target-repo>" --head "<origin-owner>:<stacked-base-bookmark>" --json url,title,number --limit 1
-    ```
+  - First use the U1 API lookup with `<stacked-base-bookmark>` to check for
+    an upstream PR for that exact head ref.
   - If found, cite that PR URL or number as the dependency. Do not say "no upstream PR found."
   - If not found, say only that no upstream PR was found for `<origin-owner>:<stacked-base-bookmark>` after checking that exact head ref.
   - Do **not** create the follow-up PR in your fork unless the user explicitly asks
@@ -247,26 +283,31 @@ Determine stacked PR creation mode:
 
 Load `pr-description` with the gathered commits, diff stat, template, stack list, and mode. Present its draft (that skill already asks for approval).
 
-Create the PR with `--body-file` (see `pr-description`):
+For a regular PR or upstream fallback, set `<base-branch>` to the intended
+trunk branch in the target repository. For a true stacked PR, use the
+stacked base bookmark. Check for an existing PR for this head before creating
+a new one, including after an uncertain create result.
+
+Create the PR with `--body-file` (see `pr-description`). Use a fresh temporary
+body file for this operation.
 
 ```bash
-cat > /tmp/pr-body.md <<'EOF'
+body_file="$(mktemp)"
+cat > "$body_file" <<'EOF'
 <body content>
 EOF
 
-# True stacked mode:
-gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<stacked-base-bookmark>" --title "<title>" --body-file /tmp/pr-body.md
-
-# Upstream fallback mode:
-gh pr create --repo "<target-repo>" --draft --head "<origin-owner>:<bookmark-name>" --base "<trunk-bookmark-or-branch>" --title "<title>" --body-file /tmp/pr-body.md
+gh pr create --repo "<github-host>/<target-repo>" --draft \
+  --head "<head-ref>" --base "<base-branch>" --title "<title>" \
+  --body-file "$body_file"
 ```
 
-Same-repo simplification still applies to `--head`.
-
-After `gh pr create` succeeds, capture the created PR URL. If this is a stacked PR, rewrite `/tmp/pr-body.md` so its own Stack entry uses the real URL instead of the placeholder, then immediately update the newly created PR body:
+After `gh pr create` succeeds, capture the created PR URL. If this is a
+stacked PR, update the body file so its own Stack entry uses the real URL,
+then immediately update the newly created PR body:
 
 ```bash
-gh pr edit <new-pr-number-or-url> --repo "<target-repo>" --body-file /tmp/pr-body.md
+gh pr edit <new-pr-number-or-url> --repo "<github-host>/<target-repo>" --body-file "$body_file"
 ```
 
 The post-create body must include the complete stack with the current PR URL marked by `👉`, for both true stacked mode and upstream fallback mode. This keeps the PR body self-contained and avoids leaving placeholder branch names or "created below" text in the final description.
@@ -277,10 +318,10 @@ After creating the PR, update all other open PRs in the stack so they have the c
 
 Only do this in **true stacked mode** where the PRs live in the same `<target-repo>`. Skip this step in upstream fallback mode.
 
-- For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<target-repo>" --json body`
+- For each other PR in the stack, read its current body via `gh pr view <pr-number> --repo "<github-host>/<target-repo>" --json body`
 - Replace or insert the `## Stack` section per `pr-description` (immediately below the author-written prose, before generated template metadata). If the template uses `---` to separate reviewer prose from metadata, place the stack before that separator, not at the bottom of the body.
 - Use the `#NNN — <short label>` form for every entry (trunk as bold #1); mark whichever PR is being viewed with the 👉 prefix. The `**BLUF (stack):**` line stays verbatim across all siblings; only `**BLUF (this PR):**` and the 👉 position differ per PR.
-- Update via `gh pr edit <pr-number> --repo "<target-repo>" --body-file /tmp/pr-body.md`
+- Update via `gh pr edit <pr-number> --repo "<github-host>/<target-repo>" --body-file "$body_file"`.
 
 ### C5. Report Success
 

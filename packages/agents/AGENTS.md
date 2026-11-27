@@ -6,6 +6,7 @@
 - When I ask for isolation, use `jj workspace add --colocate <destination>`
   in a Jujutsu-managed repo. Use a Git worktree if the repo only uses Git
   or jj is unavailable.
+- Prefix new Jujutsu bookmarks with `rwjblue/`.
 
 ## Shell commands
 

@@ -130,9 +130,8 @@ the BLUF along with it.
 Any ticket, PR, doc, or runbook that has a URL should be a Markdown link, not
 bare text.
 
-- Tickets → the tracker's issue URL. Employer-specific tracker URL patterns
-  live in `../rwjblue-mode-local/SKILL.md` when it exists; this public skill
-  does not list them.
+- Tickets → the tracker's issue URL. If the user's local `rwjblue-mode-local`
+  skill is available, use it for employer-specific tracker URL patterns.
 - Sibling PRs → `#NNN` (auto-links in-repo)
 - Internal shortlinks (e.g. `go/` links) stay as written
 

@@ -13,6 +13,8 @@ argument-hint: "[optional: brief description of changes]"
 Create a commit for current changes with jj. The message comes from the
 `commit-message` skill.
 
+Use `jj root` to identify the selected project's checkout before making changes.
+
 **User hint:** $ARGUMENTS
 
 ## Commit signing
@@ -26,11 +28,8 @@ Do not write the message yourself. Load the `commit-message` skill and follow
 it in full for mode (`--auto` / `--confirm` / `AGENTS.md`), style matching,
 subject/body rules, citations, and user confirmation.
 
-How to load it (first that works):
-
-1. Invoke by name: `commit-message` (Cursor / Claude Code: `/commit-message`; Pi: `/skill:commit-message`; Codex: the skill name).
-2. Read sibling `../commit-message/SKILL.md`.
-3. Read `~/.agents/skills/commit-message/SKILL.md`.
+Read the sibling [commit-message skill](../commit-message/SKILL.md).
+If the sibling path is unavailable, invoke `commit-message` by name.
 
 Pass `$ARGUMENTS` through. `commit-message-default` and the older
 `jj-commit-default` are both valid, in any file `commit-message`'s
@@ -67,6 +66,14 @@ Stop when it returns an approved message.
 
 ### 3. Create the commit
 
+Follow the [commit-shape skill](../commit-shape/SKILL.md) for when
+to amend an open PR's commit. If `@-` is an open PR's commit and the current
+change belongs in that commit, squash it into the parent under the applicable
+commit-shape policy. Keep the same path scope for a scoped change. For a
+separate draft PR, keep its changes outside the existing PR's commit.
+
+For a new commit:
+
 Run `jj commit -m "<approved message>"`.
 
 For a scoped commit, include the requested paths:
@@ -77,10 +84,5 @@ jj commit <paths> -m "<approved message>"
 
 Use `jj commit` (not `jj describe`) so that `@` advances to a new empty
 revision, ready for more work. Never `git commit` in a colocated jj repo.
-
-Local commits are free, but a PR holds one commit (`../commit-shape/SKILL.md`).
-If `@-` is an open PR's commit and this change belongs to that PR, run
-`jj squash` instead of creating a commit on top. `jj-pr` squashes any
-leftover local commits when it pushes.
 
 Confirm success to the user.
