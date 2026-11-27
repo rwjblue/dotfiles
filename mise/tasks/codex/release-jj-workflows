@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Build and update the private JJ Workflows plugin in terminal Codex"
+#MISE raw=true
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec codex --ask-for-approval on-request \
+  '[@Plugin Creator](plugin://plugin-creator@openai-curated-remote)
+Read packages/codex/skills/release-jj-workflows/SKILL.md and follow it to release JJ Workflows from this checkout.'

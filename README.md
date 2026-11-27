@@ -35,6 +35,23 @@ mise run agent-review:test    # Run agent-review.nvim tests headless
 
 Use `brew update` directly to refresh Homebrew's package metadata. Use the Brewfile preview to decide which installed packages belong in the shared manifest.
 
+### JJ Workflows plugin
+
+With Python 3 and the signed-in Codex CLI available, run:
+
+```sh
+mise run codex:release-jj-workflows
+```
+
+The task starts Codex in your terminal. The release skill reads the current
+private release, builds the next patch version from the shared skills, and
+uses Plugin Creator to update the existing plugin. Approve the upload in
+the terminal when prompted. If the bundle is unchanged, the skill skips
+the upload.
+
+To just build a ZIP, run `mise run codex:bundle-jj-workflows 0.1.2` with the
+intended version. The task prints the archive path.
+
 ## Troubleshooting
 
 To ensure Neovim supports strikethrough and undercurl support, follow [these instructions](https://wezfurlong.org/wezterm/faq.html#how-do-i-enable-undercurl-curly-underlines).

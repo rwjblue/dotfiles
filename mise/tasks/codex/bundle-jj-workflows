@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+#MISE description="Build a JJ Workflows plugin ZIP from the shared skills"
+#USAGE arg "<version>" help="Plugin release version (X.Y.Z)"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec python3 - "${usage_version:?Expected a release version.}" <<'PY'
+import json
+import re
+import sys
+import tempfile
+from pathlib import Path
+from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
+
+version = sys.argv[1]
+if not re.fullmatch(r"(?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){2}", version):
+    raise SystemExit("Expected a release version such as 0.1.2.")
+
+root = Path.cwd().resolve()
+name = "jj-workflows"
+
+
+def read_source(path):
+    # Private skills may be symlinked into the shared skill directory.
+    if not path.is_file() or path.resolve() != path:
+        raise SystemExit(f"Expected a regular source file at {path.relative_to(root)}")
+    return path.read_bytes()
+
+
+manifest = json.loads(read_source(root / "packages/codex/plugins" / name / "plugin.json"))
+manifest["version"] = version
+openai = manifest["extensions"]["com.openai"]
+legacy = {
+    key: value for key, value in manifest.items() if key not in ("$schema", "extensions")
+}
+legacy.update(
+    interface=openai["interface"],
+    requires_local_executor=openai["requires_local_executor"],
+    skills="./skills",
+)
+
+files = {
+    "plugin.json": json.dumps(manifest, ensure_ascii=False, indent=2) + "\n",
+    ".codex-plugin/plugin.json": json.dumps(legacy, ensure_ascii=False, indent=2) + "\n",
+}
+for skill in ("commit-message", "commit-shape", "jj", "jj-commit", "jj-pr", "pr-description"):
+    path = f"skills/{skill}/SKILL.md"
+    files[path] = read_source(root / "packages/agents" / path)
+
+output = Path(tempfile.mkdtemp(prefix=f"{name}-")) / f"{name}-{version}.zip"
+with ZipFile(output, "w") as archive:
+    for path, contents in sorted(files.items()):
+        archive.writestr(ZipInfo(f"{name}/{path}"), contents, compress_type=ZIP_DEFLATED)
+
+with ZipFile(output) as archive:
+    bad_file = archive.testzip()
+    if bad_file:
+        raise SystemExit(f"Could not verify {bad_file} in {output}")
+print(output)
+PY

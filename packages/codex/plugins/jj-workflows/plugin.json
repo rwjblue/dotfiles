@@ -1,0 +1,24 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "jj-workflows",
+  "description": "Use Jujutsu to commit changes and open or update GitHub draft pull requests using Robert Jackson’s conventions.",
+  "author": {
+    "name": "Robert Jackson"
+  },
+  "repository": "https://github.com/rwjblue/dotfiles",
+  "keywords": ["jujutsu", "jj", "git", "github", "pull requests"],
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "JJ Workflows",
+        "shortDescription": "Jujutsu commits and draft PRs",
+        "longDescription": "Work in your local Jujutsu checkout, match its commit style, and open draft GitHub pull requests using your branch naming, signing, and stacking conventions. Pull request workflows use the local GitHub CLI and your configured signer.",
+        "developerName": "Robert Jackson",
+        "category": "Developer Tools",
+        "capabilities": ["Interactive"],
+        "defaultPrompt": "Commit my current changes and open a draft PR using my usual conventions."
+      }
+    }
+  }
+}
